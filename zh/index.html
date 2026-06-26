@@ -12,10 +12,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
 <link rel="stylesheet" href="../assets/css/main.css" />
 
+<link rel="canonical" href="https://www.tiyisec.com/zh/" />
 <meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.tiyisec.com/zh/" />
 <meta property="og:title" content="Tiyi —— 单一二进制的自托管 WAF" />
 <meta property="og:description" content="Caddy + Coraza + SQLite + Vben Admin 集成在一个 Go 可执行文件中。WAF、反向代理与管理平面 —— 五分钟即可安装。" />
-<meta property="og:image" content="../assets/img/screenshots/zh-dark/dashboard.png" />
+<meta property="og:image" content="https://www.tiyisec.com/assets/img/screenshots/zh-dark/dashboard.png" />
 <meta name="twitter:card" content="summary_large_image" />
 
 <!-- Apply theme before paint to avoid FOUC -->
@@ -74,8 +76,8 @@
 
   <div class="hero-cmd">
     <span class="prompt">$</span>
-    <span class="cmd">curl -sSL get.tiyi.io | sh &amp;&amp; tiyi standalone</span>
-    <button class="copy" data-copy="curl -sSL get.tiyi.io | sh && tiyi standalone" data-copied="已复制" aria-label="复制命令">复制</button>
+    <span class="cmd">curl -fsSL https://www.tiyisec.com/install.sh | bash &amp;&amp; tiyi standalone</span>
+    <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && tiyi standalone" data-copied="已复制" aria-label="复制命令">复制</button>
   </div>
 
   <div class="hero-meta" style="margin-top: 28px;">
@@ -713,7 +715,7 @@
         </div>
         <div class="tl-title">首个正式版本</div>
         <div class="tl-body">
-          在试点部署上磨合候选版本 —— 现在已纳入安全事件聚合层、重新设计的告警栈、可选的 AI 顾问 / Copilot 层，以及按规模授权（scale-gate）流程 —— 签 Linux amd64 + arm64 构建，把安装脚本发布到 <span class="mono">get.tiyi.io</span>，开通首个签名二进制分发渠道。
+          在试点部署上磨合候选版本 —— 现在已纳入安全事件聚合层、重新设计的告警栈、可选的 AI 顾问 / Copilot 层，以及按规模授权（scale-gate）流程 —— 签 Linux amd64 + arm64 构建，把安装脚本发布到 <span class="mono">www.tiyisec.com/install.sh</span>，开通首个签名二进制分发渠道。
         </div>
       </div>
 

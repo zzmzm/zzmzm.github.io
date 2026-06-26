@@ -40,7 +40,17 @@ GitHub Pages redeploys automatically on push (usually within a minute, up to
 
 ## Custom domain
 
-The intended canonical host is `tiyi.io`. To switch from `zzmzm.github.io` to
-the apex domain, add a `CNAME` file containing `tiyi.io` and point DNS at
-GitHub Pages — only after DNS is ready, otherwise the default URL stops
-resolving.
+The site is served at **https://www.tiyisec.com/**. The custom domain relies on
+two things that must agree:
+
+1. **DNS** — a `CNAME` record for `www.tiyisec.com` pointing at
+   `zzmzm.github.io`.
+2. **`CNAME` file** — contains `www.tiyisec.com` and now ships from the
+   authoring source (`website/CNAME`), so the resync above keeps it in place.
+   The resync's `--delete` only excludes `.git/`, `.nojekyll`, and `.gitignore`,
+   so a `CNAME` living only here would be wiped on the next sync — keeping it in
+   `website/` is what makes it durable.
+
+If the custom domain was set through the repo's Pages settings, GitHub commits
+the same `CNAME` file for you; `git pull` before the next resync so histories
+don't diverge.

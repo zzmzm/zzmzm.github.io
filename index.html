@@ -12,10 +12,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
 <link rel="stylesheet" href="assets/css/main.css" />
 
+<link rel="canonical" href="https://www.tiyisec.com/" />
 <meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.tiyisec.com/" />
 <meta property="og:title" content="Tiyi — Self-hostable WAF, in one binary." />
 <meta property="og:description" content="Caddy + Coraza + SQLite + Vben Admin in one Go executable. WAF, reverse proxy, and management plane — five-minute install." />
-<meta property="og:image" content="assets/img/screenshots/en-dark/dashboard.png" />
+<meta property="og:image" content="https://www.tiyisec.com/assets/img/screenshots/en-dark/dashboard.png" />
 <meta name="twitter:card" content="summary_large_image" />
 
 <!-- Apply theme before paint to avoid FOUC -->
@@ -75,8 +77,8 @@
 
   <div class="hero-cmd">
     <span class="prompt">$</span>
-    <span class="cmd">curl -sSL get.tiyi.io | sh &amp;&amp; tiyi standalone</span>
-    <button class="copy" data-copy="curl -sSL get.tiyi.io | sh && tiyi standalone" aria-label="Copy command">copy</button>
+    <span class="cmd">curl -fsSL https://www.tiyisec.com/install.sh | bash &amp;&amp; tiyi standalone</span>
+    <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && tiyi standalone" aria-label="Copy command">copy</button>
   </div>
 
   <div class="hero-meta" style="margin-top: 28px;">
@@ -726,7 +728,7 @@
         </div>
         <div class="tl-title">First general-availability release</div>
         <div class="tl-body">
-          Soak the release candidate across pilot deployments — now including the incident-aggregation layer, the redesigned alerting stack, the optional AI advisory/Copilot layer, and the scale-gate licensing flow — sign Linux amd64 + arm64 builds, publish the install script at <span class="mono">get.tiyi.io</span>, ship the first signed binary distribution channel.
+          Soak the release candidate across pilot deployments — now including the incident-aggregation layer, the redesigned alerting stack, the optional AI advisory/Copilot layer, and the scale-gate licensing flow — sign Linux amd64 + arm64 builds, publish the install script at <span class="mono">www.tiyisec.com/install.sh</span>, ship the first signed binary distribution channel.
         </div>
       </div>
 

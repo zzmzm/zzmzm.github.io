@@ -75,8 +75,8 @@
     </ul>
 
     <h2 id="prebuilt">预构建二进制</h2>
-    <p>社区版、Pro 与企业版使用同一个签名二进制。没有有效授权时，完整产品运行在本地单机节点；导入厂商签名授权后会提高远程节点配额，并激活显示的 Pro 或企业版套餐。从 v3.0.0 GA 起，权威安装脚本会托管在 <code>get.tiyi.io</code>：</p>
-<pre><code><span class="p">$</span> curl -sSL get.tiyi.io | sh
+    <p>Tiyi 是单一签名二进制 —— 在单节点上免费且功能完整。权威安装脚本发布在 <code>https://www.tiyisec.com/install.sh</code>：</p>
+<pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
 <span class="c">tiyi v3.0.0-rc.1-57-gf297a22 linux/amd64</span></code></pre>
     <p>脚本会下载与平台匹配的二进制，比对 SHA-256 manifest，并放到 <code>/usr/local/bin/tiyi</code>。<code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。</p>

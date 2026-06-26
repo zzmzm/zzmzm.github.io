@@ -92,8 +92,8 @@
     </ul>
 
     <h2 id="prebuilt">Prebuilt binaries</h2>
-    <p>Community, Pro, and Enterprise use the same signed binary. With no valid license it runs the full product on the local standalone node; importing a vendor-signed license raises the remote-agent budget and activates the displayed Pro or Enterprise plan. From v3.0.0 GA forward, the canonical install script will live at <code>get.tiyi.io</code>:</p>
-<pre><code><span class="p">$</span> curl -sSL get.tiyi.io | sh
+    <p>Tiyi is one signed binary — free and full-featured on a single node. The canonical install script is published at <code>https://www.tiyisec.com/install.sh</code>:</p>
+<pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
 <span class="c">tiyi v3.0.0-rc.1-57-gf297a22 linux/amd64</span></code></pre>
     <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. <code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets.</p>

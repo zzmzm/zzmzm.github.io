@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+    <loc>https://www.tiyisec.com/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.tiyisec.com/" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.tiyisec.com/zh/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tiyisec.com/" />
+  </url>
+  <url><loc>https://www.tiyisec.com/changelog.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.tiyisec.com/docs/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.tiyisec.com/docs/quickstart.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.tiyisec.com/docs/installation.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.tiyisec.com/docs/concepts.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.tiyisec.com/docs/cli.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.tiyisec.com/docs/api.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.tiyisec.com/docs/deployment.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <url>
+    <loc>https://www.tiyisec.com/zh/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.tiyisec.com/" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://www.tiyisec.com/zh/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tiyisec.com/" />
+  </url>
+  <url><loc>https://www.tiyisec.com/zh/changelog.html</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.tiyisec.com/zh/docs/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.tiyisec.com/zh/docs/quickstart.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.tiyisec.com/zh/docs/installation.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.tiyisec.com/zh/docs/concepts.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.tiyisec.com/zh/docs/cli.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.tiyisec.com/zh/docs/api.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.tiyisec.com/zh/docs/deployment.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+
+</urlset>
