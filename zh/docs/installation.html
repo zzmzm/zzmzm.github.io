@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>安装 — Tiyi 文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="从源码安装或下载预构建二进制，写 YAML 配置，并选择运行模式。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/installation.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
+    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
+    <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
+  </aside>
+
+  <main class="docs-content" role="main">
+    <span class="docs-eyebrow">开始使用</span>
+    <h1>安装</h1>
+    <p class="lede">Tiyi 是一个 Go 二进制。挑一种构建路径、把二进制放到主机、写一份小 YAML 配置，并按主机在集群中扮演的角色挑一个运行模式。</p>
+
+    <h2 id="from-source">从源码构建</h2>
+    <p>从一份新的 Tiyi 仓库 checkout：</p>
+<pre><code><span class="p">$</span> make proto       <span class="c"># 从 proto/ 重新生成 Connect Go + Protobuf Go</span>
+<span class="p">$</span> make web         <span class="c"># 把 Vben Admin 前端构建到 web/dist/</span>
+<span class="p">$</span> make build       <span class="c"># 编译嵌入前端的 bin/tiyi</span></code></pre>
+    <p>构建发布产物时使用带保护的一键目标。它会拒绝脏工作树、校验内嵌厂商授权公钥的指纹、重新构建 proto / 前端，并产出同一个单一二进制：</p>
+<pre><code><span class="p">$</span> make release</code></pre>
+    <p>构建依赖：</p>
+    <ul>
+      <li><strong>Go 1.25+</strong> —— 模块下限。基于 <code>modernc.org/sqlite</code> 的纯 Go SQLite 意味着没有 CGo，可以干净跨平台编译。</li>
+      <li><strong>Node 20+ 与 pnpm 9+</strong> —— 用于 <code>make web</code>。下次 <code>make build</code> 时会经由 <code>go:embed</code> 嵌入产物。</li>
+      <li><strong>buf</strong> —— 已捆绑在 <code>tmp/buf/bin/buf</code>，用于重新生成 proto。改完 <code>proto/tiyi/v1/*.proto</code> 后跑 <code>make proto</code> 刷新生成的 Connect/PB Go。</li>
+    </ul>
+
+    <h2 id="prebuilt">预构建二进制</h2>
+    <p>社区版、Pro 与企业版使用同一个签名二进制。没有有效授权时，完整产品运行在本地单机节点；导入厂商签名授权后会提高远程节点配额，并激活显示的 Pro 或企业版套餐。从 v3.0.0 GA 起，权威安装脚本会托管在 <code>get.tiyi.io</code>：</p>
+<pre><code><span class="p">$</span> curl -sSL get.tiyi.io | sh
+<span class="p">$</span> tiyi --version
+<span class="c">tiyi v3.0.0-rc.1-57-gf297a22 linux/amd64</span></code></pre>
+    <p>脚本会下载与平台匹配的二进制，比对 SHA-256 manifest，并放到 <code>/usr/local/bin/tiyi</code>。<code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。</p>
+
+    <h2 id="bootstrap-from-server">从已运行的服务端引导节点</h2>
+    <p>已运行的 Tiyi 服务端暴露 <code>GET /download/tiyi</code>，一个无鉴权端点会流式输出当前运行的二进制。在干净的机器上引导节点：</p>
+<pre><code><span class="p">$</span> curl -fsSL -o /usr/local/bin/tiyi http://primary:8080/download/tiyi
+<span class="p">$</span> chmod +x /usr/local/bin/tiyi</code></pre>
+    <p>跨平台下载，附加 <code>?os=linux&arch=arm64</code>，会改为提供已导入的二进制 release。</p>
+
+    <h2 id="config-file">配置文件</h2>
+    <p>Tiyi 读取一份 Koanf 风格的 YAML 配置。从下面这份最小配置起步，其余靠默认：</p>
+<pre><code><span class="c"># /etc/tiyi/tiyi.yaml</span>
+<span class="k">api</span>:
+  <span class="k">addr</span>: <span class="s">"0.0.0.0:8080"</span>
+
+<span class="k">storage</span>:
+  <span class="k">state_db</span>: <span class="s">"/var/lib/tiyi/state.db"</span>
+
+<span class="k">crypto</span>:
+  <span class="k">kek_file</span>: <span class="s">"/etc/tiyi/kek.bin"</span>      <span class="c"># 32 字节静态加密密钥</span>
+
+<span class="k">auth</span>:
+  <span class="k">jwt_secret</span>: <span class="s">"<span class="v">&lt;32+ 字节随机&gt;</span>"</span>      <span class="c"># HS256 签名密钥</span>
+
+<span class="k">proxy</span>:
+  <span class="k">http_addr</span>:  <span class="s">":80"</span>
+  <span class="k">https_addr</span>: <span class="s">":443"</span>
+  <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
+    <p>用 <code>--config</code> 传入：</p>
+<pre><code><span class="p">$</span> tiyi standalone --config /etc/tiyi/tiyi.yaml</code></pre>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="callout-body">
+        <p><strong>上线前两个字段必须显式设置。</strong><code>crypto.kek_file</code> 与 <code>auth.jwt_secret</code> 都有不能跨重启幸存的开发友好回退。详见<a href="deployment.html#hardening">部署 → 生产加固</a>。</p>
+      </div>
+    </div>
+
+    <h2 id="modes">运行模式</h2>
+    <p>同一个二进制暴露五个子命令。按这台主机的角色挑一个：</p>
+
+    <dl class="dl-grid">
+      <dt><code>standalone</code></dt>
+      <dd>主控 + 节点合一。单机部署的默认值。可写；数据平面也在同一节点上代理。五分钟安装路径。</dd>
+
+      <dt><code>server</code></dt>
+      <dd>集群控制平面 leader，外加自带嵌入式节点。接受节点注册、对外提供 API 与 dashboard、代理流量。</dd>
+
+      <dt><code>secondary</code></dt>
+      <dd>热备控制平面，外加自带嵌入式节点。只读 API、代理流量、用 <code>tiyi promote</code> 手工切主。</dd>
+
+      <dt><code>agent</code></dt>
+      <dd>纯数据平面：Caddy + Coraza，从主节点接收已签名的配置 bundle。无控制平面职责。</dd>
+
+      <dt><code>dashboard</code></dt>
+      <dd>仅 UI，用于不代理流量的拆分部署。</dd>
+    </dl>
+
+    <h2 id="enrollment">入网一个节点</h2>
+    <p>节点用主节点签发的一次性 token 入网。在主节点上：</p>
+<pre><code><span class="p">$</span> TOKEN=<span class="s">"$(tiyi agents issue-token --tag edge-c | jq -r .token)"</span></code></pre>
+    <p>在节点主机上，确保二进制已就位：</p>
+<pre><code><span class="p">$</span> tiyi agent <span class="o">\</span>
+    --api http://primary:8080 <span class="o">\</span>
+    --enrollment-token <span class="s">"$TOKEN"</span> <span class="o">\</span>
+    --state-dir /var/lib/tiyi/agent <span class="o">\</span>
+    --proxy-http-addr 0.0.0.0:80 <span class="o">\</span>
+    --proxy-https-addr 0.0.0.0:443</code></pre>
+    <p>token 在首次接入时被消耗。入网后节点把身份持久化到 <code>&lt;state-dir&gt;/identity.json</code>，token 不再需要。丢了 state 目录就需要新的 token 重新入网。</p>
+
+    <h2 id="systemd">systemd 单元</h2>
+    <p>长期运行的部署用你的 init 系统跑 Tiyi。一个最小的 systemd unit：</p>
+<pre><code><span class="c"># /etc/systemd/system/tiyi.service</span>
+<span class="k">[Unit]</span>
+<span class="k">Description</span>=Tiyi WAF
+<span class="k">After</span>=network-online.target
+<span class="k">Wants</span>=network-online.target
+
+<span class="k">[Service]</span>
+<span class="k">Type</span>=simple
+<span class="k">User</span>=tiyi
+<span class="k">Group</span>=tiyi
+<span class="k">ExecStart</span>=/usr/local/bin/tiyi server --config /etc/tiyi/tiyi.yaml
+<span class="k">Restart</span>=on-failure
+<span class="k">RestartSec</span>=2s
+<span class="k">AmbientCapabilities</span>=CAP_NET_BIND_SERVICE
+<span class="k">CapabilityBoundingSet</span>=CAP_NET_BIND_SERVICE
+<span class="k">NoNewPrivileges</span>=true
+<span class="k">ProtectSystem</span>=strict
+<span class="k">ReadWritePaths</span>=/var/lib/tiyi /etc/tiyi
+<span class="k">ProtectHome</span>=true
+<span class="k">PrivateTmp</span>=true
+
+<span class="k">[Install]</span>
+<span class="k">WantedBy</span>=multi-user.target</code></pre>
+
+    <h2 id="next">下一步阅读</h2>
+    <ul>
+      <li><a href="concepts.html">领域模型</a> —— 站点、上游、证书、策略、节点各是什么。</li>
+      <li><a href="cli.html">CLI 参考</a> —— 每一个 <code>tiyi</code> 子命令按资源分组。</li>
+      <li><a href="deployment.html">部署</a> —— 生产加固、HA 故障转移、SIEM 转发。</li>
+    </ul>
+
+    <div class="docs-pager">
+      <a href="quickstart.html">
+        <span class="label">← 上一页</span>
+        <span class="title">快速开始</span>
+      </a>
+      <a class="next" href="concepts.html">
+        <span class="label">下一页 →</span>
+        <span class="title">领域模型</span>
+      </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

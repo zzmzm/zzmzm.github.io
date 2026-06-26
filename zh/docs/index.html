@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>文档 — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Tiyi 文档：在生产环境中安装、运行、运维一个单一二进制 WAF。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/index.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">领域模型</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 概览</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+    <span class="docs-eyebrow">文档</span>
+    <h1>Tiyi 文档</h1>
+    <p class="lede">
+      Tiyi 是一个 Go 二进制，运行 Caddy 反向代理、带 OWASP 核心规则集的 Coraza WAF、嵌入式 SQLite 控制平面与 Vben Admin UI。这些文档涵盖从五分钟首次启动到加固的多节点生产部署的全部内容。
+    </p>
+
+    <h2 id="start-here">从这里开始</h2>
+    <p>如果你是首次运行 Tiyi，按顺序读这三页。整体大约花 30 分钟，结束后你会有一个真实的 WAF 挡在真实的上游前面。</p>
+
+    <div class="docs-cards">
+      <a class="docs-card" href="quickstart.html">
+        <div class="docs-card-title"><span class="docs-card-num">1</span>快速开始</div>
+        <p>构建二进制，启动 <code>tiyi standalone</code>，创建第一个站点，看 WAF 拦截真实攻击。五分钟。</p>
+      </a>
+      <a class="docs-card" href="installation.html">
+        <div class="docs-card-title"><span class="docs-card-num">2</span>安装</div>
+        <p>从源码构建，或下载签名版本，写 YAML 配置，并在 <code>standalone</code>、<code>server</code> 与 <code>agent</code> 模式之间选择。</p>
+      </a>
+      <a class="docs-card" href="concepts.html">
+        <div class="docs-card-title"><span class="docs-card-num">3</span>领域模型</div>
+        <p>站点、上游池、证书、WAF 策略、节点、遥测、审计链 —— 它们各是什么，又是如何配合的。</p>
+      </a>
+      <a class="docs-card" href="cli.html">
+        <div class="docs-card-title"><span class="docs-card-num">4</span>CLI 参考</div>
+        <p>每一个 <code>tiyi</code> 子命令按资源分组，附上重要的 flag 与退出码契约。</p>
+      </a>
+      <a class="docs-card" href="api.html">
+        <div class="docs-card-title"><span class="docs-card-num">5</span>API 概览</div>
+        <p>驱动 UI、CLI、节点流的 ConnectRPC 契约。鉴权、错误码与 14 个服务。</p>
+      </a>
+      <a class="docs-card" href="deployment.html">
+        <div class="docs-card-title"><span class="docs-card-num">6</span>部署</div>
+        <p>生产加固、带 epoch 隔离的 HA 故障转移、SIEM 转发、可观测性与升级路径。</p>
+      </a>
+    </div>
+
+    <h2 id="design-philosophy">设计哲学</h2>
+    <p>三个架构决策塑造了后续所有页面：</p>
+    <ul>
+      <li><strong>一个二进制，零运行时依赖。</strong>无 Docker daemon、无 Nginx、无 Postgres、无 Redis。二进制内置 Caddy、Coraza、SQLite 与 Vben Admin UI。一个合格的运维应该能在五分钟内拉起一个可用实例。</li>
+      <li><strong>API 优先 + 声明式 YAML。</strong>每一个写入路径都由一个 ConnectRPC API 拥有。UI 与 CLI 都是它的瘦客户端。<code>tiyi apply -f site.yaml</code> 与点击<em>保存</em>效果完全相同 —— 同一个验证器、同一个写入器、同一行审计。</li>
+      <li><strong>推送 + 协调，不只是推送。</strong>节点持有一条长连 ConnectRPC 双向流。每一次变更写 SQLite、自增单调版本号，并把签名 bundle 推送到所有打开的节点流，~50&nbsp;ms 内到达。节点每 15&nbsp;s 协调一次作为兜底。更新按版本号幂等 —— 重放与乱序都安全。</li>
+    </ul>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </div>
+      <div class="callout-body">
+        <p><strong>这些文档不是什么。</strong>它们覆盖运维表面 —— 安装、运行、加固。内部架构与每一个 RPC 的规约，权威来源是源码树中的 <code>PRD-v3.md</code>、<code>PRD-API.md</code>、<code>PRD-DB.md</code>、<code>PRD-UI.md</code>。在合适的地方我们会给出链接。</p>
+      </div>
+    </div>
+
+    <h2 id="versions">覆盖的版本</h2>
+    <p>这些文档面向 <strong>v3.0.0-rc.1</strong>，首个公开候选版本。该版本上行为已冻结；后续修改 CLI flag、默认值或输出格式的小版本会在<a href="../changelog.html">更新日志</a>中追踪并同步反映在此处。如果文档中的命令与你运行的二进制冲突，请以二进制为准 —— 并提个 issue。</p>
+
+    <div class="docs-pager">
+      <a href="../index.html">
+        <span class="label">← 返回</span>
+        <span class="title">Tiyi 首页</span>
+      </a>
+      <a class="next" href="quickstart.html">
+        <span class="label">下一页 →</span>
+        <span class="title">快速开始</span>
+      </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

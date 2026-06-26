@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Domain model — Tiyi docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Sites, upstream pools, certificates, WAF policies, agents, telemetry, and the audit chain — the seven concepts every operator should know." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/concepts.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">Domain model</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API overview</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+    <span class="docs-eyebrow">Concepts</span>
+    <h1>Domain model</h1>
+    <p class="lede">Tiyi's domain is small on purpose. Seven first-class resources cover every operator action, every CLI command, and every UI page. Once these click, the rest of the product is obvious.</p>
+
+    <h2 id="resources">The seven resources</h2>
+    <dl class="dl-grid">
+      <dt>Site</dt>
+      <dd>An HTTP host Tiyi proxies. Carries TLS settings, an upstream pool reference, and an attached WAF policy. The smallest unit you enable or disable.</dd>
+
+      <dt>Upstream pool</dt>
+      <dd>A set of backends behind a site. Round-robin or weighted load balancing, SNI-aware health checks, and reuse across multiple sites.</dd>
+
+      <dt>Certificate</dt>
+      <dd>A TLS keypair. Either <strong>uploaded</strong> (self-signed, CA-bought, enterprise-signed) or <strong>ACME-issued</strong> (HTTP-01 or DNS-01). Encrypted at rest with the KEK.</dd>
+
+      <dt>WAF policy</dt>
+      <dd>The compiled artifact Coraza enforces per request. CRS Core layer + HTTP policy + limits + rule tuning + IP lists + custom rules + plugins + rate limits + exclusions.</dd>
+
+      <dt>Agent</dt>
+      <dd>A node running the data plane (Caddy + Coraza). Receives signed config bundles from the primary over a long-lived gRPC stream.</dd>
+
+      <dt>Telemetry rollup</dt>
+      <dd>Counters and Top-K samples produced by the open-bucket pipeline. Drives the dashboard, the Top-K explorer, and the Prometheus exporter.</dd>
+
+      <dt>Audit row</dt>
+      <dd>One hash-chained record per mutation, attributed to the JWT subject. The compliance surface — every change has a tamper-evident receipt.</dd>
+    </dl>
+
+    <h2 id="sites-and-upstreams">Sites and upstream pools</h2>
+    <p>A <strong>site</strong> binds a hostname to TLS settings, an upstream pool, and a WAF policy. The applier translates each enabled site into a Caddy <code>server</code> block at apply time — <em>Caddy JSON is a compile target, not a storage format</em>.</p>
+    <p>Upstream pools are detached from sites by default. One pool can back many sites; deleting a pool that's in use is rejected with <code>UPSTREAM_IN_USE</code> and a list of referencing sites. Sites can also use an <strong>inline</strong> upstream URL for ad-hoc cases that don't need pool sharing.</p>
+
+    <h3 id="recording-mode">Access log recording mode</h3>
+    <p>Each site has a <code>recording_mode</code> field that controls access-log volume:</p>
+    <ul>
+      <li><code>on</code> (default since 2026-05-26) — record every request.</li>
+      <li><code>sampled</code> — record a configurable percentage. Folds to <code>off</code> in the writer when no rate is set.</li>
+      <li><code>off</code> — no access events written.</li>
+    </ul>
+    <p>Security events (Coraza rule hits) are always written regardless of access-log mode.</p>
+
+    <h2 id="certificates">Certificates</h2>
+    <p>TLS material is a first-class resource — never inline on the site. Tiyi supports four issuance paths, all encrypted at rest with a 32-byte KEK loaded from <code>crypto.kek_file</code>:</p>
+    <ul>
+      <li><strong>Upload</strong> — paste or upload a PEM keypair. Self-signed for dev, CA-bought or enterprise-signed for prod.</li>
+      <li><strong>ACME HTTP-01</strong> — multi-agent: every agent runs a loopback responder and the (token, key_authorization) pair broadcasts through the agent stream so any node can answer the challenge.</li>
+      <li><strong>ACME DNS-01</strong> — pluggable driver registry. Cloudflare driver is production-ready; Route53 and Aliyun ship as credential-validating stubs in v3.0.0-rc.1.</li>
+      <li><strong>Wildcard</strong> — automatically uses DNS-01 for <code>*.example.com</code> authorizations in mixed orders.</li>
+    </ul>
+    <p>The dashboard exposes <code>certs_expiring_14d</code> / <code>certs_expiring_30d</code> / <code>acme_renewals_failed_24h</code> / <code>acme_orders_pending</code> as KPIs. Two default alerts are seeded on first boot: <em>Certificates Expiring Soon</em> and <em>ACME Renewal Failures</em>.</p>
+
+    <h2 id="waf-policy">WAF policy</h2>
+    <p>A policy is a structured domain object that compiles to Coraza SecLang at apply time. The compiler is deterministic — same policy in, same SecLang out. The 12 tunable layers (in the order they apply):</p>
+    <ol>
+      <li><strong>CRS Core</strong> — paranoia level, blocking and executing PL, inbound/outbound thresholds, sampling.</li>
+      <li><strong>HTTP Policy</strong> — methods, versions, content types, charsets, restricted extensions/headers, method override.</li>
+      <li><strong>Limits</strong> — six numeric fields: max request body, max response body, etc., with CRS-default placeholders.</li>
+      <li><strong>Rule tuning</strong> — per-rule overrides: <code>DEFAULT</code>, <code>DISABLE</code>, <code>LOG_ONLY</code>, <code>SCORE_OVERRIDE</code>, optionally scoped to a single site.</li>
+      <li><strong>IP lists</strong> — allow / deny / monitor lists. Entries can be CIDR or <code>geo:CC</code> pseudo-entries (alpha-2/alpha-3 country codes plus <code>PRIVATE</code> / <code>LOOPBACK</code>).</li>
+      <li><strong>Custom rules</strong> — operator-authored SecLang or visual-spec rules in the 8000000–8999999 ID range.</li>
+      <li><strong>Plugins</strong> — CRS rule-exclusion packages (WordPress, Drupal, Nextcloud, phpBB, phpMyAdmin, XenForo, cPanel, DokuWiki). Offline archive upload supported.</li>
+      <li><strong>Rate limits</strong> — per-endpoint and client-scope buckets with block or log actions.</li>
+      <li><strong>Exclusions</strong> — phase-1 <code>tx.crs_exclusions_&lt;slug&gt;</code> opt-ins, optionally scoped with <code>@beginsWith</code>.</li>
+      <li><strong>Preview</strong> — read-only SecLang dump for the current revision.</li>
+      <li><strong>Versions</strong> — snapshot per save, side-by-side diff between any two revisions.</li>
+      <li><strong>Test lab</strong> — fire fixture requests through the compiled bundle without touching the live data plane.</li>
+    </ol>
+    <p>Per-site overrides overlay scalar fields (paranoia, thresholds, sampling) on top of an attached policy without forking it.</p>
+
+    <h2 id="agents">Agents</h2>
+    <p>Every node that proxies traffic runs an embedded agent — including the primary and the warm secondary. Agents hold a long-lived ConnectRPC bidi stream to the primary. The reconnect loop tries the primary first, then the secondary, then retries with exponential backoff. The secondary accepts read-only agent streams.</p>
+    <p>Updates flow as <code>ConfigUpdate{revision, bundle, signature}</code> messages. The agent verifies the bundle signature against the pinned ed25519 public key (TOFU on first contact, refuses to re-pin afterwards), checks that the revision is strictly greater than the last applied, applies it to the local Caddy, and reports the result. Replay and reorder are free — updates are idempotent by revision.</p>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </div>
+      <div class="callout-body">
+        <p><strong>Why uniform agents?</strong> The primary's embedded agent is not special. It connects to its own API address using the same enrollment and streaming protocol as any remote agent. The data plane is therefore tested by the same code path everywhere — no "primary is different" caveats.</p>
+      </div>
+    </div>
+
+    <h2 id="telemetry">Telemetry</h2>
+    <p>Telemetry runs as a parallel pipeline that ends per-event SQL writes. The path:</p>
+    <ol>
+      <li><strong>Sharded ingress ring</strong> — log-forwarder events fan into per-shard rings keyed by site.</li>
+      <li><strong>10-second open-bucket aggregator</strong> — per-shard worker accumulates counters into a 10-second bucket.</li>
+      <li><strong>Misra-Gries Top-K</strong> — bounded summary for high-cardinality dimensions (client IP, path, UA, ASN, attack tag) with an <code>__other__</code> bucket so SUM(*) equals true traffic.</li>
+      <li><strong>Per-day SQLite partitions</strong> at <code>logs/rollup_10s/YYYY-MM-DD.db</code>; downsamplers fold these into <code>rollup_hour</code> → <code>rollup_day</code> → <code>rollup_month</code> idempotently.</li>
+      <li><strong>Sample rings</strong> — per-IP LRU + global rings with an append-only circular-file WAL for replay-on-boot.</li>
+      <li><strong>API tree</strong> — per-site URL prefix tree with bounded node and depth guards; idle leaves evict to <code>api_tree_archive</code>.</li>
+      <li><strong>Reads</strong> — REST API at <code>/api/v1/telemetry/*</code> and a Prometheus exporter at <code>/metrics</code> on the local admin socket.</li>
+    </ol>
+
+    <h2 id="audit">Audit chain</h2>
+    <p>Every mutation (site, upstream, cert, policy, IP-list binding, rate-limit endpoint, trust-profile change, custom rule, alert rule, etc.) appends one row to <code>audit_event</code>. Each row stores:</p>
+    <ul>
+      <li><strong>Action</strong> — pinned string like <code>policy.update_layer</code>, <code>trust.update_profile</code>, <code>rule_override.create</code>.</li>
+      <li><strong>Resource type and id</strong> — the scope of the change.</li>
+      <li><strong>Actor</strong> — the JWT subject, attributable to a real user UUID (not a generic "local-admin").</li>
+      <li><strong>Before/after JSON</strong> — flat diff of the mutated row's canonical view.</li>
+      <li><strong>Hash chain</strong> — each row hashes the previous row plus its own canonical payload. A daily anchor commits the chain head.</li>
+    </ul>
+    <p>The Vben Admin <em>Verify chain</em> button walks the chain and confirms each link. SIEM egress with <code>siem.filter.include_audit</code> forwards every audit row to your Splunk / Elastic / Sentinel pipeline.</p>
+
+    <hr />
+
+    <p>That's the whole model. Every CLI command, every UI page, every RPC operates on one of these seven resources. The rest of these docs reference them by name without re-defining.</p>
+
+    <div class="docs-pager">
+      <a href="installation.html">
+        <span class="label">← Previous</span>
+        <span class="title">Installation</span>
+      </a>
+      <a class="next" href="cli.html">
+        <span class="label">Next →</span>
+        <span class="title">CLI reference</span>
+      </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

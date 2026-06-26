@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>API overview — Tiyi docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="The ConnectRPC contract that drives the UI, CLI, and agent stream. Auth, error codes, and the 14 services." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/api.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">Domain model</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API overview</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+    <span class="docs-eyebrow">Reference</span>
+    <h1>API overview</h1>
+    <p class="lede">Tiyi exposes one ConnectRPC API. The same proto schema serves the Vben Admin UI (JSON over HTTP), the <code>tiyi</code> CLI (JSON over HTTP), and the agent stream (gRPC bidi). One source of truth at <code>proto/tiyi/v1/*.proto</code> means the CLI and API stay in lockstep by construction.</p>
+
+    <h2 id="transport">Transport</h2>
+    <ul>
+      <li><strong>JSON</strong> for UI and CLI clients. Default <code>Content-Type: application/json</code>; URLs follow the ConnectRPC convention <code>/{service}/{Method}</code>.</li>
+      <li><strong>gRPC</strong> for the agent bidi stream and any other client that prefers binary.</li>
+      <li><strong>Connect-Web</strong> for the embedded Vben UI — no separate REST shim, no separate gateway.</li>
+    </ul>
+
+    <h2 id="auth">Authentication</h2>
+    <p>Three auth surfaces, picked by deployment context:</p>
+
+    <table>
+      <thead>
+        <tr><th>Surface</th><th>Mechanism</th><th>Used by</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Local admin socket</td>
+          <td>OS file permissions on <code>admin.sock</code></td>
+          <td><code>tiyi</code> CLI on the same host as the server.</td>
+        </tr>
+        <tr>
+          <td>HS256 JWT</td>
+          <td><code>Authorization: Bearer &lt;jwt&gt;</code> over HTTP</td>
+          <td>Vben Admin UI, remote CLI, anything driving the API from off-host. Issued by <code>AuthService.Login</code>; refreshed by <code>RefreshToken</code>.</td>
+        </tr>
+        <tr>
+          <td>Agent stream token</td>
+          <td>One-use enrollment token → long-lived stream token</td>
+          <td>Agents on the bidi <code>AgentStream</code>. Tokens are issued through <code>AgentService.IssueEnrollmentToken</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="login-example">Login example</h3>
+<pre><code><span class="p">$</span> curl -sS http://primary:8080/tiyi.v1.AuthService/Login <span class="o">\</span>
+    -H <span class="s">"Content-Type: application/json"</span> <span class="o">\</span>
+    -d <span class="s">'{"username":"admin","password":"..."}'</span>
+{
+  <span class="s">"accessToken"</span>: <span class="s">"&lt;jwt&gt;"</span>,
+  <span class="s">"refreshToken"</span>: <span class="s">"&lt;refresh&gt;"</span>,
+  <span class="s">"user"</span>: { <span class="s">"id"</span>: <span class="s">"&lt;uuid&gt;"</span>, <span class="s">"role"</span>: <span class="s">"Administrator"</span> }
+}</code></pre>
+
+    <h2 id="services">The 14 services</h2>
+    <table>
+      <thead>
+        <tr><th>Service</th><th>Scope</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>SystemService</code></td><td>Health, version, dashboard rollups, settings, releases, replication, promote/demote.</td></tr>
+        <tr><td><code>AuthService</code></td><td>Login, logout, refresh, current user, OIDC redirect, access codes.</td></tr>
+        <tr><td><code>UserService</code></td><td>User CRUD, lock/unlock, password reset.</td></tr>
+        <tr><td><code>RoleService</code></td><td>Role + permission lookup. RBAC table is built-in.</td></tr>
+        <tr><td><code>SiteService</code></td><td>Site CRUD, enable/disable, preview, per-site policy override.</td></tr>
+        <tr><td><code>UpstreamService</code></td><td>Upstream pool CRUD; deletion refused while in use.</td></tr>
+        <tr><td><code>CertService</code></td><td>Upload, ACME issue/renew, DNS provider CRUD.</td></tr>
+        <tr><td><code>PolicyService</code></td><td>WAF policy CRUD, layer updates, version snapshots, SecLang preview, test lab.</td></tr>
+        <tr><td><code>RuleOverrideService</code></td><td>Per-rule overrides, custom rules, IP lists, rate-limit endpoints.</td></tr>
+        <tr><td><code>CrsService</code></td><td>CRS catalog browse + ingest + exclusion-package install/attach.</td></tr>
+        <tr><td><code>AgentService</code></td><td>Agent CRUD, enrollment tokens, install scripts, commands, agent groups, <code>AgentStream</code>.</td></tr>
+        <tr><td><code>TrustService</code></td><td>Client-IP trust profile (tenant + site overrides), CDN snapshot list/refresh, explain.</td></tr>
+        <tr><td><code>AlertService</code></td><td>Alert rule + channel CRUD, active alert ack/resolve, channel test send.</td></tr>
+        <tr><td><code>LogService</code></td><td>Security/access/error/audit query, get, export, live tail.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="errors">Error codes</h2>
+    <p>Tiyi returns standard ConnectRPC error codes mapped from gRPC. The CLI and UI surface localized messages on top of the canonical code:</p>
+    <table>
+      <thead><tr><th>Code</th><th>HTTP</th><th>Typical cause</th></tr></thead>
+      <tbody>
+        <tr><td><code>invalid_argument</code></td><td>400</td><td>Bad input shape or value rejected by the validator.</td></tr>
+        <tr><td><code>unauthenticated</code></td><td>401</td><td>Missing or invalid JWT.</td></tr>
+        <tr><td><code>permission_denied</code></td><td>403</td><td>JWT lacks the required RBAC permission.</td></tr>
+        <tr><td><code>not_found</code></td><td>404</td><td>Resource id does not exist or is soft-deleted.</td></tr>
+        <tr><td><code>already_exists</code></td><td>409</td><td>Unique constraint violated (site name, policy name, etc.).</td></tr>
+        <tr><td><code>failed_precondition</code></td><td>412</td><td>Revision conflict, <code>UPSTREAM_IN_USE</code>, replication-lag gate, etc.</td></tr>
+        <tr><td><code>unimplemented</code></td><td>501</td><td>RPC not yet wired (rare — the <code>2026-05-26</code> changelog entry closed the last batch).</td></tr>
+        <tr><td><code>internal</code></td><td>500</td><td>Server-side bug or infrastructure failure. Audit chain receives a row when relevant.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="rbac">RBAC</h2>
+    <p>Each RPC declares a required permission like <code>site:read</code>, <code>policy:write</code>, <code>log:read</code>, <code>system:write</code>. The middleware checks the JWT subject's roles against the permission table; the canonical mapping lives in <code>internal/api/middleware.go</code>. There are 52 fine-grained permissions in v3.0.0-rc.1.</p>
+
+    <h2 id="streaming">Streaming RPCs</h2>
+    <ul>
+      <li><strong><code>AgentService.AgentStream</code></strong> — long-lived bidi stream. Agent sends Hello, StateReport, AgentEventPush, ApplyResult, ChallengeResponse. Server sends Welcome, ConfigUpdate, Command, ChallengeDispatch.</li>
+      <li><strong><code>AlertService.StreamAlerts</code></strong> — server-streaming. Pushes alert lifecycle events to the dashboard with reconnect-with-backoff on the client side.</li>
+      <li><strong><code>AgentService.StreamAgentEvents</code></strong> — server-streaming. Live agent state (online/offline, metrics).</li>
+      <li><strong><code>LogService.TailSecurityEvents</code></strong> — server-streaming. Live security log feed for the live-tail page.</li>
+      <li><strong><code>SystemService.StreamUpgradeRun</code></strong> — server-streaming. Per-agent upgrade run progress events.</li>
+    </ul>
+
+    <h2 id="canonical-spec">Canonical spec</h2>
+    <p>The PRD-API document in the source tree is the canonical per-RPC spec. It enumerates every method's request/response shape, RBAC permission, error codes, and audit-row contract. These docs cover the operator surface; that doc covers the API contract. They should agree — file an issue if they don't.</p>
+
+    <p>For a generated reference, regenerate Connect Go and Protobuf Go from <code>proto/</code>:</p>
+<pre><code><span class="p">$</span> make proto
+<span class="p">$</span> ls internal/api/gen/tiyi/v1/
+<span class="c"># &lt;service&gt;.pb.go and &lt;service&gt;.connect.go for each .proto file</span></code></pre>
+
+    <div class="docs-pager">
+      <a href="cli.html">
+        <span class="label">← Previous</span>
+        <span class="title">CLI reference</span>
+      </a>
+      <a class="next" href="deployment.html">
+        <span class="label">Next →</span>
+        <span class="title">Deployment</span>
+      </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

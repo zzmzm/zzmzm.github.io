@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>部署 — Tiyi 文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="在生产环境运行 Tiyi：加固、HA 故障转移、SIEM 转发、可观测性与升级路径。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/deployment.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
+    <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
+    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
+    <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
+  </aside>
+
+  <main class="docs-content" role="main">
+    <span class="docs-eyebrow">生产环境</span>
+    <h1>部署</h1>
+    <p class="lede">从一个开发用的 standalone 实例到一个生产集群，需要做四个决定:密钥放在哪、跑几个控制平面节点、日志去哪、怎么升级。本页一一过。</p>
+
+    <h2 id="hardening">生产加固</h2>
+    <p>有两个配置字段带不能跨重启幸存的开发友好回退。上线前显式设定它们。</p>
+
+    <h3 id="kek">KEK —— 静态加密密钥</h3>
+<pre><code><span class="k">crypto</span>:
+  <span class="k">kek_file</span>: <span class="s">"/etc/tiyi/kek.bin"</span>     <span class="c"># 32 字节静态密钥</span></code></pre>
+    <p>所有信封加密的 blob（TLS 私钥、ACME 账户密钥、ACME DNS provider 凭据、bundle 签名密钥）用这个 KEK 解密。生成一次并备份到 state 数据库旁边：</p>
+<pre><code><span class="p">$</span> install -m 0600 /dev/null /etc/tiyi/kek.bin
+<span class="p">$</span> head -c 32 /dev/urandom &gt; /etc/tiyi/kek.bin</code></pre>
+
+    <div class="callout callout-danger">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="callout-body">
+        <p><strong>丢失 KEK 等于丢失所有加密 blob。</strong>把它备份到 <code>state.db</code> 同处。轮换 KEK 需要重包所有加密 blob —— v3.0.0-rc.1 暂不支持。</p>
+        <p>另:如果不显式配置 <code>crypto.kek_file</code>,Tiyi 在首次启动时会在 <code>&lt;state-db-dir&gt;/kek.bin</code> 自动生成。这对单机开发足够,但在 state 目录可能短暂的生产环境很脆弱。</p>
+      </div>
+    </div>
+
+    <h3 id="jwt-secret">JWT 签名密钥</h3>
+<pre><code><span class="k">auth</span>:
+  <span class="k">jwt_secret</span>: <span class="s">"<span class="v">&lt;32+ 字节随机&gt;</span>"</span>     <span class="c"># 或通过 TIYI_AUTH_JWT_SECRET 环境变量</span></code></pre>
+    <p>Access token 的 HS256 签名密钥。字段为空时,Tiyi 在每次重启时生成 32 字节临时密钥,并打印 <code>WARNING</code>。会话在重启时失效,副本之间不能共享 refresh token —— 在生产中通常都是问题。</p>
+
+    <h3 id="bundle-key">Bundle 签名密钥</h3>
+    <p>服务端的 ed25519 配置签名密钥落在 <code>bundle_signing_key</code> 单例行,使用 KEK 信封加密。节点首次接入时固定公钥(TOFU),之后拒绝重新固定。<strong>轮换需要重新入网</strong> —— 用 <code>tiyi agents issue-token</code> 签新 token,把节点重新拉起。</p>
+
+    <h2 id="ha">HA 故障转移</h2>
+    <p>Tiyi 集群可以只有一个主节点 + N 个节点(零热备也允许)。规模较大的部署建议跑一个热备,主节点宕机时不至于长时间不能写。</p>
+
+    <h3 id="ha-topology">拓扑</h3>
+<pre><code><span class="c"># 全部四个节点都代理流量。L4/L7 LB 在每个节点上轮询 /healthz。</span>
+<span class="p">$</span> TOKEN_B=<span class="s">"$(tiyi agents issue-token --tag secondary | jq -r .token)"</span>
+<span class="p">$</span> TOKEN_C=<span class="s">"$(tiyi agents issue-token --tag edge-c | jq -r .token)"</span>
+
+Node A: tiyi server     --addr 0.0.0.0:8080
+Node B: tiyi secondary  --primary-api http://A:8080 --enrollment-token <span class="v">$TOKEN_B</span>
+Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$TOKEN_C</span></code></pre>
+
+    <h3 id="promotion">提主</h3>
+    <p>Node A 宕机,在 Node B 上跑 <code>tiyi promote</code>。两阶段切换避免脑裂:</p>
+    <ol>
+      <li>通过 <code>SystemService.Demote</code> 联系老主节点 —— 主节点切换为只读,返回当前 epoch 与最后一次写序号。</li>
+      <li>验证备节点已经追到了主节点最后的序号。如果落后则放弃。</li>
+      <li>在备节点上自增 epoch(<code>primary_epoch + 1</code>),切换角色为主,接受写入。</li>
+      <li>老主节点的嵌入式节点重新连接到新主节点,变成普通节点。</li>
+    </ol>
+    <p>主节点确认不可达时,<code>tiyi promote --force</code> 跳过 demote。你接受最后一次 bundle 同步到主节点失败之间的写丢失。如果老主节点回来,看到节点报告了更高 epoch 会自动降级为节点。</p>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </div>
+      <div class="callout-body">
+        <p><strong>Epoch 隔离</strong>避免脑裂。每一次写入检查本地 epoch;任何节点收到 state 报告中的更高 epoch 会自动降级。Epoch 单调递增,持久化在 <code>cluster_state</code>。</p>
+      </div>
+    </div>
+
+    <h2 id="trust-profile">客户端 IP 信任配置</h2>
+    <p>Tiyi 在 CDN 或 L4 LB 后时,到达 WAF 的客户端 IP 不是真实 IP —— 那是前面的代理。信任配置告诉 Tiyi 哪些代理可信、哪个 header 携带真实 IP。</p>
+    <p>从 UI(设置 → 信任配置标签)或 CLI 设置一次:</p>
+<pre><code><span class="p">$</span> tiyi trust set <span class="o">\</span>
+    --trusted-proxies 10.0.0.0/8,172.16.0.0/12 <span class="o">\</span>
+    --client-ip-headers X-Forwarded-For
+
+<span class="c"># 自动拉取 CDN 段:</span>
+<span class="p">$</span> tiyi trust cdn list
+<span class="p">$</span> tiyi trust cdn refresh cloudflare
+<span class="p">$</span> tiyi trust cdn refresh fastly
+
+<span class="c"># 把任意 (peer, headers) 元组回溯到解析后的客户端 IP:</span>
+<span class="p">$</span> tiyi trust test --peer 10.0.0.5 --header <span class="s">"X-Forwarded-For: 1.2.3.4, 10.0.0.5"</span></code></pre>
+    <p>默认开启的 <em>Origin Bypass Attempt</em> 告警在请求通过 XFF 声称客户端 IP 但 peer 不是受信任代理时触发。</p>
+
+    <h2 id="siem">SIEM 转发</h2>
+    <p>Tiyi 把安全、访问、错误、(可选)审计事件以 RFC 5424、CEF 或 LEEF 通过尽力的 TCP / UDP / unixgram 转发出去。从 设置 → SIEM 标签 或 CLI 配置一次:</p>
+<pre><code><span class="p">$</span> tiyi system settings update --key siem.enabled --value true
+<span class="p">$</span> tiyi system settings update --key siem.address --value <span class="s">"tcp://siem.internal:514"</span>
+<span class="p">$</span> tiyi system settings update --key siem.format --value rfc5424
+<span class="p">$</span> tiyi system settings update --key siem.filter.include_audit --value true</code></pre>
+    <p>SIEM 转发是有意尽力的。接收端健康、可靠投递、回放属于 SIEM 管道,而不是 Tiyi。转发器为每个 dispatcher 缓存一条 <code>net.Conn</code>,出错时重连。</p>
+
+    <h2 id="observability">可观测性</h2>
+    <ul>
+      <li><strong>Prometheus 导出器</strong>位于本地管理 socket 的 <code>/metrics</code>。从 sidecar 抓取;指标来自驱动 dashboard 的同一条遥测管道。</li>
+      <li><strong><code>/healthz</code></strong> 返回 <code>{epoch, role, proxy_healthy}</code>。L4/L7 LB 健康检查用它。</li>
+      <li><strong><code>/debug/logsink/stats</code></strong> 在本地管理 socket 暴露每种类别的 <code>attempted</code>/<code>written</code>/<code>dropped_full</code>/<code>panicked</code>/<code>queue_depth</code>/<code>last_error</code> 计数。<code>panicked</code> 计数是边界 <code>defer recover</code> 处理器的跨层金丝雀。</li>
+      <li><strong>遥测深度视图 UI</strong> 位于 <code>/telemetry/explorer</code>,可在不离开 dashboard 的情况下做按需 Top-K 与采样浏览。</li>
+    </ul>
+
+    <h2 id="upgrades">滚动升级</h2>
+    <p>导入二进制 release 后,<code>tiyi release apply</code> 把 <code>APPLY_BINARY</code> 命令散到所有 OS/arch 匹配的节点。每个节点下载替换、校验 SHA-256,然后退出让 supervisor 重启进入新二进制。</p>
+<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi-3.0.1.tar.gz
+<span class="p">$</span> tiyi release list
+<span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span>             <span class="c"># 所有匹配节点</span>
+<span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span>  <span class="c"># 灰度部署</span>
+<span class="p">$</span> tiyi release runs                          <span class="c"># 进行中的滚动</span>
+<span class="p">$</span> tiyi release rollback                      <span class="c"># 回滚到上一个二进制</span></code></pre>
+
+    <h2 id="backup">备份</h2>
+    <p>有三样东西要备份:</p>
+    <ul>
+      <li><strong><code>state.db</code></strong> —— SQLite 控制平面数据库。WAL 模式;<code>sqlite3 state.db ".backup '/path/to/backup.db'"</code> 在 Tiyi 运行时也工作。</li>
+      <li><strong><code>kek.bin</code></strong> —— 静态加密密钥。丢失即不可恢复。备份到与其他长期密钥相同的保险库。</li>
+      <li><strong><code>jwt_secret</code></strong> —— 已经在你的配置仓库里,但要确认那个仓库也备份了。</li>
+    </ul>
+    <p>支持(并推荐)Litestream 风格的 WAL 流式异地备份。<code>logs/</code> 分区文件不属于备份集 —— 它们是有自己保留循环的运营数据。</p>
+
+    <h2 id="checklist">上线检查表</h2>
+    <div class="callout callout-tip">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="callout-body">
+        <ul>
+          <li>把 <code>crypto.kek_file</code> 设为已备份的文件</li>
+          <li>把 <code>auth.jwt_secret</code> 设为 32+ 字节随机值</li>
+          <li>用真实账号替换引导管理员密码</li>
+          <li>如果 Tiyi 在 CDN/LB 后,配置信任配置</li>
+          <li>选定一个 SIEM 目的地并验证测试事件能落地</li>
+          <li>把 <code>/healthz</code> 接到 L4/L7 LB</li>
+          <li>从 Prometheus 抓取 <code>/metrics</code></li>
+          <li>把 <code>state.db</code> + <code>kek.bin</code> 加入备份管道</li>
+          <li>至少签发一个备节点,这样单主丢失不致命</li>
+          <li>校验审计链:<code>tiyi audit verify-chain</code> 退出 0</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="docs-pager">
+      <a href="api.html"><span class="label">← 上一页</span><span class="title">API 概览</span></a>
+      <a class="next" href="../index.html"><span class="label">→ 完成</span><span class="title">返回首页</span></a>
+    </div>
+  </main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

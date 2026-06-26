@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Changelog — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Tiyi release notes from foundation work through v3.0.0-rc.1." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body data-assets-base="assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html#features">Features</a>
+      <a href="index.html#tour">Product</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="changelog.html" style="color:var(--fg)">Changelog</a>
+      <a href="index.html#roadmap">Roadmap</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="zh/changelog.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<section style="padding: 64px 0 32px;">
+  <div class="container">
+    <div class="section-head" style="text-align:left; margin-bottom:32px;">
+      <span class="eyebrow">Changelog</span>
+      <h2 style="font-size: clamp(32px, 4vw, 48px);">The road to v3.0.0.</h2>
+      <p style="margin: 0;">Every entry maps back to a commit and a verification command. Items are <span class="tl-tag shipped" style="display:inline-block; vertical-align:middle;">Shipped</span> only after implementation, verification, and required docs are complete — otherwise <span class="tl-tag future" style="display:inline-block; vertical-align:middle;">Planned</span> or <span class="tl-tag current" style="display:inline-block; vertical-align:middle;">In progress</span>.</p>
+    </div>
+
+    <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-06-24</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">One-binary scale licensing + first-run admin</div>
+        <div class="tl-body">
+          <p>One binary whose single enforced distinction is <strong>scale, not features</strong>. Every WAF capability stays in every edition; a vendor-signed license changes only the remote-node budget and displayed plan.</p>
+          <ul>
+            <li><strong>Community = local standalone WAF, free forever.</strong> With no valid license the full product runs on the local node and permits zero remote agents. Importing a license activates its Pro or Enterprise node budget without replacing the binary.</li>
+            <li><strong>One always-on gate, inside the enrollment transaction.</strong> Legacy <span class="mono">license.mode</span> rows are ignored and writes are rejected. Count and insert share one transaction, so concurrent enrollments cannot slip past the signed budget. Existing sites, known agents, and local administration are <strong>never</strong> affected by license state.</li>
+            <li><strong>One trust anchor.</strong> Licenses are Ed25519-signed against the vendor public key embedded in the binary; public-key overrides are removed. The release target pins its SHA-256 fingerprint, and schema-versioned claims reject unknown plans, invalid budgets, and bad timestamp ordering.</li>
+            <li><strong>Safe degradation.</strong> Missing, invalid, tampered, or expired licenses resolve to Community. The data plane never stops, and known fingerprints always reconnect.</li>
+            <li><strong>Authenticated live status.</strong> System → About shows edition, licensee/expiry, and the live "N of M remote nodes" count. License metadata is no longer exposed by the public Version RPC.</li>
+            <li><strong>First-run admin.</strong> A standalone first boot with no users and no supplied credentials now auto-creates an <span class="mono">admin</span> with a random one-time password (printed once, stored only as a hash); <span class="mono">tiyi server</span> prints an actionable warning instead of leaving a silent dead-end login.</li>
+            <li>The vendor tool now creates private keys as <span class="mono">0600</span> with exclusive no-overwrite semantics; date-only expiries are inclusive through <span class="mono">23:59:59Z</span>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-06-18</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Site path routing (M9)</div>
+        <div class="tl-body">
+          <p>A site used to match on host only. It can now fan out by <strong>path prefix</strong> to multiple upstream pools behind one host and one certificate — API-gateway-style routing — with the data plane and every cross-layer path scope kept consistent.</p>
+          <ul>
+            <li><strong>Translator fan-out.</strong> One host route expands into per-prefix subroutes, each to its own upstream pool; the existing zero-route output stays byte-identical to before — a golden test pins it.</li>
+            <li><strong>Per-route health.</strong> Each route gets a post-apply health probe (200–399 only); a down route backend fails the apply gate even when the site default is healthy.</li>
+            <li><strong>Unmatched policy.</strong> Unmatched paths fall through to the site default upstream, or to a strict <span class="mono">404</span> allowlist that needs no default.</li>
+            <li><strong>Full attribution.</strong> Every access-log row records the <span class="mono">route_id</span> and <span class="mono">upstream_id</span> that served it — through the parser, daily partitions, API/CLI filters, export, and the web log views.</li>
+            <li><strong>One canonical path scope.</strong> <span class="mono">/admin</span> vs <span class="mono">/Admin</span> resolve identically across the WAF, IP lists, and the rate limiter; a case-insensitive hint, live canonical echo, and named case-duplicate error guard every path input on web + CLI.</li>
+            <li>Drive it from <span class="mono">tiyi site routing get/set</span> or the new web routes editor. Post-implementation review hardened zero-route/404 validation, atomic compensation capture, stable route IDs across replace, strict per-pool endpoint/scheme/health-URI checks, and canonical scoped CRS overrides.</li>
+            <li>Verified: <span class="mono">go test ./...</span> green, <span class="mono">buf lint</span> clean, <span class="mono">vue-tsc</span> clean. Interactive browser QA was skipped at operator request.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-06-18</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Policy rate-limit editor</div>
+        <div class="tl-body">
+          <p>The policy <span class="mono">Rate Limits</span> tab graduated from a sketch into an operator-usable editor, with validation that refuses any rule the agent could not actually enforce.</p>
+          <ul>
+            <li><strong>Endpoint rows.</strong> Path-pattern limits (e.g. <span class="mono">/login</span>, <span class="mono">/api/auth/**</span>) keyed by the resolved client IP, returning HTTP <span class="mono">429</span> when blocking — or a <span class="mono">log-only</span> canary mode to observe a new limit before enforcing.</li>
+            <li><strong>Client scopes.</strong> Global ceilings across all paths keyed by <span class="mono">ip</span>, the <span class="mono">session</span> cookie, or a named header (<span class="mono">header:&lt;name&gt;</span>). Burst <span class="mono">0</span> means the burst equals the per-minute limit.</li>
+            <li><strong>Inline validation.</strong> Save is blocked for missing paths/headers, non-positive limits, negative bursts, duplicate patterns/scopes, and unknown actions.</li>
+            <li><strong>Canonicalization.</strong> The API folds legacy <span class="mono">client_ip</span> → <span class="mono">ip</span> and <span class="mono">detection</span> → <span class="mono">log</span>; the compiler and runtime stay backward-compatible with historical rows. Enforced before Coraza, with no persistent collections.</li>
+            <li>Verified: <span class="mono">go test ./...</span> green, <span class="mono">buf lint</span> clean, <span class="mono">vue-tsc</span> clean.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-06-09</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">AI advisory layer + interactive Copilot</div>
+        <div class="tl-body">
+          <p>An optional, <strong>default-off</strong> LLM advisory layer that sits beside the deterministic WAF — in the control plane, never in the request path, and never mutating state on its own. It enriches incidents, drafts human-approved tuning, and answers plain-English questions about your logs.</p>
+          <ul>
+            <li><strong>Streamed analysis.</strong> A global <span class="mono">AI Copilot</span> slide-over explains any incident or single log event, or analyzes a filtered log result set — streamed token-by-token. Subjects are reduced to redacted whitelist projections, never raw audit JSON.</li>
+            <li><strong>Conversational agent.</strong> A <span class="mono">StreamChat</span> assistant answers open questions ("top 10 attackers in the last hour", "was example.com attacked today, from which IPs?") by tool-calling over five <em>read-only</em>, tenant-scoped log queries — it adds no new log surface.</li>
+            <li><strong>Advisory, never autonomous.</strong> Incident enrichment, policy-tuning patches, NL→log-query translation, draft custom rules (forced log-only canary), and campaign correlation are all proposals; the only state-changing path is an explicit operator <em>Apply</em> routed through the existing audited mutation, gated by <span class="mono">ai:apply</span>.</li>
+            <li><strong>Provider-agnostic + safe.</strong> OpenAI-compatible (OpenAI / Ollama / vLLM / LM Studio / llama.cpp) and Azure OpenAI; the key is KEK-encrypted, never a setting. Every prompt is redacted (§ 8.6), dual-RBAC gated (<span class="mono">ai:read</span> plus the subject's own <span class="mono">incident:read</span>/<span class="mono">log:read</span>), rate-limited, and panic-isolated.</li>
+            <li>Verified: <span class="mono">go test ./...</span> green, <span class="mono">buf lint</span> clean, <span class="mono">vue-tsc</span> clean, <span class="mono">i18n_check.py</span> 0 missing, plus a Playwright QA pass against a mock provider.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-06-09</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Air-gap icons, telemetry explorer, static binary</div>
+        <div class="tl-body">
+          <ul>
+            <li><strong>Offline icon bundle.</strong> The admin console used to fetch icon SVGs from the public Iconify API at runtime — broken in air-gapped deployments. Icons are now collected from the frontend source + backend menu seeds and bundled at build time, registered before first paint.</li>
+            <li><strong>Telemetry explorer.</strong> A new Top-N / time-series view over the built-in telemetry pipeline (QPS, top-K, series) — no external time-series database required.</li>
+            <li><strong>Static binary.</strong> Release builds are now statically linked (<span class="mono">CGO_ENABLED=0</span>, pure-Go SQLite), dropping the build-host glibc dependency so the same artifact runs on older distributions (CentOS 7+).</li>
+            <li><strong>Operator fixes.</strong> Stable per-event access-log IDs for exact lookup, boot-time config apply, and a fix that lands permission-restricted operators on the first page they can actually open instead of a hard-coded dashboard.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-31</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Security incident aggregation — Phase 1–4</div>
+        <div class="tl-body">
+          <p>A <span class="mono">security_incident</span> layer on top of the per-request <span class="mono">security_event</span> stream. It composes with — does not replace — the source-of-truth event rows, the audit chain, the alert evaluator, and SIEM egress.</p>
+          <ul>
+            <li><strong>Phase 1 — aggregation.</strong> Same <span class="mono">(tenant, site, client_ip, attack_class)</span> over a sliding idle window collapses into one incident. A <span class="mono">security_incident_event</span> link table (with <span class="mono">event_id</span> uniqueness) holds the relationship; <span class="mono">security_event.incident_id</span> is a query-accelerator cache. Detection follows OWASP AppSensor; the wire shape follows the OCSF class taxonomy. Migrations <span class="mono">0020</span>–<span class="mono">0021</span>.</li>
+            <li><strong>Phase 2 — operator polish.</strong> Reopen, merge, live-tail, and per-site incident overrides. The UI keeps incidents in view after merge/reopen and closes the drawer on re-activate.</li>
+            <li><strong>Phase 3 — deterministic enrichment.</strong> Every incident is tagged at creation with its MITRE ATT&amp;CK technique + sub-techniques and kill-chain stage (derived from <span class="mono">attack_class</span> + rule-id families) and a most-frequent country/ASN geo rollup. An operator-extensible <span class="mono">mitre_mapping</span> overlay (migration <span class="mono">0023</span>) overrides the built-in mapping. Example: an RCE + 933 event yields <span class="mono">T1190 [T1059, T1505.003]</span> / execution and geo CN / AS4134.</li>
+            <li><strong>Phase 4 — automated response.</strong> An <span class="mono">incident_response_rule</span> resource + <span class="mono">IncidentResponseRuleService</span> CRUD, and a responder that mutates live controls (deny IP list / rate-limit endpoint / alert webhook) on incident state transitions through the existing audited mutation paths. <strong>Default-off at three layers</strong> — no rule until created, every rule ships <span class="mono">enabled=0</span>, and the tenant kill switch <span class="mono">incident.response_enabled</span> defaults false. Every mutation is attributed to <span class="mono">system:incident-response</span> in the audit chain. A 60-second TTL sweeper auto-reverts expired deny entries through the audited <span class="mono">RemoveIPListEntries</span> path and recompiles the affected policies.</li>
+            <li>Surfaced via the <span class="mono">tiyi incident</span> / <span class="mono">tiyi incident-response</span> CLI verbs and a web UI under WAF → Automated Response. The Sigma-style operator-defined correlation DSL is explicitly deferred — the fixed 12-class + 4-axis-key correlation is the shipped v1.</li>
+            <li>Verified: <span class="mono">go test ./...</span> green, <span class="mono">buf lint</span> clean, <span class="mono">vue-tsc</span> clean, <span class="mono">i18n_check.py</span> 0 missing, plus a per-phase CLI/API runtime smoke test.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-31</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Alerting redesign — Phases 1–4 (D1–D14)</div>
+        <div class="tl-body">
+          <p>The evaluator's deterministic, poll-based shape and SQLite storage are kept; the missing half of every mature alerting system is added — the evaluation/notification split the industry converged on (Prometheus + Alertmanager), with no new external dependencies.</p>
+          <ul>
+            <li><strong>Correctness fixes.</strong> Closed a UI-exposed rule kind the backend never implemented, threshold counts that were silently capped at the query page size, and channel kinds whose UI/API contracts did not match their delivery implementation.</li>
+            <li><strong>Lifecycle, not fire-once.</strong> A notification dispatcher drives <span class="mono">pending → firing → recovered/resolved</span> with <span class="mono">for</span>-duration debouncing, re-notification while an alert stays open, and auto-resolve — replacing the old "page exactly once, then go quiet" behavior.</li>
+            <li><strong>Durability.</strong> A durable notification outbox (migration <span class="mono">0026</span>) plus retry-with-backoff closes the crash-window that could permanently drop the only notification for a new alert. Evaluator state persists in <span class="mono">alert_eval_state</span> (migration <span class="mono">0025</span>).</li>
+            <li><strong>Security.</strong> Channel secrets (webhook URLs, PagerDuty keys, Slack tokens) moved from plaintext JSON to KEK-encrypted storage and are no longer returned verbatim on read or into the audit chain (migration <span class="mono">0024</span>).</li>
+            <li><strong>Quiet by default.</strong> Grouping, inhibition, and silences, plus a per-alert note timeline, rule lifecycle, and channel routing.</li>
+            <li>Implemented the previously-missing RPCs, audited silence mutations, and pruned dead cert UI along the way.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-31</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Pre-merge security + QA hardening</div>
+        <div class="tl-body">
+          <ul>
+            <li><strong>Fail-open RBAC gap closed</strong> — several system and certificate admin RPCs did not enforce a permission check and defaulted to allowing the call. Now gated, with a <span class="mono">rbac_coverage_test.go</span> regression test that asserts coverage across the surface.</li>
+            <li><strong>Standalone dashboards read zero traffic</strong> — <span class="mono">telemetry.enabled</span> defaults true, which gates off the legacy rollup writer, but the embedded <span class="mono">StoreAccess</span> path never called <span class="mono">telemetry.Ingest</span>, so access traffic was recorded nowhere the dashboard reads. Fixed by ingesting in <span class="mono">StoreAccess</span>, with a regression test.</li>
+            <li><strong>Race-aware test budget</strong> — <span class="mono">TestFlushReturnsTrueWhenDrained</span> had a hard 2s drain budget the race detector's overhead blew past; made it race-aware. Also fixed a pre-existing <span class="mono">gofmt</span> drift so <span class="mono">make lint</span> is green.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item current">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.0-rc.1</span>
+          <span class="tl-date">2026-05-27</span>
+          <span class="tl-tag current">Release Candidate</span>
+        </div>
+        <div class="tl-title">Direct page-jump pagination for log views</div>
+        <div class="tl-body">
+          <p><span class="mono">CursorRequest.offset</span> with a 100k cap, mutually exclusive with the cursor path. Offset accounting runs over post-filter rows so CIDR/rule filters skip the right number of <em>matched</em> rows. The frontend drops <span class="mono">cursorStack</span> + <span class="mono">walkForwardTo</span> in favor of computing offset directly from the target page.</p>
+          <ul>
+            <li>4 store tests + 2 wire tests pin offset semantics and rejection of cursor+offset misuse</li>
+            <li>Files: <span class="mono">proto/tiyi/v1/common.proto</span>, <span class="mono">internal/store/log_repo.go</span>, <span class="mono">internal/api/log_handler.go</span>, three log list <span class="mono">.vue</span> files</li>
+            <li>Verified: <span class="mono">go test ./...</span> green, <span class="mono">buf lint</span> clean, <span class="mono">vue-tsc</span> clean</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-26</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Six post-deploy QA fixes</div>
+        <div class="tl-body">
+          <ul>
+            <li><strong>DEF-002</strong> — IP-list <span class="mono">geo:CC</span> entries accepted at the API boundary (alpha-2/alpha-3 + curated <span class="mono">PRIVATE</span>/<span class="mono">LOOPBACK</span> buckets); the seclang compiler already expanded them at compile time, so the entry now flows through end-to-end without forking the dataset.</li>
+            <li><strong>DEF-003</strong> — bookmarkable parametric routes (<span class="mono">/agents/:id</span>, <span class="mono">/waf/policies/:id</span>) re-registered after the backend menu generation drops them; <span class="mono">router.hasRoute</span> guards against double-registration.</li>
+            <li><strong>DEF-004</strong> — <span class="mono">ResolveAgentGroup</span> now resolves selectors against <span class="mono">ListAgents</span> for either a saved-group id or an ad-hoc spec preview (matching by <span class="mono">match_agent_ids ∪ tag_selectors</span>).</li>
+            <li><strong>DEF-005</strong> — standalone agent commands now drained through a 2-second consumer; <span class="mono">reload</span> calls <span class="mono">ApplyActiveSites</span>; <span class="mono">restart</span> succeeds as a no-op (tearing down the local management plane is the wrong default).</li>
+            <li><strong>DEF-006</strong> — trust-profile mutations now write <span class="mono">trust.update_profile</span>, <span class="mono">trust.reset_profile</span>, <span class="mono">trust.update_site_override</span>, <span class="mono">trust.reset_site_override</span>, <span class="mono">trust.refresh_cdn</span> rows into the audit chain.</li>
+            <li><strong>DEF-007</strong> — access log default <span class="mono">RecordingMode</span> flipped from <span class="mono">"off"</span> to <span class="mono">"on"</span> at three layers, matching the System Settings copy "默认访问日志模式 = 完整（自动）".</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-24</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Security hardening + frontend cleanup</div>
+        <div class="tl-body">
+          <p>Code-review pass on the full backend tree closed every actionable finding without dropping a feature.</p>
+          <ul>
+            <li><strong>KEK persistence</strong> — server only calls <span class="mono">db.SetKEK(envelope.LoadKEK)</span> when <span class="mono">crypto.kek_file</span> is explicitly configured. Previous unconditional override generated an ephemeral KEK on every restart, silently breaking encrypted cert keys, ACME accounts, and DNS provider credentials.</li>
+            <li><strong>Persistent ed25519 bundle signing key</strong> — singleton row in <span class="mono">bundle_signing_key</span>, KEK-encrypted at rest. Pre-warmed in <span class="mono">store.Open</span> after migrations and Bootstrap. Replaces the per-restart in-memory generator that was defeating the agent's TOFU pin.</li>
+            <li><strong>Agent revision replay protection</strong> — <span class="mono">applyConfigUpdate</span> rejects any incoming bundle whose revision is not strictly greater than <span class="mono">LastAppliedRevision</span>.</li>
+            <li><strong>Migration drift detection</strong> — <span class="mono">internal/store/migrate.go</span> records SHA-256 of every applied migration; boot aborts on drift.</li>
+            <li><strong>Frontend cleanup</strong> — dropped 16 Vben demo pages and 5 supporting <span class="mono">.ts</span> files, rewrote the layout shell, fixed broken role checks comparing against <span class="mono">'standby'</span>/<span class="mono">'active'</span> (real values are <span class="mono">standalone|primary|secondary</span>).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-24</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">WAF tune review — PRs 1–8</div>
+        <div class="tl-body">
+          <p>Deep review of the policy tune drawer surfaced and closed every actionable defect across eight coordinated PRs. Highlights:</p>
+          <ul>
+            <li><strong>Audit chain coverage</strong> — every Upsert/Update/Delete on <span class="mono">rule_override</span>, <span class="mono">custom_rule</span>, <span class="mono">ip_list</span>, <span class="mono">ip_list_binding</span>, <span class="mono">rate_limit_endpoint</span> now appends a hash-chained mutation row; previous code silently bypassed it.</li>
+            <li><strong>Score-override emit</strong> — switched from additive <span class="mono">setvar:tx.inbound_anomaly_score=+N</span> to per-bucket <span class="mono">tx.&lt;sev&gt;_anomaly_score_pl&lt;pl&gt;</span> reset+set, eliminating double-count.</li>
+            <li><strong>Bulk upserts atomic</strong> — <span class="mono">BulkUpsertRuleOverrides</span> runs N upserts in a single transaction, all-or-nothing, with one bundle-hash refresh and one apply at the end.</li>
+            <li><strong>Rule override action enum</strong> — <span class="mono">DEFAULT|DISABLE|LOG_ONLY|SCORE_OVERRIDE</span>; legacy <span class="mono">disabled</span> bool and <span class="mono">action</span> string deprecated; <span class="mono">score_override</span> migrated to <span class="mono">optional int32</span>.</li>
+            <li><strong>Field-mask discipline</strong> — UpdatePolicy enforces that empty <span class="mono">ip_list_bindings</span> only wipes when <span class="mono">update_mask.paths</span> includes the field.</li>
+            <li><strong>Path-prefix validation</strong> — rejects non-printable ASCII and SecLang quoting metacharacters at the API boundary.</li>
+            <li><strong>i18n locale parity</strong> — 1786/1786 keys balanced across en-US and zh-CN with vue-i18n linked-message escapes for every <span class="mono">@</span>-prefixed literal.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-16</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Client-IP trust pipeline</div>
+        <div class="tl-body">
+          <p>One trust pipeline ends per-component XFF parsing fragmentation. Replaces the blind XFF-first parse in the rate-limiter — the security-class fix.</p>
+          <ul>
+            <li><span class="mono">tenant_settings.trust_profile_json</span> + <span class="mono">site.trust_profile_override_json</span></li>
+            <li>Auto-fetched CIDR snapshots for Cloudflare, Fastly, Akamai, CloudFront, Front Door, GCLB; refresher with per-job goroutine, jittered interval, and panic isolation</li>
+            <li>Translator emits <span class="mono">trusted_proxies</span> + <span class="mono">trusted_proxies_strict</span> per <span class="mono">http.servers</span> block</li>
+            <li>Strict right-to-left walk with verbatim Caddy v2 byte-for-byte semantics</li>
+            <li><span class="mono">TrustService.Explain</span> traces every header to the resolved client IP for any (peer, headers) tuple</li>
+            <li>Default-on alert: <span class="mono">Origin Bypass Attempt</span> (5-minute window, severity high)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-10</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Telemetry pipeline (Phase 1–6)</div>
+        <div class="tl-body">
+          <p>Full counters → samples → API tree → read API → Prometheus exporter pipeline end-to-end.</p>
+          <ul>
+            <li><strong>Phase 1</strong> — sharded ingress ring, 10s open-bucket aggregator, per-day SQLite partitions at <span class="mono">logs/rollup_10s/YYYY-MM-DD.db</span></li>
+            <li><strong>Phase 2</strong> — Misra-Gries Top-K with <span class="mono">__other__</span> bucket so SUM(*) equals true traffic; per-day dictionary log; hour/day/month downsamplers</li>
+            <li><strong>Phase 3</strong> — per-IP LRU + global sample rings; append-only circular-file WAL with CRC; replay-on-boot</li>
+            <li><strong>Phase 4</strong> — per-site URL prefix tree with <span class="mono">MaxNodesPerSite</span> + <span class="mono">MaxDepth</span>; janitor evicts idle low-traffic leaves into <span class="mono">api_tree_archive</span></li>
+            <li><strong>Phase 5</strong> — REST API at <span class="mono">/api/v1/telemetry/*</span> + frontend explorer</li>
+            <li><strong>Phase 6</strong> — Prometheus exporter at <span class="mono">/metrics</span> on the local admin socket</li>
+            <li><strong>Legacy cutover</strong> — <span class="mono">logsink.recordAccessRollup</span> short-circuits when telemetry is active, ending the per-event <span class="mono">traffic_rollup_minute</span> write that PRD-TELEMETRY identified as the 100k EPS I/O amplifier</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-09</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Frontend shell complete</div>
+        <div class="tl-body">
+          <p>Every server-seeded menu route resolves to a real page; every PRD-UI § 4 page is wired end-to-end; every reusable Tiyi component from PRD-UI § 5 ships.</p>
+          <ul>
+            <li>Dashboard with <span class="mono">GetDashboardStats</span>, <span class="mono">GetTrafficTimeseries</span>, <span class="mono">GetAttackDistribution</span>, <span class="mono">GetTopAttackers</span>, <span class="mono">StreamAlerts</span></li>
+            <li>Policy editor with 12 tabs, deep-linkable: CRS Core · HTTP Policy · Limits · Rule Tuning · IP Lists · Custom Rules · Plugins · Rate Limits · Exclusions · Preview · Versions · Test Lab</li>
+            <li>System branch: Health, Log Pipeline, Users, Roles, Settings (10 tabs), Replication, Updates (4 tabs), About</li>
+            <li>Alert Rules, Alert Channels, IP Lists, Agents detail, Telemetry Explorer, Audit + diff drawer</li>
+            <li><strong>Resilience primitives</strong>: <span class="mono">useResilientStream</span>, <span class="mono">formatRpcError</span>, <span class="mono">useResponsiveWidth</span></li>
+            <li>Full zh-CN + en-US, all <span class="mono">$t()</span> call sites resolve</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-07</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">WAF policies — full lifecycle</div>
+        <div class="tl-body">
+          <p>Store/API/Web/CLI CRUD; built-in templates (Strict/Standard/Permissive); version snapshots and rollback; engine-state switch; CRS binding; rule-override / custom-rule / IP-list / plugin / rate-limit tuning paths; SecLang preview; CRS impact preview; policy test lab.</p>
+          <ul>
+            <li>Deterministic SecLang compilation with CRS best-practice advisory warnings</li>
+            <li>Per-site policy overrides overlay scalars without forking the policy</li>
+            <li>CRS rule-exclusion packages (WordPress, Drupal, Nextcloud, phpBB, phpMyAdmin, XenForo, cPanel, DokuWiki) with offline archive upload</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-07</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Remote agents</div>
+        <div class="tl-body">
+          <p>One-use enrollment tokens, mounted <span class="mono">AgentStream</span>, <span class="mono">tiyi agent</span> runtime, live remote bundle delivery / cache / apply-result reporting, best-effort remote access/security/error log upload.</p>
+          <ul>
+            <li>Pinned bundle-signing public-key verification, TOFU on first contact</li>
+            <li>Periodic metrics push (memory/CPU)</li>
+            <li>Agent role tracking (primary / secondary / agent)</li>
+            <li><span class="mono">tiyi agents issue-token | install-script | send-command | commands</span> CLI</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-06</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">ACME — Phases A through D</div>
+        <div class="tl-body">
+          <ul>
+            <li><strong>Phase A</strong> — real RFC 8555 client (wrapping <span class="mono">golang.org/x/crypto/acme</span>) replaces the self-signed stub; per-(tenant, directory) account lifecycle</li>
+            <li><strong>Phase B</strong> — multi-agent HTTP-01 with a loopback responder on every agent and (token, key_authorization) broadcast through the agent stream</li>
+            <li><strong>Phase C</strong> — DNS-01 with pluggable driver registry: full Cloudflare driver, Route53 + Aliyun credential-validating stubs; authoritative-NS-aware propagation checker</li>
+            <li><strong>Phase D</strong> — observability: dashboard exposes <span class="mono">certs_expiring_14d</span>, <span class="mono">acme_renewals_failed_24h</span>, etc.; default alerts seeded</li>
+            <li>UI: "Issue (ACME)" modal, per-row Renew action, "DNS Providers" page</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-05</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">CRS catalog + sites + log forwarding</div>
+        <div class="tl-body">
+          <ul>
+            <li>OWASP CRS 4.25.0 ruleset embedded in the binary, auto-imported on first boot</li>
+            <li>GitHub-release fetch via <span class="mono">SystemService.ListUpstreamCrsReleases</span>; offline archive upload also supported</li>
+            <li>Sites lifecycle: store/API/Web/CLI CRUD/status; real Caddy JSON preview; uploaded cert and WAF policy selection</li>
+            <li>Standalone runtime: Caddy access logs through <span class="mono">tiyi.log_forwarder</span>; Coraza <span class="mono">SecAuditLogType tiyi</span>; live security tail</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-03</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">WAF interception fix + boundary <span class="mono">defer recover</span></div>
+        <div class="tl-body">
+          <p>Closed the "empty reply from server" bug on blocked requests. Root cause: a typed-nil-in-interface panic in <span class="mono">audit_writer.auditMessages</span> (<span class="mono">message.Data()</span> returned a non-nil interface wrapping a nil <span class="mono">*MessageData</span>) unwound coraza-caddy's deferred <span class="mono">tx.ProcessLogging</span> before the WAF middleware returned its <span class="mono">caddyhttp.HandlerError</span>.</p>
+          <p>Three boundaries now have <span class="mono">defer recover()</span> at function level: <span class="mono">audit_writer.Writer.Write</span>, <span class="mono">log_forwarder.writeAccessLine</span>/<span class="mono">writeWAFLine</span>, and <span class="mono">logsink</span> workers. Cross-layer canary at <span class="mono">/debug/logsink/stats</span> exposes a <span class="mono">panicked</span> counter.</p>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-01</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Alerts, audit SIEM, full standalone observability</div>
+        <div class="tl-body">
+          <ul>
+            <li>Alert evaluator with <span class="mono">security_threshold</span>, <span class="mono">error_threshold</span>, <span class="mono">audit_failure</span> kinds and webhook / Slack / PagerDuty / Feishu / WeCom delivery</li>
+            <li>Audit-chain rows forwarded through SIEM with explicit <span class="mono">siem.filter.include_audit</span> flag</li>
+            <li>RFC 5424 / CEF / LEEF formats over TCP / UDP / unixgram</li>
+            <li>Vben pages for security, access, error, live-tail, audit, alerts (active / rules / channels)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-04-28</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Foundation</div>
+        <div class="tl-body">
+          <ul>
+            <li>Go 1.25.0; ConnectRPC 1.19.2; 14 services under <span class="mono">proto/tiyi/v1/*.proto</span></li>
+            <li>SQLite schema (full Phase-1) — audit, CRS, policy_version, config_bundle</li>
+            <li>Server modes: <span class="mono">standalone</span>, <span class="mono">server</span>/<span class="mono">primary</span>, <span class="mono">secondary</span>/<span class="mono">standby</span>, <span class="mono">dashboard</span>, <span class="mono">agent</span></li>
+            <li>Local admin socket with OS-file-permission auth</li>
+            <li>Argon2id login, JWT issue/verify, refresh-token chain</li>
+            <li>Koanf config loader; SQLite open/migrate/bootstrap; permission and menu seeds</li>
+            <li>Audit spine — repo, hash chain, verifier, AuditService, mutation audit rows, <span class="mono">tiyi audit</span> CLI</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="text-align:center; margin: 56px 0 16px;">
+      <a class="btn btn-ghost" href="index.html">← Back to home</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer" style="margin-top: 0;">
+  <div class="container">
+    <div class="footer-bottom" style="padding-top: 0; border: 0;">
+      <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.0.0-rc.1-57-gf297a22 · 2026-06-24</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>

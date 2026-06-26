@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>领域模型 — Tiyi 文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="站点、上游池、证书、WAF 策略、节点、遥测、审计链 —— 每个运维都该知道的七个概念。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/concepts.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
+    <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
+    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
+    <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
+  </aside>
+
+  <main class="docs-content" role="main">
+    <span class="docs-eyebrow">核心概念</span>
+    <h1>领域模型</h1>
+    <p class="lede">Tiyi 的领域被刻意保持得很小。七个一等资源覆盖了所有运维动作、所有 CLI 命令、所有 UI 页面。理解了这些，产品的其他部分就显而易见了。</p>
+
+    <h2 id="resources">七个资源</h2>
+    <dl class="dl-grid">
+      <dt>站点（Site）</dt>
+      <dd>Tiyi 代理的一个 HTTP 主机。携带 TLS 设置、上游池引用与挂载的 WAF 策略。是你启用或停用的最小单元。</dd>
+
+      <dt>上游池（Upstream pool）</dt>
+      <dd>站点背后的一组后端。轮询或加权负载均衡、SNI 感知健康检查，可在多个站点之间共用。</dd>
+
+      <dt>证书（Certificate）</dt>
+      <dd>一对 TLS 密钥。要么<strong>上传</strong>（自签、CA 购买、企业签发），要么<strong>ACME 签发</strong>（HTTP-01 或 DNS-01）。在静态用 KEK 信封加密。</dd>
+
+      <dt>WAF 策略（Policy）</dt>
+      <dd>Coraza 在每个请求上执行的编译产物。CRS Core 层 + HTTP 策略 + 限制 + 规则调优 + IP 列表 + 自定义规则 + 插件 + 限速 + 排除项。</dd>
+
+      <dt>节点（Agent）</dt>
+      <dd>运行数据平面（Caddy + Coraza）的一台机器。通过长连 gRPC 流从主节点接收已签名的配置 bundle。</dd>
+
+      <dt>遥测汇总（Telemetry rollup）</dt>
+      <dd>开桶管道产生的计数器与 Top-K 采样。驱动 dashboard、Top-K 浏览器与 Prometheus 导出器。</dd>
+
+      <dt>审计行（Audit row）</dt>
+      <dd>每一次变更对应一行哈希链记录，归属到 JWT subject。这是合规面 —— 每一次变更都有一份防篡改回执。</dd>
+    </dl>
+
+    <h2 id="sites-and-upstreams">站点与上游池</h2>
+    <p><strong>站点</strong>把主机名绑到 TLS 设置、上游池与 WAF 策略上。写入器在 apply 时把每一个启用的站点翻译成一个 Caddy <code>server</code> 块 —— <em>Caddy JSON 是编译目标，不是存储格式</em>。</p>
+    <p>上游池默认与站点解耦。一个池可以背后挂多个站点；删除被引用的池会被拒绝并附带 <code>UPSTREAM_IN_USE</code> 与引用列表。站点也可以使用<strong>内联</strong> upstream URL 作为不需要复用的特例。</p>
+
+    <h3 id="recording-mode">访问日志录入模式</h3>
+    <p>每个站点有一个 <code>recording_mode</code> 字段控制访问日志体量：</p>
+    <ul>
+      <li><code>on</code>（自 2026-05-26 起的默认值）—— 录入每一个请求。</li>
+      <li><code>sampled</code> —— 录入可配置的百分比。如果没有设比例，写入器会折叠到 <code>off</code>。</li>
+      <li><code>off</code> —— 不写入访问事件。</li>
+    </ul>
+    <p>无论访问日志模式如何，安全事件（Coraza 规则命中）都会被写入。</p>
+
+    <h2 id="certificates">证书</h2>
+    <p>TLS 材料是一等资源 —— 永远不内联到站点上。Tiyi 支持四种签发路径，全部用从 <code>crypto.kek_file</code> 加载的 32 字节 KEK 在静态时信封加密：</p>
+    <ul>
+      <li><strong>上传</strong> —— 粘贴或上传 PEM 密钥对。开发用自签，生产用 CA 购买或企业签发。</li>
+      <li><strong>ACME HTTP-01</strong> —— 多节点：每个节点都跑一个 loopback 响应器，并通过节点流广播 (token, key_authorization) 对，让任何节点都能应答挑战。</li>
+      <li><strong>ACME DNS-01</strong> —— 可插拔驱动注册表。Cloudflare 驱动已生产可用；Route53 与阿里云在 v3.0.0-rc.1 中提供凭据校验桩。</li>
+      <li><strong>通配符</strong> —— 在混合 order 中对 <code>*.example.com</code> 自动选择 DNS-01。</li>
+    </ul>
+    <p>Dashboard 把 <code>certs_expiring_14d</code> / <code>certs_expiring_30d</code> / <code>acme_renewals_failed_24h</code> / <code>acme_orders_pending</code> 暴露为 KPI。首次启动种入两个默认告警：<em>证书即将到期</em> 与 <em>ACME 续期失败</em>。</p>
+
+    <h2 id="waf-policy">WAF 策略</h2>
+    <p>策略是一个结构化的领域对象，apply 时编译成 Coraza SecLang。编译器是确定的 —— 同样的策略输入产生同样的 SecLang 输出。12 个可调层（按应用顺序）：</p>
+    <ol>
+      <li><strong>CRS Core</strong> —— 偏执等级、阻断与执行 PL、入站/出站阈值、采样。</li>
+      <li><strong>HTTP 策略</strong> —— 方法、版本、Content-Type、字符集、受限扩展名/Header、方法覆盖。</li>
+      <li><strong>限制</strong> —— 6 个数值字段：最大请求体、最大响应体等，CRS 默认值作为 placeholder。</li>
+      <li><strong>规则调优</strong> —— 按规则的覆盖：<code>DEFAULT</code>、<code>DISABLE</code>、<code>LOG_ONLY</code>、<code>SCORE_OVERRIDE</code>，可选限定到单个站点。</li>
+      <li><strong>IP 列表</strong> —— 允许 / 拒绝 / 监控列表。条目可以是 CIDR 或 <code>geo:CC</code> 伪条目（alpha-2/alpha-3 国家代码加 <code>PRIVATE</code> / <code>LOOPBACK</code>）。</li>
+      <li><strong>自定义规则</strong> —— 运维写的 SecLang 或可视化规则，ID 在 8000000–8999999 区间。</li>
+      <li><strong>插件</strong> —— CRS 排除包（WordPress、Drupal、Nextcloud、phpBB、phpMyAdmin、XenForo、cPanel、DokuWiki）。支持离线归档导入。</li>
+      <li><strong>限速</strong> —— 按端点与按客户端范围的桶，动作可选阻断或仅记录。</li>
+      <li><strong>排除项</strong> —— 阶段-1 的 <code>tx.crs_exclusions_&lt;slug&gt;</code> 选项，可选用 <code>@beginsWith</code> 限定。</li>
+      <li><strong>预览</strong> —— 当前版本的只读 SecLang dump。</li>
+      <li><strong>版本</strong> —— 每次保存一个快照，任意两个版本之间并排 diff。</li>
+      <li><strong>测试台</strong> —— 用 fixture 请求打编译后的 bundle，不会触碰生产数据平面。</li>
+    </ol>
+    <p>按站点覆盖会把标量字段（偏执、阈值、采样）叠加到挂载的策略上而不必 fork 它。</p>
+
+    <h2 id="agents">节点</h2>
+    <p>每一个代理流量的节点都跑一个嵌入式节点 —— 包括主节点与热备。节点持有一条长连 ConnectRPC 双向流到主节点。重连循环先试主节点、再试备节点、然后用指数退避重试。备节点接受只读的节点流。</p>
+    <p>更新以 <code>ConfigUpdate{revision, bundle, signature}</code> 消息流转。节点用首次连接固定的 ed25519 公钥校验 bundle 签名（首次连接 TOFU，之后拒绝重新固定），检查版本号严格大于上次应用的，再 apply 到本地 Caddy 并上报结果。重放与乱序都安全 —— 更新按版本号幂等。</p>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </div>
+      <div class="callout-body">
+        <p><strong>为什么节点保持一致？</strong>主节点的嵌入式节点没有特殊地位。它通过与任何远程节点完全相同的入网与流协议连到自己的 API 地址。这意味着数据平面在所有地方都被同一段代码路径测试 —— 不存在 "主节点是不一样的" 这种特例。</p>
+      </div>
+    </div>
+
+    <h2 id="telemetry">遥测</h2>
+    <p>遥测作为一条并行管道运行，结束了每事件 SQL 写入。路径：</p>
+    <ol>
+      <li><strong>分片入流环</strong> —— 日志转发器事件按站点 key 散到分片环。</li>
+      <li><strong>10 秒开桶聚合</strong> —— 分片 worker 把计数器累加到 10 秒桶。</li>
+      <li><strong>Misra-Gries Top-K</strong> —— 高基数维度（客户端 IP、路径、UA、ASN、攻击标签）的有界摘要，带 <code>__other__</code> 桶让 SUM(*) 等于真实流量。</li>
+      <li><strong>每日 SQLite 分区</strong>位于 <code>logs/rollup_10s/YYYY-MM-DD.db</code>；降采样器把它们幂等地折叠成 <code>rollup_hour</code> → <code>rollup_day</code> → <code>rollup_month</code>。</li>
+      <li><strong>采样环</strong> —— 按 IP 的 LRU + 全局环，带启动时回放的循环文件 WAL。</li>
+      <li><strong>API 树</strong> —— 按站点的 URL 前缀树，节点数与深度均有上限；空闲叶子撤入 <code>api_tree_archive</code>。</li>
+      <li><strong>读路径</strong> —— REST API 位于 <code>/api/v1/telemetry/*</code>，本地管理 socket 上的 Prometheus 导出器位于 <code>/metrics</code>。</li>
+    </ol>
+
+    <h2 id="audit">审计链</h2>
+    <p>每一次变更（站点、上游、证书、策略、IP 列表绑定、限速端点、信任配置、自定义规则、告警规则等）都会向 <code>audit_event</code> 追加一行。每一行存：</p>
+    <ul>
+      <li><strong>动作</strong> —— 固定的字符串，例如 <code>policy.update_layer</code>、<code>trust.update_profile</code>、<code>rule_override.create</code>。</li>
+      <li><strong>资源类型与 ID</strong> —— 变更的范围。</li>
+      <li><strong>操作者</strong> —— JWT subject，归属到真实用户 UUID（而不是泛化的 "local-admin"）。</li>
+      <li><strong>变更前/后 JSON</strong> —— 该行规范视图的扁平 diff。</li>
+      <li><strong>哈希链</strong> —— 每一行哈希前一行加自身的规范 payload。每日锚点提交链头。</li>
+    </ul>
+    <p>Vben Admin 上的<em>校验链</em>按钮会走完整条链并确认每一段。SIEM 转发可在 <code>siem.filter.include_audit</code> 下把每一行审计转发到 Splunk / Elastic / Sentinel 管道。</p>
+
+    <hr />
+
+    <p>这就是整个模型。每一个 CLI 命令、每一个 UI 页面、每一个 RPC 都作用于这七个资源中的一个。文档其余部分按名引用，不再重复定义。</p>
+
+    <div class="docs-pager">
+      <a href="installation.html">
+        <span class="label">← 上一页</span>
+        <span class="title">安装</span>
+      </a>
+      <a class="next" href="cli.html">
+        <span class="label">下一页 →</span>
+        <span class="title">CLI 参考</span>
+      </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

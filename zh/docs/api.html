@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>API 概览 — Tiyi 文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="驱动 UI、CLI、节点流的 ConnectRPC 契约。鉴权、错误码与关键服务。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/api.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
+    <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
+    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
+    <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
+  </aside>
+
+  <main class="docs-content" role="main">
+    <span class="docs-eyebrow">参考</span>
+    <h1>API 概览</h1>
+    <p class="lede">Tiyi 暴露唯一一份 ConnectRPC API。同一份 proto 同时为 Vben Admin UI（HTTP 上的 JSON）、<code>tiyi</code> CLI（HTTP 上的 JSON）与节点流（gRPC 双向）服务。<code>proto/tiyi/v1/*.proto</code> 是唯一的真相源 —— CLI 与 API 由架构保证同步。</p>
+
+    <h2 id="transport">传输</h2>
+    <ul>
+      <li><strong>JSON</strong> 用于 UI 与 CLI 客户端。默认 <code>Content-Type: application/json</code>；URL 遵循 ConnectRPC 约定 <code>/{service}/{Method}</code>。</li>
+      <li><strong>gRPC</strong> 用于节点双向流以及任何偏好二进制协议的客户端。</li>
+      <li><strong>Connect-Web</strong> 用于嵌入式 Vben UI —— 无需独立 REST 适配器，无需独立网关。</li>
+    </ul>
+
+    <h2 id="auth">鉴权</h2>
+    <p>三种鉴权面，按部署上下文选用：</p>
+
+    <table>
+      <thead>
+        <tr><th>鉴权面</th><th>机制</th><th>使用方</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>本地管理 socket</td>
+          <td><code>admin.sock</code> 上的 OS 文件权限</td>
+          <td>与服务端同主机的 <code>tiyi</code> CLI。</td>
+        </tr>
+        <tr>
+          <td>HS256 JWT</td>
+          <td>HTTP 上的 <code>Authorization: Bearer &lt;jwt&gt;</code></td>
+          <td>Vben Admin UI、远程 CLI、任何从主机外驱动 API 的客户端。由 <code>AuthService.Login</code> 签发；<code>RefreshToken</code> 刷新。</td>
+        </tr>
+        <tr>
+          <td>节点流 token</td>
+          <td>一次性入网 token → 长期流 token</td>
+          <td>双向 <code>AgentStream</code> 上的节点。token 通过 <code>AgentService.IssueEnrollmentToken</code> 签发。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 id="login-example">登录示例</h3>
+<pre><code><span class="p">$</span> curl -sS http://primary:8080/tiyi.v1.AuthService/Login <span class="o">\</span>
+    -H <span class="s">"Content-Type: application/json"</span> <span class="o">\</span>
+    -d <span class="s">'{"username":"admin","password":"..."}'</span>
+{
+  <span class="s">"accessToken"</span>: <span class="s">"&lt;jwt&gt;"</span>,
+  <span class="s">"refreshToken"</span>: <span class="s">"&lt;refresh&gt;"</span>,
+  <span class="s">"user"</span>: { <span class="s">"id"</span>: <span class="s">"&lt;uuid&gt;"</span>, <span class="s">"role"</span>: <span class="s">"Administrator"</span> }
+}</code></pre>
+
+    <h2 id="services">14 个服务</h2>
+    <table>
+      <thead>
+        <tr><th>服务</th><th>范围</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>SystemService</code></td><td>健康、版本、Dashboard 汇总、设置、发布、复制、提主/降级。</td></tr>
+        <tr><td><code>AuthService</code></td><td>登录、登出、刷新、当前用户、OIDC 重定向、access code。</td></tr>
+        <tr><td><code>UserService</code></td><td>用户 CRUD、锁定/解锁、密码重置。</td></tr>
+        <tr><td><code>RoleService</code></td><td>角色 + 权限查询。RBAC 表内置。</td></tr>
+        <tr><td><code>SiteService</code></td><td>站点 CRUD、启用/停用、预览、按站点策略覆盖。</td></tr>
+        <tr><td><code>UpstreamService</code></td><td>上游池 CRUD；引用中拒绝删除。</td></tr>
+        <tr><td><code>CertService</code></td><td>上传、ACME 签发/续期、DNS provider CRUD。</td></tr>
+        <tr><td><code>PolicyService</code></td><td>WAF 策略 CRUD、按层更新、版本快照、SecLang 预览、测试台。</td></tr>
+        <tr><td><code>RuleOverrideService</code></td><td>按规则覆盖、自定义规则、IP 列表、限速端点。</td></tr>
+        <tr><td><code>CrsService</code></td><td>CRS 目录浏览 + 导入 + 排除包安装/挂载。</td></tr>
+        <tr><td><code>AgentService</code></td><td>节点 CRUD、入网 token、安装脚本、命令、节点组、<code>AgentStream</code>。</td></tr>
+        <tr><td><code>TrustService</code></td><td>客户端 IP 信任配置（租户 + 站点覆盖）、CDN 快照列表/刷新、explain。</td></tr>
+        <tr><td><code>AlertService</code></td><td>告警规则 + 通道 CRUD、活动告警 ack/resolve、通道发送测试。</td></tr>
+        <tr><td><code>LogService</code></td><td>安全/访问/错误/审计查询、获取、导出、实时跟踪。</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="errors">错误码</h2>
+    <p>Tiyi 返回标准 ConnectRPC 错误码（从 gRPC 映射）。CLI 与 UI 在标准码之上展现本地化消息：</p>
+    <table>
+      <thead><tr><th>码</th><th>HTTP</th><th>常见原因</th></tr></thead>
+      <tbody>
+        <tr><td><code>invalid_argument</code></td><td>400</td><td>参数形状或值被验证器拒绝。</td></tr>
+        <tr><td><code>unauthenticated</code></td><td>401</td><td>缺失或无效 JWT。</td></tr>
+        <tr><td><code>permission_denied</code></td><td>403</td><td>JWT 没有所需 RBAC 权限。</td></tr>
+        <tr><td><code>not_found</code></td><td>404</td><td>资源 ID 不存在或已软删除。</td></tr>
+        <tr><td><code>already_exists</code></td><td>409</td><td>违反唯一性约束（站点名、策略名等）。</td></tr>
+        <tr><td><code>failed_precondition</code></td><td>412</td><td>版本冲突、<code>UPSTREAM_IN_USE</code>、复制延迟门槛等。</td></tr>
+        <tr><td><code>unimplemented</code></td><td>501</td><td>RPC 未挂载（罕见 —— <code>2026-05-26</code> 的 changelog 关闭了最后一批）。</td></tr>
+        <tr><td><code>internal</code></td><td>500</td><td>服务端 bug 或基础设施失败。相关情况下审计链有一行。</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="rbac">RBAC</h2>
+    <p>每一个 RPC 声明一个权限要求，例如 <code>site:read</code>、<code>policy:write</code>、<code>log:read</code>、<code>system:write</code>。中间件把 JWT subject 的角色与权限表比对；权威映射在 <code>internal/api/middleware.go</code>。v3.0.0-rc.1 中有 52 个细粒度权限。</p>
+
+    <h2 id="streaming">流式 RPC</h2>
+    <ul>
+      <li><strong><code>AgentService.AgentStream</code></strong> —— 长连双向流。节点发送 Hello、StateReport、AgentEventPush、ApplyResult、ChallengeResponse。服务端发送 Welcome、ConfigUpdate、Command、ChallengeDispatch。</li>
+      <li><strong><code>AlertService.StreamAlerts</code></strong> —— 服务端流。把告警生命周期事件推送到 dashboard，客户端使用退避重连。</li>
+      <li><strong><code>AgentService.StreamAgentEvents</code></strong> —— 服务端流。实时节点状态（在线/下线、指标）。</li>
+      <li><strong><code>LogService.TailSecurityEvents</code></strong> —— 服务端流。实时跟踪页的实时安全日志流。</li>
+      <li><strong><code>SystemService.StreamUpgradeRun</code></strong> —— 服务端流。按节点的升级运行进度事件。</li>
+    </ul>
+
+    <h2 id="canonical-spec">权威规约</h2>
+    <p>源码树中的 PRD-API 文档是每一个 RPC 的权威规约。它列出每个方法的请求/响应形状、RBAC 权限、错误码与审计行契约。本文档覆盖运维表面；那份文档覆盖 API 契约。它们应当一致 —— 不一致请提 issue。</p>
+
+    <p>生成式参考从 <code>proto/</code> 重新生成 Connect Go 与 Protobuf Go：</p>
+<pre><code><span class="p">$</span> make proto
+<span class="p">$</span> ls internal/api/gen/tiyi/v1/
+<span class="c"># 每个 .proto 对应 &lt;service&gt;.pb.go 与 &lt;service&gt;.connect.go</span></code></pre>
+
+    <div class="docs-pager">
+      <a href="cli.html"><span class="label">← 上一页</span><span class="title">CLI 参考</span></a>
+      <a class="next" href="deployment.html"><span class="label">下一页 →</span><span class="title">部署</span></a>
+    </div>
+  </main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

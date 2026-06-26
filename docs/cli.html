@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>CLI reference — Tiyi docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Every tiyi CLI subcommand grouped by resource. Local admin socket auth, remote API auth, exit codes." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/cli.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">Domain model</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API overview</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+    <span class="docs-eyebrow">Reference</span>
+    <h1>CLI reference</h1>
+    <p class="lede">The <code>tiyi</code> CLI is a thin client over the same ConnectRPC API that drives the UI. Every mutation has one path; the CLI stays in lockstep with the API by construction. This page groups commands by resource — for the full flag surface on any subcommand, run <code>tiyi &lt;cmd&gt; --help</code>.</p>
+
+    <h2 id="auth-modes">Authentication modes</h2>
+    <p>The CLI talks to Tiyi in one of two ways. Local commands need no token; remote commands need both an API URL and a JWT.</p>
+
+    <table>
+      <thead>
+        <tr><th>Mode</th><th>Flags</th><th>Auth</th><th>Use case</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Local admin socket</strong></td>
+          <td><em>(default)</em></td>
+          <td>OS file permissions on the Unix socket</td>
+          <td>Running on the same host as <code>tiyi standalone</code> or <code>tiyi server</code>.</td>
+        </tr>
+        <tr>
+          <td><strong>Remote</strong></td>
+          <td><code>--api URL --token JWT</code></td>
+          <td>HS256 JWT in the <code>Authorization: Bearer</code> header</td>
+          <td>Operating from a workstation or CI runner.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Get a JWT from a username/password:</p>
+<pre><code><span class="p">$</span> tiyi auth login --api http://primary:8080 --username admin
+<span class="c"># prompts for password, prints the JWT, optionally writes ~/.config/tiyi/credentials</span></code></pre>
+
+    <h2 id="apply">Declarative apply</h2>
+    <p>The kubectl-style entry point. One YAML file, one command, one audit row:</p>
+<pre><code><span class="p">$</span> tiyi apply -f site.yaml
+<span class="c"># preview-applies, shows a per-resource diff, prompts to confirm, then applies</span></code></pre>
+    <p>The same validator and mutator the UI uses. Skip the prompt with <code>--yes</code>. Multiple resources in one file are applied in dependency order.</p>
+
+    <h2 id="sites">Sites</h2>
+<pre><code>tiyi site list
+tiyi site get <span class="v">&lt;name|id&gt;</span>
+tiyi site create --name <span class="v">N</span> --hostname <span class="v">H</span> --upstream <span class="v">P</span> --policy <span class="v">P</span> [--tls auto|none|<span class="v">CERT</span>]
+tiyi site update <span class="v">&lt;id&gt;</span> [...flags]
+tiyi site enable <span class="v">&lt;id&gt;</span>
+tiyi site disable <span class="v">&lt;id&gt;</span>
+tiyi site delete <span class="v">&lt;id&gt;</span>
+tiyi site preview <span class="v">&lt;id&gt;</span>           <span class="c"># dump the Caddy JSON the applier would emit</span>
+tiyi site policy-override <span class="v">&lt;id&gt;</span> [--blocking-pl N --inbound-threshold N ...]</code></pre>
+
+    <h2 id="upstreams">Upstreams</h2>
+<pre><code>tiyi upstream list
+tiyi upstream get <span class="v">&lt;name|id&gt;</span>
+tiyi upstream create --name <span class="v">N</span> --target <span class="v">URL</span> [--target <span class="v">URL2</span> ...]
+tiyi upstream update <span class="v">&lt;id&gt;</span> [...flags]
+tiyi upstream delete <span class="v">&lt;id&gt;</span>      <span class="c"># refused if any site uses it (UPSTREAM_IN_USE)</span></code></pre>
+
+    <h2 id="certs">Certificates</h2>
+<pre><code>tiyi cert list
+tiyi cert get <span class="v">&lt;id&gt;</span>
+tiyi cert upload --name <span class="v">N</span> --cert <span class="v">FILE</span> --key <span class="v">FILE</span>
+tiyi cert issue --domain <span class="v">D</span> --email <span class="v">E</span> [--challenge http-01|dns-01] [--directory <span class="v">URL</span>]
+tiyi cert renew <span class="v">&lt;id&gt;</span>
+tiyi cert delete <span class="v">&lt;id&gt;</span>
+tiyi cert dns-provider drivers
+tiyi cert dns-provider list
+tiyi cert dns-provider create --name <span class="v">N</span> --provider cloudflare --credentials-file <span class="v">F</span>
+tiyi cert dns-provider get <span class="v">&lt;id&gt;</span>
+tiyi cert dns-provider update <span class="v">&lt;id&gt;</span>
+tiyi cert dns-provider delete <span class="v">&lt;id&gt;</span></code></pre>
+
+    <div class="callout callout-tip">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="callout-body">
+        <p><strong>Prefer <code>--credentials-file</code></strong> over <code>--credentials-json</code> for DNS providers. The file path keeps secrets out of shell history and process listings.</p>
+      </div>
+    </div>
+
+    <h2 id="policies">WAF policies</h2>
+<pre><code>tiyi policy list
+tiyi policy get <span class="v">&lt;id&gt;</span>
+tiyi policy create --name <span class="v">N</span> --template strict|standard|permissive
+tiyi policy update <span class="v">&lt;id&gt;</span> [...layer flags]
+tiyi policy delete <span class="v">&lt;id&gt;</span>
+tiyi policy preview <span class="v">&lt;id&gt;</span> [--site-id <span class="v">S</span>]   <span class="c"># effective compiled SecLang</span>
+tiyi policy versions <span class="v">&lt;id&gt;</span>                       <span class="c"># list snapshot revisions</span>
+tiyi policy diff <span class="v">&lt;id&gt;</span> --from <span class="v">A</span> --to <span class="v">B</span>           <span class="c"># side-by-side diff</span>
+tiyi policy rollback <span class="v">&lt;id&gt;</span> --to <span class="v">REV</span></code></pre>
+
+    <h3 id="rule-tuning">Rule overrides, custom rules, IP lists</h3>
+<pre><code>tiyi rule override upsert --policy <span class="v">P</span> --rule-id <span class="v">N</span> --action default|disable|log_only|score_override [--score-override N] [--scope global|site --site-id <span class="v">S</span>]
+tiyi rule override delete --policy <span class="v">P</span> --rule-id <span class="v">N</span>
+tiyi rule custom create --policy <span class="v">P</span> --seclang <span class="v">FILE</span>
+tiyi rule custom delete --policy <span class="v">P</span> --rule-id <span class="v">N</span>
+tiyi rule ip-list create --policy <span class="v">P</span> --kind allow|deny|monitor --name <span class="v">N</span>
+tiyi rule ip-list add-entries <span class="v">&lt;id&gt;</span> 203.0.113.0/24 geo:CN
+tiyi rule ip-list import-csv <span class="v">&lt;id&gt;</span> --file <span class="v">F</span>
+tiyi rule ip-list bind <span class="v">&lt;id&gt;</span> --policy <span class="v">P</span> [--path-prefix /api]
+tiyi rule rate-limit upsert --policy <span class="v">P</span> --endpoint /login --rps 5 --action block</code></pre>
+
+    <h2 id="crs">CRS catalog</h2>
+<pre><code>tiyi crs ingest --tag <span class="v">v4.25.0</span>            <span class="c"># fetch a release from upstream</span>
+tiyi crs ingest --archive <span class="v">FILE</span>             <span class="c"># offline archive upload</span>
+tiyi crs releases                            <span class="c"># list available upstream tags</span>
+tiyi crs list                                <span class="c"># installed CRS rulesets</span>
+tiyi crs rules --tag <span class="v">v4.25.0</span> --paranoia 1 --tag attack-sqli
+tiyi crs exclusion-package list
+tiyi crs exclusion-package install --slug wordpress
+tiyi crs exclusion-package attach --policy <span class="v">P</span> --slug wordpress [--scope /wp-admin/]</code></pre>
+
+    <h2 id="agents">Agents</h2>
+<pre><code>tiyi agents list
+tiyi agents get <span class="v">&lt;id&gt;</span>
+tiyi agents issue-token [--tag edge] [--ttl 24h]
+tiyi agents install-script --server-url <span class="v">URL</span> --enrollment-token <span class="v">T</span>
+tiyi agents send-command <span class="v">&lt;id&gt;</span> --kind reload|restart|collect_diagnostics
+tiyi agents commands [--agent-id <span class="v">id&gt;</span>]
+tiyi agent-group list
+tiyi agent-group create --name <span class="v">N</span> --tag-selector <span class="v">role=edge</span>
+tiyi agent-group resolve <span class="v">&lt;id&gt;</span></code></pre>
+
+    <h2 id="trust">Trust profile</h2>
+<pre><code>tiyi trust show
+tiyi trust set --trusted-proxies 10.0.0.0/8,172.16.0.0/12 --client-ip-headers X-Forwarded-For
+tiyi trust reset
+tiyi trust test --peer 10.0.0.5 --header <span class="s">"X-Forwarded-For: 1.2.3.4"</span>
+tiyi trust status
+tiyi trust cdn list
+tiyi trust cdn refresh cloudflare</code></pre>
+
+    <h2 id="alerts">Alerts</h2>
+<pre><code>tiyi alert active list
+tiyi alert active ack <span class="v">&lt;id&gt;</span>
+tiyi alert active resolve <span class="v">&lt;id&gt;</span>
+tiyi alert rule list
+tiyi alert rule upsert --name <span class="v">N</span> --kind security_threshold --condition <span class="v">FILE</span>
+tiyi alert channel list
+tiyi alert channel upsert --name <span class="v">N</span> --kind webhook|slack|pagerduty|feishu|wecom --config <span class="v">FILE</span>
+tiyi alert channel test <span class="v">&lt;id&gt;</span></code></pre>
+
+    <h2 id="logs">Logs</h2>
+<pre><code>tiyi log security list [--site <span class="v">S</span>] [--client-ip <span class="v">IP</span>] [--rule-id <span class="v">N</span>] [--from <span class="v">T</span>] [--to <span class="v">T</span>]
+tiyi log security get <span class="v">&lt;event-id&gt;</span>
+tiyi log security export --format ndjson --output <span class="v">F</span>
+tiyi log access  list [...filters]
+tiyi log error   list [...filters]
+tiyi log audit   list [...filters]
+tiyi log tail-security                       <span class="c"># live stream</span></code></pre>
+
+    <h2 id="audit-cli">Audit chain</h2>
+<pre><code>tiyi audit list [--actor <span class="v">UUID</span>] [--action <span class="v">prefix</span>] [--from <span class="v">T</span>] [--to <span class="v">T</span>]
+tiyi audit get <span class="v">&lt;id&gt;</span>
+tiyi audit verify-chain                      <span class="c"># walks the chain and reports each link</span></code></pre>
+
+    <h2 id="system">System</h2>
+<pre><code>tiyi system stats
+tiyi system traffic --window 1h
+tiyi system attack-distribution --window 1h
+tiyi system top-attackers --window 1h
+tiyi system settings get
+tiyi system settings update --key siem.filter.include_audit --value true
+tiyi system settings update --key telemetry.enabled --value true</code></pre>
+
+    <h2 id="release-mgmt">Releases (rolling agent upgrades)</h2>
+<pre><code>tiyi release import --tarball ./tiyi-1.2.3.tar.gz
+tiyi release list
+tiyi release apply <span class="v">&lt;release-id&gt;</span>           <span class="c"># fan APPLY_BINARY to all matching agents</span>
+tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span> --agent-id <span class="v">B</span>
+tiyi release runs
+tiyi release run-get <span class="v">&lt;run-id&gt;</span>
+tiyi release run-cancel <span class="v">&lt;run-id&gt;</span>
+tiyi release rollback
+tiyi release check-updates</code></pre>
+
+    <h2 id="users-roles">Users and roles</h2>
+<pre><code>tiyi user list
+tiyi user create --username <span class="v">U</span> --role <span class="v">R</span>
+tiyi user reset-password <span class="v">&lt;id&gt;</span>
+tiyi user lock <span class="v">&lt;id&gt;</span>
+tiyi user unlock <span class="v">&lt;id&gt;</span>
+tiyi role list
+tiyi role get <span class="v">&lt;id&gt;</span></code></pre>
+
+    <h2 id="failover">Cluster failover</h2>
+<pre><code>tiyi promote                     <span class="c"># on the secondary, after verifying the primary is unreachable</span>
+tiyi promote --force             <span class="c"># skip the demote step; accept bounded data loss</span></code></pre>
+
+    <h2 id="exit-codes">Exit codes</h2>
+    <table>
+      <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>0</code></td><td>Success.</td></tr>
+        <tr><td><code>1</code></td><td>Generic error. Output explains.</td></tr>
+        <tr><td><code>2</code></td><td>Usage / flag parse error.</td></tr>
+        <tr><td><code>3</code></td><td>Authentication required or token rejected.</td></tr>
+        <tr><td><code>4</code></td><td>Resource not found.</td></tr>
+        <tr><td><code>5</code></td><td>Failed precondition (e.g. revision conflict, <code>UPSTREAM_IN_USE</code>).</td></tr>
+      </tbody>
+    </table>
+
+    <div class="docs-pager">
+      <a href="concepts.html">
+        <span class="label">← Previous</span>
+        <span class="title">Domain model</span>
+      </a>
+      <a class="next" href="api.html">
+        <span class="label">Next →</span>
+        <span class="title">API overview</span>
+      </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

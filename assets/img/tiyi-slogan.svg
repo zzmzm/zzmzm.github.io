@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 440" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="tiyi-slogan-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00E5FF" />
+      <stop offset="100%" stop-color="#0066FF" />
+    </linearGradient>
+    <linearGradient id="tiyi-slogan-mark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7CF5FF" />
+      <stop offset="100%" stop-color="#1F7BFF" />
+    </linearGradient>
+    <filter id="tiyi-slogan-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="10" result="b" />
+      <feMerge>
+        <feMergeNode in="b" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Outer orbit: "every request is inspected" -->
+  <circle cx="200" cy="220" r="188" stroke="url(#tiyi-slogan-grad)" stroke-width="1" stroke-dasharray="2 10" opacity="0.25" />
+  <circle cx="200" cy="220" r="156" stroke="url(#tiyi-slogan-grad)" stroke-width="1" stroke-dasharray="4 8" opacity="0.4" />
+
+  <!-- Shield silhouette -->
+  <path d="M200 56 L338 104 L338 214 C338 296 275 360 200 382 C125 360 62 296 62 214 L62 104 Z"
+        fill="url(#tiyi-slogan-grad)" opacity="0.14" />
+  <path d="M200 56 L338 104 L338 214 C338 296 275 360 200 382 C125 360 62 296 62 214 L62 104 Z"
+        stroke="url(#tiyi-slogan-grad)" stroke-width="3" stroke-linejoin="round" />
+
+  <!-- Inner bracket suggesting a request packet -->
+  <path d="M122 196 L122 176 L146 176" stroke="url(#tiyi-slogan-grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" />
+  <path d="M278 196 L278 176 L254 176" stroke="url(#tiyi-slogan-grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" />
+  <path d="M122 250 L122 270 L146 270" stroke="url(#tiyi-slogan-grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" />
+  <path d="M278 250 L278 270 L254 270" stroke="url(#tiyi-slogan-grad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" />
+
+  <!-- TIYI lettermark -->
+  <g filter="url(#tiyi-slogan-glow)">
+    <text x="200" y="248" font-family="Inter, system-ui, -apple-system, Segoe UI, sans-serif"
+          font-weight="800" font-size="78" letter-spacing="-2"
+          text-anchor="middle" fill="url(#tiyi-slogan-mark)">TIYI</text>
+  </g>
+
+  <!-- Accent checkmark at the base, signalling "request allowed / verdict produced" -->
+  <path d="M176 320 L194 338 L230 302" stroke="url(#tiyi-slogan-grad)" stroke-width="4"
+        stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85" />
+</svg>

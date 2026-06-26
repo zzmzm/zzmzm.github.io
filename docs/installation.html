@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Installation — Tiyi docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Install Tiyi from source or a signed prebuilt binary, configure the YAML config, and pick the right operational mode." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/installation.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">Domain model</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API overview</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+    <span class="docs-eyebrow">Get started</span>
+    <h1>Installation</h1>
+    <p class="lede">Tiyi is a single Go binary. Pick a build path, drop the binary on your host, write a small YAML config, and choose the operational mode that matches the role this host should play in the cluster.</p>
+
+    <h2 id="from-source">Build from source</h2>
+    <p>From a fresh checkout of the Tiyi repo:</p>
+<pre><code><span class="p">$</span> make proto       <span class="c"># regenerate Connect Go + Protobuf Go from proto/</span>
+<span class="p">$</span> make web         <span class="c"># build the Vben Admin frontend into web/dist/</span>
+<span class="p">$</span> make build       <span class="c"># compile bin/tiyi with the frontend embedded</span></code></pre>
+    <p>For a release artifact, use the guarded one-shot target. It refuses a dirty worktree, verifies the embedded vendor-license public-key fingerprint, rebuilds proto/frontend outputs, and produces the same single binary:</p>
+<pre><code><span class="p">$</span> make release</code></pre>
+    <p>Build inputs:</p>
+    <ul>
+      <li><strong>Go 1.25+</strong> — the module floor. Pure-Go SQLite via <code>modernc.org/sqlite</code> means no CGo and clean cross-compilation.</li>
+      <li><strong>Node 20+ and pnpm 9+</strong> — for <code>make web</code>. The output is embedded with <code>go:embed</code> at the next <code>make build</code>.</li>
+      <li><strong>buf</strong> — bundled at <code>tmp/buf/bin/buf</code> for proto regeneration. Run <code>make proto</code> to refresh generated Connect/PB Go after editing <code>proto/tiyi/v1/*.proto</code>.</li>
+    </ul>
+
+    <h2 id="prebuilt">Prebuilt binaries</h2>
+    <p>Community, Pro, and Enterprise use the same signed binary. With no valid license it runs the full product on the local standalone node; importing a vendor-signed license raises the remote-agent budget and activates the displayed Pro or Enterprise plan. From v3.0.0 GA forward, the canonical install script will live at <code>get.tiyi.io</code>:</p>
+<pre><code><span class="p">$</span> curl -sSL get.tiyi.io | sh
+<span class="p">$</span> tiyi --version
+<span class="c">tiyi v3.0.0-rc.1-57-gf297a22 linux/amd64</span></code></pre>
+    <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. <code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets.</p>
+
+    <h2 id="bootstrap-from-server">Bootstrap an agent from a running server</h2>
+    <p>A running Tiyi server exposes <code>GET /download/tiyi</code>, an unauthenticated endpoint that streams the running binary. Use it to bootstrap agents on fresh machines:</p>
+<pre><code><span class="p">$</span> curl -fsSL -o /usr/local/bin/tiyi http://primary:8080/download/tiyi
+<span class="p">$</span> chmod +x /usr/local/bin/tiyi</code></pre>
+    <p>For cross-platform downloads, append <code>?os=linux&arch=arm64</code> to serve an imported binary release instead of the running binary.</p>
+
+    <h2 id="config-file">Config file</h2>
+    <p>Tiyi reads a Koanf-based YAML config. Start from this minimal config and let the defaults handle the rest:</p>
+<pre><code><span class="c"># /etc/tiyi/tiyi.yaml</span>
+<span class="k">api</span>:
+  <span class="k">addr</span>: <span class="s">"0.0.0.0:8080"</span>
+
+<span class="k">storage</span>:
+  <span class="k">state_db</span>: <span class="s">"/var/lib/tiyi/state.db"</span>
+
+<span class="k">crypto</span>:
+  <span class="k">kek_file</span>: <span class="s">"/etc/tiyi/kek.bin"</span>      <span class="c"># 32-byte at-rest encryption key</span>
+
+<span class="k">auth</span>:
+  <span class="k">jwt_secret</span>: <span class="s">"<span class="v">&lt;32+ random bytes&gt;</span>"</span>      <span class="c"># HS256 signing secret</span>
+
+<span class="k">proxy</span>:
+  <span class="k">http_addr</span>:  <span class="s">":80"</span>
+  <span class="k">https_addr</span>: <span class="s">":443"</span>
+  <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
+    <p>Pass it with <code>--config</code>:</p>
+<pre><code><span class="p">$</span> tiyi standalone --config /etc/tiyi/tiyi.yaml</code></pre>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="callout-body">
+        <p><strong>Two fields are mandatory before going live.</strong> <code>crypto.kek_file</code> and <code>auth.jwt_secret</code> have dev-friendly fallbacks that explicitly do not survive a restart. See <a href="deployment.html#hardening">Deployment → Production hardening</a> for the contract.</p>
+      </div>
+    </div>
+
+    <h2 id="modes">Operational modes</h2>
+    <p>The same binary exposes five subcommands. Pick the one that matches the host's role:</p>
+
+    <dl class="dl-grid">
+      <dt><code>standalone</code></dt>
+      <dd>Master + agent in one process. Default for single-host installs. Mutations RW; data plane proxies on the same node. Five-minute install path.</dd>
+
+      <dt><code>server</code></dt>
+      <dd>Cluster control-plane leader plus its own embedded agent. Accepts agent registrations, serves the API and dashboard, proxies traffic.</dd>
+
+      <dt><code>secondary</code></dt>
+      <dd>Warm CP replica plus its own embedded agent. Read-only API, proxies traffic, gets promoted manually on failover with <code>tiyi promote</code>.</dd>
+
+      <dt><code>agent</code></dt>
+      <dd>Pure data plane: Caddy + Coraza receiving signed config bundles from the primary over a long-lived gRPC stream. No CP responsibility.</dd>
+
+      <dt><code>dashboard</code></dt>
+      <dd>UI-only mode for split deployments where the dashboard host doesn't proxy traffic.</dd>
+    </dl>
+
+    <h2 id="enrollment">Enrolling an agent</h2>
+    <p>Agents enroll with a one-use token issued by the primary. From the primary host:</p>
+<pre><code><span class="p">$</span> TOKEN=<span class="s">"$(tiyi agents issue-token --tag edge-c | jq -r .token)"</span></code></pre>
+    <p>On the agent host, with the binary already in place:</p>
+<pre><code><span class="p">$</span> tiyi agent <span class="o">\</span>
+    --api http://primary:8080 <span class="o">\</span>
+    --enrollment-token <span class="s">"$TOKEN"</span> <span class="o">\</span>
+    --state-dir /var/lib/tiyi/agent <span class="o">\</span>
+    --proxy-http-addr 0.0.0.0:80 <span class="o">\</span>
+    --proxy-https-addr 0.0.0.0:443</code></pre>
+    <p>The token is consumed on first contact. After enrollment, the agent persists its identity in <code>&lt;state-dir&gt;/identity.json</code> and the token is no longer needed. Lose the state directory and you'll need a fresh token to re-enroll.</p>
+
+    <h2 id="systemd">systemd unit</h2>
+    <p>For a long-lived deployment, run Tiyi under your init system. A minimal systemd unit:</p>
+<pre><code><span class="c"># /etc/systemd/system/tiyi.service</span>
+<span class="k">[Unit]</span>
+<span class="k">Description</span>=Tiyi WAF
+<span class="k">After</span>=network-online.target
+<span class="k">Wants</span>=network-online.target
+
+<span class="k">[Service]</span>
+<span class="k">Type</span>=simple
+<span class="k">User</span>=tiyi
+<span class="k">Group</span>=tiyi
+<span class="k">ExecStart</span>=/usr/local/bin/tiyi server --config /etc/tiyi/tiyi.yaml
+<span class="k">Restart</span>=on-failure
+<span class="k">RestartSec</span>=2s
+<span class="k">AmbientCapabilities</span>=CAP_NET_BIND_SERVICE
+<span class="k">CapabilityBoundingSet</span>=CAP_NET_BIND_SERVICE
+<span class="k">NoNewPrivileges</span>=true
+<span class="k">ProtectSystem</span>=strict
+<span class="k">ReadWritePaths</span>=/var/lib/tiyi /etc/tiyi
+<span class="k">ProtectHome</span>=true
+<span class="k">PrivateTmp</span>=true
+
+<span class="k">[Install]</span>
+<span class="k">WantedBy</span>=multi-user.target</code></pre>
+
+    <h2 id="next">What to read next</h2>
+    <ul>
+      <li><a href="concepts.html">Domain model</a> — what sites, upstreams, certs, policies, and agents are.</li>
+      <li><a href="cli.html">CLI reference</a> — every <code>tiyi</code> subcommand grouped by resource.</li>
+      <li><a href="deployment.html">Deployment</a> — production hardening, HA failover, SIEM egress.</li>
+    </ul>
+
+    <div class="docs-pager">
+      <a href="quickstart.html">
+        <span class="label">← Previous</span>
+        <span class="title">Quickstart</span>
+      </a>
+      <a class="next" href="concepts.html">
+        <span class="label">Next →</span>
+        <span class="title">Domain model</span>
+      </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

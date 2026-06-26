@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>更新日志 — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Tiyi 从基础工作到 v3.0.0-rc.1 的完整更新记录。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="index.html#features">特性</a>
+      <a href="index.html#tour">产品</a>
+      <a href="index.html#pricing">价格</a>
+      <a href="docs/index.html">文档</a>
+      <a href="changelog.html" style="color:var(--fg)">更新日志</a>
+      <a href="index.html#roadmap">路线图</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../changelog.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<section style="padding: 64px 0 32px;">
+  <div class="container">
+    <div class="section-head" style="text-align:left; margin-bottom:32px;">
+      <span class="eyebrow">更新日志</span>
+      <h2 style="font-size: clamp(32px, 4vw, 48px);">通往 v3.0.0 的道路。</h2>
+      <p style="margin: 0;">每一项都对应一次提交与一次验证命令。条目只在实现、验证、文档全部完成后才会标记为 <span class="tl-tag shipped" style="display:inline-block; vertical-align:middle;">已发布</span>，否则就是 <span class="tl-tag future" style="display:inline-block; vertical-align:middle;">规划中</span> 或 <span class="tl-tag current" style="display:inline-block; vertical-align:middle;">进行中</span>。</p>
+    </div>
+
+    <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-06-24</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">单一二进制按规模授权 + 首次启动管理员</div>
+        <div class="tl-body">
+          <p>只发布一个二进制，其唯一强制区分是<strong>规模而非功能</strong>。每个版本都保留全部 WAF 能力；厂商签名授权只改变远程节点配额与显示版本。</p>
+          <ul>
+            <li><strong>社区版 = 本地单机 WAF，永久免费。</strong> 没有有效授权时，完整产品运行在本地节点并允许 0 个远程节点。导入授权即可激活 Pro 或企业版节点配额，无需更换二进制。</li>
+            <li><strong>唯一且始终开启的闸门，位于接入事务内部。</strong> 旧的 <span class="mono">license.mode</span> 行会被忽略，写入会被拒绝。计数与插入共享同一事务，并发接入无法越过签名配额。既有站点、已知节点与本地管理<strong>始终</strong>不受授权状态影响。</li>
+            <li><strong>唯一信任锚。</strong> 授权由 Ed25519 针对二进制内嵌的厂商公钥签名；公钥覆盖项已移除。发布目标固定校验其 SHA-256 指纹，带版本的 claims 会拒绝未知套餐、非法配额与错误时间顺序。</li>
+            <li><strong>安全降级。</strong> 缺失、无效、篡改或过期授权都会回到社区版。数据平面永不停机，已知指纹始终可重连。</li>
+            <li><strong>需登录的实时状态。</strong>「系统 → 关于」展示版本、被授权方 / 到期与实时的「N / M 远程节点」计数；公开 Version RPC 不再暴露授权元数据。</li>
+            <li><strong>首次启动管理员。</strong> 单机首次启动且无用户、未提供凭据时，现在会自动创建 <span class="mono">admin</span> 并生成一次性随机密码（仅打印一次，仅以哈希存储）；<span class="mono">tiyi server</span> 则打印可操作的警告，而不是留下无法登录的死胡同。</li>
+            <li>厂商工具现在以 <span class="mono">0600</span>、排他且不覆盖的方式创建私钥；仅日期的到期值包含当天，截止 <span class="mono">23:59:59Z</span>。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-06-18</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">站点路径路由（M9）</div>
+        <div class="tl-body">
+          <p>站点过去只能按主机匹配。现在可以按<strong>路径前缀</strong>分流到多个上游池 —— 一个主机、一张证书背后的 API 网关式路由 —— 同时保持数据平面与各层路径范围的一致。</p>
+          <ul>
+            <li><strong>翻译器分发。</strong> 一条主机路由展开为按前缀的子路由，各自指向自己的上游池；零路由场景的输出与此前逐字节一致 —— 由 golden 测试钉住。</li>
+            <li><strong>按路由健康检查。</strong> 每条路由都有应用后健康探测（仅接受 200–399）；即使站点默认后端健康，某条路由后端不健康也会让 apply 闸门失败。</li>
+            <li><strong>未命中策略。</strong> 未命中的路径回退到站点默认上游，或回退到无需默认的严格 <span class="mono">404</span> 白名单。</li>
+            <li><strong>完整归因。</strong> 每条访问日志都记录服务它的 <span class="mono">route_id</span> 与 <span class="mono">upstream_id</span> —— 贯穿解析器、按日分区、API/CLI 过滤、导出与 Web 日志视图。</li>
+            <li><strong>统一路径范围。</strong> <span class="mono">/admin</span> 与 <span class="mono">/Admin</span> 在 WAF、IP 列表与限速器之间解析一致；大小写不敏感提示、实时规范化回显与命名的大小写重复错误在 Web + CLI 上守护每个路径输入。</li>
+            <li>可通过 <span class="mono">tiyi site routing get/set</span> 或全新的 Web 路由编辑器驱动。实现后评审强化了零路由/404 校验、原子补偿捕获、replace 时稳定的路由 ID、严格的按池 endpoint/scheme/health-URI 检查，以及规范化的作用域 CRS 覆盖。</li>
+            <li>验证：<span class="mono">go test ./...</span> 通过、<span class="mono">buf lint</span> 干净、<span class="mono">vue-tsc</span> 干净。交互式浏览器 QA 经运维要求跳过。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-06-18</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">策略限速编辑器</div>
+        <div class="tl-body">
+          <p>策略的 <span class="mono">Rate Limits</span> 标签页从草图升级为可供运维使用的编辑器，其校验会拒绝任何 agent 实际无法执行的规则。</p>
+          <ul>
+            <li><strong>端点行。</strong> 路径模式限制（如 <span class="mono">/login</span>、<span class="mono">/api/auth/**</span>）按解析后的客户端 IP 计键，阻断时返回 HTTP <span class="mono">429</span> —— 或用 <span class="mono">log-only</span> 金丝雀模式先观察再执行。</li>
+            <li><strong>客户端范围。</strong> 跨所有路径的全局上限，按 <span class="mono">ip</span>、<span class="mono">session</span> cookie 或命名 header（<span class="mono">header:&lt;name&gt;</span>）计键。Burst 为 <span class="mono">0</span> 表示突发等于每分钟限额。</li>
+            <li><strong>内联校验。</strong> 缺失路径/header、非正数限额、负 burst、重复的模式/范围以及未知 action 都会阻止保存。</li>
+            <li><strong>规范化。</strong> API 将历史的 <span class="mono">client_ip</span> → <span class="mono">ip</span>、<span class="mono">detection</span> → <span class="mono">log</span> 归一；编译器与运行时对历史行保持向后兼容。在 Coraza 之前执行，不使用持久化集合。</li>
+            <li>验证：<span class="mono">go test ./...</span> 通过、<span class="mono">buf lint</span> 干净、<span class="mono">vue-tsc</span> 干净。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-06-09</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">AI 顾问层 + 交互式 Copilot</div>
+        <div class="tl-body">
+          <p>一个可选、<strong>默认关闭</strong>的 LLM 顾问层，位于确定性 WAF 之侧 —— 在控制平面内，绝不进入请求路径，也绝不自行变更状态。它富化事件、起草需人工批准的调优建议，并用自然语言回答关于日志的问题。</p>
+          <ul>
+            <li><strong>流式分析。</strong> 全局 <span class="mono">AI Copilot</span> 抽屉可解释任意事件或单条日志，或分析一组过滤后的日志结果 —— 逐 token 流式返回。主题被收敛为脱敏白名单投影，绝不发送原始审计 JSON。</li>
+            <li><strong>对话式智能体。</strong> <span class="mono">StreamChat</span> 助手通过对五个<em>只读</em>、租户范围的日志查询进行工具调用，回答开放式问题（「最近一小时 Top 10 攻击者」「example.com 今天是否被攻击、来自哪些 IP？」）—— 不新增任何日志面。</li>
+            <li><strong>只做顾问，绝不自治。</strong> 事件富化、策略调优补丁、自然语言→日志查询翻译、自定义规则草案（强制 log-only 金丝雀）与攻击活动关联都只是建议；唯一改变状态的路径是运维显式<em>应用</em>，经由既有审计化变更执行，并受 <span class="mono">ai:apply</span> 把关。</li>
+            <li><strong>provider 无关 + 安全。</strong> 兼容 OpenAI（OpenAI / Ollama / vLLM / LM Studio / llama.cpp）与 Azure OpenAI；密钥经 KEK 加密、绝不作为设置项。每条提示都经过脱敏（§ 8.6）、双重 RBAC 把关（<span class="mono">ai:read</span> 外加主题自身的 <span class="mono">incident:read</span>/<span class="mono">log:read</span>）、限速并 panic 隔离。</li>
+            <li>验证：<span class="mono">go test ./...</span> 通过、<span class="mono">buf lint</span> 干净、<span class="mono">vue-tsc</span> 干净、<span class="mono">i18n_check.py</span> 0 缺失，外加针对 mock provider 的 Playwright QA。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-06-09</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">离线图标、遥测浏览器、静态二进制</div>
+        <div class="tl-body">
+          <ul>
+            <li><strong>离线图标包。</strong> 管理控制台过去会在运行时从公共 Iconify API 拉取图标 SVG —— 在隔离网环境中无法工作。现在图标在构建时从前端源码 + 后端菜单种子收集并打包，在首次绘制前注册完成。</li>
+            <li><strong>遥测浏览器。</strong> 基于内置遥测管线的全新 Top-N / 时间序列视图（QPS、top-K、序列）—— 无需外部时序数据库。</li>
+            <li><strong>静态二进制。</strong> 发布构建现为静态链接（<span class="mono">CGO_ENABLED=0</span>，纯 Go SQLite），去除了对构建主机 glibc 的依赖，同一产物可在更老的发行版（CentOS 7+）上运行。</li>
+            <li><strong>运维修复。</strong> 稳定的每事件访问日志 ID（支持精确查找）、启动时配置下发，以及让受权限限制的运维落在其真正可打开的首个页面（而非硬编码的仪表盘）。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-31</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">安全事件聚合 —— Phase 1–4</div>
+        <div class="tl-body">
+          <p>在每请求 <span class="mono">security_event</span> 流之上引入 <span class="mono">security_incident</span> 层。它与作为事实来源的事件行、审计链、告警评估器、SIEM 转发<em>组合</em> —— 而不替代其中任何一个。</p>
+          <ul>
+            <li><strong>Phase 1 —— 聚合。</strong> 同 <span class="mono">(tenant, site, client_ip, attack_class)</span> 在滑动空闲窗口内折叠为一个事件。<span class="mono">security_incident_event</span> 链表（<span class="mono">event_id</span> 唯一）持有关系；<span class="mono">security_event.incident_id</span> 是查询加速缓存。检测遵循 OWASP AppSensor；对外线格遵循 OCSF 类目分类。迁移 <span class="mono">0020</span>–<span class="mono">0021</span>。</li>
+            <li><strong>Phase 2 —— 运维打磨。</strong> 重开、合并、实时跟踪与按站点事件覆盖。UI 在合并/重开后保持事件在视野内，并在重新激活时关闭抽屉。</li>
+            <li><strong>Phase 3 —— 确定性富化。</strong> 每个事件在创建时即打上 MITRE ATT&amp;CK 技术 + 子技术与杀伤链阶段（由 <span class="mono">attack_class</span> + 规则 ID 家族派生），以及按最高频的国家 / ASN 地理汇总。运维可扩展的 <span class="mono">mitre_mapping</span> 覆盖表（迁移 <span class="mono">0023</span>）可覆盖内置映射。示例：一个 RCE + 933 事件得到 <span class="mono">T1190 [T1059, T1505.003]</span> / execution，地理 CN / AS4134。</li>
+            <li><strong>Phase 4 —— 自动响应。</strong> <span class="mono">incident_response_rule</span> 资源 + <span class="mono">IncidentResponseRuleService</span> CRUD，以及一个在事件状态迁移时通过既有审计写入路径变更实时控制（封禁 IP 列表 / 限速端点 / 告警 webhook）的响应器。<strong>三层默认关闭</strong> —— 未创建则无规则、每条规则出厂 <span class="mono">enabled=0</span>、租户级开关 <span class="mono">incident.response_enabled</span> 默认 false。每次变更在审计链中归属到 <span class="mono">system:incident-response</span>。一个 60 秒 TTL sweeper 通过审计化的 <span class="mono">RemoveIPListEntries</span> 路径自动回退过期封禁条目并重编译相关策略。</li>
+            <li>通过 <span class="mono">tiyi incident</span> / <span class="mono">tiyi incident-response</span> CLI 动词与 WAF → 自动响应 下的 Web UI 暴露。Sigma 风格的运维自定义关联 DSL 显式推迟 —— 固定的 12 类 + 4 轴键关联即已发布的 v1。</li>
+            <li>验证：<span class="mono">go test ./...</span> 通过、<span class="mono">buf lint</span> 干净、<span class="mono">vue-tsc</span> 干净、<span class="mono">i18n_check.py</span> 0 缺失，外加每个 phase 的 CLI/API 运行时冒烟测试。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-31</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">告警重新设计 —— Phase 1–4（D1–D14）</div>
+        <div class="tl-body">
+          <p>保留评估器确定性的轮询形态与 SQLite 存储；补上每个成熟告警系统都有的另一半 —— 业界收敛的「评估 / 通知」分离（Prometheus + Alertmanager），且不引入任何外部依赖。</p>
+          <ul>
+            <li><strong>正确性修复。</strong> 关闭了 UI 暴露但后端从未实现的规则 kind、被查询页大小静默截断的阈值计数，以及 UI/API 契约与投递实现不一致的通道 kind。</li>
+            <li><strong>生命周期，而非只触发一次。</strong> 通知 dispatcher 驱动 <span class="mono">pending → firing → recovered/resolved</span>，带 <span class="mono">for</span> 时长去抖、事件持续打开期间的重复通知与自动恢复 —— 取代旧的「只触发一次随后沉默」行为。</li>
+            <li><strong>持久性。</strong> 持久化通知 outbox（迁移 <span class="mono">0026</span>）加退避重试，关闭了可能永久丢掉新事件唯一通知的崩溃窗口。评估器状态持久化于 <span class="mono">alert_eval_state</span>（迁移 <span class="mono">0025</span>）。</li>
+            <li><strong>安全。</strong> 通道密钥（webhook URL、PagerDuty key、Slack token）从明文 JSON 改为 KEK 加密存储，读取时与写入审计链时都不再原样返回（迁移 <span class="mono">0024</span>）。</li>
+            <li><strong>默认安静。</strong> 分组、抑制与静默，外加按事件的备注时间线、规则生命周期与通道路由。</li>
+            <li>过程中实现了此前缺失的 RPC、审计了静默变更，并清理了无用的证书 UI。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-31</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">合并前安全 + QA 加固</div>
+        <div class="tl-body">
+          <ul>
+            <li><strong>关闭 fail-open RBAC 缺口</strong> —— 若干系统与证书管理 RPC 未做权限检查，默认放行调用。现已加门，并有 <span class="mono">rbac_coverage_test.go</span> 回归测试断言整个面上的覆盖。</li>
+            <li><strong>单机面板读到零流量</strong> —— <span class="mono">telemetry.enabled</span> 默认 true，会关掉旧的 rollup 写入器，但内嵌的 <span class="mono">StoreAccess</span> 路径从未调用 <span class="mono">telemetry.Ingest</span>，于是访问流量被记录在面板读取不到的地方。通过在 <span class="mono">StoreAccess</span> 中摄入修复，并加回归测试。</li>
+            <li><strong>race 感知的测试预算</strong> —— <span class="mono">TestFlushReturnsTrueWhenDrained</span> 有一个硬性 2s 排空预算，被 race 检测器的开销冲破；改为 race 感知。同时修复了一处既存的 <span class="mono">gofmt</span> 漂移，使 <span class="mono">make lint</span> 变绿。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item current">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.0-rc.1</span>
+          <span class="tl-date">2026-05-27</span>
+          <span class="tl-tag current">候选版本</span>
+        </div>
+        <div class="tl-title">日志列表支持直跳分页</div>
+        <div class="tl-body">
+          <p><span class="mono">CursorRequest.offset</span> 上限 10 万，与 cursor 路径互斥。Offset 计数走过滤后的行，因此 CIDR / 规则过滤器跳过的是<em>命中</em>的行数。前端弃用 <span class="mono">cursorStack</span> 与 <span class="mono">walkForwardTo</span>，直接由目标页号算 offset。</p>
+          <ul>
+            <li>4 个 store 测试 + 2 个 wire 测试，固化 offset 语义并拒绝 cursor+offset 同传</li>
+            <li>文件：<span class="mono">proto/tiyi/v1/common.proto</span>、<span class="mono">internal/store/log_repo.go</span>、<span class="mono">internal/api/log_handler.go</span>、三个日志列表 <span class="mono">.vue</span> 文件</li>
+            <li>验证：<span class="mono">go test ./...</span> 通过、<span class="mono">buf lint</span> 干净、<span class="mono">vue-tsc</span> 干净</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-26</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">六项发布后 QA 修复</div>
+        <div class="tl-body">
+          <ul>
+            <li><strong>DEF-002</strong> —— API 边界接受 IP 列表 <span class="mono">geo:CC</span> 条目（alpha-2/alpha-3 + 精选的 <span class="mono">PRIVATE</span>/<span class="mono">LOOPBACK</span> 桶）；SecLang 编译器在编译期已把它们展开成 CIDR，所以条目现在完整跑通而不必把数据集 fork 一份。</li>
+            <li><strong>DEF-003</strong> —— 可书签的参数化路由（<span class="mono">/agents/:id</span>、<span class="mono">/waf/policies/:id</span>）在后端菜单生成把它们丢掉之后被重新注册；<span class="mono">router.hasRoute</span> 防止重复注册。</li>
+            <li><strong>DEF-004</strong> —— <span class="mono">ResolveAgentGroup</span> 现在能针对 <span class="mono">ListAgents</span> 解析选择器，既接受已保存组的 id，也接受即兴规约预览（按 <span class="mono">match_agent_ids ∪ tag_selectors</span> 匹配）。</li>
+            <li><strong>DEF-005</strong> —— 单机节点命令现在被一个 2 秒消费者消费；<span class="mono">reload</span> 调用 <span class="mono">ApplyActiveSites</span>；<span class="mono">restart</span> 作为 no-op 成功（拆掉本地管理平面是错误的默认行为）。</li>
+            <li><strong>DEF-006</strong> —— 信任配置变更现在写入 <span class="mono">trust.update_profile</span>、<span class="mono">trust.reset_profile</span>、<span class="mono">trust.update_site_override</span>、<span class="mono">trust.reset_site_override</span>、<span class="mono">trust.refresh_cdn</span> 行入审计链。</li>
+            <li><strong>DEF-007</strong> —— 访问日志默认 <span class="mono">RecordingMode</span> 在三层从 <span class="mono">"off"</span> 翻为 <span class="mono">"on"</span>，符合系统设置文案 "默认访问日志模式 = 完整（自动）"。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-24</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">安全加固 + 前端清理</div>
+        <div class="tl-body">
+          <p>对全后端代码评审一遍，关闭了所有可执行项,且没有删除任何特性。</p>
+          <ul>
+            <li><strong>KEK 持久化</strong> —— 只有显式配置 <span class="mono">crypto.kek_file</span> 时,服务端才会调用 <span class="mono">db.SetKEK(envelope.LoadKEK)</span>。之前的无条件覆盖会在每次重启时生成临时 KEK,静默打破已加密的证书私钥、ACME 账户与 DNS 凭据。</li>
+            <li><strong>持久 ed25519 配置签名密钥</strong> —— 在 <span class="mono">bundle_signing_key</span> 单例行中存储,使用上文 KEK 信封加密。在迁移与 Bootstrap 之后,在 <span class="mono">store.Open</span> 中预热。替代了重启时内存生成器破坏节点 TOFU 固定的旧实现。</li>
+            <li><strong>节点版本回放保护</strong> —— <span class="mono">applyConfigUpdate</span> 拒绝任何版本号不严格大于 <span class="mono">LastAppliedRevision</span> 的 bundle。</li>
+            <li><strong>迁移漂移检测</strong> —— <span class="mono">internal/store/migrate.go</span> 记录每条已应用迁移的 SHA-256;在漂移时拒启。</li>
+            <li><strong>前端清理</strong> —— 删除 16 个 Vben 演示页与 5 个支持 <span class="mono">.ts</span> 文件,重写布局壳,修复了把角色与 <span class="mono">'standby'</span>/<span class="mono">'active'</span> 比较的破损角色检查(实际值是 <span class="mono">standalone|primary|secondary</span>)。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-24</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">WAF 调优评审 —— PR 1–8</div>
+        <div class="tl-body">
+          <p>对策略调优抽屉进行了深度评审,通过 8 个协调的 PR 关闭所有可执行项。重点:</p>
+          <ul>
+            <li><strong>审计链覆盖</strong> —— <span class="mono">rule_override</span>、<span class="mono">custom_rule</span>、<span class="mono">ip_list</span>、<span class="mono">ip_list_binding</span>、<span class="mono">rate_limit_endpoint</span> 上的每一次 Upsert/Update/Delete 现在都会追加一行哈希链记录;之前的代码静默绕过它。</li>
+            <li><strong>评分覆盖发射</strong> —— 从加性的 <span class="mono">setvar:tx.inbound_anomaly_score=+N</span> 改为按桶的 <span class="mono">tx.&lt;sev&gt;_anomaly_score_pl&lt;pl&gt;</span> 重置+设置,消除重复计数。</li>
+            <li><strong>批量 upsert 原子化</strong> —— <span class="mono">BulkUpsertRuleOverrides</span> 在单个事务中执行 N 次 upsert,要么全成要么全败,最后只刷一次 bundle hash 与一次 apply。</li>
+            <li><strong>规则覆盖动作枚举</strong> —— <span class="mono">DEFAULT|DISABLE|LOG_ONLY|SCORE_OVERRIDE</span>;旧的 <span class="mono">disabled</span> 布尔与 <span class="mono">action</span> 字符串标记为 deprecated;<span class="mono">score_override</span> 迁移到 <span class="mono">optional int32</span>。</li>
+            <li><strong>字段掩码纪律</strong> —— UpdatePolicy 强制空 <span class="mono">ip_list_bindings</span> 只在 <span class="mono">update_mask.paths</span> 包含该字段时才会清空。</li>
+            <li><strong>路径前缀校验</strong> —— 在 API 边界拒绝非可打印 ASCII 与 SecLang 引号 metacharacter。</li>
+            <li><strong>i18n 区域对齐</strong> —— en-US 与 zh-CN 之间 1786/1786 个 key 对齐,vue-i18n 链式消息前的 <span class="mono">@</span> 字面量已转义。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-16</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">客户端 IP 信任管道</div>
+        <div class="tl-body">
+          <p>统一信任管道终结了零散的 XFF 解析。替代了限速器中盲目以 XFF 优先的解析 —— 这是安全级别的修复。</p>
+          <ul>
+            <li><span class="mono">tenant_settings.trust_profile_json</span> + <span class="mono">site.trust_profile_override_json</span></li>
+            <li>自动拉取 Cloudflare、Fastly、Akamai、CloudFront、Front Door、GCLB 的 CIDR 快照;刷新器按 job 单 goroutine,带抖动间隔与 panic 隔离</li>
+            <li>翻译器为每个 <span class="mono">http.servers</span> 块发射 <span class="mono">trusted_proxies</span> + <span class="mono">trusted_proxies_strict</span></li>
+            <li>严格的右到左行走,与 Caddy v2 字节级一致</li>
+            <li><span class="mono">TrustService.Explain</span> 把任意 (peer, headers) 元组回溯到解析后的客户端 IP</li>
+            <li>默认开启的告警:<span class="mono">Origin Bypass Attempt</span>(5 分钟窗口、严重)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-10</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">遥测管道(Phase 1–6)</div>
+        <div class="tl-body">
+          <p>计数器 → 采样 → API 树 → 读 API → Prometheus 导出器,完整通路。</p>
+          <ul>
+            <li><strong>Phase 1</strong> —— 分片入流环、10 秒开桶聚合、每日 SQLite 分区位于 <span class="mono">logs/rollup_10s/YYYY-MM-DD.db</span></li>
+            <li><strong>Phase 2</strong> —— 带 <span class="mono">__other__</span> 桶的 Misra-Gries Top-K(SUM(*) 等于真实流量);每日字典日志;按小时/日/月降采样</li>
+            <li><strong>Phase 3</strong> —— 按 IP 的 LRU + 全局采样环;CRC 保护的循环文件 WAL;启动时回放</li>
+            <li><strong>Phase 4</strong> —— 按站点 URL 前缀树,带 <span class="mono">MaxNodesPerSite</span> + <span class="mono">MaxDepth</span> 上限;空闲叶子撤入 <span class="mono">api_tree_archive</span></li>
+            <li><strong>Phase 5</strong> —— REST API 位于 <span class="mono">/api/v1/telemetry/*</span> + 前端浏览器</li>
+            <li><strong>Phase 6</strong> —— 本地管理 socket 的 <span class="mono">/metrics</span> Prometheus 导出器</li>
+            <li><strong>旧路径切换</strong> —— 启用遥测后,<span class="mono">logsink.recordAccessRollup</span> 会短路掉旧的 <span class="mono">traffic_rollup_minute</span> 每事件写入(PRD-TELEMETRY 把它定为 100k EPS 下的 I/O 放大点)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-09</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">前端壳完成</div>
+        <div class="tl-body">
+          <p>所有服务端注入的菜单都解析到真实页面;所有 PRD-UI § 4 页面端到端打通;所有 PRD-UI § 5 中可复用的 Tiyi 组件都已就绪。</p>
+          <ul>
+            <li>Dashboard 调用 <span class="mono">GetDashboardStats</span>、<span class="mono">GetTrafficTimeseries</span>、<span class="mono">GetAttackDistribution</span>、<span class="mono">GetTopAttackers</span>、<span class="mono">StreamAlerts</span></li>
+            <li>策略编辑器 12 个标签,可深链:CRS Core · HTTP Policy · Limits · 规则调优 · IP 列表 · 自定义规则 · 插件 · 限速 · 排除项 · 预览 · 版本 · 测试台</li>
+            <li>System 分支:健康、日志管道、用户、角色、设置(10 标签)、复制、更新中心(4 标签)、关于</li>
+            <li>告警规则、告警通道、IP 列表、节点详情、遥测浏览器、审计 + diff 抽屉</li>
+            <li><strong>韧性原语</strong>:<span class="mono">useResilientStream</span>、<span class="mono">formatRpcError</span>、<span class="mono">useResponsiveWidth</span></li>
+            <li>完整 zh-CN + en-US,所有 <span class="mono">$t()</span> 调用全部解析</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-07</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">WAF 策略 —— 完整生命周期</div>
+        <div class="tl-body">
+          <p>store/API/Web/CLI 的 CRUD;内置模板(Strict/Standard/Permissive);版本快照与回滚;引擎状态切换;CRS 绑定;规则覆盖 / 自定义规则 / IP 列表 / 插件 / 限速调优;SecLang 预览;CRS 影响预览;策略测试台。</p>
+          <ul>
+            <li>带 CRS 最佳实践告警的确定性 SecLang 编译</li>
+            <li>按站点策略覆盖把标量叠加到策略上而不必 fork</li>
+            <li>CRS 规则排除包(WordPress、Drupal、Nextcloud、phpBB、phpMyAdmin、XenForo、cPanel、DokuWiki)支持离线归档导入</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-07</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">远程节点</div>
+        <div class="tl-body">
+          <p>一次性入网 token、挂载的 <span class="mono">AgentStream</span>、<span class="mono">tiyi agent</span> 运行时、实时远程 bundle 投递 / 缓存 / 应用结果上报、尽力的远程访问 / 安全 / 错误日志上传。</p>
+          <ul>
+            <li>固定的 bundle 签名公钥校验,首次连接 TOFU</li>
+            <li>周期性指标推送(内存 / CPU)</li>
+            <li>角色追踪(primary / secondary / agent)</li>
+            <li><span class="mono">tiyi agents issue-token | install-script | send-command | commands</span> CLI</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-06</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">ACME —— Phase A 到 D</div>
+        <div class="tl-body">
+          <ul>
+            <li><strong>Phase A</strong> —— 真正的 RFC 8555 客户端(包装 <span class="mono">golang.org/x/crypto/acme</span>)替代了之前的自签桩;按(租户、目录)的账户生命周期</li>
+            <li><strong>Phase B</strong> —— 多节点 HTTP-01,每个节点上有 loopback 响应器,并通过节点流广播(token, key_authorization)</li>
+            <li><strong>Phase C</strong> —— 带可插拔驱动注册表的 DNS-01:Cloudflare 驱动完整,Route53 与阿里云提供凭据校验桩;权威 NS 感知的传播检查器</li>
+            <li><strong>Phase D</strong> —— 可观测性:Dashboard 暴露 <span class="mono">certs_expiring_14d</span>、<span class="mono">acme_renewals_failed_24h</span> 等;首次启动种入默认告警</li>
+            <li>UI:"签发(ACME)" 模态、按行的续期按钮、"DNS Provider" 页面</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-05</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">CRS 目录 + 站点 + 日志转发</div>
+        <div class="tl-body">
+          <ul>
+            <li>OWASP CRS 4.25.0 嵌入到二进制中,首次启动自动导入</li>
+            <li>通过 <span class="mono">SystemService.ListUpstreamCrsReleases</span> 抓取 GitHub 发布;离线归档导入也支持</li>
+            <li>站点生命周期:store/API/Web/CLI 的 CRUD/状态;真实的 Caddy JSON 预览;上传证书与 WAF 策略选择</li>
+            <li>单机运行时:Caddy 访问日志通过 <span class="mono">tiyi.log_forwarder</span> 转发;Coraza <span class="mono">SecAuditLogType tiyi</span>;实时安全跟踪</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-03</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">WAF 拦截修复 + 边界 <span class="mono">defer recover</span></div>
+        <div class="tl-body">
+          <p>关闭了拦截请求时的 "empty reply from server" bug。根因:<span class="mono">audit_writer.auditMessages</span> 中的有类型 nil 接口 panic(<span class="mono">message.Data()</span> 返回了非 nil 接口包裹 nil <span class="mono">*MessageData</span>)在 WAF 中间件返回 <span class="mono">caddyhttp.HandlerError</span> 之前抖断了 coraza-caddy 的延迟 <span class="mono">tx.ProcessLogging</span>。</p>
+          <p>三个边界现在都有函数级 <span class="mono">defer recover()</span>:<span class="mono">audit_writer.Writer.Write</span>、<span class="mono">log_forwarder.writeAccessLine</span>/<span class="mono">writeWAFLine</span>、<span class="mono">logsink</span> worker。跨层金丝雀位于 <span class="mono">/debug/logsink/stats</span>,暴露 <span class="mono">panicked</span> 计数。</p>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-05-01</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">告警、审计 SIEM、完整单机可观测</div>
+        <div class="tl-body">
+          <ul>
+            <li>告警评估器带 <span class="mono">security_threshold</span>、<span class="mono">error_threshold</span>、<span class="mono">audit_failure</span> 三种 kind,投递到 webhook / Slack / PagerDuty / 飞书 / 企业微信</li>
+            <li>审计链行通过 SIEM 转发,带显式 <span class="mono">siem.filter.include_audit</span> 开关</li>
+            <li>RFC 5424 / CEF / LEEF 通过 TCP / UDP / unixgram</li>
+            <li>Vben 安全、访问、错误、实时跟踪、审计、告警(活动 / 规则 / 通道)页面</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">2026-04-28</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">基础</div>
+        <div class="tl-body">
+          <ul>
+            <li>Go 1.25.0;ConnectRPC 1.19.2;<span class="mono">proto/tiyi/v1/*.proto</span> 下 14 个服务</li>
+            <li>SQLite 模式(完整 Phase-1)—— audit、CRS、policy_version、config_bundle</li>
+            <li>服务模式:<span class="mono">standalone</span>、<span class="mono">server</span>/<span class="mono">primary</span>、<span class="mono">secondary</span>/<span class="mono">standby</span>、<span class="mono">dashboard</span>、<span class="mono">agent</span></li>
+            <li>本地管理 socket,带 OS 文件权限鉴权</li>
+            <li>Argon2id 登录、JWT 签发 / 校验、刷新 token 链</li>
+            <li>Koanf 配置加载;SQLite 打开 / 迁移 / 引导;权限与菜单种子</li>
+            <li>审计骨架 —— repo、哈希链、校验器、AuditService、变更审计行、<span class="mono">tiyi audit</span> CLI</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="text-align:center; margin: 56px 0 16px;">
+      <a class="btn btn-ghost" href="index.html">← 返回首页</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer" style="margin-top: 0;">
+  <div class="container">
+    <div class="footer-bottom" style="padding-top: 0; border: 0;">
+      <span>© <span data-year>2026</span> Tiyi · 商业分发 · 上游保留 Apache-2.0</span>
+      <span class="build">build v3.0.0-rc.1-57-gf297a22 · 2026-06-24</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

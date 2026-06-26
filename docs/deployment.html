@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Deployment — Tiyi docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Run Tiyi in production: hardening, HA failover, SIEM egress, observability, and the upgrade path." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/deployment.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">Domain model</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API overview</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+    <span class="docs-eyebrow">Run in production</span>
+    <h1>Deployment</h1>
+    <p class="lede">Going from a development standalone instance to a production cluster takes four decisions: where the secrets live, how many CP nodes you run, where logs go, and how you upgrade. This page walks through each one.</p>
+
+    <h2 id="hardening">Production hardening</h2>
+    <p>Two config fields have dev-friendly fallbacks that explicitly do not survive a restart. Set them before going live.</p>
+
+    <h3 id="kek">KEK — at-rest encryption key</h3>
+<pre><code><span class="k">crypto</span>:
+  <span class="k">kek_file</span>: <span class="s">"/etc/tiyi/kek.bin"</span>     <span class="c"># 32-byte at-rest Key Encryption Key</span></code></pre>
+    <p>All envelope-encrypted blobs (TLS private keys, ACME account keys, ACME DNS provider credentials, the bundle signing key) decrypt with this KEK. Generate it once and back it up next to the state database:</p>
+<pre><code><span class="p">$</span> install -m 0600 /dev/null /etc/tiyi/kek.bin
+<span class="p">$</span> head -c 32 /dev/urandom &gt; /etc/tiyi/kek.bin</code></pre>
+
+    <div class="callout callout-danger">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="callout-body">
+        <p><strong>Lose the KEK and you lose your secrets.</strong> Back it up alongside <code>state.db</code>. Rotating the KEK requires re-wrapping every encrypted blob — out of scope for v3.0.0-rc.1.</p>
+        <p>Also: if you don't set <code>crypto.kek_file</code>, Tiyi falls back to <code>&lt;state-db-dir&gt;/kek.bin</code> auto-generated on first boot. This works for single-node dev but it's fragile in production where state directories may be ephemeral.</p>
+      </div>
+    </div>
+
+    <h3 id="jwt-secret">JWT signing secret</h3>
+<pre><code><span class="k">auth</span>:
+  <span class="k">jwt_secret</span>: <span class="s">"<span class="v">&lt;32+ random bytes&gt;</span>"</span>     <span class="c"># or set via TIYI_AUTH_JWT_SECRET</span></code></pre>
+    <p>HS256 signing secret for access tokens. When the field is empty Tiyi generates a 32-byte ephemeral secret on every restart and prints a <code>WARNING</code> line. Sessions invalidate at restart and replicas can't share refresh tokens — both are usually problems in production.</p>
+
+    <h3 id="bundle-key">Bundle signing key</h3>
+    <p>The server's ed25519 bundle signing key is stored in the singleton <code>bundle_signing_key</code> row, envelope-encrypted with the KEK. Agents pin the public key on first contact (TOFU) and refuse to re-pin afterwards. <strong>Rotation requires full re-enrollment</strong> — issue fresh tokens with <code>tiyi agents issue-token</code> and bring agents back up.</p>
+
+    <h2 id="ha">HA failover</h2>
+    <p>A Tiyi cluster can run with just a primary plus N agents (zero secondary is allowed). For non-trivial deployments, run one warm secondary so a primary outage does not interrupt mutations for long.</p>
+
+    <h3 id="ha-topology">Topology</h3>
+<pre><code><span class="c"># All four nodes proxy traffic. The L4/L7 LB health-checks /healthz on each.</span>
+<span class="p">$</span> TOKEN_B=<span class="s">"$(tiyi agents issue-token --tag secondary | jq -r .token)"</span>
+<span class="p">$</span> TOKEN_C=<span class="s">"$(tiyi agents issue-token --tag edge-c | jq -r .token)"</span>
+
+Node A: tiyi server     --addr 0.0.0.0:8080
+Node B: tiyi secondary  --primary-api http://A:8080 --enrollment-token <span class="v">$TOKEN_B</span>
+Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$TOKEN_C</span></code></pre>
+
+    <h3 id="promotion">Promotion</h3>
+    <p>If Node A goes down, run <code>tiyi promote</code> on Node B. The two-phase handover prevents split-brain:</p>
+    <ol>
+      <li>Contact the old primary via <code>SystemService.Demote</code> — primary flips to read-only, returns its current epoch and last mutation sequence.</li>
+      <li>Verify the secondary has all data up to the primary's last sequence. If behind, abort.</li>
+      <li>Bump epoch on the secondary (<code>primary_epoch + 1</code>), flip role to primary, accept mutations.</li>
+      <li>The old primary's embedded agent reconnects to the new primary as just an agent.</li>
+    </ol>
+    <p>If the primary is confirmed unreachable, <code>tiyi promote --force</code> skips the demote step. You accept bounded data loss for any mutations between the last bundle sync and the primary failure. If the old primary comes back, it sees agents reporting a higher epoch and auto-demotes to agent-only.</p>
+
+    <div class="callout callout-info">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </div>
+      <div class="callout-body">
+        <p><strong>Epoch fencing</strong> prevents split-brain. Every mutation checks the local epoch; a node that sees a higher epoch from any agent's state report auto-demotes. The epoch is monotonic and persisted in <code>cluster_state</code>.</p>
+      </div>
+    </div>
+
+    <h2 id="trust-profile">Client-IP trust profile</h2>
+    <p>If Tiyi sits behind a CDN or L4 LB, the client IP that reaches the WAF is not the real client IP — it's the proxy in front of you. The trust profile tells Tiyi which proxies are trusted and which header carries the real IP.</p>
+    <p>Set it once via the UI (Settings → Trust Profile tab) or the CLI:</p>
+<pre><code><span class="p">$</span> tiyi trust set <span class="o">\</span>
+    --trusted-proxies 10.0.0.0/8,172.16.0.0/12 <span class="o">\</span>
+    --client-ip-headers X-Forwarded-For
+
+<span class="c"># Auto-fetch CDN ranges:</span>
+<span class="p">$</span> tiyi trust cdn list
+<span class="p">$</span> tiyi trust cdn refresh cloudflare
+<span class="p">$</span> tiyi trust cdn refresh fastly
+
+<span class="c"># Trace any (peer, headers) tuple to the resolved client IP:</span>
+<span class="p">$</span> tiyi trust test --peer 10.0.0.5 --header <span class="s">"X-Forwarded-For: 1.2.3.4, 10.0.0.5"</span></code></pre>
+    <p>The <em>Origin Bypass Attempt</em> alert is seeded by default and fires when a request claims a client IP via XFF but the peer isn't a trusted proxy.</p>
+
+    <h2 id="siem">SIEM egress</h2>
+    <p>Tiyi forwards security, access, error, and (optionally) audit events over best-effort TCP, UDP, or unixgram in RFC 5424, CEF, or LEEF. Configure once via Settings → SIEM tab or the CLI:</p>
+<pre><code><span class="p">$</span> tiyi system settings update --key siem.enabled --value true
+<span class="p">$</span> tiyi system settings update --key siem.address --value <span class="s">"tcp://siem.internal:514"</span>
+<span class="p">$</span> tiyi system settings update --key siem.format --value rfc5424
+<span class="p">$</span> tiyi system settings update --key siem.filter.include_audit --value true</code></pre>
+    <p>SIEM forwarding is intentionally best-effort. Receiver health, durable delivery, and replay live in your SIEM pipeline, not in Tiyi. The dispatcher caches a single <code>net.Conn</code> per dispatcher with reconnect-on-error.</p>
+
+    <h2 id="observability">Observability</h2>
+    <ul>
+      <li><strong>Prometheus exporter</strong> at <code>/metrics</code> on the local admin socket. Scrape it from a sidecar; metrics are derived from the same telemetry pipeline that drives the dashboard.</li>
+      <li><strong><code>/healthz</code></strong> returns <code>{epoch, role, proxy_healthy}</code>. Use this for L4/L7 LB health checks.</li>
+      <li><strong><code>/debug/logsink/stats</code></strong> on the local admin socket exposes per-kind <code>attempted</code>/<code>written</code>/<code>dropped_full</code>/<code>panicked</code>/<code>queue_depth</code>/<code>last_error</code> counters. The <code>panicked</code> counter is the cross-layer canary for boundary <code>defer recover</code> handlers.</li>
+      <li><strong>Telemetry explorer UI</strong> at <code>/telemetry/explorer</code> for ad-hoc Top-K and sample browsing without leaving the dashboard.</li>
+    </ul>
+
+    <h2 id="upgrades">Rolling upgrades</h2>
+    <p>Once a binary release is imported, <code>tiyi release apply</code> fans an <code>APPLY_BINARY</code> command out to every agent whose OS/arch matches. Each agent downloads the replacement, verifies the SHA-256, and exits so its supervisor restarts it into the new binary.</p>
+<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi-3.0.1.tar.gz
+<span class="p">$</span> tiyi release list
+<span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span>             <span class="c"># all matching agents</span>
+<span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span>  <span class="c"># wave deployments</span>
+<span class="p">$</span> tiyi release runs                          <span class="c"># active rollouts</span>
+<span class="p">$</span> tiyi release rollback                      <span class="c"># revert to previous binary</span></code></pre>
+
+    <h2 id="backup">Backup</h2>
+    <p>Three things to back up:</p>
+    <ul>
+      <li><strong><code>state.db</code></strong> — the SQLite control-plane database. WAL-mode; <code>sqlite3 state.db ".backup '/path/to/backup.db'"</code> works while Tiyi is running.</li>
+      <li><strong><code>kek.bin</code></strong> — the at-rest encryption key. Loss is unrecoverable. Back it up to the same vault you use for other long-lived secrets.</li>
+      <li><strong><code>jwt_secret</code></strong> — already in your config repo, but make sure that repo is backed up too.</li>
+    </ul>
+    <p>Litestream-style WAL streaming for offsite backup is supported and recommended. <code>logs/</code> partition files are not part of the backup set — they're operational data with their own retention loop.</p>
+
+    <h2 id="checklist">Going-live checklist</h2>
+    <div class="callout callout-tip">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="callout-body">
+        <ul>
+          <li>Set <code>crypto.kek_file</code> to a backed-up file</li>
+          <li>Set <code>auth.jwt_secret</code> to a 32+ byte random value</li>
+          <li>Replace the bootstrap admin password with a real account</li>
+          <li>Configure the trust profile if Tiyi sits behind a CDN/LB</li>
+          <li>Pick a SIEM destination and verify a test event lands</li>
+          <li>Wire <code>/healthz</code> into the L4/L7 LB</li>
+          <li>Scrape <code>/metrics</code> from your Prometheus instance</li>
+          <li>Add <code>state.db</code> + <code>kek.bin</code> to your backup pipeline</li>
+          <li>Issue at least one secondary node so a single primary loss isn't terminal</li>
+          <li>Verify the audit chain: <code>tiyi audit verify-chain</code> exits 0</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="docs-pager">
+      <a href="api.html">
+        <span class="label">← Previous</span>
+        <span class="title">API overview</span>
+      </a>
+      <a class="next" href="../index.html">
+        <span class="label">→ Done</span>
+        <span class="title">Back to home</span>
+      </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

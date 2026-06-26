@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>快速开始 — Tiyi 文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="构建、运行并验证 Tiyi 五分钟内拦截真实攻击。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/quickstart.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul><li><a href="concepts.html">领域模型</a></li></ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 概览</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul><li><a href="deployment.html">部署</a></li></ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+    <span class="docs-eyebrow">开始使用</span>
+    <h1>快速开始</h1>
+    <p class="lede">从一份干净的 checkout 到一个 Tiyi 实例拦截真实 OWASP CRS 攻击，只需要五分钟。我们会构建二进制、启动 <code>standalone</code>、创建一个站点，并看 WAF 干活。</p>
+
+    <h2 id="prerequisites">前置条件</h2>
+    <ul>
+      <li><strong>Linux</strong>（amd64 或 arm64）或 macOS 用于开发。Windows 不是目标主机。</li>
+      <li>从源码构建需要 <strong>Go 1.25+</strong>。</li>
+      <li>重新构建嵌入式管理 UI 需要 <strong>Node 20+</strong> 与 <strong>pnpm 9+</strong>。</li>
+      <li>一个空闲的后端 —— 任何会说 HTTP 的都行。下方示例用 Python 的 <code>http.server</code>。</li>
+    </ul>
+
+    <h2 id="build">1. 构建二进制</h2>
+    <p>从一份新的 checkout：</p>
+<pre><code><span class="p">$</span> make proto       <span class="c"># 从 proto/ 重新生成 Connect Go + Protobuf Go</span>
+<span class="p">$</span> make web         <span class="c"># 把 Vben Admin 前端构建到 web/dist/</span>
+<span class="p">$</span> make build       <span class="c"># 编译嵌入前端的 bin/tiyi</span></code></pre>
+    <p>或一条命令搞定：</p>
+<pre><code><span class="p">$</span> make build-all</code></pre>
+    <p>输出在 <code>./bin/tiyi</code>。它是一个静态链接的 Go 可执行文件，复制到任何地方都能跑。</p>
+
+    <div class="callout callout-tip">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="callout-body">
+        <p><strong>没有 Go 工具链？</strong>跳到<a href="installation.html#prebuilt">安装 → 预构建二进制</a>看签名发布版的下载方式。</p>
+      </div>
+    </div>
+
+    <h2 id="run">2. 以 standalone 模式运行</h2>
+    <p>本地非特权测试，覆盖数据平面端口：</p>
+<pre><code><span class="p">$</span> ./bin/tiyi standalone <span class="o">\</span>
+    --state-db /tmp/tiyi.db <span class="o">\</span>
+    --caddy-admin-socket /tmp/tiyi-caddy.sock <span class="o">\</span>
+    --proxy-http-addr 127.0.0.1:18080 <span class="o">\</span>
+    --proxy-https-addr 127.0.0.1:18443</code></pre>
+
+    <p>Tiyi 会打印一行包含 API 地址、引导管理员密码（仅首次启动显示一次）与 Caddy 管理 socket 路径的 banner：</p>
+<pre><code><span class="c">tiyi v3.0.0-rc.1 standalone</span>
+<span class="c">  api      http://127.0.0.1:8080</span>
+<span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
+<span class="c">  state    /tmp/tiyi.db</span>
+<span class="c">  bootstrap admin password: <span class="v">&lt;random-shown-once&gt;</span></span></code></pre>
+
+    <p>浏览器打开 <code>http://127.0.0.1:8080/</code>。用 <code>admin</code> 与上面的密码登录。你已经在 Vben Admin 里。</p>
+
+    <div class="callout callout-warn">
+      <div class="callout-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="callout-body">
+        <p><strong>引导密码只显示一次。</strong>刷新前先从终端复制下来。丢了？停掉二进制、删除 <code>state.db</code>、再次启动 —— Tiyi 会重新引导。</p>
+      </div>
+    </div>
+
+    <h2 id="upstream">3. 准备一个后端</h2>
+    <p>在第二个终端启动一个 Tiyi 可以代理的服务。任何 HTTP 都行 —— 演示用 Python：</p>
+<pre><code><span class="p">$</span> python3 -m http.server 9000</code></pre>
+
+    <h2 id="site">4. 创建第一个站点</h2>
+    <p>UI 与 CLI 都行。CLI 使用本地管理 socket，无需 token：</p>
+<pre><code><span class="c"># 1. 创建一个上游池指向演示后端</span>
+<span class="p">$</span> ./bin/tiyi upstream create <span class="o">\</span>
+    --name demo-backend <span class="o">\</span>
+    --target http://127.0.0.1:9000
+
+<span class="c"># 2. 挂上内置 Standard 策略并创建站点</span>
+<span class="p">$</span> ./bin/tiyi site create <span class="o">\</span>
+    --name demo <span class="o">\</span>
+    --hostname demo.local <span class="o">\</span>
+    --upstream demo-backend <span class="o">\</span>
+    --policy <span class="s">"Built-in Standard"</span> <span class="o">\</span>
+    --tls none
+
+<span class="c"># 3. 启用 —— 触发实时 Caddy apply</span>
+<span class="p">$</span> ./bin/tiyi site enable demo</code></pre>
+
+    <p>写入器把站点行翻译成 Caddy JSON、通过其管理 socket 热重载 Caddy，并发出一行已签名的配置 bundle。任何失败都会保留旧配置并恢复站点行。</p>
+
+    <h2 id="verify">5. 验证 WAF 拦截攻击</h2>
+    <p>在第三个终端，向代理端口发出一次基线请求与三个经典攻击：</p>
+<pre><code><span class="c"># 基线 —— 应该通过</span>
+<span class="p">$</span> curl -sS -o /dev/null -w <span class="s">"%{http_code}\n"</span> -H <span class="s">"Host: demo.local"</span> http://127.0.0.1:18080/
+<span class="c">200</span>
+
+<span class="c"># SQL 注入</span>
+<span class="p">$</span> curl -sS -o /dev/null -w <span class="s">"%{http_code}\n"</span> -H <span class="s">"Host: demo.local"</span> <span class="o">\</span>
+    <span class="s">"http://127.0.0.1:18080/?id=1'%20OR%20'1'='1"</span>
+<span class="c">403</span>
+
+<span class="c"># XSS</span>
+<span class="p">$</span> curl -sS -o /dev/null -w <span class="s">"%{http_code}\n"</span> -H <span class="s">"Host: demo.local"</span> <span class="o">\</span>
+    <span class="s">"http://127.0.0.1:18080/?q=&lt;script&gt;alert(1)&lt;/script&gt;"</span>
+<span class="c">403</span>
+
+<span class="c"># 目录穿越</span>
+<span class="p">$</span> curl -sS -o /dev/null -w <span class="s">"%{http_code}\n"</span> -H <span class="s">"Host: demo.local"</span> <span class="o">\</span>
+    <span class="s">"http://127.0.0.1:18080/../../../../etc/passwd"</span>
+<span class="c">403</span></code></pre>
+
+    <p>在 <code>http://127.0.0.1:8080/#/logs/security</code> 的 dashboard 上，三次拦截请求会立即出现，附带 Coraza 规则 ID、严重等级、攻击标签与匹配的 CRS 消息。Dashboard 的流量曲线实时展现 1:3 基线-拦截比。</p>
+
+    <h2 id="next">下一步阅读</h2>
+    <ul>
+      <li><a href="installation.html">安装</a> —— 配置文件、预构建二进制、四种运行模式，以及上线前需要显式设定的加固字段。</li>
+      <li><a href="concepts.html">领域模型</a> —— 站点、上游、证书、策略、节点、遥测、审计链各是什么。</li>
+      <li><a href="cli.html">CLI 参考</a> —— 每一个 <code>tiyi</code> 子命令按资源分组。</li>
+    </ul>
+
+    <div class="docs-pager">
+      <a href="index.html">
+        <span class="label">← 上一页</span>
+        <span class="title">概览</span>
+      </a>
+      <a class="next" href="installation.html">
+        <span class="label">下一页 →</span>
+        <span class="title">安装</span>
+      </a>
+    </div>
+  </main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>
