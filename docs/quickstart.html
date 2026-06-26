@@ -129,6 +129,18 @@
       </div>
     </div>
 
+    <h3 id="own-admin-password">Choose your own admin password (optional)</h3>
+    <p>For automation, container images, or CI, skip the generated password: set <code>TIYI_BOOTSTRAP_ADMIN_PASSWORD</code> before the first boot and Tiyi uses it verbatim — no banner is printed. The username defaults to <code>admin</code>, and auto-generation only fires when no users exist yet, so restarts are no-ops.</p>
+<pre><code><span class="p">$</span> mkdir -p /tmp/waf
+<span class="p">$</span> TIYI_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
+    ./bin/tiyi standalone <span class="o">\</span>
+    --addr 0.0.0.0:8080 <span class="o">\</span>
+    --state-db /tmp/waf/state.db <span class="o">\</span>
+    --caddy-admin-socket /tmp/waf/caddy.sock <span class="o">\</span>
+    --proxy-http-addr 0.0.0.0:8180 <span class="o">\</span>
+    --proxy-https-addr 0.0.0.0:18443 <span class="o">\</span>
+    --admin-socket /tmp/waf/admin.sock</code></pre>
+
     <h2 id="upstream">3. Stand up a backend</h2>
     <p>In a second terminal, start something Tiyi can proxy to. Anything HTTP works — for the demo we'll use Python:</p>
 <pre><code><span class="p">$</span> python3 -m http.server 9000</code></pre>
