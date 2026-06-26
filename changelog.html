@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Changelog — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi release notes from foundation work through v3.0.0-rc.1." />
+<meta name="description" content="Tiyi release notes from foundation work through v3.0.0." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -45,11 +45,30 @@
   <div class="container">
     <div class="section-head" style="text-align:left; margin-bottom:32px;">
       <span class="eyebrow">Changelog</span>
-      <h2 style="font-size: clamp(32px, 4vw, 48px);">The road to v3.0.0.</h2>
+      <h2 style="font-size: clamp(32px, 4vw, 48px);">Tiyi release history.</h2>
       <p style="margin: 0;">Every entry maps back to a commit and a verification command. Items are <span class="tl-tag shipped" style="display:inline-block; vertical-align:middle;">Shipped</span> only after implementation, verification, and required docs are complete — otherwise <span class="tl-tag future" style="display:inline-block; vertical-align:middle;">Planned</span> or <span class="tl-tag current" style="display:inline-block; vertical-align:middle;">In progress</span>.</p>
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.0</span>
+          <span class="tl-date">2026-06-26</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">First public release</div>
+        <div class="tl-body">
+          <p>Tiyi v3.0.0 is the first published GitHub Release: one signed binary distribution channel for Linux amd64 and arm64, with the installer served from both <span class="mono">www.tiyisec.com/install.sh</span> and the public GitHub raw URL.</p>
+          <ul>
+            <li>Release assets include per-platform tarballs, <span class="mono">SHA256SUMS</span>, <span class="mono">SHA256SUMS.sig</span>, and <span class="mono">release-manifest.json</span>.</li>
+            <li>Downloads verify against <span class="mono">release-key.pub</span> using SHA-256 plus Ed25519 signatures.</li>
+            <li>Operators can update an installed binary with <span class="mono">tiyi self-update --yes</span>.</li>
+            <li>GitHub release: <a href="https://github.com/zzmzm/tiyi/releases/tag/v3.0.0">Tiyi v3.0.0</a>.</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -204,12 +223,12 @@
         </div>
       </div>
 
-      <div class="tl-item current">
+      <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.0.0-rc.1</span>
           <span class="tl-date">2026-05-27</span>
-          <span class="tl-tag current">Release Candidate</span>
+          <span class="tl-tag shipped">Shipped</span>
         </div>
         <div class="tl-title">Direct page-jump pagination for log views</div>
         <div class="tl-body">
@@ -474,7 +493,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.0-rc.1-57-gf297a22 · 2026-06-24</span>
+      <span class="build">build v3.0.0 · 2026-06-26</span>
     </div>
   </div>
 </footer>

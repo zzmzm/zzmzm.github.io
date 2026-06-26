@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>更新日志 — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi 从基础工作到 v3.0.0-rc.1 的完整更新记录。" />
+<meta name="description" content="Tiyi 从基础工作到 v3.0.0 的完整更新记录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,11 +46,30 @@
   <div class="container">
     <div class="section-head" style="text-align:left; margin-bottom:32px;">
       <span class="eyebrow">更新日志</span>
-      <h2 style="font-size: clamp(32px, 4vw, 48px);">通往 v3.0.0 的道路。</h2>
+      <h2 style="font-size: clamp(32px, 4vw, 48px);">Tiyi 发布历史。</h2>
       <p style="margin: 0;">每一项都对应一次提交与一次验证命令。条目只在实现、验证、文档全部完成后才会标记为 <span class="tl-tag shipped" style="display:inline-block; vertical-align:middle;">已发布</span>，否则就是 <span class="tl-tag future" style="display:inline-block; vertical-align:middle;">规划中</span> 或 <span class="tl-tag current" style="display:inline-block; vertical-align:middle;">进行中</span>。</p>
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.0</span>
+          <span class="tl-date">2026-06-26</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">首个公开版本</div>
+        <div class="tl-body">
+          <p>Tiyi v3.0.0 是首个公开 GitHub Release：为 Linux amd64 与 arm64 提供一个签名二进制分发渠道，安装脚本同时由 <span class="mono">www.tiyisec.com/install.sh</span> 与 GitHub raw URL 提供。</p>
+          <ul>
+            <li>发布资产包含按平台区分的 tarball、<span class="mono">SHA256SUMS</span>、<span class="mono">SHA256SUMS.sig</span> 与 <span class="mono">release-manifest.json</span>。</li>
+            <li>下载可用 <span class="mono">release-key.pub</span> 校验 SHA-256 与 Ed25519 签名。</li>
+            <li>已安装的二进制可通过 <span class="mono">tiyi self-update --yes</span> 更新。</li>
+            <li>GitHub release：<a href="https://github.com/zzmzm/tiyi/releases/tag/v3.0.0">Tiyi v3.0.0</a>。</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -205,12 +224,12 @@
         </div>
       </div>
 
-      <div class="tl-item current">
+      <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.0.0-rc.1</span>
           <span class="tl-date">2026-05-27</span>
-          <span class="tl-tag current">候选版本</span>
+          <span class="tl-tag shipped">已发布</span>
         </div>
         <div class="tl-title">日志列表支持直跳分页</div>
         <div class="tl-body">
@@ -475,7 +494,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.0-rc.1-57-gf297a22 · 2026-06-24</span>
+      <span class="build">build v3.0.0 · 2026-06-26</span>
     </div>
   </div>
 </footer>
