@@ -106,8 +106,9 @@
   <span class="k">http_addr</span>:  <span class="s">":80"</span>
   <span class="k">https_addr</span>: <span class="s">":443"</span>
   <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
-    <p>用 <code>--config</code> 传入：</p>
-<pre><code><span class="p">$</span> tiyi standalone --config /etc/tiyi/tiyi.yaml</code></pre>
+    <p>用 <code>--config</code> 传入。这份配置使用 <code>/var/lib/tiyi</code> 与 80/443 端口，因此请以 root 运行（或用下面的 systemd unit）：</p>
+<pre><code><span class="p">$</span> sudo tiyi standalone --config /etc/tiyi/tiyi.yaml</code></pre>
+    <p>若想以普通用户、不用 <code>sudo</code> 试用，可以不走配置文件，而是在命令行上传入可写路径与高端口 —— 见<a href="quickstart.html#run">快速开始</a>。</p>
 
     <div class="callout callout-warn">
       <div class="callout-icon">

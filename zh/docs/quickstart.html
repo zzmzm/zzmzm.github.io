@@ -99,10 +99,13 @@
     </div>
 
     <h2 id="run">2. 以 standalone 模式运行</h2>
-    <p>本地非特权测试，覆盖数据平面端口：</p>
+    <p>按你的权限选择一种方式。<strong>以 root 运行</strong>时默认值即可 —— 状态写入 <code>/var/lib/tiyi</code>，代理绑定 80/443 端口：</p>
+<pre><code><span class="p">$</span> sudo ./bin/tiyi standalone</code></pre>
+    <p><strong>以普通用户运行</strong>（不用 sudo）时，把 Tiyi 指向可写路径并使用高端口：</p>
 <pre><code><span class="p">$</span> ./bin/tiyi standalone <span class="o">\</span>
     --state-db /tmp/tiyi.db <span class="o">\</span>
     --caddy-admin-socket /tmp/tiyi-caddy.sock <span class="o">\</span>
+    --admin-socket /tmp/tiyi-admin.sock <span class="o">\</span>
     --proxy-http-addr 127.0.0.1:18080 <span class="o">\</span>
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 

@@ -104,10 +104,13 @@
     </div>
 
     <h2 id="run">2. Run in standalone mode</h2>
-    <p>For unprivileged local testing, override the data-plane ports:</p>
+    <p>Pick the option that matches your privileges. <strong>As root</strong> the defaults work — state lands in <code>/var/lib/tiyi</code> and the proxy binds ports 80/443:</p>
+<pre><code><span class="p">$</span> sudo ./bin/tiyi standalone</code></pre>
+    <p><strong>As a normal user</strong> (no sudo), point Tiyi at writable paths and high ports:</p>
 <pre><code><span class="p">$</span> ./bin/tiyi standalone <span class="o">\</span>
     --state-db /tmp/tiyi.db <span class="o">\</span>
     --caddy-admin-socket /tmp/tiyi-caddy.sock <span class="o">\</span>
+    --admin-socket /tmp/tiyi-admin.sock <span class="o">\</span>
     --proxy-http-addr 127.0.0.1:18080 <span class="o">\</span>
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 

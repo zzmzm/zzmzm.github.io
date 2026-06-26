@@ -123,8 +123,9 @@
   <span class="k">http_addr</span>:  <span class="s">":80"</span>
   <span class="k">https_addr</span>: <span class="s">":443"</span>
   <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
-    <p>Pass it with <code>--config</code>:</p>
-<pre><code><span class="p">$</span> tiyi standalone --config /etc/tiyi/tiyi.yaml</code></pre>
+    <p>Pass it with <code>--config</code>. This config uses <code>/var/lib/tiyi</code> and ports 80/443, so run it as root (or under the systemd unit below):</p>
+<pre><code><span class="p">$</span> sudo tiyi standalone --config /etc/tiyi/tiyi.yaml</code></pre>
+    <p>To try Tiyi as a normal user without <code>sudo</code>, skip the config file and pass writable paths and high ports on the command line instead — see the <a href="quickstart.html#run">Quickstart</a>.</p>
 
     <div class="callout callout-warn">
       <div class="callout-icon">
