@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Changelog — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi release notes from foundation work through v3.0.0." />
+<meta name="description" content="Tiyi release notes from foundation work through v3.0.1." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,6 +50,27 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.1</span>
+          <span class="tl-date">2026-06-27</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Multi-node cluster install + agent operations</div>
+        <div class="tl-body">
+          <p>Operational hardening for running Tiyi as a multi-node HA cluster, with every node managed by systemd on the default ports.</p>
+          <ul>
+            <li><strong>Cluster as systemd services.</strong> <span class="mono">tiyi install --mode server|secondary|agent</span> writes a hardened unit per node (80/443 via <span class="mono">CAP_NET_BIND_SERVICE</span>); the agent/secondary read their control-plane URL and one-use enrollment token from the unit's optional <span class="mono">EnvironmentFile</span> at <span class="mono">/etc/tiyi/tiyi.env</span> — the nginx-style drop-in. The agent-mode unit no longer carries control-plane-only flags it would reject.</li>
+            <li><strong>WAF on remote agents.</strong> Agents materialize the embedded CRS locally and rewrite a delivered bundle's CRS include paths to their own copy, so WAF-enabled sites deploy and block (SQLi / XSS / LFI → <span class="mono">403</span>) on remote agents, not just the control plane.</li>
+            <li><strong>Accurate agent metrics.</strong> Per-agent requests/sec, blocked/sec, and active connections now come from the data-plane counters and stream to the control plane (previously always zero); CPU, memory, bandwidth, and goroutines stay exact.</li>
+            <li><strong>Stable agent status.</strong> A connected, healthy agent stays online and no longer flaps online↔error — a metrics push refreshes liveness without masking a real apply error.</li>
+            <li><strong>Console fixes.</strong> Agent commands from the node list/detail no longer fail with "command kind is required"; the Install Agent code blocks are readable in dark mode and now offer a systemd-service variant; the dashboard shell is served <span class="mono">no-cache</span> so UI upgrades load without a manual hard refresh.</li>
+            <li>Verified: <span class="mono">go test ./...</span> green, plus a live three-node cluster QA (primary + secondary + agent) covering enrollment, the license scale gate, WAF blocking, metric sync, and agent commands.</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -493,7 +514,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.0 · 2026-06-26</span>
+      <span class="build">build v3.0.1 · 2026-06-28</span>
     </div>
   </div>
 </footer>

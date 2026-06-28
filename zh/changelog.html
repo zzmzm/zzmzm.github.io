@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>更新日志 — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi 从基础工作到 v3.0.0 的完整更新记录。" />
+<meta name="description" content="Tiyi 从基础工作到 v3.0.1 的完整更新记录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -51,6 +51,27 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.1</span>
+          <span class="tl-date">2026-06-27</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">多节点集群安装 + Agent 运维</div>
+        <div class="tl-body">
+          <p>面向多节点 HA 集群运行的运维加固,每个节点都由 systemd 在默认端口上托管。</p>
+          <ul>
+            <li><strong>以 systemd 服务运行集群。</strong><span class="mono">tiyi install --mode server|secondary|agent</span> 为每个节点写入加固 unit(通过 <span class="mono">CAP_NET_BIND_SERVICE</span> 绑定 80/443);agent/secondary 的控制面 URL 与一次性入册 token 从 unit 可选的 <span class="mono">EnvironmentFile</span>(<span class="mono">/etc/tiyi/tiyi.env</span>)读取 —— 即 nginx 风格的 drop-in。agent 模式 unit 不再携带它会拒绝的控制面专用参数。</li>
+            <li><strong>远端 Agent 上的 WAF。</strong>Agent 现在在本地落地内置 CRS,并把下发配置包中的 CRS include 路径改写到自己的副本,因此启用 WAF 的站点会在远端 Agent 上部署并拦截(SQLi / XSS / LFI → <span class="mono">403</span>),而不只是在控制面。</li>
+            <li><strong>准确的 Agent 指标。</strong>每个 Agent 的请求/秒、阻断/秒、活跃连接数现在来自数据面计数器并上报到控制面(此前恒为 0);CPU、内存、带宽、goroutine 保持精确。</li>
+            <li><strong>稳定的 Agent 状态。</strong>已连接且健康的 Agent 保持在线,不再在 在线↔异常 之间抖动 —— 指标上报刷新存活而不掩盖真实的应用失败。</li>
+            <li><strong>控制台修复。</strong>从节点列表/详情下发命令不再报 “command kind is required”;安装节点页的命令代码块在暗色模式下可读(并提供 systemd 服务变体);仪表盘外壳以 <span class="mono">no-cache</span> 下发,升级后无需手动强刷即可加载。</li>
+            <li>已验证:<span class="mono">go test ./...</span> 通过,并完成一次三节点集群实测(主 + 备 + agent),覆盖入册、license 规模门、WAF 拦截、指标同步与 Agent 命令。</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -494,7 +515,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.0 · 2026-06-26</span>
+      <span class="build">build v3.0.1 · 2026-06-28</span>
     </div>
   </div>
 </footer>

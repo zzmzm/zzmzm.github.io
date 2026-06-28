@@ -95,7 +95,7 @@
     <p>Tiyi is one signed binary — free and full-featured on a single node. The canonical install script is published at <code>https://www.tiyisec.com/install.sh</code>:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.0.0 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.0.1 linux/amd64</span></code></pre>
     <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. <code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets.</p>
 
     <h2 id="bootstrap-from-server">Bootstrap an agent from a running server</h2>
@@ -106,7 +106,7 @@
 
     <h2 id="config-file">Config file</h2>
     <p>Tiyi reads a Koanf-based YAML config. Start from this minimal config and let the defaults handle the rest:</p>
-<pre><code><span class="c"># /etc/tiyi/tiyi.yaml</span>
+<pre><code><span class="c"># /etc/tiyi/server.yaml</span>
 <span class="k">api</span>:
   <span class="k">addr</span>: <span class="s">"0.0.0.0:8080"</span>
 
@@ -124,7 +124,7 @@
   <span class="k">https_addr</span>: <span class="s">":443"</span>
   <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
     <p>Pass it with <code>--config</code>. This config uses <code>/var/lib/tiyi</code> and ports 80/443, so run it as root (or under the systemd unit below):</p>
-<pre><code><span class="p">$</span> sudo tiyi standalone --config /etc/tiyi/tiyi.yaml</code></pre>
+<pre><code><span class="p">$</span> sudo tiyi standalone --config /etc/tiyi/server.yaml</code></pre>
     <p>To try Tiyi as a normal user without <code>sudo</code>, skip the config file and pass writable paths and high ports on the command line instead — see the <a href="quickstart.html#run">Quickstart</a>.</p>
 
     <div class="callout callout-warn">
@@ -168,31 +168,32 @@
     --proxy-https-addr 0.0.0.0:443</code></pre>
     <p>The token is consumed on first contact. After enrollment, the agent persists its identity in <code>&lt;state-dir&gt;/identity.json</code> and the token is no longer needed. Lose the state directory and you'll need a fresh token to re-enroll.</p>
 
-    <h2 id="systemd">systemd unit</h2>
-    <p>For a long-lived deployment, run Tiyi under your init system. A minimal systemd unit:</p>
+    <h2 id="systemd">Run as a systemd service</h2>
+    <p>For a long-lived deployment, let Tiyi install itself as a hardened systemd service. <code>tiyi install</code> creates the <code>tiyi</code> service user and the <code>tiyi-admin</code> socket group, writes the unit, and with <code>--now</code> enables and starts it on boot:</p>
+<pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
+    <p>The service runs unprivileged and binds ports 80/443 via <code>CAP_NET_BIND_SERVICE</code>. The one-time admin password is printed once to the journal:</p>
+<pre><code><span class="p">$</span> journalctl -u tiyi -b | grep -i password</code></pre>
+    <p>Preview the generated unit without touching the system using <code>tiyi install --print</code>. Its key directives:</p>
 <pre><code><span class="c"># /etc/systemd/system/tiyi.service</span>
-<span class="k">[Unit]</span>
-<span class="k">Description</span>=Tiyi WAF
-<span class="k">After</span>=network-online.target
-<span class="k">Wants</span>=network-online.target
-
 <span class="k">[Service]</span>
 <span class="k">Type</span>=simple
 <span class="k">User</span>=tiyi
 <span class="k">Group</span>=tiyi
-<span class="k">ExecStart</span>=/usr/local/bin/tiyi server --config /etc/tiyi/tiyi.yaml
+<span class="k">ExecStart</span>=/usr/local/bin/tiyi standalone --config /etc/tiyi/server.yaml --admin-socket /run/tiyi/admin.sock --admin-socket-group tiyi-admin --admin-socket-mode 0660 --caddy-admin-socket /run/tiyi/caddy.sock
 <span class="k">Restart</span>=on-failure
-<span class="k">RestartSec</span>=2s
 <span class="k">AmbientCapabilities</span>=CAP_NET_BIND_SERVICE
 <span class="k">CapabilityBoundingSet</span>=CAP_NET_BIND_SERVICE
-<span class="k">NoNewPrivileges</span>=true
+<span class="k">StateDirectory</span>=tiyi
+<span class="k">RuntimeDirectory</span>=tiyi
+<span class="k">ConfigurationDirectory</span>=tiyi
+<span class="k">NoNewPrivileges</span>=yes
 <span class="k">ProtectSystem</span>=strict
-<span class="k">ReadWritePaths</span>=/var/lib/tiyi /etc/tiyi
-<span class="k">ProtectHome</span>=true
-<span class="k">PrivateTmp</span>=true
+<span class="k">ProtectHome</span>=yes
+<span class="k">PrivateTmp</span>=yes
 
 <span class="k">[Install]</span>
 <span class="k">WantedBy</span>=multi-user.target</code></pre>
+    <p>Pick a different role with <code>--mode</code> (e.g. <code>server</code>, <code>agent</code>). Remove the service with <code>sudo tiyi uninstall</code>: state under <code>/var/lib/tiyi</code>, config under <code>/etc/tiyi</code>, and the service user are preserved unless you add <code>--purge</code>.</p>
 
     <h2 id="next">What to read next</h2>
     <ul>

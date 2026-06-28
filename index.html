@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.0.0</span>
-    First public release
+    <span class="tag">v3.0.1</span>
+    Cluster-ready patch release
   </span>
 
   <h1>
@@ -299,7 +299,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">Product tour</span>
       <h2>The admin plane your ops team will actually use.</h2>
-      <p>Every screenshot below is a real screen from <span class="mono">v3.0.0</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
+      <p>Every screenshot below is a real screen from <span class="mono">v3.0.1</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
     </div>
 
     <!-- Tour 1: Dashboard -->
@@ -566,6 +566,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.1</span>
+          <span class="tl-date">2026-06-27</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Multi-node cluster install + agent operations</div>
+        <div class="tl-body">
+          Run a multi-node HA cluster with every node managed by systemd on the default 80/443: <span class="mono">tiyi install --mode server|secondary|agent</span> plus an <span class="mono">/etc/tiyi/tiyi.env</span> drop-in for the agent's control-plane URL and enrollment token. WAF-enabled sites now deploy and block (SQLi / XSS / LFI → <span class="mono">403</span>) on remote agents — the embedded CRS is materialized agent-side — per-agent QPS / blocked / connection metrics stream accurately, and a healthy agent stays online instead of flapping. Console fixes: agent commands no longer error, the Install Agent code blocks read correctly in dark mode (with a systemd-service variant), and the dashboard reloads cleanly after an upgrade.
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -846,7 +859,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.0 · 2026-06-26</span>
+      <span class="build">build v3.0.1 · 2026-06-28</span>
     </div>
   </div>
 </footer>

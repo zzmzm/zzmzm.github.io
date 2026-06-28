@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.0.0</span>
-    首个公开版本
+    <span class="tag">v3.0.1</span>
+    集群就绪补丁版本
   </span>
 
   <h1>
@@ -286,7 +286,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">产品演示</span>
       <h2>运维团队真正会用的管理平面。</h2>
-      <p>下方每一张截图都来自 <span class="mono">v3.0.0</span> 的实际运行实例。同一份数据平面，同一份 UI，同一份 RPC。</p>
+      <p>下方每一张截图都来自 <span class="mono">v3.0.1</span> 的实际运行实例。同一份数据平面，同一份 UI，同一份 RPC。</p>
     </div>
 
     <!-- Tour 1: Dashboard -->
@@ -553,6 +553,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.1</span>
+          <span class="tl-date">2026-06-27</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">多节点集群安装 + Agent 运维</div>
+        <div class="tl-body">
+          以 systemd 在默认 80/443 上托管每个节点来运行多节点 HA 集群：<span class="mono">tiyi install --mode server|secondary|agent</span>,再加一个 <span class="mono">/etc/tiyi/tiyi.env</span> drop-in 提供 agent 的控制面 URL 与入册 token。启用 WAF 的站点现在会在远端 Agent 上部署并拦截(SQLi / XSS / LFI → <span class="mono">403</span>,内置 CRS 在 agent 端落地);每个 Agent 的 QPS / 阻断 / 连接数指标准确上报;健康的 Agent 保持在线不再抖动。控制台修复:下发命令不再报错,安装节点代码块在暗色模式下可读(含 systemd 变体),升级后仪表盘干净重载。
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -833,7 +846,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.0 · 2026-06-26</span>
+      <span class="build">build v3.0.1 · 2026-06-28</span>
     </div>
   </div>
 </footer>

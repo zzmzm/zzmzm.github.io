@@ -78,7 +78,7 @@
     <p>Tiyi 是单一签名二进制 —— 在单节点上免费且功能完整。权威安装脚本发布在 <code>https://www.tiyisec.com/install.sh</code>：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.0.0 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.0.1 linux/amd64</span></code></pre>
     <p>脚本会下载与平台匹配的二进制，比对 SHA-256 manifest，并放到 <code>/usr/local/bin/tiyi</code>。<code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。</p>
 
     <h2 id="bootstrap-from-server">从已运行的服务端引导节点</h2>
@@ -89,7 +89,7 @@
 
     <h2 id="config-file">配置文件</h2>
     <p>Tiyi 读取一份 Koanf 风格的 YAML 配置。从下面这份最小配置起步，其余靠默认：</p>
-<pre><code><span class="c"># /etc/tiyi/tiyi.yaml</span>
+<pre><code><span class="c"># /etc/tiyi/server.yaml</span>
 <span class="k">api</span>:
   <span class="k">addr</span>: <span class="s">"0.0.0.0:8080"</span>
 
@@ -107,7 +107,7 @@
   <span class="k">https_addr</span>: <span class="s">":443"</span>
   <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
     <p>用 <code>--config</code> 传入。这份配置使用 <code>/var/lib/tiyi</code> 与 80/443 端口，因此请以 root 运行（或用下面的 systemd unit）：</p>
-<pre><code><span class="p">$</span> sudo tiyi standalone --config /etc/tiyi/tiyi.yaml</code></pre>
+<pre><code><span class="p">$</span> sudo tiyi standalone --config /etc/tiyi/server.yaml</code></pre>
     <p>若想以普通用户、不用 <code>sudo</code> 试用，可以不走配置文件，而是在命令行上传入可写路径与高端口 —— 见<a href="quickstart.html#run">快速开始</a>。</p>
 
     <div class="callout callout-warn">
@@ -151,31 +151,32 @@
     --proxy-https-addr 0.0.0.0:443</code></pre>
     <p>token 在首次接入时被消耗。入网后节点把身份持久化到 <code>&lt;state-dir&gt;/identity.json</code>，token 不再需要。丢了 state 目录就需要新的 token 重新入网。</p>
 
-    <h2 id="systemd">systemd 单元</h2>
-    <p>长期运行的部署用你的 init 系统跑 Tiyi。一个最小的 systemd unit：</p>
+    <h2 id="systemd">以 systemd 服务运行</h2>
+    <p>长期运行的部署，让 Tiyi 把自己装成一个加固过的 systemd 服务。<code>tiyi install</code> 会创建 <code>tiyi</code> 服务用户与 <code>tiyi-admin</code> 套接字组、写入 unit，加上 <code>--now</code> 则同时开机自启并立即启动：</p>
+<pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
+    <p>该服务以非 root 身份运行，通过 <code>CAP_NET_BIND_SERVICE</code> 绑定 80/443 端口。一次性管理员密码只打印一次，写入 journal：</p>
+<pre><code><span class="p">$</span> journalctl -u tiyi -b | grep -i password</code></pre>
+    <p>用 <code>tiyi install --print</code> 可在不改动系统的前提下预览生成的 unit。其关键指令：</p>
 <pre><code><span class="c"># /etc/systemd/system/tiyi.service</span>
-<span class="k">[Unit]</span>
-<span class="k">Description</span>=Tiyi WAF
-<span class="k">After</span>=network-online.target
-<span class="k">Wants</span>=network-online.target
-
 <span class="k">[Service]</span>
 <span class="k">Type</span>=simple
 <span class="k">User</span>=tiyi
 <span class="k">Group</span>=tiyi
-<span class="k">ExecStart</span>=/usr/local/bin/tiyi server --config /etc/tiyi/tiyi.yaml
+<span class="k">ExecStart</span>=/usr/local/bin/tiyi standalone --config /etc/tiyi/server.yaml --admin-socket /run/tiyi/admin.sock --admin-socket-group tiyi-admin --admin-socket-mode 0660 --caddy-admin-socket /run/tiyi/caddy.sock
 <span class="k">Restart</span>=on-failure
-<span class="k">RestartSec</span>=2s
 <span class="k">AmbientCapabilities</span>=CAP_NET_BIND_SERVICE
 <span class="k">CapabilityBoundingSet</span>=CAP_NET_BIND_SERVICE
-<span class="k">NoNewPrivileges</span>=true
+<span class="k">StateDirectory</span>=tiyi
+<span class="k">RuntimeDirectory</span>=tiyi
+<span class="k">ConfigurationDirectory</span>=tiyi
+<span class="k">NoNewPrivileges</span>=yes
 <span class="k">ProtectSystem</span>=strict
-<span class="k">ReadWritePaths</span>=/var/lib/tiyi /etc/tiyi
-<span class="k">ProtectHome</span>=true
-<span class="k">PrivateTmp</span>=true
+<span class="k">ProtectHome</span>=yes
+<span class="k">PrivateTmp</span>=yes
 
 <span class="k">[Install]</span>
 <span class="k">WantedBy</span>=multi-user.target</code></pre>
+    <p>用 <code>--mode</code> 选择其他角色（如 <code>server</code>、<code>agent</code>）。用 <code>sudo tiyi uninstall</code> 移除该服务：除非加上 <code>--purge</code>，否则 <code>/var/lib/tiyi</code> 下的状态、<code>/etc/tiyi</code> 下的配置以及服务用户都会保留。</p>
 
     <h2 id="next">下一步阅读</h2>
     <ul>
