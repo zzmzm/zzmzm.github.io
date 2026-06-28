@@ -95,7 +95,7 @@
     <p>Tiyi is one signed binary — free and full-featured on a single node. The canonical install script is published at <code>https://www.tiyisec.com/install.sh</code>:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.0.1 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.0.2 linux/amd64</span></code></pre>
     <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. <code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets.</p>
 
     <h2 id="bootstrap-from-server">Bootstrap an agent from a running server</h2>
@@ -171,8 +171,15 @@
     <h2 id="systemd">Run as a systemd service</h2>
     <p>For a long-lived deployment, let Tiyi install itself as a hardened systemd service. <code>tiyi install</code> creates the <code>tiyi</code> service user and the <code>tiyi-admin</code> socket group, writes the unit, and with <code>--now</code> enables and starts it on boot:</p>
 <pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
-    <p>The service runs unprivileged and binds ports 80/443 via <code>CAP_NET_BIND_SERVICE</code>. The one-time admin password is printed once to the journal:</p>
-<pre><code><span class="p">$</span> journalctl -u tiyi -b | grep -i password</code></pre>
+    <p>The service runs unprivileged and binds ports 80/443 via <code>CAP_NET_BIND_SERVICE</code>. On a first install, <code>--now</code> pre-creates the administrator and prints the one-time login itself — no journal scraping:</p>
+<pre><code><span class="c">tiyi is enabled and running as tiyi.service.</span>
+
+<span class="c">  Tiyi administrator created</span>
+<span class="c">    URL:       http://127.0.0.1:8080</span>
+<span class="c">    username:  admin</span>
+<span class="c">    password:  &lt;generated-password&gt;</span>
+
+<span class="c">  This password is shown once; change it after signing in.</span></code></pre>
     <p>Preview the generated unit without touching the system using <code>tiyi install --print</code>. Its key directives:</p>
 <pre><code><span class="c"># /etc/systemd/system/tiyi.service</span>
 <span class="k">[Service]</span>

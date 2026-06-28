@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.0.1</span>
-    Cluster-ready patch release
+    <span class="tag">v3.0.2</span>
+    Frictionless install patch release
   </span>
 
   <h1>
@@ -77,8 +77,8 @@
 
   <div class="hero-cmd">
     <span class="prompt">$</span>
-    <span class="cmd">curl -fsSL https://www.tiyisec.com/install.sh | bash &amp;&amp; sudo tiyi standalone</span>
-    <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && sudo tiyi standalone" aria-label="Copy command">copy</button>
+    <span class="cmd">curl -fsSL https://www.tiyisec.com/install.sh | bash &amp;&amp; sudo tiyi install --now</span>
+    <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && sudo tiyi install --now" aria-label="Copy command">copy</button>
   </div>
 
   <div class="hero-meta" style="margin-top: 28px;">
@@ -299,7 +299,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">Product tour</span>
       <h2>The admin plane your ops team will actually use.</h2>
-      <p>Every screenshot below is a real screen from <span class="mono">v3.0.1</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
+      <p>Every screenshot below is a real screen from <span class="mono">v3.0.2</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
     </div>
 
     <!-- Tour 1: Dashboard -->
@@ -566,6 +566,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.2</span>
+          <span class="tl-date">2026-06-28</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Frictionless install + deterministic first-run admin</div>
+        <div class="tl-body">
+          <span class="mono">sudo tiyi install --now</span> is now the default single-host path: it pre-creates the first administrator before starting the service and prints the login (URL + username + password) right there, so the one-time secret never lands in the journal. Re-running <span class="mono">install.sh</span> on a host that already has tiyi self-updates the binary in place and restarts the service instead of re-downloading. The API and dashboard now bind <span class="mono">0.0.0.0:8080</span> by default.
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -859,7 +872,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.1 · 2026-06-28</span>
+      <span class="build">build v3.0.2 · 2026-06-28</span>
     </div>
   </div>
 </footer>

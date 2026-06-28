@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Changelog — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi release notes from foundation work through v3.0.1." />
+<meta name="description" content="Tiyi release notes from foundation work through v3.0.2." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,6 +50,25 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.2</span>
+          <span class="tl-date">2026-06-28</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Frictionless install + deterministic first-run admin</div>
+        <div class="tl-body">
+          <p>A smoother five-minute path from install to a working dashboard login, with no journal-scraping for the admin password.</p>
+          <ul>
+            <li><strong>Deterministic first-run admin.</strong> <span class="mono">sudo tiyi install --now</span> (standalone) pre-creates the <span class="mono">admin</span> account before starting the service and prints the login — URL, username, and password — directly from the installer. The one-time secret never reaches journald, and the service skips its own random-password banner.</li>
+            <li><strong>Re-run = in-place update.</strong> When tiyi is already installed, <span class="mono">install.sh</span> uses the signed <span class="mono">self-update</span> (downloading only when a newer release exists) and then re-installs + restarts the service, instead of pulling the full tarball again. It leads with <span class="mono">sudo tiyi install --now</span> as the default.</li>
+            <li><strong>Reachable by default.</strong> The API and dashboard now bind <span class="mono">0.0.0.0:8080</span> by default (still login-protected).</li>
+            <li>Verified: <span class="mono">go test ./...</span> and frontend unit tests green, plus a live install QA (credential banner, <span class="mono">0.0.0.0:8080</span> listener, working login) on a clean host.</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -514,7 +533,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.1 · 2026-06-28</span>
+      <span class="build">build v3.0.2 · 2026-06-28</span>
     </div>
   </div>
 </footer>

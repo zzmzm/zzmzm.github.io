@@ -92,7 +92,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </div>
       <div class="callout-body">
-        <p><strong>Lose the KEK and you lose your secrets.</strong> Back it up alongside <code>state.db</code>. Rotating the KEK requires re-wrapping every encrypted blob — out of scope for v3.0.1.</p>
+        <p><strong>Lose the KEK and you lose your secrets.</strong> Back it up alongside <code>state.db</code>. Rotating the KEK requires re-wrapping every encrypted blob — out of scope for v3.0.2.</p>
         <p>Also: if you don't set <code>crypto.kek_file</code>, Tiyi falls back to <code>&lt;state-db-dir&gt;/kek.bin</code> auto-generated on first boot. This works for single-node dev but it's fragile in production where state directories may be ephemeral.</p>
       </div>
     </div>
@@ -190,7 +190,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
 
     <h2 id="upgrades">Rolling upgrades</h2>
     <p>Once a binary release is imported, <code>tiyi release apply</code> fans an <code>APPLY_BINARY</code> command out to every agent whose OS/arch matches. Each agent downloads the replacement, verifies the SHA-256 and Ed25519 release signature, and exits so its supervisor restarts it into the new binary.</p>
-<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_v3.0.1_linux_amd64.tar.gz
+<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_v3.0.2_linux_amd64.tar.gz
 <span class="p">$</span> tiyi release list
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span>             <span class="c"># all matching agents</span>
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span>  <span class="c"># wave deployments</span>

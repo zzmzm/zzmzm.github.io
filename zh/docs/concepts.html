@@ -95,7 +95,7 @@
     <ul>
       <li><strong>上传</strong> —— 粘贴或上传 PEM 密钥对。开发用自签，生产用 CA 购买或企业签发。</li>
       <li><strong>ACME HTTP-01</strong> —— 多节点：每个节点都跑一个 loopback 响应器，并通过节点流广播 (token, key_authorization) 对，让任何节点都能应答挑战。</li>
-      <li><strong>ACME DNS-01</strong> —— 可插拔驱动注册表。Cloudflare 驱动已生产可用；Route53 与阿里云在 v3.0.1 中提供凭据校验桩。</li>
+      <li><strong>ACME DNS-01</strong> —— 可插拔驱动注册表。Cloudflare 驱动已生产可用；Route53 与阿里云在 v3.0.2 中提供凭据校验桩。</li>
       <li><strong>通配符</strong> —— 在混合 order 中对 <code>*.example.com</code> 自动选择 DNS-01。</li>
     </ul>
     <p>Dashboard 把 <code>certs_expiring_14d</code> / <code>certs_expiring_30d</code> / <code>acme_renewals_failed_24h</code> / <code>acme_orders_pending</code> 暴露为 KPI。首次启动种入两个默认告警：<em>证书即将到期</em> 与 <em>ACME 续期失败</em>。</p>

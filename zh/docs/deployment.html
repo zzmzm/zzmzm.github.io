@@ -68,7 +68,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </div>
       <div class="callout-body">
-        <p><strong>丢失 KEK 等于丢失所有加密 blob。</strong>把它备份到 <code>state.db</code> 同处。轮换 KEK 需要重包所有加密 blob —— v3.0.1 暂不支持。</p>
+        <p><strong>丢失 KEK 等于丢失所有加密 blob。</strong>把它备份到 <code>state.db</code> 同处。轮换 KEK 需要重包所有加密 blob —— v3.0.2 暂不支持。</p>
         <p>另:如果不显式配置 <code>crypto.kek_file</code>,Tiyi 在首次启动时会在 <code>&lt;state-db-dir&gt;/kek.bin</code> 自动生成。这对单机开发足够,但在 state 目录可能短暂的生产环境很脆弱。</p>
       </div>
     </div>
@@ -166,7 +166,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
 
     <h2 id="upgrades">滚动升级</h2>
     <p>导入二进制 release 后,<code>tiyi release apply</code> 把 <code>APPLY_BINARY</code> 命令散到所有 OS/arch 匹配的节点。每个节点下载替换、校验 SHA-256 与 Ed25519 发布签名,然后退出让 supervisor 重启进入新二进制。</p>
-<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_v3.0.1_linux_amd64.tar.gz
+<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_v3.0.2_linux_amd64.tar.gz
 <span class="p">$</span> tiyi release list
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span>             <span class="c"># 所有匹配节点</span>
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span>  <span class="c"># 灰度部署</span>

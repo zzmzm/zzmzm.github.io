@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.0.1</span>
-    集群就绪补丁版本
+    <span class="tag">v3.0.2</span>
+    顺滑安装补丁版本
   </span>
 
   <h1>
@@ -76,8 +76,8 @@
 
   <div class="hero-cmd">
     <span class="prompt">$</span>
-    <span class="cmd">curl -fsSL https://www.tiyisec.com/install.sh | bash &amp;&amp; sudo tiyi standalone</span>
-    <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && sudo tiyi standalone" data-copied="已复制" aria-label="复制命令">复制</button>
+    <span class="cmd">curl -fsSL https://www.tiyisec.com/install.sh | bash &amp;&amp; sudo tiyi install --now</span>
+    <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && sudo tiyi install --now" data-copied="已复制" aria-label="复制命令">复制</button>
   </div>
 
   <div class="hero-meta" style="margin-top: 28px;">
@@ -286,7 +286,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">产品演示</span>
       <h2>运维团队真正会用的管理平面。</h2>
-      <p>下方每一张截图都来自 <span class="mono">v3.0.1</span> 的实际运行实例。同一份数据平面，同一份 UI，同一份 RPC。</p>
+      <p>下方每一张截图都来自 <span class="mono">v3.0.2</span> 的实际运行实例。同一份数据平面，同一份 UI，同一份 RPC。</p>
     </div>
 
     <!-- Tour 1: Dashboard -->
@@ -553,6 +553,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.2</span>
+          <span class="tl-date">2026-06-28</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">顺滑安装 + 确定性首次管理员</div>
+        <div class="tl-body">
+          <span class="mono">sudo tiyi install --now</span> 现在是默认单机路径:它在启动服务前预先创建第一个管理员,并直接打印登录信息(URL + 用户名 + 密码),一次性密码不再写入 journal。在已安装 tiyi 的主机上重跑 <span class="mono">install.sh</span> 会就地 self-update 二进制并重启服务,而不是重新下载整个包。API 与仪表盘默认监听 <span class="mono">0.0.0.0:8080</span>。
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -846,7 +859,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.1 · 2026-06-28</span>
+      <span class="build">build v3.0.2 · 2026-06-28</span>
     </div>
   </div>
 </footer>

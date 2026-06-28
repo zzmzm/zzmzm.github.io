@@ -119,7 +119,7 @@
     <ul>
       <li><strong>Upload</strong> — paste or upload a PEM keypair. Self-signed for dev, CA-bought or enterprise-signed for prod.</li>
       <li><strong>ACME HTTP-01</strong> — multi-agent: every agent runs a loopback responder and the (token, key_authorization) pair broadcasts through the agent stream so any node can answer the challenge.</li>
-      <li><strong>ACME DNS-01</strong> — pluggable driver registry. Cloudflare driver is production-ready; Route53 and Aliyun ship as credential-validating stubs in v3.0.1.</li>
+      <li><strong>ACME DNS-01</strong> — pluggable driver registry. Cloudflare driver is production-ready; Route53 and Aliyun ship as credential-validating stubs in v3.0.2.</li>
       <li><strong>Wildcard</strong> — automatically uses DNS-01 for <code>*.example.com</code> authorizations in mixed orders.</li>
     </ul>
     <p>The dashboard exposes <code>certs_expiring_14d</code> / <code>certs_expiring_30d</code> / <code>acme_renewals_failed_24h</code> / <code>acme_orders_pending</code> as KPIs. Two default alerts are seeded on first boot: <em>Certificates Expiring Soon</em> and <em>ACME Renewal Failures</em>.</p>
