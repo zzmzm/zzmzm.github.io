@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<title>领域模型 — Tiyi 文档</title>
+<title>领域模型 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="description" content="站点、上游池、证书、WAF 策略、节点、遥测、审计链 —— 每个运维都该知道的七个概念。" />
 <meta name="theme-color" content="#0A0E1A" />
@@ -20,8 +20,8 @@
 <header class="nav">
   <div class="container nav-inner">
     <a class="brand" href="../index.html">
-      <img src="../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
-      <span>Tiyi</span>
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
     </a>
     <nav class="nav-links" aria-label="主导航">
       <a href="../index.html#features">特性</a>
@@ -51,12 +51,12 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">核心概念</span>
     <h1>领域模型</h1>
-    <p class="lede">Tiyi 的领域被刻意保持得很小。七个一等资源覆盖了所有运维动作、所有 CLI 命令、所有 UI 页面。理解了这些，产品的其他部分就显而易见了。</p>
+    <p class="lede">太一的领域被刻意保持得很小。七个一等资源覆盖了所有运维动作、所有 CLI 命令、所有 UI 页面。理解了这些，产品的其他部分就显而易见了。</p>
 
     <h2 id="resources">七个资源</h2>
     <dl class="dl-grid">
       <dt>站点（Site）</dt>
-      <dd>Tiyi 代理的一个 HTTP 主机。携带 TLS 设置、上游池引用与挂载的 WAF 策略。是你启用或停用的最小单元。</dd>
+      <dd>太一代理的一个 HTTP 主机。携带 TLS 设置、上游池引用与挂载的 WAF 策略。是你启用或停用的最小单元。</dd>
 
       <dt>上游池（Upstream pool）</dt>
       <dd>站点背后的一组后端。轮询或加权负载均衡、SNI 感知健康检查，可在多个站点之间共用。</dd>
@@ -91,7 +91,7 @@
     <p>无论访问日志模式如何，安全事件（Coraza 规则命中）都会被写入。</p>
 
     <h2 id="certificates">证书</h2>
-    <p>TLS 材料是一等资源 —— 永远不内联到站点上。Tiyi 支持四种签发路径，全部用从 <code>crypto.kek_file</code> 加载的 32 字节 KEK 在静态时信封加密：</p>
+    <p>TLS 材料是一等资源 —— 永远不内联到站点上。太一支持四种签发路径，全部用从 <code>crypto.kek_file</code> 加载的 32 字节 KEK 在静态时信封加密：</p>
     <ul>
       <li><strong>上传</strong> —— 粘贴或上传 PEM 密钥对。开发用自签，生产用 CA 购买或企业签发。</li>
       <li><strong>ACME HTTP-01</strong> —— 多节点：每个节点都跑一个 loopback 响应器，并通过节点流广播 (token, key_authorization) 对，让任何节点都能应答挑战。</li>
@@ -179,7 +179,7 @@
 <footer class="footer docs-release-footer">
   <div class="container">
     <div class="footer-bottom">
-      <span>&copy; <span data-year>2026</span> Tiyi &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
       <span class="build">build v3.0.3 &middot; 2026-07-02</span>
     </div>
   </div>

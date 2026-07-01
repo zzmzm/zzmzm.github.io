@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<title>Tiyi —— 单一二进制的自托管 WAF</title>
+<title>太一 —— 单一二进制的自托管 WAF</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi 是一款单一二进制、可自托管的带 WAF 反向代理。Caddy + Coraza + SQLite + Vben Admin 集成在一个 Go 可执行文件中。五分钟即可让生产级 Web 应用防火墙投入运行。" />
+<meta name="description" content="太一是一款单一二进制、可自托管的带 WAF 反向代理。Caddy + Coraza + SQLite + Vben Admin 集成在一个 Go 可执行文件中。五分钟即可让生产级 Web 应用防火墙投入运行。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,7 +15,7 @@
 <link rel="canonical" href="https://www.tiyisec.com/zh/" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.tiyisec.com/zh/" />
-<meta property="og:title" content="Tiyi —— 单一二进制的自托管 WAF" />
+<meta property="og:title" content="太一 —— 单一二进制的自托管 WAF" />
 <meta property="og:description" content="Caddy + Coraza + SQLite + Vben Admin 集成在一个 Go 可执行文件中。WAF、反向代理与管理平面 —— 五分钟即可安装。" />
 <meta property="og:image" content="https://www.tiyisec.com/assets/img/screenshots/zh-dark/dashboard.png" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -31,8 +31,8 @@
 <header class="nav">
   <div class="container nav-inner">
     <a class="brand" href="index.html">
-      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
-      <span>Tiyi</span>
+      <img src="../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
     </a>
     <nav class="nav-links" aria-label="主导航">
       <a href="#features">特性</a>
@@ -64,7 +64,7 @@
   </h1>
 
   <p class="lead">
-    Tiyi 是生产级的 WAF、反向代理与管理平面 —— 集成于一个 Go 可执行文件中。
+    太一是生产级的 WAF、反向代理与管理平面 —— 集成于一个 Go 可执行文件中。
     Caddy + Coraza + OWASP CRS&nbsp;4 + SQLite，连同管理后台一起内置。
     无需 Docker、无需外部数据库、无需 Redis。从下载到拦截真实攻击只需五分钟。
   </p>
@@ -78,6 +78,13 @@
     <span class="prompt">$</span>
     <span class="cmd">curl -fsSL https://www.tiyisec.com/install.sh | bash &amp;&amp; sudo tiyi install --now</span>
     <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && sudo tiyi install --now" data-copied="已复制" aria-label="复制命令">复制</button>
+  </div>
+
+  <div class="hero-repos" aria-label="公开分发仓库">
+    <span>公开分发仓库：</span>
+    <a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a>
+    <span class="sep">·</span>
+    <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>
   </div>
 
   <div class="hero-meta" style="margin-top: 28px;">
@@ -98,7 +105,7 @@
         <span class="url">tiyi.example.com/dashboard</span>
       </div>
       <img src="../assets/img/screenshots/zh-dark/dashboard.png" data-shot="dashboard"
-           alt="Tiyi 概览：13,883 次请求中拦截 4,871 次（35.1%），实时攻击分布。"
+           alt="太一概览：13,883 次请求中拦截 4,871 次（35.1%），实时攻击分布。"
            width="1440" height="900" loading="eager" />
     </div>
   </div>
@@ -150,7 +157,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">内置能力</span>
       <h2>一个可执行文件，覆盖真实 WAF 栈的每一层。</h2>
-      <p>Tiyi 用一个 Go 进程取代了四服务的 docker-compose，并加入了运维真正需要的能力：实时配置投递、审计链、遥测，以及一个同时驱动 UI 与 CLI 的强类型 API。</p>
+      <p>太一用一个 Go 进程取代了四服务的 docker-compose，并加入了运维真正需要的能力：实时配置投递、审计链、遥测，以及一个同时驱动 UI 与 CLI 的强类型 API。</p>
     </div>
 
     <div class="features-grid">
@@ -306,7 +313,7 @@
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/dashboard</span>
         </div>
-        <img src="../assets/img/screenshots/zh-dark/dashboard.png" data-shot="dashboard" alt="Tiyi 概览页：核心指标与流量曲线" width="1440" height="900" loading="lazy" />
+        <img src="../assets/img/screenshots/zh-dark/dashboard.png" data-shot="dashboard" alt="太一概览页：核心指标与流量曲线" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
@@ -424,7 +431,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">价格</span>
       <h2>同一个二进制，授权只改变规模。</h2>
-      <p>Tiyi 是商用闭源软件，上游保留 Apache-2.0。社区版、Pro 与企业版使用同一个二进制；签名授权只提高远程节点配额。控制平面运行在你自己的硬件上。</p>
+      <p>太一是商用闭源软件，上游保留 Apache-2.0。社区版、Pro 与企业版使用同一个二进制；签名授权只提高远程节点配额。控制平面运行在你自己的硬件上。</p>
     </div>
 
     <div class="pricing">
@@ -432,7 +439,7 @@
       <!-- Community -->
       <div class="plan reveal">
         <h3>社区版</h3>
-        <p class="who">适合个人实验室、副项目，或想先了解 Tiyi 的团队。</p>
+        <p class="who">适合个人实验室、副项目，或想先了解太一的团队。</p>
         <div class="price">
           <span class="amount">¥0</span>
           <span class="unit">/ 永久</span>
@@ -472,7 +479,7 @@
           <span class="amount">¥20</span>
           <span class="unit">/ 月</span>
         </div>
-        <p class="price-note">每个 Tiyi 集群计费。年付可选。</p>
+        <p class="price-note">每个太一集群计费。年付可选。</p>
         <ul>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
@@ -495,7 +502,7 @@
             邮件支持 · 工作日 1 个工作日响应
           </li>
         </ul>
-        <a class="btn btn-primary" href="mailto:support@tiyisec.com?subject=Tiyi%20Pro%20授权">开始 Pro 试用</a>
+        <a class="btn btn-primary" href="mailto:support@tiyisec.com?subject=太一%20Pro%20授权">开始 Pro 试用</a>
       </div>
 
       <!-- Enterprise -->
@@ -532,7 +539,7 @@
             自定义规则包 + 路线图共建
           </li>
         </ul>
-        <a class="btn btn-ghost" href="mailto:support@tiyisec.com?subject=Tiyi%20企业版">联系销售</a>
+        <a class="btn btn-ghost" href="mailto:support@tiyisec.com?subject=太一%20企业版">联系销售</a>
       </div>
     </div>
 
@@ -602,7 +609,7 @@
         </div>
         <div class="tl-title">首个公开版本</div>
         <div class="tl-body">
-          Tiyi v3.0.0 已发布到 GitHub Releases，提供已签名的 Linux amd64/arm64 产物、<span class="mono">SHA256SUMS</span>、<span class="mono">SHA256SUMS.sig</span> 与 <span class="mono">release-manifest.json</span>。可从 <span class="mono">www.tiyisec.com/install.sh</span> 或 GitHub raw 镜像安装，下载可用 <span class="mono">release-key.pub</span> 校验，并可通过 <span class="mono">tiyi update --yes</span> 更新。
+          太一 v3.0.0 已发布到 GitHub Releases，提供已签名的 Linux amd64/arm64 产物、<span class="mono">SHA256SUMS</span>、<span class="mono">SHA256SUMS.sig</span> 与 <span class="mono">release-manifest.json</span>。可从 <span class="mono">www.tiyisec.com/install.sh</span> 或 GitHub raw 镜像安装，下载可用 <span class="mono">release-key.pub</span> 校验，并可通过 <span class="mono">tiyi update --yes</span> 更新。
         </div>
       </div>
 
@@ -614,7 +621,7 @@
         </div>
         <div class="tl-title">单一二进制按规模授权 + 首次启动管理员</div>
         <div class="tl-body">
-          Tiyi 现在只发布一个始终执行规模限制的二进制，只对<strong>规模而非功能</strong>设限。没有有效授权时，社区版运行在本地单机节点并允许 0 个远程节点；导入厂商签名授权后即可激活 Pro 或企业版的远程节点配额。内嵌厂商公钥是唯一信任锚，旧的 <span class="mono">license.mode</span> 写入会被拒绝，过期或无效授权安全降级为社区版，已知节点始终可重连。需登录的关于页展示版本、被授权方、到期与实时节点数。单机首次启动且无用户时会自动创建 <span class="mono">admin</span> 并生成一次性随机密码。
+          太一现在只发布一个始终执行规模限制的二进制，只对<strong>规模而非功能</strong>设限。没有有效授权时，社区版运行在本地单机节点并允许 0 个远程节点；导入厂商签名授权后即可激活 Pro 或企业版的远程节点配额。内嵌厂商公钥是唯一信任锚，旧的 <span class="mono">license.mode</span> 写入会被拒绝，过期或无效授权安全降级为社区版，已知节点始终可重连。需登录的关于页展示版本、被授权方、到期与实时节点数。单机首次启动且无用户时会自动创建 <span class="mono">admin</span> 并生成一次性随机密码。
         </div>
       </div>
 
@@ -819,10 +826,10 @@
   <div class="container">
     <div class="cta reveal">
       <h2>不必再拼凑 Nginx + ModSec + Postgres + Redis。</h2>
-      <p>Tiyi 是一个二进制、一份配置、一个心智模型。在你已经拥有的服务器上，五分钟就能装好。</p>
+      <p>太一是一个二进制、一份配置、一个心智模型。在你已经拥有的服务器上，五分钟就能装好。</p>
       <div class="cta-actions">
         <a class="btn btn-primary btn-lg" href="#pricing">开始使用</a>
-        <a class="btn btn-ghost btn-lg" href="mailto:support@tiyisec.com?subject=Tiyi%20演示">预约 30 分钟演示</a>
+        <a class="btn btn-ghost btn-lg" href="mailto:support@tiyisec.com?subject=太一%20演示">预约 30 分钟演示</a>
       </div>
     </div>
   </div>
@@ -833,7 +840,7 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-        <a class="brand" href="index.html"><img src="../assets/img/tiyi-logo.png" alt="" /> Tiyi</a>
+        <a class="brand" href="index.html"><img src="../assets/img/tiyi-logo.png" alt="" /> 太一</a>
         <p class="tag">单一二进制、可自托管的带 WAF 反向代理。Caddy + Coraza + SQLite + Vben Admin 集成在一个 Go 可执行文件中。</p>
       </div>
 
@@ -854,6 +861,8 @@
           <li><a href="docs/index.html">文档</a></li>
           <li><a href="docs/quickstart.html">快速开始</a></li>
           <li><a href="docs/cli.html">CLI 参考</a></li>
+          <li><a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub 公开仓库</a></li>
+          <li><a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee 镜像仓库</a></li>
           <li><a href="changelog.html">完整更新日志</a></li>
           <li><a href="mailto:support@tiyisec.com">联系我们</a></li>
         </ul>
@@ -871,7 +880,7 @@
     </div>
 
     <div class="footer-bottom">
-      <span>© <span data-year>2026</span> Tiyi · 商业分发 · 上游保留 Apache-2.0</span>
+      <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
       <span class="build">build v3.0.3 · 2026-07-02</span>
     </div>
   </div>

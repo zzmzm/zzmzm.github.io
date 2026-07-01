@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<title>部署 — Tiyi 文档</title>
+<title>部署 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="在生产环境运行 Tiyi：加固、HA 故障转移、SIEM 转发、可观测性与升级路径。" />
+<meta name="description" content="在生产环境运行太一：加固、HA 故障转移、SIEM 转发、可观测性与升级路径。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -20,8 +20,8 @@
 <header class="nav">
   <div class="container nav-inner">
     <a class="brand" href="../index.html">
-      <img src="../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
-      <span>Tiyi</span>
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
     </a>
     <nav class="nav-links" aria-label="主导航">
       <a href="../index.html#features">特性</a>
@@ -69,20 +69,20 @@
       </div>
       <div class="callout-body">
         <p><strong>丢失 KEK 等于丢失所有加密 blob。</strong>把它备份到 <code>state.db</code> 同处。轮换 KEK 需要重包所有加密 blob —— v3.0.3 暂不支持。</p>
-        <p>另:如果不显式配置 <code>crypto.kek_file</code>,Tiyi 在首次启动时会在 <code>&lt;state-db-dir&gt;/kek.bin</code> 自动生成。这对单机开发足够,但在 state 目录可能短暂的生产环境很脆弱。</p>
+        <p>另:如果不显式配置 <code>crypto.kek_file</code>,太一在首次启动时会在 <code>&lt;state-db-dir&gt;/kek.bin</code> 自动生成。这对单机开发足够,但在 state 目录可能短暂的生产环境很脆弱。</p>
       </div>
     </div>
 
     <h3 id="jwt-secret">JWT 签名密钥</h3>
 <pre><code><span class="k">auth</span>:
   <span class="k">jwt_secret</span>: <span class="s">"<span class="v">&lt;32+ 字节随机&gt;</span>"</span>     <span class="c"># 或通过 TIYI_AUTH_JWT_SECRET 环境变量</span></code></pre>
-    <p>Access token 的 HS256 签名密钥。字段为空时,Tiyi 在每次重启时生成 32 字节临时密钥,并打印 <code>WARNING</code>。会话在重启时失效,副本之间不能共享 refresh token —— 在生产中通常都是问题。</p>
+    <p>Access token 的 HS256 签名密钥。字段为空时,太一在每次重启时生成 32 字节临时密钥,并打印 <code>WARNING</code>。会话在重启时失效,副本之间不能共享 refresh token —— 在生产中通常都是问题。</p>
 
     <h3 id="bundle-key">Bundle 签名密钥</h3>
     <p>服务端的 ed25519 配置签名密钥落在 <code>bundle_signing_key</code> 单例行,使用 KEK 信封加密。节点首次接入时固定公钥(TOFU),之后拒绝重新固定。<strong>轮换需要重新入网</strong> —— 用 <code>tiyi agents issue-token</code> 签新 token,把节点重新拉起。</p>
 
     <h2 id="ha">HA 故障转移</h2>
-    <p>Tiyi 集群可以只有一个主节点 + N 个节点(零热备也允许)。规模较大的部署建议跑一个热备,主节点宕机时不至于长时间不能写。</p>
+    <p>太一集群可以只有一个主节点 + N 个节点(零热备也允许)。规模较大的部署建议跑一个热备,主节点宕机时不至于长时间不能写。</p>
 
     <h3 id="ha-topology">拓扑</h3>
 <pre><code><span class="c"># 全部四个节点都代理流量。L4/L7 LB 在每个节点上轮询 /healthz。</span>
@@ -133,7 +133,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
     </div>
 
     <h2 id="trust-profile">客户端 IP 信任配置</h2>
-    <p>Tiyi 在 CDN 或 L4 LB 后时,到达 WAF 的客户端 IP 不是真实 IP —— 那是前面的代理。信任配置告诉 Tiyi 哪些代理可信、哪个 header 携带真实 IP。</p>
+    <p>太一在 CDN 或 L4 LB 后时,到达 WAF 的客户端 IP 不是真实 IP —— 那是前面的代理。信任配置告诉太一哪些代理可信、哪个 header 携带真实 IP。</p>
     <p>从 UI(设置 → 信任配置标签)或 CLI 设置一次:</p>
 <pre><code><span class="p">$</span> tiyi trust set <span class="o">\</span>
     --trusted-proxies 10.0.0.0/8,172.16.0.0/12 <span class="o">\</span>
@@ -149,12 +149,12 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
     <p>默认开启的 <em>Origin Bypass Attempt</em> 告警在请求通过 XFF 声称客户端 IP 但 peer 不是受信任代理时触发。</p>
 
     <h2 id="siem">SIEM 转发</h2>
-    <p>Tiyi 把安全、访问、错误、(可选)审计事件以 RFC 5424、CEF 或 LEEF 通过尽力的 TCP / UDP / unixgram 转发出去。从 设置 → SIEM 标签 或 CLI 配置一次:</p>
+    <p>太一把安全、访问、错误、(可选)审计事件以 RFC 5424、CEF 或 LEEF 通过尽力的 TCP / UDP / unixgram 转发出去。从 设置 → SIEM 标签 或 CLI 配置一次:</p>
 <pre><code><span class="p">$</span> tiyi system settings update --key siem.enabled --value true
 <span class="p">$</span> tiyi system settings update --key siem.address --value <span class="s">"tcp://siem.internal:514"</span>
 <span class="p">$</span> tiyi system settings update --key siem.format --value rfc5424
 <span class="p">$</span> tiyi system settings update --key siem.filter.include_audit --value true</code></pre>
-    <p>SIEM 转发是有意尽力的。接收端健康、可靠投递、回放属于 SIEM 管道,而不是 Tiyi。转发器为每个 dispatcher 缓存一条 <code>net.Conn</code>,出错时重连。</p>
+    <p>SIEM 转发是有意尽力的。接收端健康、可靠投递、回放属于 SIEM 管道,而不是太一。转发器为每个 dispatcher 缓存一条 <code>net.Conn</code>,出错时重连。</p>
 
     <h2 id="observability">可观测性</h2>
     <ul>
@@ -176,7 +176,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
     <h2 id="backup">备份</h2>
     <p>有三样东西要备份:</p>
     <ul>
-      <li><strong><code>state.db</code></strong> —— SQLite 控制平面数据库。WAL 模式;<code>sqlite3 state.db ".backup '/path/to/backup.db'"</code> 在 Tiyi 运行时也工作。</li>
+      <li><strong><code>state.db</code></strong> —— SQLite 控制平面数据库。WAL 模式;<code>sqlite3 state.db ".backup '/path/to/backup.db'"</code> 在太一运行时也工作。</li>
       <li><strong><code>kek.bin</code></strong> —— 静态加密密钥。丢失即不可恢复。备份到与其他长期密钥相同的保险库。</li>
       <li><strong><code>jwt_secret</code></strong> —— 已经在你的配置仓库里,但要确认那个仓库也备份了。</li>
     </ul>
@@ -192,7 +192,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
           <li>把 <code>crypto.kek_file</code> 设为已备份的文件</li>
           <li>把 <code>auth.jwt_secret</code> 设为 32+ 字节随机值</li>
           <li>用真实账号替换引导管理员密码</li>
-          <li>如果 Tiyi 在 CDN/LB 后,配置信任配置</li>
+          <li>如果太一在 CDN/LB 后,配置信任配置</li>
           <li>选定一个 SIEM 目的地并验证测试事件能落地</li>
           <li>把 <code>/healthz</code> 接到 L4/L7 LB</li>
           <li>从 Prometheus 抓取 <code>/metrics</code></li>
@@ -218,7 +218,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
 <footer class="footer docs-release-footer">
   <div class="container">
     <div class="footer-bottom">
-      <span>&copy; <span data-year>2026</span> Tiyi &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
       <span class="build">build v3.0.3 &middot; 2026-07-02</span>
     </div>
   </div>

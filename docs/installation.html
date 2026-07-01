@@ -99,6 +99,7 @@
     <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. It tries GitHub first and falls back to the Gitee release mirror; force Gitee with <code>TIYI_MIRROR=gitee</code> when needed:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
     <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.0.3</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
+    <p>Public distribution repos: <a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> and <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>.</p>
     <p><code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets.</p>
 
     <h2 id="bootstrap-from-server">Bootstrap an agent from a running server</h2>

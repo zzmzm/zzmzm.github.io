@@ -347,6 +347,23 @@ section + section { padding-top: 0; }
   background: rgba(0, 229, 255, .06);
 }
 .hero-cmd .copy.copied { color: var(--success); border-color: rgba(16,185,129,.4); }
+.hero-repos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  color: var(--fg-3);
+  font-size: 13px;
+}
+.hero-repos a {
+  color: var(--fg-2);
+  font-weight: 600;
+  text-decoration: none;
+}
+.hero-repos a:hover { color: var(--brand-cyan); }
+.hero-repos .sep { color: var(--fg-4); }
 
 /* ---------- Hero screenshot frame ---------- */
 .hero-screenshot {

@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<title>快速开始 — Tiyi 文档</title>
+<title>快速开始 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="构建、运行并验证 Tiyi 五分钟内拦截真实攻击。" />
+<meta name="description" content="构建、运行并验证太一在五分钟内拦截真实攻击。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -20,8 +20,8 @@
 <header class="nav">
   <div class="container nav-inner">
     <a class="brand" href="../index.html">
-      <img src="../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
-      <span>Tiyi</span>
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
     </a>
     <nav class="nav-links" aria-label="主导航">
       <a href="../index.html#features">特性</a>
@@ -70,7 +70,7 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">开始使用</span>
     <h1>快速开始</h1>
-    <p class="lede">从一份干净的 checkout 到一个 Tiyi 实例拦截真实 OWASP CRS 攻击，只需要五分钟。我们会构建二进制、启动 <code>standalone</code>、创建一个站点，并看 WAF 干活。</p>
+    <p class="lede">从一份干净的 checkout 到一个太一实例拦截真实 OWASP CRS 攻击，只需要五分钟。我们会构建二进制、启动 <code>standalone</code>、创建一个站点，并看 WAF 干活。</p>
 
     <h2 id="prerequisites">前置条件</h2>
     <ul>
@@ -101,7 +101,7 @@
     <h2 id="run">2. 以 standalone 模式运行</h2>
     <p>按你的权限选择一种方式。<strong>以 root 运行</strong>时默认值即可 —— 状态写入 <code>/var/lib/tiyi</code>，代理绑定 80/443 端口：</p>
 <pre><code><span class="p">$</span> sudo ./bin/tiyi standalone</code></pre>
-    <p><strong>以普通用户运行</strong>（不用 sudo）时，把 Tiyi 指向可写路径并使用高端口：</p>
+    <p><strong>以普通用户运行</strong>（不用 sudo）时，把太一指向可写路径并使用高端口：</p>
 <pre><code><span class="p">$</span> ./bin/tiyi standalone <span class="o">\</span>
     --state-db /tmp/tiyi.db <span class="o">\</span>
     --caddy-admin-socket /tmp/tiyi-caddy.sock <span class="o">\</span>
@@ -109,7 +109,7 @@
     --proxy-http-addr 127.0.0.1:18080 <span class="o">\</span>
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 
-    <p>Tiyi 会打印一行包含 API 地址、引导管理员密码（仅首次启动显示一次）与 Caddy 管理 socket 路径的 banner：</p>
+    <p>太一会打印一行包含 API 地址、引导管理员密码（仅首次启动显示一次）与 Caddy 管理 socket 路径的 banner：</p>
 <pre><code><span class="c">tiyi v3.0.3 standalone</span>
 <span class="c">  api      http://127.0.0.1:8080</span>
 <span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
@@ -123,12 +123,12 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </div>
       <div class="callout-body">
-        <p><strong>引导密码只显示一次。</strong>刷新前先从终端复制下来。丢了？停掉二进制、删除 <code>state.db</code>、再次启动 —— Tiyi 会重新引导。</p>
+        <p><strong>引导密码只显示一次。</strong>刷新前先从终端复制下来。丢了？停掉二进制、删除 <code>state.db</code>、再次启动 —— 太一会重新引导。</p>
       </div>
     </div>
 
     <h3 id="own-admin-password">自定义管理员密码（可选）</h3>
-    <p>用于自动化、容器镜像或 CI 时，跳过自动生成的密码：在首次启动前设置 <code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code>，Tiyi 会原样采用且不打印任何 banner。用户名默认 <code>admin</code>；仅当尚不存在任何用户时才会自动生成密码，因此重启都是空操作。</p>
+    <p>用于自动化、容器镜像或 CI 时，跳过自动生成的密码：在首次启动前设置 <code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code>，太一会原样采用且不打印任何 banner。用户名默认 <code>admin</code>；仅当尚不存在任何用户时才会自动生成密码，因此重启都是空操作。</p>
 <pre><code><span class="p">$</span> mkdir -p /tmp/waf
 <span class="p">$</span> TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
     ./bin/tiyi standalone <span class="o">\</span>
@@ -140,7 +140,7 @@
     --admin-socket /tmp/waf/admin.sock</code></pre>
 
     <h2 id="upstream">3. 准备一个后端</h2>
-    <p>在第二个终端启动一个 Tiyi 可以代理的服务。任何 HTTP 都行 —— 演示用 Python：</p>
+    <p>在第二个终端启动一个太一可以代理的服务。任何 HTTP 都行 —— 演示用 Python：</p>
 <pre><code><span class="p">$</span> python3 -m http.server 9000</code></pre>
 
     <h2 id="site">4. 创建第一个站点</h2>
@@ -214,7 +214,7 @@
 <footer class="footer docs-release-footer">
   <div class="container">
     <div class="footer-bottom">
-      <span>&copy; <span data-year>2026</span> Tiyi &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
       <span class="build">build v3.0.3 &middot; 2026-07-02</span>
     </div>
   </div>
