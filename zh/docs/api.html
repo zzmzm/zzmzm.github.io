@@ -136,7 +136,7 @@
     </table>
 
     <h2 id="rbac">RBAC</h2>
-    <p>每一个 RPC 声明一个权限要求，例如 <code>site:read</code>、<code>policy:write</code>、<code>log:read</code>、<code>system:write</code>。中间件把 JWT subject 的角色与权限表比对；权威映射在 <code>internal/api/middleware.go</code>。v3.0.2 中有 52 个细粒度权限。</p>
+    <p>每一个 RPC 声明一个权限要求，例如 <code>site:read</code>、<code>policy:write</code>、<code>log:read</code>、<code>system:write</code>。中间件把 JWT subject 的角色与权限表比对；权威映射在 <code>internal/api/middleware.go</code>。v3.0.3 中有 52 个细粒度权限。</p>
 
     <h2 id="streaming">流式 RPC</h2>
     <ul>
@@ -147,8 +147,8 @@
       <li><strong><code>SystemService.StreamUpgradeRun</code></strong> —— 服务端流。按节点的升级运行进度事件。</li>
     </ul>
 
-    <h2 id="canonical-spec">权威规约</h2>
-    <p>源码树中的 PRD-API 文档是每一个 RPC 的权威规约。它列出每个方法的请求/响应形状、RBAC 权限、错误码与审计行契约。本文档覆盖运维表面；那份文档覆盖 API 契约。它们应当一致 —— 不一致请提 issue。</p>
+    <h2 id="canonical-spec">生成式 schema</h2>
+    <p>ConnectRPC 与 Protobuf 类型由 <code>proto/</code> 生成。本文档覆盖面向运维的 API 表面，并应与生成 schema 保持一致 —— 不一致请提 issue。</p>
 
     <p>生成式参考从 <code>proto/</code> 重新生成 Connect Go 与 Protobuf Go：</p>
 <pre><code><span class="p">$</span> make proto
@@ -166,6 +166,15 @@
   </aside>
 
 </div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.0.3 &middot; 2026-07-02</span>
+    </div>
+  </div>
+</footer>
 
 <script src="../../assets/js/main.js" defer></script>
 </body>

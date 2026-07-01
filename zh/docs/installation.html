@@ -78,8 +78,11 @@
     <p>Tiyi 是单一签名二进制 —— 在单节点上免费且功能完整。权威安装脚本发布在 <code>https://www.tiyisec.com/install.sh</code>：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.0.2 linux/amd64</span></code></pre>
-    <p>脚本会下载与平台匹配的二进制，比对 SHA-256 manifest，并放到 <code>/usr/local/bin/tiyi</code>。<code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。</p>
+<span class="c">tiyi v3.0.3 linux/amd64</span></code></pre>
+    <p>脚本会下载与平台匹配的二进制，比对 SHA-256 manifest，并放到 <code>/usr/local/bin/tiyi</code>。默认先尝试 GitHub，失败或过慢时回退到 Gitee Release 镜像；必要时可用 <code>TIYI_MIRROR=gitee</code> 强制使用 Gitee：</p>
+<pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
+    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.0.3</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
+    <p><code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。</p>
 
     <h2 id="bootstrap-from-server">从已运行的服务端引导节点</h2>
     <p>已运行的 Tiyi 服务端暴露 <code>GET /download/tiyi</code>，一个无鉴权端点会流式输出当前运行的二进制。在干净的机器上引导节点：</p>
@@ -90,10 +93,10 @@
     <h2 id="config-file">配置文件</h2>
     <p>Tiyi 读取一份 Koanf 风格的 YAML 配置。从下面这份最小配置起步，其余靠默认：</p>
 <pre><code><span class="c"># /etc/tiyi/server.yaml</span>
-<span class="k">api</span>:
+<span class="k">server</span>:
   <span class="k">addr</span>: <span class="s">"0.0.0.0:8080"</span>
 
-<span class="k">storage</span>:
+<span class="k">store</span>:
   <span class="k">state_db</span>: <span class="s">"/var/lib/tiyi/state.db"</span>
 
 <span class="k">crypto</span>:
@@ -118,6 +121,32 @@
         <p><strong>上线前两个字段必须显式设置。</strong><code>crypto.kek_file</code> 与 <code>auth.jwt_secret</code> 都有不能跨重启幸存的开发友好回退。详见<a href="deployment.html#hardening">部署 → 生产加固</a>。</p>
       </div>
     </div>
+
+    <h2 id="environment">配置环境变量</h2>
+    <p>持久化服务配置优先写入 <code>/etc/tiyi/server.yaml</code>。只有当 service manager、容器运行时或密钥管理器需要在运行时注入配置时，才使用环境变量。优先级是：内置默认值、<code>server.yaml</code>、配置环境变量、显式 CLI 参数。</p>
+    <p>环境变量名与配置键一一对应：加 <code>TIYI_</code> 前缀，转为大写，并把点替换为下划线。例如 <code>auth.jwt_secret</code> 对应 <code>TIYI_AUTH_JWT_SECRET</code>。</p>
+
+    <h3>常用配置覆盖</h3>
+    <table>
+      <thead><tr><th>变量</th><th>配置键</th><th>适用场景</th></tr></thead>
+      <tbody>
+        <tr><td><code>TIYI_SERVER_ADDR</code></td><td><code>server.addr</code></td><td>把 API / 控制台绑定到不同地址。</td></tr>
+        <tr><td><code>TIYI_STORE_STATE_DB</code></td><td><code>store.state_db</code></td><td>移动 SQLite 状态数据库。</td></tr>
+        <tr><td><code>TIYI_LOG_LEVEL</code></td><td><code>log.level</code></td><td>临时调整进程日志级别。</td></tr>
+        <tr><td><code>TIYI_PROXY_HTTP_ADDR</code></td><td><code>proxy.http_addr</code></td><td>修改 HTTP 数据面监听地址。</td></tr>
+        <tr><td><code>TIYI_PROXY_HTTPS_ADDR</code></td><td><code>proxy.https_addr</code></td><td>修改 HTTPS 数据面监听地址。</td></tr>
+        <tr><td><code>TIYI_PROXY_CADDY_ADMIN_SOCKET</code></td><td><code>proxy.caddy_admin_socket</code></td><td>移动内嵌 Caddy admin socket。</td></tr>
+        <tr><td><code>TIYI_CRYPTO_KEK_FILE</code></td><td><code>crypto.kek_file</code></td><td>为生产环境固定静态加密 KEK 路径。</td></tr>
+        <tr><td><code>TIYI_AUTH_JWT_SECRET</code></td><td><code>auth.jwt_secret</code></td><td>为生产环境设置稳定 JWT 签名密钥。</td></tr>
+        <tr><td><code>TIYI_AUTH_BOOTSTRAP_ADMIN_USERNAME</code></td><td><code>auth.bootstrap_admin_username</code></td><td>指定首个管理员用户名。</td></tr>
+        <tr><td><code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code></td><td><code>auth.bootstrap_admin_password</code></td><td>为自动化指定首个管理员密码。</td></tr>
+        <tr><td><code>TIYI_LICENSE_KEY_PATH</code></td><td><code>license.key_path</code></td><td>启动时加载签名 license 文件。</td></tr>
+        <tr><td><code>TIYI_UPDATE_REPO</code></td><td><code>update.repo</code></td><td>覆盖更新检查使用的 GitHub release 仓库。</td></tr>
+        <tr><td><code>TIYI_UPDATE_CHANNEL</code></td><td><code>update.channel</code></td><td>为 <code>tiyi update</code> 使用 <code>stable</code> 或 <code>prerelease</code>。</td></tr>
+        <tr><td><code>TIYI_UPDATE_MIRROR</code></td><td><code>update.mirror</code></td><td>更新检查/下载使用 <code>auto</code>、<code>github</code> 或 <code>gitee</code>。</td></tr>
+      </tbody>
+    </table>
+    <p>较少使用的配置键也遵循同一规则，包括 <code>auth.access_token_ttl</code>、<code>auth.refresh_token_ttl</code>、<code>auth.refresh_cookie_secure</code>、<code>auth.bootstrap_admin_email</code>、<code>auth.bootstrap_admin_name</code>、<code>auth.provider</code>、<code>auth.ldap.*</code>、<code>auth.radius.*</code> 与 <code>update.api_base_url</code>。除非部署平台必须通过环境变量注入，否则这些项优先写 YAML。</p>
 
     <h2 id="modes">运行模式</h2>
     <p>同一个二进制暴露五个子命令。按这台主机的角色挑一个：</p>
@@ -209,6 +238,15 @@
   </aside>
 
 </div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.0.3 &middot; 2026-07-02</span>
+    </div>
+  </div>
+</footer>
 
 <script src="../../assets/js/main.js" defer></script>
 </body>

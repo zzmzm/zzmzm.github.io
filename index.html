@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.0.2</span>
-    Frictionless install patch release
+    <span class="tag">v3.0.3</span>
+    China mirror install + update release
   </span>
 
   <h1>
@@ -299,7 +299,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">Product tour</span>
       <h2>The admin plane your ops team will actually use.</h2>
-      <p>Every screenshot below is a real screen from <span class="mono">v3.0.2</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
+      <p>Every screenshot below is a real screen from <span class="mono">v3.0.3</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
     </div>
 
     <!-- Tour 1: Dashboard -->
@@ -570,13 +570,26 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.0.3</span>
+          <span class="tl-date">2026-07-02</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">China mirror install + signed update fallback</div>
+        <div class="tl-body">
+          <span class="mono">install.sh</span> and <span class="mono">tiyi update</span> now use GitHub as the primary release source with a Gitee fallback for operators on slow or blocked GitHub links. Force the China mirror with <span class="mono">TIYI_MIRROR=gitee</span> for install or <span class="mono">tiyi update --mirror gitee</span> for updates. Public docs now expose only config-derived runtime env vars, use <span class="mono">tiyi update</span> consistently, and keep GitHub/Gitee distribution docs in lockstep.
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.0.2</span>
           <span class="tl-date">2026-06-28</span>
           <span class="tl-tag shipped">Shipped</span>
         </div>
         <div class="tl-title">Frictionless install + deterministic first-run admin</div>
         <div class="tl-body">
-          <span class="mono">sudo tiyi install --now</span> is now the default single-host path: it pre-creates the first administrator before starting the service and prints the login (URL + username + password) right there, so the one-time secret never lands in the journal. Re-running <span class="mono">install.sh</span> on a host that already has tiyi self-updates the binary in place and restarts the service instead of re-downloading. The API and dashboard now bind <span class="mono">0.0.0.0:8080</span> by default.
+          <span class="mono">sudo tiyi install --now</span> is now the default single-host path: it pre-creates the first administrator before starting the service and prints the login (URL + username + password) right there, so the one-time secret never lands in the journal. Re-running <span class="mono">install.sh</span> on a host that already has tiyi updates the binary in place and restarts the service instead of re-downloading. The API and dashboard now bind <span class="mono">0.0.0.0:8080</span> by default.
         </div>
       </div>
 
@@ -602,7 +615,7 @@
         </div>
         <div class="tl-title">First public release</div>
         <div class="tl-body">
-          Tiyi v3.0.0 is published on GitHub Releases with signed Linux amd64/arm64 artifacts, <span class="mono">SHA256SUMS</span>, <span class="mono">SHA256SUMS.sig</span>, and <span class="mono">release-manifest.json</span>. Install from <span class="mono">www.tiyisec.com/install.sh</span> or the GitHub raw mirror, verify downloads against <span class="mono">release-key.pub</span>, and update with <span class="mono">tiyi self-update --yes</span>.
+          Tiyi v3.0.0 is published on GitHub Releases with signed Linux amd64/arm64 artifacts, <span class="mono">SHA256SUMS</span>, <span class="mono">SHA256SUMS.sig</span>, and <span class="mono">release-manifest.json</span>. Install from <span class="mono">www.tiyisec.com/install.sh</span> or the GitHub raw mirror, verify downloads against <span class="mono">release-key.pub</span>, and update with <span class="mono">tiyi update --yes</span>.
         </div>
       </div>
 
@@ -872,7 +885,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.2 · 2026-06-28</span>
+      <span class="build">build v3.0.3 · 2026-07-02</span>
     </div>
   </div>
 </footer>

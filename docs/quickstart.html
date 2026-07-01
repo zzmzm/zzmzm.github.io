@@ -115,7 +115,7 @@
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 
     <p>Tiyi prints a banner with the API URL, the bootstrap admin password (printed once on first run), and the Caddy admin socket path:</p>
-<pre><code><span class="c">tiyi v3.0.2 standalone</span>
+<pre><code><span class="c">tiyi v3.0.3 standalone</span>
 <span class="c">  api      http://127.0.0.1:8080</span>
 <span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
 <span class="c">  state    /tmp/tiyi.db</span>
@@ -133,9 +133,9 @@
     </div>
 
     <h3 id="own-admin-password">Choose your own admin password (optional)</h3>
-    <p>For automation, container images, or CI, skip the generated password: set <code>TIYI_BOOTSTRAP_ADMIN_PASSWORD</code> before the first boot and Tiyi uses it verbatim — no banner is printed. The username defaults to <code>admin</code>, and auto-generation only fires when no users exist yet, so restarts are no-ops.</p>
+    <p>For automation, container images, or CI, skip the generated password: set <code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code> before the first boot and Tiyi uses it verbatim — no banner is printed. The username defaults to <code>admin</code>, and auto-generation only fires when no users exist yet, so restarts are no-ops.</p>
 <pre><code><span class="p">$</span> mkdir -p /tmp/waf
-<span class="p">$</span> TIYI_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
+<span class="p">$</span> TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
     ./bin/tiyi standalone <span class="o">\</span>
     --addr 0.0.0.0:8080 <span class="o">\</span>
     --state-db /tmp/waf/state.db <span class="o">\</span>
@@ -215,6 +215,15 @@
   </aside>
 
 </div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.0.3 &middot; 2026-07-02</span>
+    </div>
+  </div>
+</footer>
 
 <script src="../assets/js/main.js" defer></script>
 </body>

@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Changelog — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi release notes from foundation work through v3.0.2." />
+<meta name="description" content="Tiyi release notes from foundation work through v3.0.3." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -54,6 +54,26 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.0.3</span>
+          <span class="tl-date">2026-07-02</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">China mirror install + signed update fallback</div>
+        <div class="tl-body">
+          <p>Operational polish for regions where GitHub is slow or unreliable, plus a tighter public documentation surface for runtime configuration.</p>
+          <ul>
+            <li><strong>GitHub primary, Gitee fallback.</strong> <span class="mono">install.sh</span> keeps GitHub as the default source and falls back to the Gitee release mirror when needed; operators can force the mirror with <span class="mono">TIYI_MIRROR=gitee</span>.</li>
+            <li><strong>Signed update mirror selection.</strong> <span class="mono">tiyi update</span> supports <span class="mono">auto</span>, <span class="mono">github</span>, and <span class="mono">gitee</span> mirror modes while preserving SHA-256 and Ed25519 verification before replacing the binary.</li>
+            <li><strong>User-oriented env docs.</strong> Runtime env documentation now follows <span class="mono">server.yaml</span> config keys only, recommends YAML for persistent service config, and documents config-derived names such as <span class="mono">TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</span> and <span class="mono">TIYI_LICENSE_KEY_PATH</span>.</li>
+            <li><strong>Public docs cleanup.</strong> Operator-facing docs and command help use <span class="mono">tiyi update</span>, remove private design references, and keep the website, GitHub public repo, and Gitee public repo aligned.</li>
+            <li>Verified: <span class="mono">go test ./...</span>, <span class="mono">buf lint</span>, installer syntax checks, and website/public installer lockstep.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.0.2</span>
           <span class="tl-date">2026-06-28</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -63,7 +83,7 @@
           <p>A smoother five-minute path from install to a working dashboard login, with no journal-scraping for the admin password.</p>
           <ul>
             <li><strong>Deterministic first-run admin.</strong> <span class="mono">sudo tiyi install --now</span> (standalone) pre-creates the <span class="mono">admin</span> account before starting the service and prints the login — URL, username, and password — directly from the installer. The one-time secret never reaches journald, and the service skips its own random-password banner.</li>
-            <li><strong>Re-run = in-place update.</strong> When tiyi is already installed, <span class="mono">install.sh</span> uses the signed <span class="mono">self-update</span> (downloading only when a newer release exists) and then re-installs + restarts the service, instead of pulling the full tarball again. It leads with <span class="mono">sudo tiyi install --now</span> as the default.</li>
+            <li><strong>Re-run = in-place update.</strong> When tiyi is already installed, <span class="mono">install.sh</span> uses the signed <span class="mono">tiyi update</span> path (downloading only when a newer release exists) and then re-installs + restarts the service, instead of pulling the full tarball again. It leads with <span class="mono">sudo tiyi install --now</span> as the default.</li>
             <li><strong>Reachable by default.</strong> The API and dashboard now bind <span class="mono">0.0.0.0:8080</span> by default (still login-protected).</li>
             <li>Verified: <span class="mono">go test ./...</span> and frontend unit tests green, plus a live install QA (credential banner, <span class="mono">0.0.0.0:8080</span> listener, working login) on a clean host.</li>
           </ul>
@@ -104,7 +124,7 @@
           <ul>
             <li>Release assets include per-platform tarballs, <span class="mono">SHA256SUMS</span>, <span class="mono">SHA256SUMS.sig</span>, and <span class="mono">release-manifest.json</span>.</li>
             <li>Downloads verify against <span class="mono">release-key.pub</span> using SHA-256 plus Ed25519 signatures.</li>
-            <li>Operators can update an installed binary with <span class="mono">tiyi self-update --yes</span>.</li>
+            <li>Operators can update an installed binary with <span class="mono">tiyi update --yes</span>.</li>
             <li>GitHub release: <a href="https://github.com/zzmzm/tiyi/releases/tag/v3.0.0">Tiyi v3.0.0</a>.</li>
           </ul>
         </div>
@@ -184,7 +204,7 @@
             <li><strong>Streamed analysis.</strong> A global <span class="mono">AI Copilot</span> slide-over explains any incident or single log event, or analyzes a filtered log result set — streamed token-by-token. Subjects are reduced to redacted whitelist projections, never raw audit JSON.</li>
             <li><strong>Conversational agent.</strong> A <span class="mono">StreamChat</span> assistant answers open questions ("top 10 attackers in the last hour", "was example.com attacked today, from which IPs?") by tool-calling over five <em>read-only</em>, tenant-scoped log queries — it adds no new log surface.</li>
             <li><strong>Advisory, never autonomous.</strong> Incident enrichment, policy-tuning patches, NL→log-query translation, draft custom rules (forced log-only canary), and campaign correlation are all proposals; the only state-changing path is an explicit operator <em>Apply</em> routed through the existing audited mutation, gated by <span class="mono">ai:apply</span>.</li>
-            <li><strong>Provider-agnostic + safe.</strong> OpenAI-compatible (OpenAI / Ollama / vLLM / LM Studio / llama.cpp) and Azure OpenAI; the key is KEK-encrypted, never a setting. Every prompt is redacted (§ 8.6), dual-RBAC gated (<span class="mono">ai:read</span> plus the subject's own <span class="mono">incident:read</span>/<span class="mono">log:read</span>), rate-limited, and panic-isolated.</li>
+            <li><strong>Provider-agnostic + safe.</strong> OpenAI-compatible (OpenAI / Ollama / vLLM / LM Studio / llama.cpp) and Azure OpenAI; the key is KEK-encrypted, never a setting. Every prompt is redacted, dual-RBAC gated (<span class="mono">ai:read</span> plus the subject's own <span class="mono">incident:read</span>/<span class="mono">log:read</span>), rate-limited, and panic-isolated.</li>
             <li>Verified: <span class="mono">go test ./...</span> green, <span class="mono">buf lint</span> clean, <span class="mono">vue-tsc</span> clean, <span class="mono">i18n_check.py</span> 0 missing, plus a Playwright QA pass against a mock provider.</li>
           </ul>
         </div>
@@ -376,7 +396,7 @@
             <li><strong>Phase 4</strong> — per-site URL prefix tree with <span class="mono">MaxNodesPerSite</span> + <span class="mono">MaxDepth</span>; janitor evicts idle low-traffic leaves into <span class="mono">api_tree_archive</span></li>
             <li><strong>Phase 5</strong> — REST API at <span class="mono">/api/v1/telemetry/*</span> + frontend explorer</li>
             <li><strong>Phase 6</strong> — Prometheus exporter at <span class="mono">/metrics</span> on the local admin socket</li>
-            <li><strong>Legacy cutover</strong> — <span class="mono">logsink.recordAccessRollup</span> short-circuits when telemetry is active, ending the per-event <span class="mono">traffic_rollup_minute</span> write that PRD-TELEMETRY identified as the 100k EPS I/O amplifier</li>
+            <li><strong>Legacy cutover</strong> — <span class="mono">logsink.recordAccessRollup</span> short-circuits when telemetry is active, ending the per-event <span class="mono">traffic_rollup_minute</span> write that amplified I/O at high event rates</li>
           </ul>
         </div>
       </div>
@@ -389,7 +409,7 @@
         </div>
         <div class="tl-title">Frontend shell complete</div>
         <div class="tl-body">
-          <p>Every server-seeded menu route resolves to a real page; every PRD-UI § 4 page is wired end-to-end; every reusable Tiyi component from PRD-UI § 5 ships.</p>
+          <p>Every server-seeded menu route resolves to a real page, the core admin pages are wired end-to-end, and the reusable Tiyi UI components ship.</p>
           <ul>
             <li>Dashboard with <span class="mono">GetDashboardStats</span>, <span class="mono">GetTrafficTimeseries</span>, <span class="mono">GetAttackDistribution</span>, <span class="mono">GetTopAttackers</span>, <span class="mono">StreamAlerts</span></li>
             <li>Policy editor with 12 tabs, deep-linkable: CRS Core · HTTP Policy · Limits · Rule Tuning · IP Lists · Custom Rules · Plugins · Rate Limits · Exclusions · Preview · Versions · Test Lab</li>
@@ -533,7 +553,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.2 · 2026-06-28</span>
+      <span class="build">build v3.0.3 · 2026-07-02</span>
     </div>
   </div>
 </footer>

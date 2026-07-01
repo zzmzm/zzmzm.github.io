@@ -160,7 +160,7 @@
     </table>
 
     <h2 id="rbac">RBAC</h2>
-    <p>Each RPC declares a required permission like <code>site:read</code>, <code>policy:write</code>, <code>log:read</code>, <code>system:write</code>. The middleware checks the JWT subject's roles against the permission table; the canonical mapping lives in <code>internal/api/middleware.go</code>. There are 52 fine-grained permissions in v3.0.2.</p>
+    <p>Each RPC declares a required permission like <code>site:read</code>, <code>policy:write</code>, <code>log:read</code>, <code>system:write</code>. The middleware checks the JWT subject's roles against the permission table; the canonical mapping lives in <code>internal/api/middleware.go</code>. There are 52 fine-grained permissions in v3.0.3.</p>
 
     <h2 id="streaming">Streaming RPCs</h2>
     <ul>
@@ -171,8 +171,8 @@
       <li><strong><code>SystemService.StreamUpgradeRun</code></strong> — server-streaming. Per-agent upgrade run progress events.</li>
     </ul>
 
-    <h2 id="canonical-spec">Canonical spec</h2>
-    <p>The PRD-API document in the source tree is the canonical per-RPC spec. It enumerates every method's request/response shape, RBAC permission, error codes, and audit-row contract. These docs cover the operator surface; that doc covers the API contract. They should agree — file an issue if they don't.</p>
+    <h2 id="canonical-spec">Generated schema</h2>
+    <p>The ConnectRPC and Protobuf types are generated from <code>proto/</code>. These docs cover the operator-facing API surface and should agree with the generated schema — file an issue if they don't.</p>
 
     <p>For a generated reference, regenerate Connect Go and Protobuf Go from <code>proto/</code>:</p>
 <pre><code><span class="p">$</span> make proto
@@ -196,6 +196,15 @@
   </aside>
 
 </div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.0.3 &middot; 2026-07-02</span>
+    </div>
+  </div>
+</footer>
 
 <script src="../assets/js/main.js" defer></script>
 </body>

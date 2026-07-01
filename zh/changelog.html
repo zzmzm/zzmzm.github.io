@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>更新日志 — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi 从基础工作到 v3.0.2 的完整更新记录。" />
+<meta name="description" content="Tiyi 从基础工作到 v3.0.3 的完整更新记录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -55,6 +55,26 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.0.3</span>
+          <span class="tl-date">2026-07-02</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">中国大陆镜像安装 + 签名更新回退</div>
+        <div class="tl-body">
+          <p>面向 GitHub 访问慢或不稳定区域的运维体验打磨,同时收紧公开文档中的运行时配置说明。</p>
+          <ul>
+            <li><strong>GitHub 优先,Gitee 回退。</strong><span class="mono">install.sh</span> 保持 GitHub 为默认来源,必要时回退到 Gitee Release 镜像;运维人员也可以用 <span class="mono">TIYI_MIRROR=gitee</span> 强制镜像。</li>
+            <li><strong>签名更新镜像选择。</strong><span class="mono">tiyi update</span> 支持 <span class="mono">auto</span>、<span class="mono">github</span> 与 <span class="mono">gitee</span> 镜像模式,替换二进制前仍校验 SHA-256 与 Ed25519 签名。</li>
+            <li><strong>面向用户的环境变量文档。</strong>运行时环境变量文档现在只跟随 <span class="mono">server.yaml</span> 配置键,建议持久化服务配置优先写 YAML,并记录 <span class="mono">TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</span>、<span class="mono">TIYI_LICENSE_KEY_PATH</span> 等配置派生名称。</li>
+            <li><strong>公开文档清理。</strong>运维文档与命令帮助统一使用 <span class="mono">tiyi update</span>,移除私有设计文档引用,并保持官网、GitHub public 仓库与 Gitee public 仓库同步。</li>
+            <li>已验证:<span class="mono">go test ./...</span>、<span class="mono">buf lint</span>、安装器语法检查与官网/公开仓库安装器一致性。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.0.2</span>
           <span class="tl-date">2026-06-28</span>
           <span class="tl-tag shipped">已发布</span>
@@ -64,7 +84,7 @@
           <p>从安装到拿到可用的仪表盘登录,五分钟路径更顺滑,且无需再去 journal 里捞管理员密码。</p>
           <ul>
             <li><strong>确定性首次管理员。</strong> <span class="mono">sudo tiyi install --now</span>(standalone)在启动服务前预创建 <span class="mono">admin</span> 账户,并由安装器直接打印登录信息 —— URL、用户名、密码。一次性密码不再写入 journald,服务也不再打印自己的随机密码横幅。</li>
-            <li><strong>重跑即就地升级。</strong> 当 tiyi 已安装时,<span class="mono">install.sh</span> 使用签名的 <span class="mono">self-update</span>(仅在有更新版本时才下载),随后重新安装并重启服务,而不是再次拉取整个 tar 包;并以 <span class="mono">sudo tiyi install --now</span> 作为默认路径。</li>
+            <li><strong>重跑即就地升级。</strong> 当 tiyi 已安装时,<span class="mono">install.sh</span> 使用签名的 <span class="mono">tiyi update</span> 路径(仅在有更新版本时才下载),随后重新安装并重启服务,而不是再次拉取整个 tar 包;并以 <span class="mono">sudo tiyi install --now</span> 作为默认路径。</li>
             <li><strong>默认可达。</strong> API 与仪表盘默认监听 <span class="mono">0.0.0.0:8080</span>(仍需登录鉴权)。</li>
             <li>验证:<span class="mono">go test ./...</span> 与前端单测通过,并在干净主机上完成实测安装 QA(凭据横幅、<span class="mono">0.0.0.0:8080</span> 监听、可正常登录)。</li>
           </ul>
@@ -105,7 +125,7 @@
           <ul>
             <li>发布资产包含按平台区分的 tarball、<span class="mono">SHA256SUMS</span>、<span class="mono">SHA256SUMS.sig</span> 与 <span class="mono">release-manifest.json</span>。</li>
             <li>下载可用 <span class="mono">release-key.pub</span> 校验 SHA-256 与 Ed25519 签名。</li>
-            <li>已安装的二进制可通过 <span class="mono">tiyi self-update --yes</span> 更新。</li>
+            <li>已安装的二进制可通过 <span class="mono">tiyi update --yes</span> 更新。</li>
             <li>GitHub release：<a href="https://github.com/zzmzm/tiyi/releases/tag/v3.0.0">Tiyi v3.0.0</a>。</li>
           </ul>
         </div>
@@ -185,7 +205,7 @@
             <li><strong>流式分析。</strong> 全局 <span class="mono">AI Copilot</span> 抽屉可解释任意事件或单条日志，或分析一组过滤后的日志结果 —— 逐 token 流式返回。主题被收敛为脱敏白名单投影，绝不发送原始审计 JSON。</li>
             <li><strong>对话式智能体。</strong> <span class="mono">StreamChat</span> 助手通过对五个<em>只读</em>、租户范围的日志查询进行工具调用，回答开放式问题（「最近一小时 Top 10 攻击者」「example.com 今天是否被攻击、来自哪些 IP？」）—— 不新增任何日志面。</li>
             <li><strong>只做顾问，绝不自治。</strong> 事件富化、策略调优补丁、自然语言→日志查询翻译、自定义规则草案（强制 log-only 金丝雀）与攻击活动关联都只是建议；唯一改变状态的路径是运维显式<em>应用</em>，经由既有审计化变更执行，并受 <span class="mono">ai:apply</span> 把关。</li>
-            <li><strong>provider 无关 + 安全。</strong> 兼容 OpenAI（OpenAI / Ollama / vLLM / LM Studio / llama.cpp）与 Azure OpenAI；密钥经 KEK 加密、绝不作为设置项。每条提示都经过脱敏（§ 8.6）、双重 RBAC 把关（<span class="mono">ai:read</span> 外加主题自身的 <span class="mono">incident:read</span>/<span class="mono">log:read</span>）、限速并 panic 隔离。</li>
+            <li><strong>provider 无关 + 安全。</strong> 兼容 OpenAI（OpenAI / Ollama / vLLM / LM Studio / llama.cpp）与 Azure OpenAI；密钥经 KEK 加密、绝不作为设置项。每条提示都经过脱敏、双重 RBAC 把关（<span class="mono">ai:read</span> 外加主题自身的 <span class="mono">incident:read</span>/<span class="mono">log:read</span>）、限速并 panic 隔离。</li>
             <li>验证：<span class="mono">go test ./...</span> 通过、<span class="mono">buf lint</span> 干净、<span class="mono">vue-tsc</span> 干净、<span class="mono">i18n_check.py</span> 0 缺失，外加针对 mock provider 的 Playwright QA。</li>
           </ul>
         </div>
@@ -377,7 +397,7 @@
             <li><strong>Phase 4</strong> —— 按站点 URL 前缀树,带 <span class="mono">MaxNodesPerSite</span> + <span class="mono">MaxDepth</span> 上限;空闲叶子撤入 <span class="mono">api_tree_archive</span></li>
             <li><strong>Phase 5</strong> —— REST API 位于 <span class="mono">/api/v1/telemetry/*</span> + 前端浏览器</li>
             <li><strong>Phase 6</strong> —— 本地管理 socket 的 <span class="mono">/metrics</span> Prometheus 导出器</li>
-            <li><strong>旧路径切换</strong> —— 启用遥测后,<span class="mono">logsink.recordAccessRollup</span> 会短路掉旧的 <span class="mono">traffic_rollup_minute</span> 每事件写入(PRD-TELEMETRY 把它定为 100k EPS 下的 I/O 放大点)</li>
+            <li><strong>旧路径切换</strong> —— 启用遥测后,<span class="mono">logsink.recordAccessRollup</span> 会短路掉旧的 <span class="mono">traffic_rollup_minute</span> 每事件写入,避免高事件速率下的 I/O 放大</li>
           </ul>
         </div>
       </div>
@@ -390,7 +410,7 @@
         </div>
         <div class="tl-title">前端壳完成</div>
         <div class="tl-body">
-          <p>所有服务端注入的菜单都解析到真实页面;所有 PRD-UI § 4 页面端到端打通;所有 PRD-UI § 5 中可复用的 Tiyi 组件都已就绪。</p>
+          <p>所有服务端注入的菜单都解析到真实页面；核心管理页面端到端打通，Tiyi 可复用 UI 组件也已就绪。</p>
           <ul>
             <li>Dashboard 调用 <span class="mono">GetDashboardStats</span>、<span class="mono">GetTrafficTimeseries</span>、<span class="mono">GetAttackDistribution</span>、<span class="mono">GetTopAttackers</span>、<span class="mono">StreamAlerts</span></li>
             <li>策略编辑器 12 个标签,可深链:CRS Core · HTTP Policy · Limits · 规则调优 · IP 列表 · 自定义规则 · 插件 · 限速 · 排除项 · 预览 · 版本 · 测试台</li>
@@ -534,7 +554,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.2 · 2026-06-28</span>
+      <span class="build">build v3.0.3 · 2026-07-02</span>
     </div>
   </div>
 </footer>

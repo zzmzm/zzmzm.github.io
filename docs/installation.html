@@ -95,8 +95,11 @@
     <p>Tiyi is one signed binary — free and full-featured on a single node. The canonical install script is published at <code>https://www.tiyisec.com/install.sh</code>:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.0.2 linux/amd64</span></code></pre>
-    <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. <code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets.</p>
+<span class="c">tiyi v3.0.3 linux/amd64</span></code></pre>
+    <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. It tries GitHub first and falls back to the Gitee release mirror; force Gitee with <code>TIYI_MIRROR=gitee</code> when needed:</p>
+<pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
+    <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.0.3</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
+    <p><code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets.</p>
 
     <h2 id="bootstrap-from-server">Bootstrap an agent from a running server</h2>
     <p>A running Tiyi server exposes <code>GET /download/tiyi</code>, an unauthenticated endpoint that streams the running binary. Use it to bootstrap agents on fresh machines:</p>
@@ -107,10 +110,10 @@
     <h2 id="config-file">Config file</h2>
     <p>Tiyi reads a Koanf-based YAML config. Start from this minimal config and let the defaults handle the rest:</p>
 <pre><code><span class="c"># /etc/tiyi/server.yaml</span>
-<span class="k">api</span>:
+<span class="k">server</span>:
   <span class="k">addr</span>: <span class="s">"0.0.0.0:8080"</span>
 
-<span class="k">storage</span>:
+<span class="k">store</span>:
   <span class="k">state_db</span>: <span class="s">"/var/lib/tiyi/state.db"</span>
 
 <span class="k">crypto</span>:
@@ -135,6 +138,32 @@
         <p><strong>Two fields are mandatory before going live.</strong> <code>crypto.kek_file</code> and <code>auth.jwt_secret</code> have dev-friendly fallbacks that explicitly do not survive a restart. See <a href="deployment.html#hardening">Deployment → Production hardening</a> for the contract.</p>
       </div>
     </div>
+
+    <h2 id="environment">Config environment variables</h2>
+    <p>Prefer <code>/etc/tiyi/server.yaml</code> for persistent service configuration. Use environment variables only when your service manager, container runtime, or secret manager injects config at runtime. Precedence is built-in defaults, then <code>server.yaml</code>, then config environment variables, then explicit CLI flags.</p>
+    <p>Environment names mirror config keys: prefix <code>TIYI_</code>, uppercase the key, and replace dots with underscores. For example, <code>auth.jwt_secret</code> becomes <code>TIYI_AUTH_JWT_SECRET</code>.</p>
+
+    <h3>Common config overrides</h3>
+    <table>
+      <thead><tr><th>Variable</th><th>Config key</th><th>When to use</th></tr></thead>
+      <tbody>
+        <tr><td><code>TIYI_SERVER_ADDR</code></td><td><code>server.addr</code></td><td>Bind the API/dashboard to a different address.</td></tr>
+        <tr><td><code>TIYI_STORE_STATE_DB</code></td><td><code>store.state_db</code></td><td>Move the SQLite state database.</td></tr>
+        <tr><td><code>TIYI_LOG_LEVEL</code></td><td><code>log.level</code></td><td>Temporarily raise or lower process logging.</td></tr>
+        <tr><td><code>TIYI_PROXY_HTTP_ADDR</code></td><td><code>proxy.http_addr</code></td><td>Change the HTTP data-plane listen address.</td></tr>
+        <tr><td><code>TIYI_PROXY_HTTPS_ADDR</code></td><td><code>proxy.https_addr</code></td><td>Change the HTTPS data-plane listen address.</td></tr>
+        <tr><td><code>TIYI_PROXY_CADDY_ADMIN_SOCKET</code></td><td><code>proxy.caddy_admin_socket</code></td><td>Move the embedded Caddy admin socket.</td></tr>
+        <tr><td><code>TIYI_CRYPTO_KEK_FILE</code></td><td><code>crypto.kek_file</code></td><td>Pin the at-rest encryption KEK path for production.</td></tr>
+        <tr><td><code>TIYI_AUTH_JWT_SECRET</code></td><td><code>auth.jwt_secret</code></td><td>Set a stable JWT signing secret for production.</td></tr>
+        <tr><td><code>TIYI_AUTH_BOOTSTRAP_ADMIN_USERNAME</code></td><td><code>auth.bootstrap_admin_username</code></td><td>Choose the first admin username.</td></tr>
+        <tr><td><code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code></td><td><code>auth.bootstrap_admin_password</code></td><td>Choose the first admin password for automation.</td></tr>
+        <tr><td><code>TIYI_LICENSE_KEY_PATH</code></td><td><code>license.key_path</code></td><td>Load a signed license file on boot.</td></tr>
+        <tr><td><code>TIYI_UPDATE_REPO</code></td><td><code>update.repo</code></td><td>Override the GitHub release repo used by update checks.</td></tr>
+        <tr><td><code>TIYI_UPDATE_CHANNEL</code></td><td><code>update.channel</code></td><td>Use <code>stable</code> or <code>prerelease</code> for <code>tiyi update</code>.</td></tr>
+        <tr><td><code>TIYI_UPDATE_MIRROR</code></td><td><code>update.mirror</code></td><td>Use <code>auto</code>, <code>github</code>, or <code>gitee</code> for update checks/downloads.</td></tr>
+      </tbody>
+    </table>
+    <p>Less common config keys follow the same rule, including <code>auth.access_token_ttl</code>, <code>auth.refresh_token_ttl</code>, <code>auth.refresh_cookie_secure</code>, <code>auth.bootstrap_admin_email</code>, <code>auth.bootstrap_admin_name</code>, <code>auth.provider</code>, <code>auth.ldap.*</code>, <code>auth.radius.*</code>, and <code>update.api_base_url</code>. Prefer YAML for these unless your deployment platform requires env injection.</p>
 
     <h2 id="modes">Operational modes</h2>
     <p>The same binary exposes five subcommands. Pick the one that matches the host's role:</p>
@@ -226,6 +255,15 @@
   </aside>
 
 </div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.0.3 &middot; 2026-07-02</span>
+    </div>
+  </div>
+</footer>
 
 <script src="../assets/js/main.js" defer></script>
 </body>

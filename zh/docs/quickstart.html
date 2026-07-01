@@ -110,7 +110,7 @@
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 
     <p>Tiyi 会打印一行包含 API 地址、引导管理员密码（仅首次启动显示一次）与 Caddy 管理 socket 路径的 banner：</p>
-<pre><code><span class="c">tiyi v3.0.2 standalone</span>
+<pre><code><span class="c">tiyi v3.0.3 standalone</span>
 <span class="c">  api      http://127.0.0.1:8080</span>
 <span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
 <span class="c">  state    /tmp/tiyi.db</span>
@@ -128,9 +128,9 @@
     </div>
 
     <h3 id="own-admin-password">自定义管理员密码（可选）</h3>
-    <p>用于自动化、容器镜像或 CI 时，跳过自动生成的密码：在首次启动前设置 <code>TIYI_BOOTSTRAP_ADMIN_PASSWORD</code>，Tiyi 会原样采用且不打印任何 banner。用户名默认 <code>admin</code>；仅当尚不存在任何用户时才会自动生成密码，因此重启都是空操作。</p>
+    <p>用于自动化、容器镜像或 CI 时，跳过自动生成的密码：在首次启动前设置 <code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code>，Tiyi 会原样采用且不打印任何 banner。用户名默认 <code>admin</code>；仅当尚不存在任何用户时才会自动生成密码，因此重启都是空操作。</p>
 <pre><code><span class="p">$</span> mkdir -p /tmp/waf
-<span class="p">$</span> TIYI_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
+<span class="p">$</span> TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
     ./bin/tiyi standalone <span class="o">\</span>
     --addr 0.0.0.0:8080 <span class="o">\</span>
     --state-db /tmp/waf/state.db <span class="o">\</span>
@@ -210,6 +210,15 @@
   </aside>
 
 </div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.0.3 &middot; 2026-07-02</span>
+    </div>
+  </div>
+</footer>
 
 <script src="../../assets/js/main.js" defer></script>
 </body>
