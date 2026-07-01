@@ -83,8 +83,8 @@
         <div class="tl-body">
           <p>从安装到拿到可用的仪表盘登录,五分钟路径更顺滑,且无需再去 journal 里捞管理员密码。</p>
           <ul>
-            <li><strong>确定性首次管理员。</strong> <span class="mono">sudo tiyi install --now</span>(standalone)在启动服务前预创建 <span class="mono">admin</span> 账户,并由安装器直接打印登录信息 —— URL、用户名、密码。一次性密码不再写入 journald,服务也不再打印自己的随机密码横幅。</li>
-            <li><strong>重跑即就地升级。</strong> 当 tiyi 已安装时,<span class="mono">install.sh</span> 使用签名的 <span class="mono">tiyi update</span> 路径(仅在有更新版本时才下载),随后重新安装并重启服务,而不是再次拉取整个 tar 包;并以 <span class="mono">sudo tiyi install --now</span> 作为默认路径。</li>
+            <li><strong>确定性首次管理员。</strong> <span class="mono">sudo /usr/local/bin/tiyi install --now</span>(standalone)在启动服务前预创建 <span class="mono">admin</span> 账户,并由安装器直接打印登录信息 —— URL、用户名、密码。一次性密码不再写入 journald,服务也不再打印自己的随机密码横幅。</li>
+            <li><strong>重跑即就地升级。</strong> 当 tiyi 已安装时,<span class="mono">install.sh</span> 使用签名的 <span class="mono">tiyi update</span> 路径(仅在有更新版本时才下载),随后重新安装并重启服务,而不是再次拉取整个 tar 包;并以 <span class="mono">sudo /usr/local/bin/tiyi install --now</span> 作为默认路径。</li>
             <li><strong>默认可达。</strong> API 与仪表盘默认监听 <span class="mono">0.0.0.0:8080</span>(仍需登录鉴权)。</li>
             <li>验证:<span class="mono">go test ./...</span> 与前端单测通过,并在干净主机上完成实测安装 QA(凭据横幅、<span class="mono">0.0.0.0:8080</span> 监听、可正常登录)。</li>
           </ul>

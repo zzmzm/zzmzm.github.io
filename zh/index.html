@@ -76,8 +76,8 @@
 
   <div class="hero-cmd">
     <span class="prompt">$</span>
-    <span class="cmd">curl -fsSL https://www.tiyisec.com/install.sh | bash &amp;&amp; sudo tiyi install --now</span>
-    <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && sudo tiyi install --now" data-copied="已复制" aria-label="复制命令">复制</button>
+    <span class="cmd">curl -fsSL https://www.tiyisec.com/install.sh | bash &amp;&amp; sudo /usr/local/bin/tiyi install --now</span>
+    <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && sudo /usr/local/bin/tiyi install --now" data-copied="已复制" aria-label="复制命令">复制</button>
   </div>
 
   <div class="hero-repos" aria-label="公开分发仓库">
@@ -583,7 +583,7 @@
         </div>
         <div class="tl-title">顺滑安装 + 确定性首次管理员</div>
         <div class="tl-body">
-          <span class="mono">sudo tiyi install --now</span> 现在是默认单机路径:它在启动服务前预先创建第一个管理员,并直接打印登录信息(URL + 用户名 + 密码),一次性密码不再写入 journal。在已安装 tiyi 的主机上重跑 <span class="mono">install.sh</span> 会就地更新二进制并重启服务,而不是重新下载整个包。API 与仪表盘默认监听 <span class="mono">0.0.0.0:8080</span>。
+          <span class="mono">sudo /usr/local/bin/tiyi install --now</span> 现在是默认单机路径:它在启动服务前预先创建第一个管理员,并直接打印登录信息(URL + 用户名 + 密码),一次性密码不再写入 journal。在已安装 tiyi 的主机上重跑 <span class="mono">install.sh</span> 会就地更新二进制并重启服务,而不是重新下载整个包。API 与仪表盘默认监听 <span class="mono">0.0.0.0:8080</span>。
         </div>
       </div>
 

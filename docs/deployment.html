@@ -124,18 +124,18 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
 
 <span class="c"># Node A — primary: reachable API, then enable the service on boot</span>
 <span class="p">$</span> printf <span class="s">'server:\n  addr: 0.0.0.0:8080\n'</span> <span class="o">|</span> sudo tee /etc/tiyi/server.yaml
-<span class="p">$</span> sudo tiyi install --mode server --now
-<span class="p">$</span> TOKEN_C=<span class="s">"$(sudo tiyi agents issue-token --tag edge --admin-socket /run/tiyi/admin.sock | jq -r .token)"</span>
+<span class="p">$</span> sudo /usr/local/bin/tiyi install --mode server --now
+<span class="p">$</span> TOKEN_C=<span class="s">"$(sudo /usr/local/bin/tiyi agents issue-token --tag edge --admin-socket /run/tiyi/admin.sock | jq -r .token)"</span>
 
 <span class="c"># Node C — agent: connection params in the env file, then enable</span>
 <span class="p">$</span> printf <span class="s">'TIYI_API=http://A:8080\nTIYI_AGENT_ENROLLMENT_TOKEN=%s\n'</span> <span class="s">"$TOKEN_C"</span> <span class="o">|</span> sudo tee /etc/tiyi/tiyi.env
-<span class="p">$</span> sudo tiyi install --mode agent --now
+<span class="p">$</span> sudo /usr/local/bin/tiyi install --mode agent --now
 
 <span class="c"># Node B — secondary: its own API config plus the primary URL + token</span>
 <span class="p">$</span> printf <span class="s">'server:\n  addr: 0.0.0.0:8080\n'</span> <span class="o">|</span> sudo tee /etc/tiyi/server.yaml
 <span class="p">$</span> printf <span class="s">'TIYI_PRIMARY_API=http://A:8080\nTIYI_AGENT_ENROLLMENT_TOKEN=%s\n'</span> <span class="s">"$TOKEN_B"</span> <span class="o">|</span> sudo tee /etc/tiyi/tiyi.env
-<span class="p">$</span> sudo tiyi install --mode secondary --now</code></pre>
-    <p>The token is consumed only on first enrollment; each node then reconnects with the identity persisted under <code>/var/lib/tiyi/agent</code>, so the service survives restarts even with the token line left in place. Optionally add a file-managed license — <code>sudo cp license.json /etc/tiyi/license.json</code> and <code>TIYI_LICENSE_KEY_PATH=/etc/tiyi/license.json</code> in the env file — to lift the single-node gate. Confirm enrollment with <code>sudo tiyi agents list --admin-socket /run/tiyi/admin.sock</code>; remove a node with <code>sudo tiyi uninstall</code>.</p>
+<span class="p">$</span> sudo /usr/local/bin/tiyi install --mode secondary --now</code></pre>
+    <p>The token is consumed only on first enrollment; each node then reconnects with the identity persisted under <code>/var/lib/tiyi/agent</code>, so the service survives restarts even with the token line left in place. Optionally add a file-managed license — <code>sudo cp license.json /etc/tiyi/license.json</code> and <code>TIYI_LICENSE_KEY_PATH=/etc/tiyi/license.json</code> in the env file — to lift the single-node gate. Confirm enrollment with <code>sudo /usr/local/bin/tiyi agents list --admin-socket /run/tiyi/admin.sock</code>; remove a node with <code>sudo /usr/local/bin/tiyi uninstall</code>.</p>
 
     <h3 id="promotion">Promotion</h3>
     <p>If Node A goes down, run <code>tiyi promote</code> on Node B. The two-phase handover prevents split-brain:</p>
