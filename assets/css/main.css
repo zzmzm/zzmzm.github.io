@@ -319,7 +319,8 @@ section + section { padding-top: 0; }
 
 /* Hero terminal-ish run command */
 .hero-cmd {
-  display: inline-flex; align-items: center; gap: 12px;
+  display: inline-flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px;
+  max-width: 100%;
   margin-top: 24px;
   padding: 11px 16px 11px 14px;
   background: var(--surface-2);
@@ -330,7 +331,7 @@ section + section { padding-top: 0; }
   color: var(--fg-2);
 }
 .hero-cmd .prompt { color: var(--brand-cyan); }
-.hero-cmd .cmd { color: var(--fg); }
+.hero-cmd .cmd { color: var(--fg); overflow-wrap: anywhere; }
 .hero-cmd .copy {
   color: var(--fg-3);
   background: transparent;

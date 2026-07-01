@@ -100,18 +100,18 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
 
 <span class="c"># Node A —— 主节点:对外可达的 API,然后开机自启服务</span>
 <span class="p">$</span> printf <span class="s">'server:\n  addr: 0.0.0.0:8080\n'</span> <span class="o">|</span> sudo tee /etc/tiyi/server.yaml
-<span class="p">$</span> sudo /usr/local/bin/tiyi install --mode server --now
-<span class="p">$</span> TOKEN_C=<span class="s">"$(sudo /usr/local/bin/tiyi agents issue-token --tag edge --admin-socket /run/tiyi/admin.sock | jq -r .token)"</span>
+<span class="p">$</span> sudo tiyi install --mode server --now || sudo /usr/local/bin/tiyi install --mode server --now
+<span class="p">$</span> TOKEN_C=<span class="s">"$(sudo tiyi agents issue-token --tag edge --admin-socket /run/tiyi/admin.sock | jq -r .token)"</span>
 
 <span class="c"># Node C —— agent:连接参数写入 env 文件,然后启用</span>
 <span class="p">$</span> printf <span class="s">'TIYI_API=http://A:8080\nTIYI_AGENT_ENROLLMENT_TOKEN=%s\n'</span> <span class="s">"$TOKEN_C"</span> <span class="o">|</span> sudo tee /etc/tiyi/tiyi.env
-<span class="p">$</span> sudo /usr/local/bin/tiyi install --mode agent --now
+<span class="p">$</span> sudo tiyi install --mode agent --now || sudo /usr/local/bin/tiyi install --mode agent --now
 
 <span class="c"># Node B —— secondary:自身 API 配置 + 主节点 URL + token</span>
 <span class="p">$</span> printf <span class="s">'server:\n  addr: 0.0.0.0:8080\n'</span> <span class="o">|</span> sudo tee /etc/tiyi/server.yaml
 <span class="p">$</span> printf <span class="s">'TIYI_PRIMARY_API=http://A:8080\nTIYI_AGENT_ENROLLMENT_TOKEN=%s\n'</span> <span class="s">"$TOKEN_B"</span> <span class="o">|</span> sudo tee /etc/tiyi/tiyi.env
-<span class="p">$</span> sudo /usr/local/bin/tiyi install --mode secondary --now</code></pre>
-    <p>token 仅在首次入册时消费;之后每个节点凭 <code>/var/lib/tiyi/agent</code> 下持久化的身份重连,因此即使 env 文件里留着 token 行,服务重启也照常工作。可选地用文件托管 license —— <code>sudo cp license.json /etc/tiyi/license.json</code> 并在 env 文件里写 <code>TIYI_LICENSE_KEY_PATH=/etc/tiyi/license.json</code> —— 以解除单节点限制。用 <code>sudo /usr/local/bin/tiyi agents list --admin-socket /run/tiyi/admin.sock</code> 确认入册;用 <code>sudo /usr/local/bin/tiyi uninstall</code> 移除节点。</p>
+<span class="p">$</span> sudo tiyi install --mode secondary --now || sudo /usr/local/bin/tiyi install --mode secondary --now</code></pre>
+    <p>token 仅在首次入册时消费;之后每个节点凭 <code>/var/lib/tiyi/agent</code> 下持久化的身份重连,因此即使 env 文件里留着 token 行,服务重启也照常工作。可选地用文件托管 license —— <code>sudo cp license.json /etc/tiyi/license.json</code> 并在 env 文件里写 <code>TIYI_LICENSE_KEY_PATH=/etc/tiyi/license.json</code> —— 以解除单节点限制。如果 sudo 因为隐藏 <code>/usr/local/bin</code> 而找不到 <code>tiyi</code>,同一条命令改用 <code>sudo /usr/local/bin/tiyi</code>。用 <code>sudo tiyi agents list --admin-socket /run/tiyi/admin.sock</code> 确认入册;用 <code>sudo tiyi uninstall</code> 移除节点。</p>
 
     <h3 id="promotion">提主</h3>
     <p>Node A 宕机,在 Node B 上跑 <code>tiyi promote</code>。两阶段切换避免脑裂:</p>

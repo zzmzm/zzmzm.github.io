@@ -128,7 +128,7 @@
   <span class="k">https_addr</span>: <span class="s">":443"</span>
   <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
     <p>Pass it with <code>--config</code>. This config uses <code>/var/lib/tiyi</code> and ports 80/443, so run it as root (or under the systemd unit below):</p>
-<pre><code><span class="p">$</span> sudo /usr/local/bin/tiyi standalone --config /etc/tiyi/server.yaml</code></pre>
+<pre><code><span class="p">$</span> sudo tiyi standalone --config /etc/tiyi/server.yaml || sudo /usr/local/bin/tiyi standalone --config /etc/tiyi/server.yaml</code></pre>
     <p>To try Tiyi as a normal user without <code>sudo</code>, skip the config file and pass writable paths and high ports on the command line instead — see the <a href="quickstart.html#run">Quickstart</a>.</p>
 
     <div class="callout callout-warn">
@@ -200,7 +200,7 @@
 
     <h2 id="systemd">Run as a systemd service</h2>
     <p>For a long-lived deployment, let Tiyi install itself as a hardened systemd service. <code>tiyi install</code> creates the <code>tiyi</code> service user and the <code>tiyi-admin</code> socket group, writes the unit, and with <code>--now</code> enables and starts it on boot:</p>
-<pre><code><span class="p">$</span> sudo /usr/local/bin/tiyi install --now</code></pre>
+<pre><code><span class="p">$</span> sudo tiyi install --now || sudo /usr/local/bin/tiyi install --now</code></pre>
     <p>The service runs unprivileged and binds ports 80/443 via <code>CAP_NET_BIND_SERVICE</code>. On a first install, <code>--now</code> pre-creates the administrator and prints the one-time login itself — no journal scraping:</p>
 <pre><code><span class="c">tiyi is enabled and running as tiyi.service.</span>
 
@@ -230,7 +230,7 @@
 
 <span class="k">[Install]</span>
 <span class="k">WantedBy</span>=multi-user.target</code></pre>
-    <p>Pick a different role with <code>--mode</code> (e.g. <code>server</code>, <code>agent</code>). Remove the service with <code>sudo /usr/local/bin/tiyi uninstall</code>: state under <code>/var/lib/tiyi</code>, config under <code>/etc/tiyi</code>, and the service user are preserved unless you add <code>--purge</code>.</p>
+    <p>Pick a different role with <code>--mode</code> (e.g. <code>server</code>, <code>agent</code>). On CentOS/RHEL, if <code>sudo tiyi</code> is not found because sudo hides <code>/usr/local/bin</code>, use the full path fallback shown above. Remove the service with <code>sudo tiyi uninstall</code> (or <code>sudo /usr/local/bin/tiyi uninstall</code> if needed): state under <code>/var/lib/tiyi</code>, config under <code>/etc/tiyi</code>, and the service user are preserved unless you add <code>--purge</code>.</p>
 
     <h2 id="next">What to read next</h2>
     <ul>
