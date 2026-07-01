@@ -80,6 +80,12 @@
 <pre><code><span class="p">$</span> tiyi auth login --api http://primary:8080 --username admin
 <span class="c"># 输入密码,打印 JWT,可选写入 ~/.config/tiyi/credentials</span></code></pre>
 
+    <h2 id="diagnostics">诊断</h2>
+    <p>在安装前后都可以在目标主机上运行 <code>tiyi doctor</code>,它不会修改系统,只高亮提示配置加载错误、systemd 可用性、sudo PATH 问题,以及 API / 仪表盘与代理端口的监听占用。</p>
+<pre><code><span class="p">$</span> tiyi doctor
+<span class="p">$</span> tiyi doctor --mode agent
+<span class="p">$</span> tiyi doctor --proxy-http-addr :8180 --proxy-https-addr :18443</code></pre>
+
     <h2 id="apply">声明式 apply</h2>
     <p>kubectl 风格入口。一份 YAML、一条命令、一行审计：</p>
 <pre><code><span class="p">$</span> tiyi apply -f site.yaml

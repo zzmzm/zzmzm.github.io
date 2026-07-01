@@ -77,8 +77,8 @@
 
   <div class="hero-cmd">
     <span class="prompt">$</span>
-    <span class="cmd">curl -fsSL https://www.tiyisec.com/install.sh | bash &amp;&amp; (sudo tiyi install --now || sudo /usr/local/bin/tiyi install --now)</span>
-    <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && (sudo tiyi install --now || sudo /usr/local/bin/tiyi install --now)" aria-label="Copy command">copy</button>
+    <span class="cmd">curl -fsSL https://www.tiyisec.com/install.sh | bash &amp;&amp; sudo tiyi install --now</span>
+    <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && sudo tiyi install --now" aria-label="Copy command">copy</button>
   </div>
 
   <div class="hero-repos" aria-label="Public distribution repositories">
@@ -596,7 +596,7 @@
         </div>
         <div class="tl-title">Frictionless install + deterministic first-run admin</div>
         <div class="tl-body">
-          <span class="mono">sudo tiyi install --now</span> is now the default single-host path, with a full-path fallback for CentOS/RHEL sudo <span class="mono">secure_path</span>: it pre-creates the first administrator before starting the service and prints the login (URL + username + password) right there, so the one-time secret never lands in the journal. Re-running <span class="mono">install.sh</span> on a host that already has tiyi updates the binary in place and restarts the service instead of re-downloading. The API and dashboard now bind <span class="mono">0.0.0.0:8080</span> by default.
+          <span class="mono">sudo tiyi install --now</span> is the default single-host path: it pre-creates the first administrator before starting the service and prints the login (URL + username + password) right there, so the one-time secret never lands in the journal. <span class="mono">install.sh</span> now runs a colored environment check for sudo PATH and occupied ports; use <span class="mono">tiyi doctor</span> to rerun it later. Re-running <span class="mono">install.sh</span> on a host that already has tiyi updates the binary in place and restarts the service instead of re-downloading. The API and dashboard now bind <span class="mono">0.0.0.0:8080</span> by default.
         </div>
       </div>
 
