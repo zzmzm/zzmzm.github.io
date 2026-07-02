@@ -54,7 +54,7 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.0.3</span>
+    <span class="tag">v3.0.4</span>
     China mirror install + update release
   </span>
 
@@ -306,7 +306,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">Product tour</span>
       <h2>The admin plane your ops team will actually use.</h2>
-      <p>Every screenshot below is a real screen from <span class="mono">v3.0.3</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
+      <p>Every screenshot below is a real screen from <span class="mono">v3.0.4</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
     </div>
 
     <!-- Tour 1: Dashboard -->
@@ -577,6 +577,19 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.0.4</span>
+          <span class="tl-date">2026-07-02</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Install diagnostics + tiyi doctor</div>
+        <div class="tl-body">
+          <span class="mono">install.sh</span> keeps the default <span class="mono">sudo tiyi install --now</span> path, then highlights sudo PATH and 80/443/8080 listener conflicts with exact next steps. New <span class="mono">tiyi doctor</span> reruns the same non-mutating diagnostics for standalone, server, secondary, agent, and dashboard installs.
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.0.3</span>
           <span class="tl-date">2026-07-02</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -596,7 +609,7 @@
         </div>
         <div class="tl-title">Frictionless install + deterministic first-run admin</div>
         <div class="tl-body">
-          <span class="mono">sudo tiyi install --now</span> is the default single-host path: it pre-creates the first administrator before starting the service and prints the login (URL + username + password) right there, so the one-time secret never lands in the journal. <span class="mono">install.sh</span> now runs a colored environment check for sudo PATH and occupied ports; use <span class="mono">tiyi doctor</span> to rerun it later. Re-running <span class="mono">install.sh</span> on a host that already has tiyi updates the binary in place and restarts the service instead of re-downloading. The API and dashboard now bind <span class="mono">0.0.0.0:8080</span> by default.
+          <span class="mono">sudo tiyi install --now</span> is the default single-host path: it pre-creates the first administrator before starting the service and prints the login (URL + username + password) right there, so the one-time secret never lands in the journal. Re-running <span class="mono">install.sh</span> on a host that already has tiyi updates the binary in place and restarts the service instead of re-downloading. The API and dashboard now bind <span class="mono">0.0.0.0:8080</span> by default.
         </div>
       </div>
 
@@ -894,7 +907,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.3 · 2026-07-02</span>
+      <span class="build">build v3.0.4 · 2026-07-02</span>
     </div>
   </div>
 </footer>

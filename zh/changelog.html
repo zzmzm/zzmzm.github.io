@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>更新日志 — 太一</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="太一从基础工作到 v3.0.3 的完整更新记录。" />
+<meta name="description" content="太一从基础工作到 v3.0.4 的完整更新记录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -55,6 +55,26 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.0.4</span>
+          <span class="tl-date">2026-07-02</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">安装诊断 + tiyi doctor</div>
+        <div class="tl-body">
+          <p>面向真实 Linux 主机的诊断体验打磨:复制粘贴的安装路径保持简单,失败时则明确指出需要修复 sudo PATH 还是端口占用。</p>
+          <ul>
+            <li><strong>默认命令保持简单。</strong>公开安装命令仍是 <span class="mono">curl -fsSL https://www.tiyisec.com/install.sh | bash &amp;&amp; sudo tiyi install --now</span>;只有当 sudo 找不到已安装二进制时才显示完整路径提示。</li>
+            <li><strong>安装器环境检查。</strong>安装或更新二进制后,<span class="mono">install.sh</span> 会高亮提示 sudo <span class="mono">secure_path</span> 缺口以及 80/443/8080 监听者;端口被占用时给出停止服务或改端口的方向。</li>
+            <li><strong><span class="mono">tiyi doctor</span>。</strong>新的非破坏性诊断命令会检查配置加载、systemd 可用性、sudo PATH 可见性,以及 standalone、server、secondary、agent、dashboard 各模式对应的端口监听。</li>
+            <li><strong>CentOS/RHEL 兼容。</strong>缺少 <span class="mono">pkeyutl -rawin</span> 的旧 OpenSSL 在安装器里仍执行必需的 SHA-256 校验;签名的 <span class="mono">tiyi update</span> 仍是完整签名校验的更新路径。</li>
+            <li>已验证:<span class="mono">go test ./...</span>、doctor 聚焦单测、安装器语法与一致性检查、临时目录安装冒烟测试,以及官网/公开文档一致性检查。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.0.3</span>
           <span class="tl-date">2026-07-02</span>
           <span class="tl-tag shipped">已发布</span>
@@ -84,7 +104,7 @@
           <p>从安装到拿到可用的仪表盘登录,五分钟路径更顺滑,且无需再去 journal 里捞管理员密码。</p>
           <ul>
             <li><strong>确定性首次管理员。</strong> <span class="mono">sudo tiyi install --now</span>(standalone)在启动服务前预创建 <span class="mono">admin</span> 账户,并由安装器直接打印登录信息 —— URL、用户名、密码。一次性密码不再写入 journald,服务也不再打印自己的随机密码横幅。</li>
-            <li><strong>重跑即就地升级。</strong> 当 tiyi 已安装时,<span class="mono">install.sh</span> 使用签名的 <span class="mono">tiyi update</span> 路径(仅在有更新版本时才下载),随后重新安装并重启服务,而不是再次拉取整个 tar 包;安装器现在会高亮提示 sudo PATH 与端口占用,<span class="mono">tiyi doctor</span> 可重新执行同样检查。</li>
+            <li><strong>重跑即就地升级。</strong> 当 tiyi 已安装时,<span class="mono">install.sh</span> 使用签名的 <span class="mono">tiyi update</span> 路径(仅在有更新版本时才下载),随后重新安装并重启服务,而不是再次拉取整个 tar 包。</li>
             <li><strong>默认可达。</strong> API 与仪表盘默认监听 <span class="mono">0.0.0.0:8080</span>(仍需登录鉴权)。</li>
             <li>验证:<span class="mono">go test ./...</span> 与前端单测通过,并在干净主机上完成实测安装 QA(凭据横幅、<span class="mono">0.0.0.0:8080</span> 监听、可正常登录)。</li>
           </ul>
@@ -554,7 +574,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.3 · 2026-07-02</span>
+      <span class="build">build v3.0.4 · 2026-07-02</span>
     </div>
   </div>
 </footer>
