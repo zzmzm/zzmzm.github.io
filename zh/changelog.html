@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>更新日志 — 太一</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="太一从基础工作到 v3.0.4 的完整更新记录。" />
+<meta name="description" content="太一从基础工作到 v3.0.5 的完整更新记录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -51,6 +51,27 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.5</span>
+          <span class="tl-date">2026-07-04</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">Agent 指标趋势 + 应用 / 更新加固</div>
+        <div class="tl-body">
+          <p>面向运维的 Agent 监控、站点应用与自更新可靠性提升。</p>
+          <ul>
+            <li><strong>Agent 指标 7 天历史。</strong>Agent 详情抽屉现在保留 7 天的按 Agent 采样数据,并渲染趋势视图(每秒请求 / 每秒拦截 / 连接数 / CPU / 内存),运维看到的是历史趋势而非仅有最新一次推送。</li>
+            <li><strong>仪表盘下钻时间范围。</strong>在仪表盘点击某位攻击者现在会按仪表盘所选时间范围打开「安全事件」,而不再被锁定在最近 15 分钟。</li>
+            <li><strong>IP 站点应用。</strong>以 IP 字面值为主机的站点不再因本地 HTTPS 健康检查失败:Tiyi 会下发单上传证书回退策略,让 Caddy 在应用前通过回环路径校验证书。</li>
+            <li><strong>启动预检。</strong><span class="mono">standalone</span> 与 <span class="mono">agent</span> 在打开 SQLite、生成 JWT 警告或启动 Caddy 之前先做预检;若状态目录、管理 socket、API 监听或代理端口无法创建或绑定,命令以一条可操作的错误退出(sudo、<span class="mono">tiyi install --now</span> 或可写的 <span class="mono">--state-db</span> / socket / 高端口参数)。</li>
+            <li><strong><span class="mono">tiyi update</span> 预检 + 进度。</strong>自更新现在显示下载进度,并预检安装目录的写权限,快速失败并提示 sudo/root,而不是在漫长下载之后才失败。</li>
+            <li>已验证:<span class="mono">go test ./...</span>、<span class="mono">buf lint</span>、<span class="mono">make build-all</span> 以及 license/release-key 测试。</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -574,7 +595,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.4 · 2026-07-02</span>
+      <span class="build">build v3.0.5 · 2026-07-04</span>
     </div>
   </div>
 </footer>

@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Changelog — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi release notes from foundation work through v3.0.4." />
+<meta name="description" content="Tiyi release notes from foundation work through v3.0.5." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,6 +50,27 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.5</span>
+          <span class="tl-date">2026-07-04</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Agent metrics trend + apply/update hardening</div>
+        <div class="tl-body">
+          <p>Operator-facing reliability for agent monitoring, site apply, and self-update.</p>
+          <ul>
+            <li><strong>7-day agent metric history.</strong> The agent detail drawer now retains seven days of per-agent samples and renders a trend view (requests/sec, blocked/sec, connections, CPU, memory), so operators see history instead of only the latest push.</li>
+            <li><strong>Dashboard drill-down time range.</strong> Clicking a top attacker on the dashboard now opens Security Events scoped to the dashboard's selected time range, instead of being locked to the last 15 minutes.</li>
+            <li><strong>IP-host site apply.</strong> Sites with an IP-literal primary host no longer fail their local HTTPS health check: Tiyi emits a single-uploaded-certificate fallback policy so Caddy can validate the certificate through the loopback path before applying.</li>
+            <li><strong>Startup preflight.</strong> <span class="mono">standalone</span> and <span class="mono">agent</span> now run a preflight before opening SQLite, generating the JWT warning, or starting Caddy; if the state directory, admin sockets, API listener, or proxy ports cannot be created or bound, the command exits with one actionable error (sudo, <span class="mono">tiyi install --now</span>, or writable <span class="mono">--state-db</span> / socket / high-port flags).</li>
+            <li><strong><span class="mono">tiyi update</span> precheck + progress.</strong> Self-update now shows download progress and pre-checks write privileges to the install directory, failing fast with a sudo/root hint instead of after a long download.</li>
+            <li>Verified: <span class="mono">go test ./...</span>, <span class="mono">buf lint</span>, <span class="mono">make build-all</span>, and license/release-key tests.</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -573,7 +594,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.4 · 2026-07-02</span>
+      <span class="build">build v3.0.5 · 2026-07-04</span>
     </div>
   </div>
 </footer>
