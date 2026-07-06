@@ -119,7 +119,7 @@
     <h2 id="sites">Sites</h2>
 <pre><code>tiyi site list
 tiyi site get <span class="v">&lt;name|id&gt;</span>
-tiyi site create --name <span class="v">N</span> --hostname <span class="v">H</span> --upstream <span class="v">P</span> --policy <span class="v">P</span> [--tls auto|none|<span class="v">CERT</span>]
+tiyi site create --name <span class="v">N</span> --host <span class="v">H</span> --upstream-url <span class="v">URL</span> [--tls none|managed-acme|uploaded] [--tls-http-behavior redirect|acme-only|serve-both]
 tiyi site update <span class="v">&lt;id&gt;</span> [...flags]
 tiyi site enable <span class="v">&lt;id&gt;</span>
 tiyi site disable <span class="v">&lt;id&gt;</span>

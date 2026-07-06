@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Changelog — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi release notes from foundation work through v3.0.5." />
+<meta name="description" content="Tiyi release notes from foundation work through v3.0.6." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,6 +50,29 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.6</span>
+          <span class="tl-date">2026-07-06</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Alert-rule authoring redesign + dashboard/telemetry rework</div>
+        <div class="tl-body">
+          <p>The alert-rule builder becomes template-first, the dashboard and telemetry explorer get a ground-up rework, and a one-click bridge closes the "incident fired but I can't set an alert" gap.</p>
+          <ul>
+            <li><strong>Template-first alert rules.</strong> The builder now opens with a gallery of 8 vetted starters (critical incident, sustained 5xx surge, attack storm, agent offline, cert expiring, ACME failed, origin bypass, 4xx scan spike). The kind dropdown is grouped into Symptoms / Attack signatures / Infrastructure and exposes all 9 backend kinds — block-rate spike is no longer hidden. Each kind gets a structured form with anti-flap hold-before-firing / hold-after-resolve defaults.</li>
+            <li><strong>Incident → alert bridge.</strong> A firing incident now has "Create alert rule" and "Alert on this source IP" actions right in its drawer; they carry the incident into a reviewed draft (sessionStorage handoff) that dedups against existing rules and shows an origin banner.</li>
+            <li><strong>New default alert seeds.</strong> Every deployment now ships with a "Sustained 5xx surge" alert and an "Agent offline &gt;10m" alert enabled on boot, so availability and data-plane liveness are covered out of the box.</li>
+            <li><strong>Dead-field fixes.</strong> <span class="mono">AttackClass</span> and source-IP CIDRs now actually filter security-threshold counts; the <span class="mono">MinSeverity=0</span> incident bug (which silently matched every severity) is fixed with an optional severity pointer; the dead <span class="mono">PolicyID</span> field is removed.</li>
+            <li><strong>Dashboard overview rework.</strong> A site filter and time-range control now scope the overview, reorganized into traffic, security-response, attack-distribution, top-K drill-down, and certificate rows.</li>
+            <li><strong>Telemetry explorer.</strong> A new QPS/blocked line chart with crosshair and tooltip; realtime queries now anchor to the newest flushed 10s bucket instead of wall clock, so the freshest durable point is always shown.</li>
+            <li><strong>Site TLS, agent groups, silences.</strong> Site TLS gains an explicit HTTP-only / redirect / serve-both / ACME-only mode control; agent-group selection adds explicit-agent + group pickers with a live match preview; alert silences gain value-picker matchers including attack class.</li>
+            <li>Verified: <span class="mono">go test ./...</span>, cross-build for linux/amd64 + linux/arm64, and license/release-key tests.</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>

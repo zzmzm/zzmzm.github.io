@@ -145,20 +145,14 @@
 
     <h2 id="site">4. 创建第一个站点</h2>
     <p>UI 与 CLI 都行。CLI 使用本地管理 socket，无需 token：</p>
-<pre><code><span class="c"># 1. 创建一个上游池指向演示后端</span>
-<span class="p">$</span> ./bin/tiyi upstream create <span class="o">\</span>
-    --name demo-backend <span class="o">\</span>
-    --target http://127.0.0.1:9000
-
-<span class="c"># 2. 挂上内置 Standard 策略并创建站点</span>
+<pre><code><span class="c"># 1. 创建站点并指向演示后端</span>
 <span class="p">$</span> ./bin/tiyi site create <span class="o">\</span>
     --name demo <span class="o">\</span>
-    --hostname demo.local <span class="o">\</span>
-    --upstream demo-backend <span class="o">\</span>
-    --policy <span class="s">"Built-in Standard"</span> <span class="o">\</span>
+    --host demo.local <span class="o">\</span>
+    --upstream-url http://127.0.0.1:9000 <span class="o">\</span>
     --tls none
 
-<span class="c"># 3. 启用 —— 触发实时 Caddy apply</span>
+<span class="c"># 2. 启用 —— 触发实时 Caddy apply</span>
 <span class="p">$</span> ./bin/tiyi site enable demo</code></pre>
 
     <p>写入器把站点行翻译成 Caddy JSON、通过其管理 socket 热重载 Caddy，并发出一行已签名的配置 bundle。任何失败都会保留旧配置并恢复站点行。</p>

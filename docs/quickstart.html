@@ -150,20 +150,14 @@
 
     <h2 id="site">4. Create your first site</h2>
     <p>You can do this in the UI or via the CLI. The CLI uses the local admin socket and needs no token:</p>
-<pre><code><span class="c"># 1. Create an upstream pool pointing at the demo server</span>
-<span class="p">$</span> ./bin/tiyi upstream create <span class="o">\</span>
-    --name demo-backend <span class="o">\</span>
-    --target http://127.0.0.1:9000
-
-<span class="c"># 2. Attach the built-in Standard policy and create the site</span>
+<pre><code><span class="c"># 1. Create the site pointing at the demo server</span>
 <span class="p">$</span> ./bin/tiyi site create <span class="o">\</span>
     --name demo <span class="o">\</span>
-    --hostname demo.local <span class="o">\</span>
-    --upstream demo-backend <span class="o">\</span>
-    --policy <span class="s">"Built-in Standard"</span> <span class="o">\</span>
+    --host demo.local <span class="o">\</span>
+    --upstream-url http://127.0.0.1:9000 <span class="o">\</span>
     --tls none
 
-<span class="c"># 3. Enable it — this triggers the live Caddy apply</span>
+<span class="c"># 2. Enable it — this triggers the live Caddy apply</span>
 <span class="p">$</span> ./bin/tiyi site enable demo</code></pre>
 
     <p>The applier translates the site row into Caddy JSON, hot-reloads Caddy through its admin socket, and emits a signed config-bundle row. If anything fails, the previous config stays active and the site row is restored.</p>

@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>更新日志 — 太一</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="太一从基础工作到 v3.0.5 的完整更新记录。" />
+<meta name="description" content="太一从基础工作到 v3.0.6 的完整更新记录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -51,6 +51,29 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.6</span>
+          <span class="tl-date">2026-07-06</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">告警规则编写重塑 + 仪表盘 / 遥测重构</div>
+        <div class="tl-body">
+          <p>告警规则构建器改为模板优先,仪表盘与遥测探索器全面重构,并用一键桥接补齐「事件已触发但无法设置告警」的缺口。</p>
+          <ul>
+            <li><strong>模板优先的告警规则。</strong>构建器现在以 8 个审核过的起始模板打开(严重安全事件、持续 5xx 激增、攻击风暴、Agent 离线、证书即将过期、ACME 失败、源站绕过、4xx 扫描激增)。类型下拉按 症状 / 攻击签名 / 基础设施 分组,暴露全部 9 个后端类型——拦截率尖峰不再隐藏。每个类型都有带防抖动(触发前保持 / 解决后保持)默认值的结构化表单。</li>
+            <li><strong>事件 → 告警桥接。</strong>一个正在触发的事件现在在其抽屉中直接有「创建告警规则」与「针对此源 IP 告警」操作;它们把事件带入一个待审核草稿(sessionStorage 传递),与已有规则去重,并显示来源横幅。</li>
+            <li><strong>新的默认告警种子。</strong>每个部署现在在启动时即启用「持续 5xx 激增」与「Agent 离线 &gt;10 分钟」告警,开箱即覆盖可用性与数据面存活。</li>
+            <li><strong>死字段修复。</strong><span class="mono">AttackClass</span> 与源 IP CIDR 现在真正用于过滤安全阈值计数;<span class="mono">MinSeverity=0</span> 事件 bug(曾静默匹配所有严重级别)以可选严重级别指针修复;死字段 <span class="mono">PolicyID</span> 被移除。</li>
+            <li><strong>仪表盘概览重构。</strong>站点过滤器与时间范围控制现在限定概览范围,重组为流量、安全响应、攻击分布、Top-K 下钻与证书行。</li>
+            <li><strong>遥测探索器。</strong>新的每秒请求 / 拦截折线图,带十字线与提示框;实时查询现在锚定到最新已落盘的 10 秒桶而非墙上时钟,始终展示最新持久点。</li>
+            <li><strong>站点 TLS、Agent 组、静默。</strong>站点 TLS 新增显式的 仅 HTTP / 重定向 / 同时服务 / 仅 ACME 模式控制;Agent 组选择新增显式 Agent + 组选择器与实时匹配预览;告警静默新增值选择器匹配项,含攻击类别。</li>
+            <li>已验证:<span class="mono">go test ./...</span>、linux/amd64 + linux/arm64 交叉构建,以及 license/release-key 测试。</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
