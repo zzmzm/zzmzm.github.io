@@ -54,7 +54,7 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.0.6</span>
+    <span class="tag">v3.0.7</span>
     Alert-rule authoring redesign + dashboard/telemetry rework
   </span>
 
@@ -168,7 +168,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>OWASP CRS 4 out of the box</h3>
-        <p>Coraza compiles policies from a structured domain model into SecLang. Per-site overrides, paranoia levels, scoring thresholds, exclusion packages — without forking the ruleset.</p>
+        <p>Coraza compiles policies from a structured domain model into SecLang. Global, policy, and site-scoped IP controls; per-site overrides; paranoia levels; scoring thresholds; exclusion packages — without forking the ruleset.</p>
       </div>
 
       <div class="feature reveal">
@@ -306,7 +306,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">Product tour</span>
       <h2>The admin plane your ops team will actually use.</h2>
-      <p>Every screenshot below is a real screen from <span class="mono">v3.0.6</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
+      <p>Every screenshot below is a real screen from <span class="mono">v3.0.7</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
     </div>
 
     <!-- Tour 1: Dashboard -->
@@ -356,7 +356,7 @@
       <div class="tour-text">
         <span class="tour-eyebrow">WAF policies</span>
         <h3>Tune CRS without forking it.</h3>
-        <p>Built-in Strict / Standard / Permissive templates, each compiled to deterministic SecLang on save. Per-site overrides for thresholds, paranoia, and sampling layer over the shared bundle.</p>
+        <p>Built-in Strict / Standard / Permissive templates, each compiled to deterministic SecLang on save. Per-site overlays can add thresholds, paranoia, sampling, rule/custom tuning, IP-list bindings, and rate limits over the shared bundle.</p>
         <ul>
           <li>11 tabs: CRS Core · HTTP Policy · Limits · Rule Tuning · IP Lists · Custom Rules · Plugins · Rate Limits · Exclusions · Preview · Test Lab</li>
           <li>Compare any two policy revisions side-by-side</li>
@@ -573,6 +573,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.7</span>
+          <span class="tl-date">2026-07-08</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Scoped IP control + site security overlays</div>
+        <div class="tl-body">
+          IP lists are now reusable data objects whose effective action is chosen at global, policy, or site binding scope. The new IP Control flow adds global lists, reference counts, scoped lookup, and apply-now targets; site rows get a Security protection drawer for inherited policy rows plus editable deltas; security events can quick allow/block source IPs; and install now fixes root-owned state trees before systemd starts Tiyi.
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -933,7 +946,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.6 · 2026-07-06</span>
+      <span class="build">build v3.0.7 · 2026-07-08</span>
     </div>
   </div>
 </footer>

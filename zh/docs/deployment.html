@@ -166,7 +166,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
 
     <h2 id="upgrades">滚动升级</h2>
     <p>导入二进制 release 后,<code>tiyi release apply</code> 把 <code>APPLY_BINARY</code> 命令散到所有 OS/arch 匹配的节点。每个节点下载替换、校验 SHA-256 与 Ed25519 发布签名,然后退出让 supervisor 重启进入新二进制。</p>
-<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_v3.0.5_linux_amd64.tar.gz
+<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_v3.0.7_linux_amd64.tar.gz
 <span class="p">$</span> tiyi release list
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span>             <span class="c"># 所有匹配节点</span>
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span>  <span class="c"># 灰度部署</span>
@@ -219,7 +219,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.5 &middot; 2026-07-04</span>
+      <span class="build">build v3.0.7 &middot; 2026-07-08</span>
     </div>
   </div>
 </footer>

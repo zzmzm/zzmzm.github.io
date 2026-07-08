@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Changelog — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi release notes from foundation work through v3.0.6." />
+<meta name="description" content="Tiyi release notes from foundation work through v3.0.7." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,6 +50,27 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.7</span>
+          <span class="tl-date">2026-07-08</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Scoped IP control + site security overlays</div>
+        <div class="tl-body">
+          <p>IP-list controls now match how operators actually apply allow/deny decisions: lists are reusable data objects, and the effective action lives on the binding at global, policy, or site scope.</p>
+          <ul>
+            <li><strong>Global / policy / site scope.</strong> IP-list bindings now carry the action, bypass mode, and scope. The compiler enforces the visible priority order <span class="mono">global allow &gt; global deny &gt; site allow &gt; site deny &gt; site policy effective config</span>, including allow-list bypass modes for all-WAF or IP-list-only skip.</li>
+            <li><strong>IP Control UI.</strong> The IP Lists page is now an IP Control workspace with Global lists, an IP list library, reference counts, apply-now targets, and a scoped Lookup IP table that explains why a source address was allowed, denied, monitored, or left alone.</li>
+            <li><strong>Site Security protection.</strong> Site rows now open an effective-config drawer with inherited policy rows plus editable site deltas for CRS scalar overrides, rule overrides, custom rules, IP lists, rate limits, and diff/restore-inheritance controls.</li>
+            <li><strong>Security-event actions.</strong> Event drawers can quick allow/block a source IP at global or current-site scope with optional expiry, without navigating away from the investigation.</li>
+            <li><strong>Install ownership hardening.</strong> <span class="mono">tiyi install --now</span> now recurses through the state directory so root-owned embedded CRS files left by a prior <span class="mono">sudo tiyi standalone</span> run cannot break systemd applies.</li>
+            <li>Verified: <span class="mono">go test ./...</span>, <span class="mono">buf lint</span>, <span class="mono">pnpm --filter @vben/web-antd typecheck</span>, <span class="mono">python3 scripts/i18n_check.py</span>, and signed linux/amd64 + linux/arm64 release packaging.</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -496,7 +517,7 @@
           <p>Store/API/Web/CLI CRUD; built-in templates (Strict/Standard/Permissive); version snapshots and rollback; engine-state switch; CRS binding; rule-override / custom-rule / IP-list / plugin / rate-limit tuning paths; SecLang preview; CRS impact preview; policy test lab.</p>
           <ul>
             <li>Deterministic SecLang compilation with CRS best-practice advisory warnings</li>
-            <li>Per-site policy overrides overlay scalars without forking the policy</li>
+            <li>Per-site policy overlays cover scalars plus site-scoped rule/custom/IP-list/rate-limit tuning without forking the policy</li>
             <li>CRS rule-exclusion packages (WordPress, Drupal, Nextcloud, phpBB, phpMyAdmin, XenForo, cPanel, DokuWiki) with offline archive upload</li>
           </ul>
         </div>
@@ -617,7 +638,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.5 · 2026-07-04</span>
+      <span class="build">build v3.0.7 · 2026-07-08</span>
     </div>
   </div>
 </footer>

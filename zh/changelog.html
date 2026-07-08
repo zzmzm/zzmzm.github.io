@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>更新日志 — 太一</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="太一从基础工作到 v3.0.6 的完整更新记录。" />
+<meta name="description" content="太一从基础工作到 v3.0.7 的完整更新记录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -51,6 +51,27 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.7</span>
+          <span class="tl-date">2026-07-08</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">分层 IP 控制 + 站点安全覆盖</div>
+        <div class="tl-body">
+          <p>IP 列表控制现在贴近运维实际使用方式:列表是可复用数据对象,真正生效的动作放在全局、策略或站点绑定上。</p>
+          <ul>
+            <li><strong>全局 / 策略 / 站点范围。</strong>IP 列表绑定现在携带动作、绕过模式与范围。编译器按可见顺序执行 <span class="mono">global allow &gt; global deny &gt; site allow &gt; site deny &gt; site policy effective config</span>,并支持 allow 列表选择绕过全部 WAF 或仅跳过后续 IP 列表。</li>
+            <li><strong>IP Control UI。</strong>IP Lists 页面升级为 IP Control 工作区,包含全局列表、IP 列表库、引用计数、一键应用目标,以及按站点解释源地址为何被允许、阻断、监控或未命中的 Lookup IP 表。</li>
+            <li><strong>站点 Security protection。</strong>站点行现在打开有效配置抽屉,同时展示继承策略行与可编辑站点差异:CRS 标量覆盖、规则覆盖、自定义规则、IP 列表、限速以及差异/恢复继承控制。</li>
+            <li><strong>安全事件动作。</strong>事件抽屉可在全局或当前站点范围快速允许/阻断源 IP,支持可选过期时间,无需离开调查上下文。</li>
+            <li><strong>安装所有权加固。</strong><span class="mono">tiyi install --now</span> 现在递归处理状态目录所有权,避免之前 <span class="mono">sudo tiyi standalone</span> 遗留的 root 拥有嵌入 CRS 文件破坏 systemd 应用。</li>
+            <li>已验证:<span class="mono">go test ./...</span>、<span class="mono">buf lint</span>、<span class="mono">pnpm --filter @vben/web-antd typecheck</span>、<span class="mono">python3 scripts/i18n_check.py</span>,以及已签名 linux/amd64 + linux/arm64 发布打包。</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -497,7 +518,7 @@
           <p>store/API/Web/CLI 的 CRUD;内置模板(Strict/Standard/Permissive);版本快照与回滚;引擎状态切换;CRS 绑定;规则覆盖 / 自定义规则 / IP 列表 / 插件 / 限速调优;SecLang 预览;CRS 影响预览;策略测试台。</p>
           <ul>
             <li>带 CRS 最佳实践告警的确定性 SecLang 编译</li>
-            <li>按站点策略覆盖把标量叠加到策略上而不必 fork</li>
+            <li>按站点策略覆盖支持标量以及站点级规则 / 自定义 / IP 列表 / 限速调优，不必 fork 策略</li>
             <li>CRS 规则排除包(WordPress、Drupal、Nextcloud、phpBB、phpMyAdmin、XenForo、cPanel、DokuWiki)支持离线归档导入</li>
           </ul>
         </div>
@@ -618,7 +639,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.5 · 2026-07-04</span>
+      <span class="build">build v3.0.7 · 2026-07-08</span>
     </div>
   </div>
 </footer>

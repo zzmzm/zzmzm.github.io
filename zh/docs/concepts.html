@@ -107,7 +107,7 @@
       <li><strong>HTTP 策略</strong> —— 方法、版本、Content-Type、字符集、受限扩展名/Header、方法覆盖。</li>
       <li><strong>限制</strong> —— 6 个数值字段：最大请求体、最大响应体等，CRS 默认值作为 placeholder。</li>
       <li><strong>规则调优</strong> —— 按规则的覆盖：<code>DEFAULT</code>、<code>DISABLE</code>、<code>LOG_ONLY</code>、<code>SCORE_OVERRIDE</code>，可选限定到单个站点。</li>
-      <li><strong>IP 列表</strong> —— 允许 / 拒绝 / 监控列表。条目可以是 CIDR 或 <code>geo:CC</code> 伪条目（alpha-2/alpha-3 国家代码加 <code>PRIVATE</code> / <code>LOOPBACK</code>）。</li>
+      <li><strong>IP 列表</strong> —— 允许 / 拒绝 / 监控列表。条目可以是 CIDR 或 <code>geo:CC</code> 伪条目（alpha-2/alpha-3 国家代码加 <code>PRIVATE</code> / <code>LOOPBACK</code>）；重叠名单编译时允许规则先于拒绝规则。</li>
       <li><strong>自定义规则</strong> —— 运维写的 SecLang 或可视化规则，ID 在 8000000–8999999 区间。</li>
       <li><strong>插件</strong> —— CRS 排除包（WordPress、Drupal、Nextcloud、phpBB、phpMyAdmin、XenForo、cPanel、DokuWiki）。支持离线归档导入。</li>
       <li><strong>限速</strong> —— 按端点与按客户端范围的桶，动作可选阻断或仅记录。</li>
@@ -116,7 +116,7 @@
       <li><strong>版本</strong> —— 每次保存一个快照，任意两个版本之间并排 diff。</li>
       <li><strong>测试台</strong> —— 用 fixture 请求打编译后的 bundle，不会触碰生产数据平面。</li>
     </ol>
-    <p>按站点覆盖会把标量字段（偏执、阈值、采样）叠加到挂载的策略上而不必 fork 它。</p>
+    <p>按站点覆盖会把标量字段（偏执、阈值、采样）以及站点级规则覆盖、自定义规则、IP 列表绑定、限速端点叠加到挂载的策略上而不必 fork 它。</p>
 
     <h2 id="agents">节点</h2>
     <p>每一个代理流量的节点都跑一个嵌入式节点 —— 包括主节点与热备。节点持有一条长连 ConnectRPC 双向流到主节点。重连循环先试主节点、再试备节点、然后用指数退避重试。备节点接受只读的节点流。</p>
@@ -180,7 +180,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.5 &middot; 2026-07-04</span>
+      <span class="build">build v3.0.7 &middot; 2026-07-08</span>
     </div>
   </div>
 </footer>

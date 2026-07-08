@@ -131,7 +131,7 @@
       <li><strong>HTTP Policy</strong> — methods, versions, content types, charsets, restricted extensions/headers, method override.</li>
       <li><strong>Limits</strong> — six numeric fields: max request body, max response body, etc., with CRS-default placeholders.</li>
       <li><strong>Rule tuning</strong> — per-rule overrides: <code>DEFAULT</code>, <code>DISABLE</code>, <code>LOG_ONLY</code>, <code>SCORE_OVERRIDE</code>, optionally scoped to a single site.</li>
-      <li><strong>IP lists</strong> — allow / deny / monitor lists. Entries can be CIDR or <code>geo:CC</code> pseudo-entries (alpha-2/alpha-3 country codes plus <code>PRIVATE</code> / <code>LOOPBACK</code>).</li>
+      <li><strong>IP lists</strong> — allow / deny / monitor lists. Entries can be CIDR or <code>geo:CC</code> pseudo-entries (alpha-2/alpha-3 country codes plus <code>PRIVATE</code> / <code>LOOPBACK</code>); overlapping allow bindings are emitted before deny bindings.</li>
       <li><strong>Custom rules</strong> — operator-authored SecLang or visual-spec rules in the 8000000–8999999 ID range.</li>
       <li><strong>Plugins</strong> — CRS rule-exclusion packages (WordPress, Drupal, Nextcloud, phpBB, phpMyAdmin, XenForo, cPanel, DokuWiki). Offline archive upload supported.</li>
       <li><strong>Rate limits</strong> — per-endpoint and client-scope buckets with block or log actions.</li>
@@ -140,7 +140,7 @@
       <li><strong>Versions</strong> — snapshot per save, side-by-side diff between any two revisions.</li>
       <li><strong>Test lab</strong> — fire fixture requests through the compiled bundle without touching the live data plane.</li>
     </ol>
-    <p>Per-site overrides overlay scalar fields (paranoia, thresholds, sampling) on top of an attached policy without forking it.</p>
+    <p>Per-site overlays layer scalar fields (paranoia, thresholds, sampling) plus site-scoped rule overrides, custom rules, IP-list bindings, and rate-limit endpoints on top of an attached policy without forking it.</p>
 
     <h2 id="agents">Agents</h2>
     <p>Every node that proxies traffic runs an embedded agent — including the primary and the warm secondary. Agents hold a long-lived ConnectRPC bidi stream to the primary. The reconnect loop tries the primary first, then the secondary, then retries with exponential backoff. The secondary accepts read-only agent streams.</p>
@@ -204,7 +204,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.5 &middot; 2026-07-04</span>
+      <span class="build">build v3.0.7 &middot; 2026-07-08</span>
     </div>
   </div>
 </footer>

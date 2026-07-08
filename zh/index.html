@@ -54,7 +54,7 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.0.6</span>
+    <span class="tag">v3.0.7</span>
     告警规则编写重塑 + 仪表盘 / 遥测重构
   </span>
 
@@ -166,7 +166,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>OWASP CRS 4 开箱即用</h3>
-        <p>Coraza 把结构化的策略对象编译成 SecLang。按站点覆盖、偏执等级、评分阈值、排除包 —— 全部不需要 fork 规则集。</p>
+        <p>Coraza 把结构化的策略对象编译成 SecLang。全局、策略、站点级 IP 控制,按站点覆盖、偏执等级、评分阈值、排除包 —— 全部不需要 fork 规则集。</p>
       </div>
 
       <div class="feature reveal">
@@ -293,7 +293,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">产品演示</span>
       <h2>运维团队真正会用的管理平面。</h2>
-      <p>下方每一张截图都来自 <span class="mono">v3.0.6</span> 的实际运行实例。同一份数据平面，同一份 UI，同一份 RPC。</p>
+      <p>下方每一张截图都来自 <span class="mono">v3.0.7</span> 的实际运行实例。同一份数据平面，同一份 UI，同一份 RPC。</p>
     </div>
 
     <!-- Tour 1: Dashboard -->
@@ -343,7 +343,7 @@
       <div class="tour-text">
         <span class="tour-eyebrow">WAF 策略</span>
         <h3>调优 CRS 而不必 fork。</h3>
-        <p>内置 Strict / Standard / Permissive 三套模板，每一次保存都会编译成确定的 SecLang。按站点覆盖阈值、偏执等级、采样率会叠加在共享 bundle 之上。</p>
+        <p>内置 Strict / Standard / Permissive 三套模板，每一次保存都会编译成确定的 SecLang。按站点覆盖可把阈值、偏执等级、采样率、规则 / 自定义调优、IP 列表绑定与限速叠加在共享 bundle 之上。</p>
         <ul>
           <li>11 个标签页：CRS Core · HTTP Policy · Limits · 规则调优 · IP 列表 · 自定义规则 · 插件 · 限速 · 排除项 · 预览 · 测试台</li>
           <li>任意两个策略版本之间并排 diff</li>
@@ -560,6 +560,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.7</span>
+          <span class="tl-date">2026-07-08</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">分层 IP 控制 + 站点安全覆盖</div>
+        <div class="tl-body">
+          IP 列表现在是可复用数据对象,真正的动作由全局、策略或站点绑定决定。新的 IP Control 流程提供全局列表、引用计数、按站点查询与一键应用目标;站点行新增 Security protection 抽屉,同时展示继承策略行与可编辑站点差异;安全事件可直接快速允许/阻断源 IP;安装流程会在 systemd 启动前修复 root 拥有的状态树。
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -920,7 +933,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.6 · 2026-07-06</span>
+      <span class="build">build v3.0.7 · 2026-07-08</span>
     </div>
   </div>
 </footer>
