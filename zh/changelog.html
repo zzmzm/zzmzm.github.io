@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>更新日志 — 太一</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="太一从基础工作到 v3.0.7 的完整更新记录。" />
+<meta name="description" content="太一从基础工作到 v3.0.8 的完整更新记录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -51,6 +51,27 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.8</span>
+          <span class="tl-date">2026-07-09</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">策略执行加固 + doctor 状态所有权修复</div>
+        <div class="tl-body">
+          <p>针对 v3.0.7 的聚焦加固:补上直接继承策略站点的限速执行缺口,收紧 IP 列表与 CRS 标量变更语义,并为 <span class="mono">tiyi doctor</span> 增加修复服务状态目录所有权的能力。</p>
+          <ul>
+            <li><strong>策略级限速全面生效。</strong>此前限速端点仅在站点存在覆盖时才合并进编译策略,导致直接继承策略的站点静默跳过策略级限速。现在无论是否有覆盖,合并都对每个站点执行。</li>
+            <li><strong>IP 列表 update_mask 保留 kind。</strong>使用不包含 <span class="mono">kind</span> 的字段掩码更新 IP 列表时不再重置该字段;除非显式修改,已存储的 kind 会被保留。</li>
+            <li><strong>CRS <span class="mono">enable_default_collections</span> 三态。</strong>该标量改为 proto3 optional,使显式"关闭"能在 protojson 往返后保留,而不会回落到继承默认值。</li>
+            <li><strong>Doctor 状态所有权修复。</strong><span class="mono">tiyi doctor</span> 现在检查状态目录树是否可由配置的服务用户写入,<span class="mono">--fix-state-ownership</span>(root)可将其所有权修复;自定义进程管理器通过 <span class="mono">--service-user/--service-group</span> 支持。</li>
+            <li><strong>安全事件移交与 UI 细化。</strong>"基于该事件创建告警规则"的目标下拉再次正常解析;站点策略覆盖弹窗改为内联面板;列表视图统一采用共享时间格式化工具。</li>
+            <li>已验证:<span class="mono">go test ./...</span>、<span class="mono">buf lint</span>、<span class="mono">pnpm --filter @vben/web-antd typecheck</span>、<span class="mono">python3 scripts/i18n_check.py</span>,以及已签名 linux/amd64 + linux/arm64 发布打包。</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -639,7 +660,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.7 · 2026-07-08</span>
+      <span class="build">build v3.0.8 · 2026-07-09</span>
     </div>
   </div>
 </footer>

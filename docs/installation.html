@@ -95,10 +95,10 @@
     <p>Tiyi is one signed binary — free and full-featured on a single node. The canonical install script is published at <code>https://www.tiyisec.com/install.sh</code>:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.0.7 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.0.8 linux/amd64</span></code></pre>
     <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. It tries GitHub first and falls back to the Gitee release mirror; force Gitee with <code>TIYI_MIRROR=gitee</code> when needed:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.0.7</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
+    <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.0.8</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
     <p>Public distribution repos: <a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> and <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>.</p>
     <p><code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets.</p>
 
@@ -201,7 +201,7 @@
     <h2 id="systemd">Run as a systemd service</h2>
     <p>For a long-lived deployment, let Tiyi install itself as a hardened systemd service. <code>tiyi install</code> creates the <code>tiyi</code> service user and the <code>tiyi-admin</code> socket group, writes the unit, and with <code>--now</code> enables and starts it on boot:</p>
 <pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
-    <p>The service runs unprivileged and binds ports 80/443 via <code>CAP_NET_BIND_SERVICE</code>. On a first install, <code>--now</code> pre-creates the administrator and prints the one-time login itself — no journal scraping:</p>
+    <p>The service runs unprivileged and binds ports 80/443 via <code>CAP_NET_BIND_SERVICE</code>. Before each start, a root-only pre-start hook re-owns the configured state directory and KEK file for the service user, so CRS caches, uploads, exclusion packages, release staging, logs, trust snapshots, and embedded-agent state left by a prior sudo foreground run cannot block runtime writes. On a first install, <code>--now</code> pre-creates the administrator and prints the one-time login itself — no journal scraping:</p>
 <pre><code><span class="c">tiyi is enabled and running as tiyi.service.</span>
 
 <span class="c">  Tiyi administrator created</span>
@@ -216,6 +216,8 @@
 <span class="k">Type</span>=simple
 <span class="k">User</span>=tiyi
 <span class="k">Group</span>=tiyi
+<span class="k">PermissionsStartOnly</span>=true
+<span class="k">ExecStartPre</span>=/usr/local/bin/tiyi systemd-prestart --config /etc/tiyi/server.yaml --user tiyi --group tiyi
 <span class="k">ExecStart</span>=/usr/local/bin/tiyi standalone --config /etc/tiyi/server.yaml --admin-socket /run/tiyi/admin.sock --admin-socket-group tiyi-admin --admin-socket-mode 0660 --caddy-admin-socket /run/tiyi/caddy.sock
 <span class="k">Restart</span>=on-failure
 <span class="k">AmbientCapabilities</span>=CAP_NET_BIND_SERVICE
@@ -230,7 +232,7 @@
 
 <span class="k">[Install]</span>
 <span class="k">WantedBy</span>=multi-user.target</code></pre>
-    <p>Run <code>tiyi doctor</code> to check sudo PATH, systemd, config loading, and listeners on ports 80/443/8080. If it warns that sudo cannot find <code>tiyi</code>, use the printed full-path command or add <code>/usr/local/bin</code> to sudo <code>secure_path</code>. If it reports a port conflict, either stop the owning service or move Tiyi with <code>proxy.http_addr</code>, <code>proxy.https_addr</code>, or <code>server.addr</code>. Pick a different role with <code>--mode</code> (e.g. <code>server</code>, <code>agent</code>). Remove the service with <code>sudo tiyi uninstall</code>: state under <code>/var/lib/tiyi</code>, config under <code>/etc/tiyi</code>, and the service user are preserved unless you add <code>--purge</code>.</p>
+    <p>Run <code>tiyi doctor</code> to check sudo PATH, systemd, config loading, installed-service state ownership, and listeners on ports 80/443/8080. If no systemd unit is installed, state ownership is skipped unless you pass <code>--service-user</code>/<code>--service-group</code> or request repair. If it warns that sudo cannot find <code>tiyi</code>, use the printed full-path command or add <code>/usr/local/bin</code> to sudo <code>secure_path</code>. If it reports root-owned state, repair it explicitly with <code>sudo tiyi doctor --fix-state-ownership</code>. If it reports a port conflict, either stop the owning service or move Tiyi with <code>proxy.http_addr</code>, <code>proxy.https_addr</code>, or <code>server.addr</code>. Pick a different role with <code>--mode</code> (e.g. <code>server</code>, <code>agent</code>). Remove the service with <code>sudo tiyi uninstall</code>: state under <code>/var/lib/tiyi</code>, config under <code>/etc/tiyi</code>, and the service user are preserved unless you add <code>--purge</code>.</p>
 
     <h2 id="next">What to read next</h2>
     <ul>
@@ -261,7 +263,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.7 &middot; 2026-07-08</span>
+      <span class="build">build v3.0.8 &middot; 2026-07-09</span>
     </div>
   </div>
 </footer>

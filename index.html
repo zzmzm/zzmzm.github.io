@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.0.7</span>
-    Alert-rule authoring redesign + dashboard/telemetry rework
+    <span class="tag">v3.0.8</span>
+    Policy enforcement hardening + doctor state-ownership repair
   </span>
 
   <h1>
@@ -306,7 +306,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">Product tour</span>
       <h2>The admin plane your ops team will actually use.</h2>
-      <p>Every screenshot below is a real screen from <span class="mono">v3.0.7</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
+      <p>Every screenshot below is a real screen from <span class="mono">v3.0.8</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
     </div>
 
     <!-- Tour 1: Dashboard -->
@@ -573,6 +573,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.8</span>
+          <span class="tl-date">2026-07-09</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Policy enforcement hardening + doctor state-ownership repair</div>
+        <div class="tl-body">
+          A focused hardening pass on v3.0.7: policy-wide rate limits now apply to sites running the inherited policy (not just sites with an overlay); IP-list update_mask no longer resets kind; CRS enable_default_collections becomes a tri-state that survives protojson round-trips; and tiyi doctor gains --fix-state-ownership to repair service-owned state trees. The security-event "create rule" handoff is fixed, the site policy-override modal becomes an inline panel, and list views share one datetime formatter.
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -946,7 +959,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.7 · 2026-07-08</span>
+      <span class="build">build v3.0.8 · 2026-07-09</span>
     </div>
   </div>
 </footer>

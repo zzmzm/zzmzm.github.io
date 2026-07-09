@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.0.7</span>
-    告警规则编写重塑 + 仪表盘 / 遥测重构
+    <span class="tag">v3.0.8</span>
+    策略执行加固 + doctor 状态所有权修复
   </span>
 
   <h1>
@@ -293,7 +293,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">产品演示</span>
       <h2>运维团队真正会用的管理平面。</h2>
-      <p>下方每一张截图都来自 <span class="mono">v3.0.7</span> 的实际运行实例。同一份数据平面，同一份 UI，同一份 RPC。</p>
+      <p>下方每一张截图都来自 <span class="mono">v3.0.8</span> 的实际运行实例。同一份数据平面，同一份 UI，同一份 RPC。</p>
     </div>
 
     <!-- Tour 1: Dashboard -->
@@ -560,6 +560,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.8</span>
+          <span class="tl-date">2026-07-09</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">策略执行加固 + doctor 状态所有权修复</div>
+        <div class="tl-body">
+          针对 v3.0.7 的聚焦加固:策略级限速现在对直接继承策略的站点也生效(不再仅限有覆盖的站点);IP 列表 update_mask 不再重置 kind;CRS enable_default_collections 改为三态,可在 protojson 往返后保留;tiyi doctor 新增 --fix-state-ownership 以修复服务拥有的状态树。安全事件"创建规则"移交已修复,站点策略覆盖弹窗改为内联面板,列表视图统一使用共享时间格式化工具。
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -933,7 +946,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.7 · 2026-07-08</span>
+      <span class="build">build v3.0.8 · 2026-07-09</span>
     </div>
   </div>
 </footer>

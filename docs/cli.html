@@ -105,10 +105,11 @@
 <span class="c"># prompts for password, prints the JWT, optionally writes ~/.config/tiyi/credentials</span></code></pre>
 
     <h2 id="diagnostics">Diagnostics</h2>
-    <p>Use <code>tiyi doctor</code> on the host before or after install to check the local environment without changing anything. It highlights config load errors, systemd availability, sudo PATH issues, and listeners on the API/dashboard and proxy ports.</p>
+    <p>Use <code>tiyi doctor</code> on the host before or after install to check the local environment without changing anything. It highlights config load errors, systemd availability, sudo PATH issues, installed-service state ownership problems, and listeners on the API/dashboard and proxy ports. If no systemd unit is installed, state ownership is skipped unless you pass <code>--service-user</code>/<code>--service-group</code> or request repair. State repair is explicit and root-only: <code>sudo tiyi doctor --fix-state-ownership</code>.</p>
 <pre><code><span class="p">$</span> tiyi doctor
 <span class="p">$</span> tiyi doctor --mode agent
-<span class="p">$</span> tiyi doctor --proxy-http-addr :8180 --proxy-https-addr :18443</code></pre>
+<span class="p">$</span> tiyi doctor --proxy-http-addr :8180 --proxy-https-addr :18443
+<span class="p">$</span> sudo tiyi doctor --fix-state-ownership</code></pre>
 
     <h2 id="apply">Declarative apply</h2>
     <p>The kubectl-style entry point. One YAML file, one command, one audit row:</p>
@@ -243,7 +244,7 @@ tiyi system settings update --key siem.filter.include_audit --value true
 tiyi system settings update --key telemetry.enabled --value true</code></pre>
 
     <h2 id="release-mgmt">Releases (rolling agent upgrades)</h2>
-<pre><code>tiyi release import --tarball ./tiyi_v3.0.7_linux_amd64.tar.gz
+<pre><code>tiyi release import --tarball ./tiyi_v3.0.8_linux_amd64.tar.gz
 tiyi release list
 tiyi release apply <span class="v">&lt;release-id&gt;</span>           <span class="c"># fan APPLY_BINARY to all matching agents</span>
 tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span> --agent-id <span class="v">B</span>
@@ -301,7 +302,7 @@ tiyi promote --force             <span class="c"># skip the demote step; accept 
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.7 &middot; 2026-07-08</span>
+      <span class="build">build v3.0.8 &middot; 2026-07-09</span>
     </div>
   </div>
 </footer>

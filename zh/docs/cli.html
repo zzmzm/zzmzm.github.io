@@ -81,10 +81,11 @@
 <span class="c"># 输入密码,打印 JWT,可选写入 ~/.config/tiyi/credentials</span></code></pre>
 
     <h2 id="diagnostics">诊断</h2>
-    <p>在安装前后都可以在目标主机上运行 <code>tiyi doctor</code>,它不会修改系统,只高亮提示配置加载错误、systemd 可用性、sudo PATH 问题,以及 API / 仪表盘与代理端口的监听占用。</p>
+    <p>在安装前后都可以在目标主机上运行 <code>tiyi doctor</code>,它默认不会修改系统,只高亮提示配置加载错误、systemd 可用性、sudo PATH 问题、已安装服务的状态目录所有权问题,以及 API / 仪表盘与代理端口的监听占用。如果还没有安装 systemd unit,状态目录所有权检查会跳过,除非传入 <code>--service-user</code>/<code>--service-group</code> 或显式请求修复。状态目录修复必须显式执行且需要 root:<code>sudo tiyi doctor --fix-state-ownership</code>。</p>
 <pre><code><span class="p">$</span> tiyi doctor
 <span class="p">$</span> tiyi doctor --mode agent
-<span class="p">$</span> tiyi doctor --proxy-http-addr :8180 --proxy-https-addr :18443</code></pre>
+<span class="p">$</span> tiyi doctor --proxy-http-addr :8180 --proxy-https-addr :18443
+<span class="p">$</span> sudo tiyi doctor --fix-state-ownership</code></pre>
 
     <h2 id="apply">声明式 apply</h2>
     <p>kubectl 风格入口。一份 YAML、一条命令、一行审计：</p>
@@ -219,7 +220,7 @@ tiyi system settings update --key siem.filter.include_audit --value true
 tiyi system settings update --key telemetry.enabled --value true</code></pre>
 
     <h2 id="release-mgmt">发布（滚动节点升级）</h2>
-<pre><code>tiyi release import --tarball ./tiyi_v3.0.7_linux_amd64.tar.gz
+<pre><code>tiyi release import --tarball ./tiyi_v3.0.8_linux_amd64.tar.gz
 tiyi release list
 tiyi release apply <span class="v">&lt;release-id&gt;</span>           <span class="c"># 把 APPLY_BINARY 散到所有匹配的节点</span>
 tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span> --agent-id <span class="v">B</span>
@@ -271,7 +272,7 @@ tiyi promote --force             <span class="c"># 跳过 demote;接受有界数
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.7 &middot; 2026-07-08</span>
+      <span class="build">build v3.0.8 &middot; 2026-07-09</span>
     </div>
   </div>
 </footer>

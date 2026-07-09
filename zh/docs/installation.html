@@ -78,10 +78,10 @@
     <p>太一是单一签名二进制 —— 在单节点上免费且功能完整。权威安装脚本发布在 <code>https://www.tiyisec.com/install.sh</code>：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.0.7 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.0.8 linux/amd64</span></code></pre>
     <p>脚本会下载与平台匹配的二进制，比对 SHA-256 manifest，并放到 <code>/usr/local/bin/tiyi</code>。默认先尝试 GitHub，失败或过慢时回退到 Gitee Release 镜像；必要时可用 <code>TIYI_MIRROR=gitee</code> 强制使用 Gitee：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.0.7</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
+    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.0.8</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
     <p>公开分发仓库：<a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> 与 <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>。</p>
     <p><code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。</p>
 
@@ -184,7 +184,7 @@
     <h2 id="systemd">以 systemd 服务运行</h2>
     <p>长期运行的部署，让太一把自己装成一个加固过的 systemd 服务。<code>tiyi install</code> 会创建 <code>tiyi</code> 服务用户与 <code>tiyi-admin</code> 套接字组、写入 unit，加上 <code>--now</code> 则同时开机自启并立即启动：</p>
 <pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
-    <p>该服务以非 root 身份运行，通过 <code>CAP_NET_BIND_SERVICE</code> 绑定 80/443 端口。首次安装时，<code>--now</code> 会预先创建管理员，并在启动服务后直接打印一次性登录信息（URL、用户名、密码）——无需再去 journal 里捞：</p>
+    <p>该服务以非 root 身份运行，通过 <code>CAP_NET_BIND_SERVICE</code> 绑定 80/443 端口。每次启动前，unit 会先用 root-only 的 pre-start 钩子把配置里的状态目录和 KEK 文件重新交给服务用户；之前 sudo 前台运行留下的 CRS 缓存、上传、排除包、release 暂存、日志、trust 快照或内嵌 agent 状态目录不会再阻塞运行期写入。首次安装时，<code>--now</code> 会预先创建管理员，并在启动服务后直接打印一次性登录信息（URL、用户名、密码）——无需再去 journal 里捞：</p>
 <pre><code><span class="c">tiyi is enabled and running as tiyi.service.</span>
 
 <span class="c">  Tiyi administrator created</span>
@@ -199,6 +199,8 @@
 <span class="k">Type</span>=simple
 <span class="k">User</span>=tiyi
 <span class="k">Group</span>=tiyi
+<span class="k">PermissionsStartOnly</span>=true
+<span class="k">ExecStartPre</span>=/usr/local/bin/tiyi systemd-prestart --config /etc/tiyi/server.yaml --user tiyi --group tiyi
 <span class="k">ExecStart</span>=/usr/local/bin/tiyi standalone --config /etc/tiyi/server.yaml --admin-socket /run/tiyi/admin.sock --admin-socket-group tiyi-admin --admin-socket-mode 0660 --caddy-admin-socket /run/tiyi/caddy.sock
 <span class="k">Restart</span>=on-failure
 <span class="k">AmbientCapabilities</span>=CAP_NET_BIND_SERVICE
@@ -213,7 +215,7 @@
 
 <span class="k">[Install]</span>
 <span class="k">WantedBy</span>=multi-user.target</code></pre>
-    <p>用 <code>tiyi doctor</code> 检查 sudo PATH、systemd、配置加载，以及 80/443/8080 端口监听者。如果它提示 sudo 找不到 <code>tiyi</code>，使用输出里的完整路径命令，或把 <code>/usr/local/bin</code> 加入 sudo <code>secure_path</code>。如果它提示端口冲突，可以停止占用端口的服务，或通过 <code>proxy.http_addr</code>、<code>proxy.https_addr</code>、<code>server.addr</code> 修改太一端口。用 <code>--mode</code> 选择其他角色（如 <code>server</code>、<code>agent</code>）。用 <code>sudo tiyi uninstall</code> 移除该服务：除非加上 <code>--purge</code>，否则 <code>/var/lib/tiyi</code> 下的状态、<code>/etc/tiyi</code> 下的配置以及服务用户都会保留。</p>
+    <p>用 <code>tiyi doctor</code> 检查 sudo PATH、systemd、配置加载、已安装服务的状态目录所有权，以及 80/443/8080 端口监听者。如果还没有安装 systemd unit,状态目录所有权检查会跳过,除非传入 <code>--service-user</code>/<code>--service-group</code> 或显式请求修复。如果它提示 sudo 找不到 <code>tiyi</code>，使用输出里的完整路径命令，或把 <code>/usr/local/bin</code> 加入 sudo <code>secure_path</code>。如果它提示状态目录里有 root 拥有的路径，显式运行 <code>sudo tiyi doctor --fix-state-ownership</code> 修复。如果它提示端口冲突，可以停止占用端口的服务，或通过 <code>proxy.http_addr</code>、<code>proxy.https_addr</code>、<code>server.addr</code> 修改太一端口。用 <code>--mode</code> 选择其他角色（如 <code>server</code>、<code>agent</code>）。用 <code>sudo tiyi uninstall</code> 移除该服务：除非加上 <code>--purge</code>，否则 <code>/var/lib/tiyi</code> 下的状态、<code>/etc/tiyi</code> 下的配置以及服务用户都会保留。</p>
 
     <h2 id="next">下一步阅读</h2>
     <ul>
@@ -244,7 +246,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.7 &middot; 2026-07-08</span>
+      <span class="build">build v3.0.8 &middot; 2026-07-09</span>
     </div>
   </div>
 </footer>

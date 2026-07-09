@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Changelog — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi release notes from foundation work through v3.0.7." />
+<meta name="description" content="Tiyi release notes from foundation work through v3.0.8." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,6 +50,27 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.8</span>
+          <span class="tl-date">2026-07-09</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Policy enforcement hardening + doctor state-ownership repair</div>
+        <div class="tl-body">
+          <p>A focused hardening pass on v3.0.7: closes a rate-limit enforcement gap for sites running the inherited policy, tightens IP-list and CRS-scalar mutation semantics, and gives <span class="mono">tiyi doctor</span> a way to repair service-owned state directories.</p>
+          <ul>
+            <li><strong>Policy-wide rate limits enforced everywhere.</strong> Rate-limit endpoints were only merged into a site's compiled policy when a site overlay existed, so sites running the inherited policy silently skipped policy-wide limits. The merge now runs for every site, overlay or not.</li>
+            <li><strong>IP-list update_mask preserves kind.</strong> Updating an IP list with a field mask that omits <span class="mono">kind</span> no longer resets it; the stored kind is retained unless explicitly changed.</li>
+            <li><strong>CRS <span class="mono">enable_default_collections</span> tri-state.</strong> The scalar is now a proto3 optional so an explicit "off" survives protojson round-trips instead of collapsing back to the inherited default.</li>
+            <li><strong>Doctor state-ownership repair.</strong> <span class="mono">tiyi doctor</span> now inspects whether the state directory tree is writable by the configured service user, and <span class="mono">--fix-state-ownership</span> (root) chowns it back; custom supervisors are supported via <span class="mono">--service-user/--service-group</span>.</li>
+            <li><strong>Security-event handoff + UI refinements.</strong> "Create alert rule from this event" again resolves its target dropdown; the site policy-override modal is replaced by an inline panel; a shared datetime formatter is adopted across list views.</li>
+            <li>Verified: <span class="mono">go test ./...</span>, <span class="mono">buf lint</span>, <span class="mono">pnpm --filter @vben/web-antd typecheck</span>, <span class="mono">python3 scripts/i18n_check.py</span>, and signed linux/amd64 + linux/arm64 release packaging.</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -638,7 +659,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.7 · 2026-07-08</span>
+      <span class="build">build v3.0.8 · 2026-07-09</span>
     </div>
   </div>
 </footer>
