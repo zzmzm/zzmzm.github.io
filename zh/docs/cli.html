@@ -220,7 +220,7 @@ tiyi system settings update --key siem.filter.include_audit --value true
 tiyi system settings update --key telemetry.enabled --value true</code></pre>
 
     <h2 id="release-mgmt">发布（滚动节点升级）</h2>
-<pre><code>tiyi release import --tarball ./tiyi_v3.0.8_linux_amd64.tar.gz
+<pre><code>tiyi release import --tarball ./tiyi_v3.0.9_linux_amd64.tar.gz
 tiyi release list
 tiyi release apply <span class="v">&lt;release-id&gt;</span>           <span class="c"># 把 APPLY_BINARY 散到所有匹配的节点</span>
 tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span> --agent-id <span class="v">B</span>
@@ -272,7 +272,7 @@ tiyi promote --force             <span class="c"># 跳过 demote;接受有界数
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.8 &middot; 2026-07-09</span>
+      <span class="build">build v3.0.9 &middot; 2026-07-10</span>
     </div>
   </div>
 </footer>

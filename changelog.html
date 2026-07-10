@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Changelog — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi release notes from foundation work through v3.0.8." />
+<meta name="description" content="Tiyi release notes from foundation work through v3.0.9." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,6 +50,28 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.9</span>
+          <span class="tl-date">2026-07-10</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Visual-rule bypass action + responsive admin UI</div>
+        <div class="tl-body">
+          <p>v3.0.9 extends the visual rule builder with an explicit bypass action for trusted false-positive exceptions, and rolls out a responsive-width and copy-affordance pass across the admin UI.</p>
+          <ul>
+            <li><strong>Bypass WAF action.</strong> The visual builder's action set (block / log / pass) gains bypass, which compiles to <span class="mono">pass,nolog,ctl:ruleEngine=Off</span> so matching traffic skips the rest of WAF inspection. Plain pass is now <span class="mono">pass,nolog</span> (silent, passes only that rule; later CRS rules still run); block and log still audit-log.</li>
+            <li><strong>False-positive handoff.</strong> The security-event <em>Create rule from this event</em> menu adds <em>Allow this path / false positive</em>, which drafts a tightly scoped bypass rule scoped to the event's site.</li>
+            <li><strong>Responsive drawers and modals.</strong> Every Tiyi drawer and modal width now clamps to the viewport via a shared <span class="mono">useResponsiveWidth</span> helper, so wide drawers no longer overflow smaller screens.</li>
+            <li><strong>Markdown copy buttons.</strong> Fenced code blocks in AI and markdown output get a native, localized copy button (replacing click-to-copy on the whole block); <span class="mono">TiyiCopyButton</span> is localized.</li>
+            <li><strong>Recipe catalog launcher.</strong> The custom-rule builder's server template catalog moves behind a compact <span class="mono">Browse recipes</span> control so recipe browsing no longer splits the edit form; the static eight-preset selector remains as a fallback.</li>
+            <li><strong>Field-mask fix.</strong> Visual-spec custom-rule updates now send the correct protojson field-mask path (<span class="mono">visualSpec</span>), so edits to visual rules persist correctly.</li>
+            <li>Verified: <span class="mono">go test ./...</span>, <span class="mono">buf lint</span>, <span class="mono">pnpm --filter @vben/web-antd typecheck</span>, <span class="mono">python3 scripts/i18n_check.py</span>, and signed linux/amd64 + linux/arm64 release packaging.</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -659,7 +681,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.8 · 2026-07-09</span>
+      <span class="build">build v3.0.9 · 2026-07-10</span>
     </div>
   </div>
 </footer>

@@ -54,7 +54,7 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.0.8</span>
+    <span class="tag">v3.0.9</span>
     Policy enforcement hardening + doctor state-ownership repair
   </span>
 
@@ -306,7 +306,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">Product tour</span>
       <h2>The admin plane your ops team will actually use.</h2>
-      <p>Every screenshot below is a real screen from <span class="mono">v3.0.8</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
+      <p>Every screenshot below is a real screen from <span class="mono">v3.0.9</span>, captured against a running instance. Same data plane, same UI, same RPC.</p>
     </div>
 
     <!-- Tour 1: Dashboard -->
@@ -573,6 +573,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.0.9</span>
+          <span class="tl-date">2026-07-10</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Visual-rule bypass action + responsive admin UI</div>
+        <div class="tl-body">
+          The custom-rule builder gains an explicit <span class="mono">Bypass WAF</span> action for tightly scoped false-positive exceptions: it compiles to <span class="mono">pass,nolog,ctl:ruleEngine=Off</span> so matching traffic skips the rest of WAF inspection, while plain <span class="mono">Pass</span> is now silent (<span class="mono">pass,nolog</span>) and only passes that one rule. The security-event drawer adds an <em>Allow this path / false positive</em> handoff that drafts a bypass rule from the event. Across the admin UI, drawers and modals clamp to the viewport via a shared responsive-width helper, markdown code blocks get a native copy button, and the recipe-template catalog moves behind a compact <span class="mono">Browse recipes</span> launcher; a field-mask path fix lets visual-spec custom rules save correctly.
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -959,7 +972,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.0.8 · 2026-07-09</span>
+      <span class="build">build v3.0.9 · 2026-07-10</span>
     </div>
   </div>
 </footer>
