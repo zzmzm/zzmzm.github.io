@@ -110,13 +110,13 @@
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 
     <p>太一会打印一行包含 API 地址、引导管理员密码（仅首次启动显示一次）与 Caddy 管理 socket 路径的 banner：</p>
-<pre><code><span class="c">tiyi v3.0.9 standalone</span>
+<pre><code><span class="c">tiyi v3.1.0 standalone</span>
 <span class="c">  api      http://127.0.0.1:8080</span>
 <span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
 <span class="c">  state    /tmp/tiyi.db</span>
 <span class="c">  bootstrap admin password: <span class="v">&lt;random-shown-once&gt;</span></span></code></pre>
 
-    <p>浏览器打开 <code>http://127.0.0.1:8080/</code>。用 <code>admin</code> 与上面的密码登录。你已经在 Vben Admin 里。</p>
+    <p>浏览器打开 <code>http://127.0.0.1:8080/</code>，用 <code>admin</code> 与上面的密码登录。控制台会进入<strong>运行态势 → 总览</strong>。七个稳定工作域为运行态势、应用交付、防护策略、节点集群、事件与日志、检测与响应、系统管理；权限过滤会隐藏空分组，但不会改变深链地址。</p>
 
     <div class="callout callout-warn">
       <div class="callout-icon">
@@ -209,7 +209,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.9 &middot; 2026-07-10</span>
+      <span class="build">build v3.1.0 &middot; 2026-07-12</span>
     </div>
   </div>
 </footer>

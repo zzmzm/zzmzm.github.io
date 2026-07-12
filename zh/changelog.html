@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>更新日志 — 太一</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="太一从基础工作到 v3.0.9 的完整更新记录。" />
+<meta name="description" content="太一从基础工作到 v3.1.0 的完整更新记录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -51,6 +51,27 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.1.0</span>
+          <span class="tl-date">2026-07-12</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">任务导向导航 + 无障碍管理工作区</div>
+        <div class="tl-body">
+          <p>v3.1.0 围绕运维人员实际完成的工作重新组织管理平面，并让高频安全工作流统一采用一套响应式、可访问的交互体系。</p>
+          <ul>
+            <li><strong>七个任务域。</strong>运行态势、应用交付、防护策略、节点集群、事件与日志、检测与响应、系统管理取代按代码资源划分的菜单孤岛，同时保持路由 URL 与 RBAC 权限不变。</li>
+            <li><strong>聚焦的应用壳。</strong>桌面侧栏只保留一种折叠模型，使用简洁标签和明确的悬停/当前位置状态；移动端优先保留导航、搜索、主题、语言与身份，将 Copilot 移到拇指可触达的浮动按钮。</li>
+            <li><strong>键盘可访问导航。</strong>子菜单暴露展开与当前位置状态，支持 Enter / Space 操作、清晰焦点与减少动态效果；权限过滤仍由服务端移除空分组。</li>
+            <li><strong>一致的运维工作区。</strong>策略与站点安全工作区获得更清晰的概览/模块导航、未保存变更保护，以及可复用的空状态、差异、实时状态与 YAML 应用模式；告警、事件响应、证书、节点、日志、设置和列表页共享同一套视觉与交互语言。</li>
+            <li><strong>文档契约。</strong>PRD-UI v3.9、运维快速开始与管理导航设计文档共同固定信息架构、响应式行为和无障碍验收标准。</li>
+            <li>已验证：<span class="mono">go test ./...</span>、<span class="mono">buf lint</span>、<span class="mono">pnpm typecheck</span>、多语言键校验、生产 Web 构建，以及桌面/移动端 Playwright QA。</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -682,7 +703,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.0.9 · 2026-07-10</span>
+      <span class="build">build v3.1.0 · 2026-07-12</span>
     </div>
   </div>
 </footer>
