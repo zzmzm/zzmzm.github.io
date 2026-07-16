@@ -52,6 +52,13 @@
       </ul>
     </div>
     <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
       <h4>Concepts</h4>
       <ul>
         <li><a href="concepts.html">Domain model</a></li>
@@ -83,7 +90,7 @@
     </p>
 
     <h2 id="start-here">Start here</h2>
-    <p>If you've never run Tiyi before, follow these three pages in order. They take about 30 minutes end to end and leave you with a real WAF in front of a real upstream.</p>
+    <p>If you've never run Tiyi before, follow Quickstart, Installation, then Operations. They leave you with a real WAF in front of a real upstream and a repeatable investigation workflow.</p>
 
     <div class="docs-cards">
       <a class="docs-card" href="quickstart.html">
@@ -95,19 +102,27 @@
         <p>Build from source, download a signed release, configure the YAML config, and choose between <code>standalone</code>, <code>server</code>, and <code>agent</code> modes.</p>
       </a>
       <a class="docs-card" href="concepts.html">
-        <div class="docs-card-title"><span class="docs-card-num">3</span>Domain model</div>
+        <div class="docs-card-title">Domain model</div>
         <p>Sites, upstream pools, certificates, WAF policies, agents, telemetry, and the audit chain — what each one is and how they fit together.</p>
       </a>
+      <a class="docs-card" href="operations.html">
+        <div class="docs-card-title"><span class="docs-card-num">3</span>Operations guide</div>
+        <p>Publish an application, read exact counters and evidence, investigate incidents and campaigns, tune safely, and operate agents.</p>
+      </a>
+      <a class="docs-card" href="troubleshooting.html">
+        <div class="docs-card-title">Troubleshooting</div>
+        <p>Diagnose startup, login, routing, TLS, WAF, agent, and observation-pipeline problems from the outside in.</p>
+      </a>
       <a class="docs-card" href="cli.html">
-        <div class="docs-card-title"><span class="docs-card-num">4</span>CLI reference</div>
+        <div class="docs-card-title">CLI reference</div>
         <p>Every <code>tiyi</code> subcommand grouped by resource, with the flags that matter and the exit-code contract.</p>
       </a>
       <a class="docs-card" href="api.html">
-        <div class="docs-card-title"><span class="docs-card-num">5</span>API overview</div>
-        <p>The ConnectRPC contract that drives the UI, CLI, and agent stream. Auth, error codes, and the 14 services.</p>
+        <div class="docs-card-title">API overview</div>
+        <p>The ConnectRPC contract that drives the UI, CLI, and agent stream: authentication, errors, and the current service catalog.</p>
       </a>
       <a class="docs-card" href="deployment.html">
-        <div class="docs-card-title"><span class="docs-card-num">6</span>Deployment</div>
+        <div class="docs-card-title">Deployment</div>
         <p>Production hardening, HA failover with epoch fencing, SIEM egress, observability, and the upgrade path.</p>
       </a>
     </div>
@@ -130,7 +145,7 @@
     </div>
 
     <h2 id="versions">Versions covered</h2>
-    <p>These docs target <strong>v3.1.0</strong>, the current public release. Behaviour is frozen at this version; subsequent patch releases that change CLI flags, defaults, or output shape are tracked in the <a href="../changelog.html">changelog</a> and reflected here in the same patch. If a CLI command in these docs disagrees with the binary you're running, the binary is authoritative — please file an issue.</p>
+    <p>These docs target <strong>v3.2.0</strong>, the current public release. v3.2 uses a clean-state cutover for older development/test installations; see <a href="troubleshooting.html#v32-reset">the reset boundary</a>. Changes to CLI flags, defaults, or output shape are tracked in the <a href="../changelog.html">changelog</a> and reflected here in the same patch. If a command disagrees with the binary, the binary is authoritative.</p>
 
     <div class="docs-pager">
       <a href="../index.html">
@@ -154,7 +169,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.1.0 &middot; 2026-07-12</span>
+      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
     </div>
   </div>
 </footer>

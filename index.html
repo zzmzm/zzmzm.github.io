@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.1.0</span>
-    Task-oriented navigation + accessible admin workspaces
+    <span class="tag">v3.2.0</span>
+    Observation v2 + persistent attack campaigns
   </span>
 
   <h1>
@@ -293,7 +293,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
         </div>
         <h3>RBAC + OIDC</h3>
-        <p>JWT with refresh, Argon2id local accounts, OIDC SSO on the same login surface, and 52 fine-grained permissions wired through every API and CLI command.</p>
+        <p>JWT with refresh, Argon2id local accounts, OIDC SSO on the same login surface, and fine-grained permissions wired through every API and CLI command.</p>
       </div>
 
       <div class="feature reveal">
@@ -401,45 +401,45 @@
       </div>
     </div>
 
-    <!-- Tour 5: Agents -->
+    <!-- Tour 5: Security incidents -->
     <div class="tour-row reveal">
       <div class="tour-text">
-        <span class="tour-eyebrow">Agents</span>
-        <h3>Push + reconcile. Always converging.</h3>
-        <p>Every change writes SQLite, bumps a monotonic revision, and pushes a signed bundle down every open agent stream. Agents reconcile every 15&nbsp;s as a safety net. Updates are idempotent by revision — replay and reorder are free.</p>
+        <span class="tour-eyebrow">Security incidents</span>
+        <h3>Turn request noise into one investigation.</h3>
+        <p>Deterministic L2 aggregation groups findings by site, observed source, attack class, and idle window. The detail view keeps outcomes, rule hits, and retained-evidence coverage in one triage surface.</p>
         <ul>
-          <li>One-use enrollment tokens with 24-hour TTL</li>
-          <li>Pinned ed25519 bundle signing key, TOFU on first contact</li>
-          <li>Live CPU/memory/connection metrics, per-agent commands</li>
+          <li>Firing → cooled → acknowledged → closed lifecycle with live tail</li>
+          <li>Primary CRS rules, paths, finding timeline, and retained evidence</li>
+          <li>Alert and response handoffs without losing the source facts</li>
         </ul>
       </div>
       <div class="frame">
         <div class="frame-tabs">
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="url">/agents/all</span>
+          <span class="url">/logs/security-incidents</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/agents.png" data-shot="agents" alt="Agents list with one online standalone agent" width="1440" height="900" loading="lazy" />
+        <img src="assets/img/screenshots/en-dark/incidents.png" data-shot="incidents" alt="Security incident detail with rule hits and retained evidence coverage" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
-    <!-- Tour 6: Audit -->
+    <!-- Tour 6: Attack campaigns -->
     <div class="tour-row reveal">
       <div class="tour-text">
-        <span class="tour-eyebrow">Audit chain</span>
-        <h3>Tamper-evident by construction.</h3>
-        <p>Every mutation appends a hash-chained row attributed to the JWT subject. Daily anchor commitments and an in-UI <span class="mono">Verify chain</span> button make compliance practical, not theatrical.</p>
+        <span class="tour-eyebrow">Attack campaigns</span>
+        <h3>See the operation, not just the alerts.</h3>
+        <p>Persistent L3 campaigns correlate incidents into revisioned attack activity with deterministic support, risk and confidence, source/target views, attack chain, and MITRE behavior — without treating an observed network exit as attacker identity.</p>
         <ul>
-          <li>Site, policy, IP list, rate limit, trust profile — all chained</li>
-          <li>Server-side SIEM egress with optional <span class="mono">audit</span> include</li>
-          <li>Diff drawer on row click — see exactly what changed</li>
+          <li>Validated candidates across rotating sources and shared targets</li>
+          <li>Fact, retained-evidence, and SIEM coverage shown independently</li>
+          <li>Audited confirm, dismiss, merge, split, and close workflow</li>
         </ul>
       </div>
       <div class="frame">
         <div class="frame-tabs">
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="url">/logs/audit</span>
+          <span class="url">/logs/security-campaigns</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/audit.png" data-shot="audit" alt="Audit log with hash-chained mutation rows" width="1440" height="900" loading="lazy" />
+        <img src="assets/img/screenshots/en-dark/campaigns.png" data-shot="campaigns" alt="Attack campaign detail with risk, confidence, fact coverage, and MITRE views" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
@@ -581,6 +581,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.2.0</span>
+          <span class="tl-date">2026-07-16</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Observation v2 + persistent attack campaigns</div>
+        <div class="tl-body">
+          Exact hot-path counters, compact Findings, retained evidence, and SIEM delivery are now independent. Persistent Attack Campaigns correlate incidents into revisioned evidence graphs and timelines with deterministic source/target, Geo/ASN, and MITRE projections. Telemetry Explorer adds API Inventory, alerts become localized and evidence-linked, and all operator docs/screenshots now cover the new workflows. Pre-v3.2 development/test state requires an explicit clean reset and agent re-enrollment.
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -880,13 +893,13 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.1.0</span>
-          <span class="tl-date">2026-07-12</span>
+          <span class="tl-version">v3.2.0</span>
+          <span class="tl-date">2026-07-16</span>
           <span class="tl-tag shipped">Shipped</span>
         </div>
-        <div class="tl-title">Task-oriented administration experience</div>
+        <div class="tl-title">Observation v2 + attack-campaign operations</div>
         <div class="tl-body">
-          Seven stable task groups, responsive shell behavior, keyboard-accessible menus, and consistent operator workspaces shipped in v3.1.0. Route URLs and RBAC contracts remain unchanged.
+          Exact request truth is isolated from retained evidence and SIEM delivery; incidents now roll into persistent, revisioned Attack Campaigns; API Inventory and evidence-linked localized alerts complete the investigation workflow. Task-based EN/zh operations and troubleshooting docs ship with the feature.
         </div>
       </div>
 
@@ -906,7 +919,7 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.2</span>
+          <span class="tl-version">v3.3</span>
           <span class="tl-date">Q1 2027 · target</span>
           <span class="tl-tag future">Planned</span>
         </div>
@@ -919,7 +932,7 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.3</span>
+          <span class="tl-version">v3.4</span>
           <span class="tl-date">Q2 2027 · target</span>
           <span class="tl-tag future">Planned</span>
         </div>
@@ -1006,7 +1019,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.1.0 · 2026-07-12</span>
+      <span class="build">build v3.2.0 · 2026-07-16</span>
     </div>
   </div>
 </footer>

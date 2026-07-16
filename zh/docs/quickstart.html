@@ -51,6 +51,13 @@
       </ul>
     </div>
     <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
       <h4>核心概念</h4>
       <ul><li><a href="concepts.html">领域模型</a></li></ul>
     </div>
@@ -76,7 +83,7 @@
     <ul>
       <li><strong>Linux</strong>（amd64 或 arm64）或 macOS 用于开发。Windows 不是目标主机。</li>
       <li>从源码构建需要 <strong>Go 1.25+</strong>。</li>
-      <li>重新构建嵌入式管理 UI 需要 <strong>Node 20+</strong> 与 <strong>pnpm 9+</strong>。</li>
+      <li>重新构建嵌入式管理 UI 需要 <strong>Node 20.19+</strong> 与 <strong>pnpm 10+</strong>。</li>
       <li>一个空闲的后端 —— 任何会说 HTTP 的都行。下方示例用 Python 的 <code>http.server</code>。</li>
     </ul>
 
@@ -110,20 +117,20 @@
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 
     <p>太一会打印一行包含 API 地址、引导管理员密码（仅首次启动显示一次）与 Caddy 管理 socket 路径的 banner：</p>
-<pre><code><span class="c">tiyi v3.1.0 standalone</span>
+<pre><code><span class="c">tiyi v3.2.0 standalone</span>
 <span class="c">  api      http://127.0.0.1:8080</span>
 <span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
 <span class="c">  state    /tmp/tiyi.db</span>
 <span class="c">  bootstrap admin password: <span class="v">&lt;random-shown-once&gt;</span></span></code></pre>
 
-    <p>浏览器打开 <code>http://127.0.0.1:8080/</code>，用 <code>admin</code> 与上面的密码登录。控制台会进入<strong>运行态势 → 总览</strong>。七个稳定工作域为运行态势、应用交付、防护策略、节点集群、事件与日志、检测与响应、系统管理；权限过滤会隐藏空分组，但不会改变深链地址。</p>
+    <p>浏览器打开 <code>http://127.0.0.1:8080/</code>，用 <code>admin</code> 与上面的密码登录。控制台会进入<strong>总览</strong>。稳定任务区为总览、应用交付、防护策略、节点集群、事件与日志、检测与响应、监控、系统管理；权限过滤会隐藏空分组，但不会改变深链地址。</p>
 
     <div class="callout callout-warn">
       <div class="callout-icon">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </div>
       <div class="callout-body">
-        <p><strong>引导密码只显示一次。</strong>刷新前先从终端复制下来。丢了？停掉二进制、删除 <code>state.db</code>、再次启动 —— 太一会重新引导。</p>
+        <p><strong>引导密码只显示一次。</strong>请从终端复制。若丢失，不要删除 <code>state.db</code>：在太一主机通过本地管理 socket 运行 <code>tiyi user list</code>，再运行 <code>tiyi user reset-password &lt;user-id&gt; --password &lt;new&gt;</code>。</p>
       </div>
     </div>
 
@@ -152,10 +159,9 @@
     --upstream-url http://127.0.0.1:9000 <span class="o">\</span>
     --tls none
 
-<span class="c"># 2. 启用 —— 触发实时 Caddy apply</span>
-<span class="p">$</span> ./bin/tiyi site enable demo</code></pre>
+<span class="c"># 创建后站点立即生效。</span></code></pre>
 
-    <p>写入器把站点行翻译成 Caddy JSON、通过其管理 socket 热重载 Caddy，并发出一行已签名的配置 bundle。任何失败都会保留旧配置并恢复站点行。</p>
+    <p>一步式路径会创建上游池、使用内置 Standard 策略、把站点翻译成 Caddy JSON，并通过管理 socket 热重载 Caddy。任何失败都会保留旧配置并恢复站点行。</p>
 
     <h2 id="verify">5. 验证 WAF 拦截攻击</h2>
     <p>在第三个终端，向代理端口发出一次基线请求与三个经典攻击：</p>
@@ -209,7 +215,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.1.0 &middot; 2026-07-12</span>
+      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
     </div>
   </div>
 </footer>

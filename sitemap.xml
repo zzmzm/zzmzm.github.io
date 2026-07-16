@@ -14,6 +14,8 @@
   <url><loc>https://www.tiyisec.com/docs/</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.tiyisec.com/docs/quickstart.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.tiyisec.com/docs/installation.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.tiyisec.com/docs/operations.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.tiyisec.com/docs/troubleshooting.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.tiyisec.com/docs/concepts.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.tiyisec.com/docs/cli.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.tiyisec.com/docs/api.html</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
@@ -31,6 +33,8 @@
   <url><loc>https://www.tiyisec.com/zh/docs/</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.tiyisec.com/zh/docs/quickstart.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.tiyisec.com/zh/docs/installation.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.tiyisec.com/zh/docs/operations.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.tiyisec.com/zh/docs/troubleshooting.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.tiyisec.com/zh/docs/concepts.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://www.tiyisec.com/zh/docs/cli.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://www.tiyisec.com/zh/docs/api.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>

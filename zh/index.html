@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.1.0</span>
-    任务导向导航 + 无障碍管理工作区
+    <span class="tag">v3.2.0</span>
+    Observation v2 + 持久化 Attack Campaign
   </span>
 
   <h1>
@@ -281,7 +281,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
         </div>
         <h3>RBAC + OIDC</h3>
-        <p>JWT 带刷新、本地账号 Argon2id、OIDC 单点登录共用同一登录界面，52 个细粒度权限贯穿每一个 API 与 CLI 命令。</p>
+        <p>JWT 带刷新、本地账号 Argon2id、OIDC 单点登录共用同一登录界面，细粒度权限贯穿每一个 API 与 CLI 命令。</p>
       </div>
 
       <div class="feature reveal">
@@ -388,45 +388,45 @@
       </div>
     </div>
 
-    <!-- Tour 5: Agents -->
+    <!-- Tour 5: Security incidents -->
     <div class="tour-row reveal">
       <div class="tour-text">
-        <span class="tour-eyebrow">节点</span>
-        <h3>推送 + 协调。始终收敛。</h3>
-        <p>每一次变更都会写入 SQLite、自增单调版本号，并把签名 bundle 推送到每一个开放的节点流。节点每 15 s 协调一次作为兜底。更新按版本号幂等 —— 重放与乱序都安全。</p>
+        <span class="tour-eyebrow">安全事件</span>
+        <h3>把请求噪声收敛成一个调查对象。</h3>
+        <p>确定性的 L2 聚合按站点、观测来源、攻击类型与空闲窗口归并安全发现。详情把拦截 / 放行结果、规则命中与本地保留证据覆盖放在同一个研判面板中。</p>
         <ul>
-          <li>一次性入网 token，TTL 24 小时</li>
-          <li>固定的 ed25519 bundle 签名公钥，首次连接 TOFU</li>
-          <li>实时的 CPU / 内存 / 连接数指标，按节点下发命令</li>
+          <li>活跃 → 冷却 → 已确认 → 已关闭生命周期与实时追踪</li>
+          <li>主要 CRS 规则、路径、关联 Finding 与保留证据</li>
+          <li>告警与响应联动不丢失任何来源事实</li>
         </ul>
       </div>
       <div class="frame">
         <div class="frame-tabs">
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="url">/agents/all</span>
+          <span class="url">/logs/security-incidents</span>
         </div>
-        <img src="../assets/img/screenshots/zh-dark/agents.png" data-shot="agents" alt="节点列表：一台在线的单机节点" width="1440" height="900" loading="lazy" />
+        <img src="../assets/img/screenshots/zh-dark/incidents.png" data-shot="incidents" alt="安全事件详情：规则命中与本地保留证据覆盖" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
-    <!-- Tour 6: Audit -->
+    <!-- Tour 6: Attack campaigns -->
     <div class="tour-row reveal">
       <div class="tour-text">
-        <span class="tour-eyebrow">审计链</span>
-        <h3>由架构保证防篡改。</h3>
-        <p>每一次变更都追加一行哈希链记录，归属到 JWT subject。每日锚点提交与 UI 上的<span class="mono">校验链</span>按钮，让合规变成日常操作而非纸面要求。</p>
+        <span class="tour-eyebrow">攻击活动</span>
+        <h3>看清一次攻击活动，而不是只看一堆告警。</h3>
+        <p>持久化 L3 Campaign 把事件关联成可修订的攻击活动，呈现确定性支撑、风险与置信度、来源 / 目标、攻击链和 MITRE 行为，同时不会把观测到的网络出口误说成攻击者身份。</p>
         <ul>
-          <li>站点、策略、IP 列表、限速、信任配置 —— 全部上链</li>
-          <li>服务器侧 SIEM 转发可选包含 <span class="mono">audit</span></li>
-          <li>点击行打开 diff 抽屉 —— 看到具体改了什么</li>
+          <li>跨轮换来源与共享目标形成已验证候选</li>
+          <li>事实、本地保留证据与 SIEM 覆盖分别呈现</li>
+          <li>确认、排除、合并、拆分与关闭全程留痕</li>
         </ul>
       </div>
       <div class="frame">
         <div class="frame-tabs">
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="url">/logs/audit</span>
+          <span class="url">/logs/security-campaigns</span>
         </div>
-        <img src="../assets/img/screenshots/zh-dark/audit.png" data-shot="audit" alt="审计日志：哈希链上的变更记录" width="1440" height="900" loading="lazy" />
+        <img src="../assets/img/screenshots/zh-dark/campaigns.png" data-shot="campaigns" alt="攻击活动详情：风险、置信度、事实覆盖与 MITRE 视图" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
@@ -568,6 +568,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.2.0</span>
+          <span class="tl-date">2026-07-16</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">Observation v2 + 持久化 Attack Campaign</div>
+        <div class="tl-body">
+          数据面精确计数、紧凑 Finding、保留证据与 SIEM 投递彼此独立。持久化 Attack Campaign 把 Incident 关联成带 revision 的证据图和时间线，并提供确定性来源/目标、Geo/ASN 与 MITRE 投影。遥测探索器新增 API Inventory，告警完成本地化和证据链接，所有运维文档与截图同步覆盖新流程。pre-v3.2 开发/测试状态需要显式干净重置并重新注册 Agent。
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -867,13 +880,13 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.1.0</span>
-          <span class="tl-date">2026-07-12</span>
+          <span class="tl-version">v3.2.0</span>
+          <span class="tl-date">2026-07-16</span>
           <span class="tl-tag shipped">已发布</span>
         </div>
-        <div class="tl-title">任务导向管理体验</div>
+        <div class="tl-title">Observation v2 + Attack Campaign 运维</div>
         <div class="tl-body">
-          v3.1.0 已交付七个稳定任务域、响应式应用壳、键盘可访问菜单和一致的运维工作区；路由 URL 与 RBAC 契约保持不变。
+          精确请求真相与保留证据、SIEM 投递相互隔离；Incident 可聚合为持久化、带 revision 的 Attack Campaign；API Inventory 与证据链接的本地化告警补齐调查闭环，并同步交付中英任务型运维和排障文档。
         </div>
       </div>
 
@@ -893,7 +906,7 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.2</span>
+          <span class="tl-version">v3.3</span>
           <span class="tl-date">2027 Q1 · 目标</span>
           <span class="tl-tag future">规划中</span>
         </div>
@@ -906,7 +919,7 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.3</span>
+          <span class="tl-version">v3.4</span>
           <span class="tl-date">2027 Q2 · 目标</span>
           <span class="tl-tag future">规划中</span>
         </div>
@@ -993,7 +1006,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.1.0 · 2026-07-12</span>
+      <span class="build">build v3.2.0 · 2026-07-16</span>
     </div>
   </div>
 </footer>

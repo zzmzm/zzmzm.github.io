@@ -52,6 +52,13 @@
       </ul>
     </div>
     <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
       <h4>Concepts</h4>
       <ul>
         <li><a href="concepts.html">Domain model</a></li>
@@ -81,7 +88,7 @@
     <ul>
       <li><strong>Linux</strong> (amd64 or arm64) or macOS for development. Windows is not a target host.</li>
       <li><strong>Go 1.25+</strong> if you're building from source.</li>
-      <li><strong>Node 20+</strong> and <strong>pnpm 9+</strong> if you're rebuilding the embedded admin UI.</li>
+      <li><strong>Node 20.19+</strong> and <strong>pnpm 10+</strong> if you're rebuilding the embedded admin UI.</li>
       <li>A spare backend you can put behind Tiyi — anything that speaks HTTP. The examples below use a Python <code>http.server</code>.</li>
     </ul>
 
@@ -115,20 +122,20 @@
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 
     <p>Tiyi prints a banner with the API URL, the bootstrap admin password (printed once on first run), and the Caddy admin socket path:</p>
-<pre><code><span class="c">tiyi v3.1.0 standalone</span>
+<pre><code><span class="c">tiyi v3.2.0 standalone</span>
 <span class="c">  api      http://127.0.0.1:8080</span>
 <span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
 <span class="c">  state    /tmp/tiyi.db</span>
 <span class="c">  bootstrap admin password: <span class="v">&lt;random-shown-once&gt;</span></span></code></pre>
 
-    <p>Open <code>http://127.0.0.1:8080/</code> in a browser. Log in as <code>admin</code> with the password above. The console opens at <strong>Operations → Overview</strong>. Its seven stable work areas are Operations, Application Delivery, Protection, Fleet, Events &amp; Logs, Detection &amp; Response, and Administration; permission filtering hides empty groups without changing deep links.</p>
+    <p>Open <code>http://127.0.0.1:8080/</code> in a browser. Log in as <code>admin</code> with the password above. The console opens at <strong>Overview</strong>. Its stable task areas are Overview, Application Delivery, Protection, Fleet, Events &amp; Logs, Detection &amp; Response, Monitoring, and Administration; permission filtering hides empty groups without changing deep links.</p>
 
     <div class="callout callout-warn">
       <div class="callout-icon">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </div>
       <div class="callout-body">
-        <p><strong>The bootstrap password is shown exactly once.</strong> Copy it from the terminal before reloading. Lost it? Stop the binary, remove <code>state.db</code>, and start again — Tiyi will rebootstrap.</p>
+        <p><strong>The bootstrap password is shown exactly once.</strong> Copy it from the terminal. If it is lost, do not delete <code>state.db</code>: on the Tiyi host run <code>tiyi user list</code>, then <code>tiyi user reset-password &lt;user-id&gt; --password &lt;new&gt;</code> over the local admin socket.</p>
       </div>
     </div>
 
@@ -157,10 +164,9 @@
     --upstream-url http://127.0.0.1:9000 <span class="o">\</span>
     --tls none
 
-<span class="c"># 2. Enable it — this triggers the live Caddy apply</span>
-<span class="p">$</span> ./bin/tiyi site enable demo</code></pre>
+<span class="c"># The site is active immediately after create.</span></code></pre>
 
-    <p>The applier translates the site row into Caddy JSON, hot-reloads Caddy through its admin socket, and emits a signed config-bundle row. If anything fails, the previous config stays active and the site row is restored.</p>
+    <p>The one-step path creates an upstream pool, uses the built-in Standard policy, translates the site into Caddy JSON, and hot-reloads Caddy through its admin socket. If anything fails, the previous config stays active and the site row is restored.</p>
 
     <h2 id="verify">5. Verify the WAF blocks attacks</h2>
     <p>From a third terminal, send a baseline request and three classic attacks against the proxy port:</p>
@@ -214,7 +220,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.1.0 &middot; 2026-07-12</span>
+      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
     </div>
   </div>
 </footer>

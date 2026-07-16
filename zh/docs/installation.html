@@ -50,6 +50,7 @@
         <li><a href="installation.html">安装</a></li>
       </ul>
     </div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -59,6 +60,8 @@
     <span class="docs-eyebrow">开始使用</span>
     <h1>安装</h1>
     <p class="lede">太一是一个 Go 二进制。挑一种构建路径、把二进制放到主机、写一份小 YAML 配置，并按主机在集群中扮演的角色挑一个运行模式。</p>
+
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>v3.2 干净状态边界。</strong> Observation v2 会拒绝 pre-v3.2 开发/测试数据库、Agent 身份与缓存 bundle。保留源清单和必要密钥，把旧测试状态移走，以干净状态启动并重新注册 Agent；不要复制 v3.1 数据库。</p></div></div>
 
     <h2 id="from-source">从源码构建</h2>
     <p>从一份新的太一仓库 checkout：</p>
@@ -70,7 +73,7 @@
     <p>构建依赖：</p>
     <ul>
       <li><strong>Go 1.25+</strong> —— 模块下限。基于 <code>modernc.org/sqlite</code> 的纯 Go SQLite 意味着没有 CGo，可以干净跨平台编译。</li>
-      <li><strong>Node 20+ 与 pnpm 9+</strong> —— 用于 <code>make web</code>。下次 <code>make build</code> 时会经由 <code>go:embed</code> 嵌入产物。</li>
+      <li><strong>Node 20.19+ 与 pnpm 10+</strong> —— 用于 <code>make web</code>。下次 <code>make build</code> 时会经由 <code>go:embed</code> 嵌入产物。</li>
       <li><strong>buf</strong> —— 已捆绑在 <code>tmp/buf/bin/buf</code>，用于重新生成 proto。改完 <code>proto/tiyi/v1/*.proto</code> 后跑 <code>make proto</code> 刷新生成的 Connect/PB Go。</li>
     </ul>
 
@@ -78,10 +81,10 @@
     <p>太一是单一签名二进制 —— 在单节点上免费且功能完整。权威安装脚本发布在 <code>https://www.tiyisec.com/install.sh</code>：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.1.0 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.2.0 linux/amd64</span></code></pre>
     <p>脚本会下载与平台匹配的二进制，比对 SHA-256 manifest，并放到 <code>/usr/local/bin/tiyi</code>。默认先尝试 GitHub，失败或过慢时回退到 Gitee Release 镜像；必要时可用 <code>TIYI_MIRROR=gitee</code> 强制使用 Gitee：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.1.0</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
+    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.2.0</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
     <p>公开分发仓库：<a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> 与 <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>。</p>
     <p><code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。</p>
 
@@ -246,7 +249,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.1.0 &middot; 2026-07-12</span>
+      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
     </div>
   </div>
 </footer>

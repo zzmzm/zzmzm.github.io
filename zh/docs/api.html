@@ -43,6 +43,7 @@
 
   <aside class="docs-sidebar" aria-label="文档导航">
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -96,7 +97,7 @@
   <span class="s">"user"</span>: { <span class="s">"id"</span>: <span class="s">"&lt;uuid&gt;"</span>, <span class="s">"role"</span>: <span class="s">"Administrator"</span> }
 }</code></pre>
 
-    <h2 id="services">14 个服务</h2>
+    <h2 id="services">26 个服务</h2>
     <table>
       <thead>
         <tr><th>服务</th><th>范围</th></tr>
@@ -104,18 +105,30 @@
       <tbody>
         <tr><td><code>SystemService</code></td><td>健康、版本、Dashboard 汇总、设置、发布、复制、提主/降级。</td></tr>
         <tr><td><code>AuthService</code></td><td>登录、登出、刷新、当前用户、OIDC 重定向、access code。</td></tr>
+        <tr><td><code>MenuService</code></td><td>按权限过滤管理界面导航。</td></tr>
         <tr><td><code>UserService</code></td><td>用户 CRUD、锁定/解锁、密码重置。</td></tr>
         <tr><td><code>RoleService</code></td><td>角色 + 权限查询。RBAC 表内置。</td></tr>
         <tr><td><code>SiteService</code></td><td>站点 CRUD、启用/停用、预览、按站点策略覆盖。</td></tr>
         <tr><td><code>UpstreamService</code></td><td>上游池 CRUD；引用中拒绝删除。</td></tr>
         <tr><td><code>CertService</code></td><td>上传、ACME 签发/续期、DNS provider CRUD。</td></tr>
         <tr><td><code>PolicyService</code></td><td>WAF 策略 CRUD、按层更新、版本快照、SecLang 预览、测试台。</td></tr>
-        <tr><td><code>RuleOverrideService</code></td><td>按规则覆盖、自定义规则、IP 列表、限速端点。</td></tr>
+        <tr><td><code>RuleOverrideService</code></td><td>按规则 CRS 行为与范围化覆盖生命周期。</td></tr>
+        <tr><td><code>CustomRuleService</code></td><td>自定义 SecLang 与可视化规则生命周期。</td></tr>
+        <tr><td><code>IpListService</code></td><td>可复用 IP 数据、分层绑定、查询与优先级。</td></tr>
+        <tr><td><code>RateLimitService</code></td><td>端点与客户端范围限速资源。</td></tr>
         <tr><td><code>CrsService</code></td><td>CRS 目录浏览 + 导入 + 排除包安装/挂载。</td></tr>
-        <tr><td><code>AgentService</code></td><td>节点 CRUD、入网 token、安装脚本、命令、节点组、<code>AgentStream</code>。</td></tr>
+        <tr><td><code>AgentService</code></td><td>节点 CRUD、注册 token、安装脚本、命令、revision 与 apply 结果。</td></tr>
+        <tr><td><code>AgentGroupService</code></td><td>稳定标签/显式 Agent 目标与匹配预览。</td></tr>
+        <tr><td><code>AgentStreamService</code></td><td>带鉴权的双向 bundle、状态、事件、命令与 challenge 传输。</td></tr>
         <tr><td><code>TrustService</code></td><td>客户端 IP 信任配置（租户 + 站点覆盖）、CDN 快照列表/刷新、explain。</td></tr>
         <tr><td><code>AlertService</code></td><td>告警规则 + 通道 CRUD、活动告警 ack/resolve、通道发送测试。</td></tr>
-        <tr><td><code>LogService</code></td><td>安全/访问/错误/审计查询、获取、导出、实时跟踪。</td></tr>
+        <tr><td><code>LogService</code></td><td>Observation-v2 精确计数、保留证据/明细、导出、API Inventory 与实时流。</td></tr>
+        <tr><td><code>AuditService</code></td><td>防篡改审计查询、状态与链校验。</td></tr>
+        <tr><td><code>IncidentService</code></td><td>Finding 成员、Incident 生命周期、备注、汇总与流。</td></tr>
+        <tr><td><code>IncidentResponseRuleService</code></td><td>默认关闭的响应自动化规则与审计执行。</td></tr>
+        <tr><td><code>CampaignService</code></td><td>持久化 Attack Campaign、revision、图/时间线与冲突安全的处置。</td></tr>
+        <tr><td><code>MitreMappingService</code></td><td>确定性 ATT&amp;CK tactic/technique 投影。</td></tr>
+        <tr><td><code>AIService</code></td><td>可选且默认关闭的 enrichment、类型化建议、Copilot 分析与 Chat。</td></tr>
       </tbody>
     </table>
 
@@ -136,7 +149,7 @@
     </table>
 
     <h2 id="rbac">RBAC</h2>
-    <p>每一个 RPC 声明一个权限要求，例如 <code>site:read</code>、<code>policy:write</code>、<code>log:read</code>、<code>system:write</code>。中间件把 JWT subject 的角色与权限表比对；权威映射在 <code>internal/api/middleware.go</code>。v3.0.4 中有 52 个细粒度权限。</p>
+    <p>每一个 RPC 声明一个权限要求，例如 <code>site:read</code>、<code>policy:write</code>、<code>log:read</code> 或 <code>system:write</code>。中间件把 JWT subject 的角色与权限表比对；权威映射在 <code>internal/api/middleware.go</code>。请通过 <code>tiyi role</code> 或角色页面查看当前权限目录，不依赖容易过期的固定数量。</p>
 
     <h2 id="streaming">流式 RPC</h2>
     <ul>
@@ -145,6 +158,7 @@
       <li><strong><code>AgentService.StreamAgentEvents</code></strong> —— 服务端流。实时节点状态（在线/下线、指标）。</li>
       <li><strong><code>LogService.TailSecurityEvents</code></strong> —— 服务端流。实时跟踪页的实时安全日志流。</li>
       <li><strong><code>SystemService.StreamUpgradeRun</code></strong> —— 服务端流。按节点的升级运行进度事件。</li>
+      <li><strong><code>CampaignService.TailCampaigns</code></strong> —— 服务端流。为 SOC 处置推送持久化 Campaign 生命周期 revision。</li>
     </ul>
 
     <h2 id="canonical-spec">生成式 schema</h2>
@@ -171,7 +185,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.1.0 &middot; 2026-07-12</span>
+      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
     </div>
   </div>
 </footer>

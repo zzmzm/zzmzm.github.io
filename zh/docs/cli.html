@@ -43,6 +43,7 @@
 
   <aside class="docs-sidebar" aria-label="文档导航">
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -115,7 +116,7 @@ tiyi upstream delete <span class="v">&lt;id&gt;</span>      <span class="c"># �
 <pre><code>tiyi cert list
 tiyi cert get <span class="v">&lt;id&gt;</span>
 tiyi cert upload --name <span class="v">N</span> --cert <span class="v">FILE</span> --key <span class="v">FILE</span>
-tiyi cert issue --domain <span class="v">D</span> --email <span class="v">E</span> [--challenge http-01|dns-01] [--directory <span class="v">URL</span>]
+tiyi cert issue --domain <span class="v">D</span> --email <span class="v">E</span> [--challenge-type http-01|dns-01] [--acme-issuer letsencrypt|letsencrypt-staging|custom] [--directory-url <span class="v">URL</span>]
 tiyi cert renew <span class="v">&lt;id&gt;</span>
 tiyi cert delete <span class="v">&lt;id&gt;</span>
 tiyi cert dns-provider drivers
@@ -179,12 +180,11 @@ tiyi agent-group resolve <span class="v">&lt;id&gt;</span></code></pre>
 
     <h2 id="trust">信任配置</h2>
 <pre><code>tiyi trust show
-tiyi trust set --trusted-proxies 10.0.0.0/8,172.16.0.0/12 --client-ip-headers X-Forwarded-For
+tiyi trust set --proxy 10.0.0.0/8 --proxy 172.16.0.0/12 --header X-Forwarded-For
+tiyi trust set --cdn cloudflare --header CF-Connecting-IP --header X-Forwarded-For
 tiyi trust reset
 tiyi trust test --peer 10.0.0.5 --header <span class="s">"X-Forwarded-For: 1.2.3.4"</span>
-tiyi trust status
-tiyi trust cdn list
-tiyi trust cdn refresh cloudflare</code></pre>
+tiyi trust refresh cloudflare</code></pre>
 
     <h2 id="alerts">告警</h2>
 <pre><code>tiyi alert active list
@@ -202,13 +202,18 @@ tiyi log security get <span class="v">&lt;event-id&gt;</span>
 tiyi log security export --format ndjson --output <span class="v">F</span>
 tiyi log access  list [...过滤器]
 tiyi log error   list [...过滤器]
-tiyi log audit   list [...过滤器]
 tiyi log tail-security                       <span class="c"># 实时流</span></code></pre>
+
+    <h2 id="incidents-campaigns">Incident 与 Attack Campaign</h2>
+<pre><code>tiyi incident list|get|findings|ack|close ...
+tiyi campaign list|get|revisions|confirm|ack|close|dismiss ...
+tiyi campaign refresh [<span class="v">id</span>]
+tiyi campaign merge|split ...</code></pre>
 
     <h2 id="audit-cli">审计链</h2>
 <pre><code>tiyi audit list [--actor <span class="v">UUID</span>] [--action <span class="v">prefix</span>] [--from <span class="v">T</span>] [--to <span class="v">T</span>]
 tiyi audit get <span class="v">&lt;id&gt;</span>
-tiyi audit verify-chain                      <span class="c"># 走完整条链并报告每一段</span></code></pre>
+tiyi audit verify                            <span class="c"># 走完整条链并报告每一段</span></code></pre>
 
     <h2 id="system">系统</h2>
 <pre><code>tiyi system stats
@@ -216,11 +221,12 @@ tiyi system traffic --window 1h
 tiyi system attack-distribution --window 1h
 tiyi system top-attackers --window 1h
 tiyi system settings get
-tiyi system settings update --key siem.filter.include_audit --value true
-tiyi system settings update --key telemetry.enabled --value true</code></pre>
+tiyi system settings update --set siem.enabled=true
+tiyi system settings update --set siem.endpoint=tcp://siem.internal:514 --set siem.filter.include_audit=true</code></pre>
+    <p>日志与证据策略是带 revision CAS 的 LogService 资源，请在<strong>系统管理 → 设置 → 日志与证据</strong>管理；旧 <code>telemetry.*</code>、<code>logsink.*</code>、<code>log_mode.*</code> 与 <code>log_retention</code> 设置会被拒绝。</p>
 
     <h2 id="release-mgmt">发布（滚动节点升级）</h2>
-<pre><code>tiyi release import --tarball ./tiyi_v3.1.0_linux_amd64.tar.gz
+<pre><code>tiyi release import --tarball ./tiyi_v3.2.0_linux_amd64.tar.gz
 tiyi release list
 tiyi release apply <span class="v">&lt;release-id&gt;</span>           <span class="c"># 把 APPLY_BINARY 散到所有匹配的节点</span>
 tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span> --agent-id <span class="v">B</span>
@@ -232,8 +238,8 @@ tiyi release check-updates</code></pre>
 
     <h2 id="users-roles">用户与角色</h2>
 <pre><code>tiyi user list
-tiyi user create --username <span class="v">U</span> --role <span class="v">R</span>
-tiyi user reset-password <span class="v">&lt;id&gt;</span>
+tiyi user create --username <span class="v">U</span> --password <span class="v">P</span> --role-id <span class="v">R</span>
+tiyi user reset-password <span class="v">&lt;id&gt;</span> --password <span class="v">P</span>
 tiyi user lock <span class="v">&lt;id&gt;</span>
 tiyi user unlock <span class="v">&lt;id&gt;</span>
 tiyi role list
@@ -272,7 +278,7 @@ tiyi promote --force             <span class="c"># 跳过 demote;接受有界数
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.1.0 &middot; 2026-07-12</span>
+      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
     </div>
   </div>
 </footer>

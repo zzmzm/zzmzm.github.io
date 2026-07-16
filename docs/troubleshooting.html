@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Troubleshooting — Tiyi docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Diagnose Tiyi startup, login, routing, WAF, TLS, agent, and observation pipeline problems." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" /><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" /><link rel="stylesheet" href="../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+<body class="docs" data-assets-base="../assets/img/"><div class="bg-field" aria-hidden="true"></div>
+<header class="nav"><div class="container nav-inner"><a class="brand" href="../index.html"><img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" /><span>Tiyi</span></a><nav class="nav-links" aria-label="Primary"><a href="../index.html#features">Features</a><a href="../index.html#tour">Product</a><a href="../index.html#pricing">Pricing</a><a href="index.html" style="color:var(--fg)">Docs</a><a href="../changelog.html">Changelog</a><button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button><a class="nav-toggle nav-lang" href="../zh/docs/troubleshooting.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a><a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a></nav></div></header>
+<div class="docs-layout">
+  <aside class="docs-sidebar" aria-label="Docs navigation"><div class="docs-nav-group"><h4>Get started</h4><ul><li><a href="index.html">Overview</a></li><li><a href="quickstart.html">Quickstart</a></li><li><a href="installation.html">Installation</a></li></ul></div><div class="docs-nav-group"><h4>Operate</h4><ul><li><a href="operations.html">Operations guide</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li></ul></div><div class="docs-nav-group"><h4>Concepts</h4><ul><li><a href="concepts.html">Domain model</a></li></ul></div><div class="docs-nav-group"><h4>Reference</h4><ul><li><a href="cli.html">CLI reference</a></li><li><a href="api.html">API overview</a></li></ul></div><div class="docs-nav-group"><h4>Run in production</h4><ul><li><a href="deployment.html">Deployment</a></li></ul></div></aside>
+  <main class="docs-content" role="main">
+    <span class="docs-eyebrow">Operate</span><h1>Troubleshooting</h1>
+    <p class="lede">Diagnose from the outside in: process, listener, site match, route, WAF, then upstream. Change one layer at a time and retain the failing request ID.</p>
+
+    <h2 id="first-five">First five minutes</h2>
+<pre><code>tiyi doctor
+systemctl status tiyi --no-pager
+journalctl -u tiyi -n 200 --no-pager
+ss -ltnp
+tiyi system health</code></pre>
+    <p>For an agent, inspect the <code>tiyi-agent</code> unit. For a foreground development run, inspect its terminal and command-line paths.</p>
+
+    <h2 id="dashboard">Dashboard does not open</h2>
+    <ul><li>Confirm the configured <code>server.addr</code> and host firewall.</li><li>Ports 80/443 serve proxy traffic; the dashboard listener defaults to 8080.</li><li>Run <code>tiyi doctor</code> for conflicts and config errors.</li><li>For reported service state ownership, review the path then run <code>sudo tiyi doctor --fix-state-ownership</code>.</li></ul>
+
+    <h2 id="password">Bootstrap password was lost</h2>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>Do not delete <code>state.db</code>.</strong> Reset the existing account through the local admin socket; its filesystem permissions are the authentication boundary.</p></div></div>
+<pre><code>sudo tiyi user list
+sudo tiyi user reset-password <span class="v">&lt;user-id&gt;</span> --password <span class="s">'&lt;new-strong-password&gt;'</span></code></pre>
+
+    <h2 id="routing">Request misses the site or wrong upstream answers</h2>
+<pre><code>curl -v -H <span class="s">'Host: app.example.com'</span> http://127.0.0.1/
+tiyi site list
+tiyi upstream list</code></pre>
+    <p>Check Host normalization, listener, site enabled state, longest-prefix route, upstream scheme/port, and health probe. A browser request to an IP without the configured Host is not a valid site test.</p>
+
+    <h2 id="waf">Expected attack is not blocked</h2>
+    <ul><li>Confirm the request reached the intended site and WAF is enabled.</li><li>Inspect effective policy, engine state, paranoia level, thresholds, bypasses, IP-list precedence, and path overrides.</li><li>Search Findings/Security evidence by request ID and rule ID.</li><li>Test from an untrusted source; a global/site allow or bypass may be decisive.</li><li>Preview compiled policy before changing it.</li></ul>
+
+    <h2 id="tls">TLS or ACME fails</h2>
+    <p>Check DNS, public reachability, port 80 for HTTP-01, certificate binding, clock, and ACME order details. DNS-01 needs a supported provider and correctly scoped credentials. Never include provider secrets in an issue or support bundle.</p>
+
+    <h2 id="agent">Agent is offline or will not apply</h2>
+    <ul><li>Compare server URL, enrollment expiry, clock, DNS, and network path.</li><li>Read server and agent journals around the same timestamp.</li><li>Distinguish offline, identity/protocol rejection, signature failure, and apply failure.</li><li>After reconnect, confirm applied revision/hash, not only online state.</li></ul>
+
+    <h2 id="v32-reset">v3.2 rejects old state</h2>
+    <p>Observation v2 intentionally rejects pre-v3.2 databases, agent identity markers, and cached bundles. The project has no supported production upgrade population yet: preserve source manifests and required secrets, move the old development/test state aside, start v3.2 with a clean state, then re-enroll agents. Do not copy the old database back.</p>
+
+    <h2 id="pipeline">Counters exist but evidence or SIEM is late</h2>
+    <p>Open <strong>Monitoring → Log Pipeline</strong> and inspect queue depth, drops, retries, and panic counters. Exact counters, retained evidence, and detail/SIEM delivery are independent. Test the destination from the Tiyi host and fix the consumer without restarting a healthy data plane unless diagnostics require it.</p>
+
+    <h2 id="support">Collect a safe support bundle</h2>
+    <p>Include version, mode, sanitized config, unit definition, health and doctor output, relevant journals, site/upstream IDs, timestamp/timezone, and request ID. Remove JWTs, passwords, enrollment tokens, private keys, DNS credentials, cookies, and sensitive bodies.</p>
+
+    <div class="docs-pager"><a href="operations.html"><span class="label">← Previous</span><span class="title">Operations guide</span></a><a class="next" href="concepts.html"><span class="label">Next →</span><span class="title">Domain model</span></a></div>
+  </main><aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4></aside>
+</div>
+<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.2.0 &middot; 2026-07-16</span></div></div></footer><script src="../assets/js/main.js" defer></script>
+</body></html>

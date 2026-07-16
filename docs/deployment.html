@@ -52,6 +52,13 @@
       </ul>
     </div>
     <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
       <h4>Concepts</h4>
       <ul>
         <li><a href="concepts.html">Domain model</a></li>
@@ -160,13 +167,16 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
     <p>If Tiyi sits behind a CDN or L4 LB, the client IP that reaches the WAF is not the real client IP — it's the proxy in front of you. The trust profile tells Tiyi which proxies are trusted and which header carries the real IP.</p>
     <p>Set it once via the UI (Settings → Trust Profile tab) or the CLI:</p>
 <pre><code><span class="p">$</span> tiyi trust set <span class="o">\</span>
-    --trusted-proxies 10.0.0.0/8,172.16.0.0/12 <span class="o">\</span>
-    --client-ip-headers X-Forwarded-For
+    --proxy 10.0.0.0/8 <span class="o">\</span>
+    --proxy 172.16.0.0/12 <span class="o">\</span>
+    --cdn cloudflare <span class="o">\</span>
+    --header CF-Connecting-IP <span class="o">\</span>
+    --header X-Forwarded-For
 
 <span class="c"># Auto-fetch CDN ranges:</span>
-<span class="p">$</span> tiyi trust cdn list
-<span class="p">$</span> tiyi trust cdn refresh cloudflare
-<span class="p">$</span> tiyi trust cdn refresh fastly
+<span class="p">$</span> tiyi trust show
+<span class="p">$</span> tiyi trust refresh cloudflare
+<span class="p">$</span> tiyi trust refresh fastly
 
 <span class="c"># Trace any (peer, headers) tuple to the resolved client IP:</span>
 <span class="p">$</span> tiyi trust test --peer 10.0.0.5 --header <span class="s">"X-Forwarded-For: 1.2.3.4, 10.0.0.5"</span></code></pre>
@@ -174,10 +184,12 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
 
     <h2 id="siem">SIEM egress</h2>
     <p>Tiyi forwards security, access, error, and (optionally) audit events over best-effort TCP, UDP, or unixgram in RFC 5424, CEF, or LEEF. Configure once via Settings → SIEM tab or the CLI:</p>
-<pre><code><span class="p">$</span> tiyi system settings update --key siem.enabled --value true
-<span class="p">$</span> tiyi system settings update --key siem.address --value <span class="s">"tcp://siem.internal:514"</span>
-<span class="p">$</span> tiyi system settings update --key siem.format --value rfc5424
-<span class="p">$</span> tiyi system settings update --key siem.filter.include_audit --value true</code></pre>
+<pre><code><span class="p">$</span> tiyi system settings update <span class="o">\</span>
+  --set siem.enabled=true <span class="o">\</span>
+  --set siem.endpoint=tcp://siem.internal:514 <span class="o">\</span>
+  --set siem.transport=tcp <span class="o">\</span>
+  --set siem.format=RFC5424 <span class="o">\</span>
+  --set siem.filter.include_audit=true</code></pre>
     <p>SIEM forwarding is intentionally best-effort. Receiver health, durable delivery, and replay live in your SIEM pipeline, not in Tiyi. The dispatcher caches a single <code>net.Conn</code> per dispatcher with reconnect-on-error.</p>
 
     <h2 id="observability">Observability</h2>
@@ -190,7 +202,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
 
     <h2 id="upgrades">Rolling upgrades</h2>
     <p>Once a binary release is imported, <code>tiyi release apply</code> fans an <code>APPLY_BINARY</code> command out to every agent whose OS/arch matches. Each agent downloads the replacement, verifies the SHA-256 and Ed25519 release signature, and exits so its supervisor restarts it into the new binary.</p>
-<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_v3.1.0_linux_amd64.tar.gz
+<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_v3.2.0_linux_amd64.tar.gz
 <span class="p">$</span> tiyi release list
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span>             <span class="c"># all matching agents</span>
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span>  <span class="c"># wave deployments</span>
@@ -222,7 +234,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
           <li>Scrape <code>/metrics</code> from your Prometheus instance</li>
           <li>Add <code>state.db</code> + <code>kek.bin</code> to your backup pipeline</li>
           <li>Issue at least one secondary node so a single primary loss isn't terminal</li>
-          <li>Verify the audit chain: <code>tiyi audit verify-chain</code> exits 0</li>
+          <li>Verify the audit chain: <code>tiyi audit verify</code> exits 0</li>
         </ul>
       </div>
     </div>
@@ -249,7 +261,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.1.0 &middot; 2026-07-12</span>
+      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
     </div>
   </div>
 </footer>

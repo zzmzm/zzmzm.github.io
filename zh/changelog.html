@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>更新日志 — 太一</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="太一从基础工作到 v3.1.0 的完整更新记录。" />
+<meta name="description" content="太一从基础工作到 v3.2.0 的完整更新记录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -51,6 +51,28 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.2.0</span>
+          <span class="tl-date">2026-07-16</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">Observation v2 + 持久化 Attack Campaign</div>
+        <div class="tl-body">
+          <p>v3.2 把请求观测升级为与数据面隔离、证据优先的管道，并新增持久化 Campaign 层，在不进入请求路径的前提下关联 Incident。</p>
+          <ul>
+            <li><strong>Observation v2。</strong>数据面精确计数、紧凑 <span class="mono">SecurityFact</span>/<span class="mono">Finding</span> 证据、保留请求明细与 SIEM 投递成为独立真相平面；显式全局/站点证据策略与分层保留取代旧日志设置。</li>
+            <li><strong>可靠 Agent 投递。</strong>Agent spool、ACK/重试、协议隔离、分区管理与 panic 隔离的观测回调，让代理流量不受日志消费者和分析 worker 影响。</li>
+            <li><strong>持久化 Attack Campaign。</strong>确定性来源/目标、Geo/ASN、MITRE 投影形成证据图与时间线，支持不可变 revision、冲突安全处置、合并/拆分、成员与边确认。</li>
+            <li><strong>API Inventory。</strong>遥测探索器发现端点并展示实时 QPS、状态码与延迟，提供确认、隔离、隐藏与阻断流程。</li>
+            <li><strong>可执行告警。</strong>本地化标题与 payload 包含证据 URL、目标标签、Campaign TTP 上下文与明确 Geo/ASN 限制。</li>
+            <li><strong>运维体验与文档。</strong>更新中英截图、Campaign/Incident 流程，并在官网和公开仓库新增任务型运维、排障与升级说明。</li>
+            <li><strong>干净状态边界。</strong>目前没有需要兼容的正式用户升级群体；pre-v3.2 开发/测试数据库与 Agent 身份/bundle 状态会被拒绝，必须显式重置并重新注册。</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -703,7 +725,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.1.0 · 2026-07-12</span>
+      <span class="build">build v3.2.0 · 2026-07-16</span>
     </div>
   </div>
 </footer>

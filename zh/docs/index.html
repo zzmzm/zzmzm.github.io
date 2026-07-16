@@ -53,6 +53,13 @@
       </ul>
     </div>
     <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
       <h4>核心概念</h4>
       <ul>
         <li><a href="concepts.html">领域模型</a></li>
@@ -81,7 +88,7 @@
     </p>
 
     <h2 id="start-here">从这里开始</h2>
-    <p>如果你是首次运行太一，按顺序读这三页。整体大约花 30 分钟，结束后你会有一个真实的 WAF 挡在真实的上游前面。</p>
+    <p>首次运行请依次阅读快速开始、安装与日常运维。完成后不仅有真实 WAF 挡在真实上游前面，还有一套可重复的调查流程。</p>
 
     <div class="docs-cards">
       <a class="docs-card" href="quickstart.html">
@@ -93,19 +100,27 @@
         <p>从源码构建，或下载签名版本，写 YAML 配置，并在 <code>standalone</code>、<code>server</code> 与 <code>agent</code> 模式之间选择。</p>
       </a>
       <a class="docs-card" href="concepts.html">
-        <div class="docs-card-title"><span class="docs-card-num">3</span>领域模型</div>
+        <div class="docs-card-title">领域模型</div>
         <p>站点、上游池、证书、WAF 策略、节点、遥测、审计链 —— 它们各是什么，又是如何配合的。</p>
       </a>
+      <a class="docs-card" href="operations.html">
+        <div class="docs-card-title"><span class="docs-card-num">3</span>日常运维</div>
+        <p>发布应用，理解精确计数与证据，调查 Incident/Campaign，安全调优并运维 Agent。</p>
+      </a>
+      <a class="docs-card" href="troubleshooting.html">
+        <div class="docs-card-title">排障</div>
+        <p>从外到内诊断启动、登录、路由、TLS、WAF、Agent 与观测管道问题。</p>
+      </a>
       <a class="docs-card" href="cli.html">
-        <div class="docs-card-title"><span class="docs-card-num">4</span>CLI 参考</div>
+        <div class="docs-card-title">CLI 参考</div>
         <p>每一个 <code>tiyi</code> 子命令按资源分组，附上重要的 flag 与退出码契约。</p>
       </a>
       <a class="docs-card" href="api.html">
-        <div class="docs-card-title"><span class="docs-card-num">5</span>API 概览</div>
-        <p>驱动 UI、CLI、节点流的 ConnectRPC 契约。鉴权、错误码与 14 个服务。</p>
+        <div class="docs-card-title">API 概览</div>
+        <p>驱动 UI、CLI、节点流的 ConnectRPC 契约：鉴权、错误码与当前服务目录。</p>
       </a>
       <a class="docs-card" href="deployment.html">
-        <div class="docs-card-title"><span class="docs-card-num">6</span>部署</div>
+        <div class="docs-card-title">部署</div>
         <p>生产加固、带 epoch 隔离的 HA 故障转移、SIEM 转发、可观测性与升级路径。</p>
       </a>
     </div>
@@ -128,7 +143,7 @@
     </div>
 
     <h2 id="versions">覆盖的版本</h2>
-    <p>这些文档面向 <strong>v3.1.0</strong>，当前公开版本。该版本上行为已冻结；后续修改 CLI flag、默认值或输出格式的小版本会在<a href="../changelog.html">更新日志</a>中追踪并同步反映在此处。如果文档中的命令与你运行的二进制冲突，请以二进制为准 —— 并提个 issue。</p>
+    <p>这些文档面向当前公开版本 <strong>v3.2.0</strong>。v3.2 对旧开发/测试安装采用干净状态切换，见<a href="troubleshooting.html#v32-reset">重置边界</a>。CLI flag、默认值或输出格式变化会在<a href="../changelog.html">更新日志</a>中追踪并同步到这里。若命令与二进制冲突，以二进制为准。</p>
 
     <div class="docs-pager">
       <a href="../index.html">
@@ -152,7 +167,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.1.0 &middot; 2026-07-12</span>
+      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
     </div>
   </div>
 </footer>

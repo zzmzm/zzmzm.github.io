@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>API overview — Tiyi docs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="The ConnectRPC contract that drives the UI, CLI, and agent stream. Auth, error codes, and the 14 services." />
+<meta name="description" content="The ConnectRPC contract that drives the UI, CLI, and agent stream. Authentication, errors, streaming, and the current service catalog." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -49,6 +49,13 @@
         <li><a href="index.html">Overview</a></li>
         <li><a href="quickstart.html">Quickstart</a></li>
         <li><a href="installation.html">Installation</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -120,7 +127,7 @@
   <span class="s">"user"</span>: { <span class="s">"id"</span>: <span class="s">"&lt;uuid&gt;"</span>, <span class="s">"role"</span>: <span class="s">"Administrator"</span> }
 }</code></pre>
 
-    <h2 id="services">The 14 services</h2>
+    <h2 id="services">The 26 services</h2>
     <table>
       <thead>
         <tr><th>Service</th><th>Scope</th></tr>
@@ -128,18 +135,30 @@
       <tbody>
         <tr><td><code>SystemService</code></td><td>Health, version, dashboard rollups, settings, releases, replication, promote/demote.</td></tr>
         <tr><td><code>AuthService</code></td><td>Login, logout, refresh, current user, OIDC redirect, access codes.</td></tr>
+        <tr><td><code>MenuService</code></td><td>Permission-filtered navigation for the management UI.</td></tr>
         <tr><td><code>UserService</code></td><td>User CRUD, lock/unlock, password reset.</td></tr>
         <tr><td><code>RoleService</code></td><td>Role + permission lookup. RBAC table is built-in.</td></tr>
         <tr><td><code>SiteService</code></td><td>Site CRUD, enable/disable, preview, per-site policy override.</td></tr>
         <tr><td><code>UpstreamService</code></td><td>Upstream pool CRUD; deletion refused while in use.</td></tr>
         <tr><td><code>CertService</code></td><td>Upload, ACME issue/renew, DNS provider CRUD.</td></tr>
         <tr><td><code>PolicyService</code></td><td>WAF policy CRUD, layer updates, version snapshots, SecLang preview, test lab.</td></tr>
-        <tr><td><code>RuleOverrideService</code></td><td>Per-rule overrides, custom rules, IP lists, rate-limit endpoints.</td></tr>
+        <tr><td><code>RuleOverrideService</code></td><td>Per-rule CRS behavior and scoped override lifecycle.</td></tr>
+        <tr><td><code>CustomRuleService</code></td><td>Custom SecLang and visual-rule lifecycle.</td></tr>
+        <tr><td><code>IpListService</code></td><td>Reusable IP data, scoped bindings, lookup, and precedence.</td></tr>
+        <tr><td><code>RateLimitService</code></td><td>Endpoint and client-scope rate-limit resources.</td></tr>
         <tr><td><code>CrsService</code></td><td>CRS catalog browse + ingest + exclusion-package install/attach.</td></tr>
-        <tr><td><code>AgentService</code></td><td>Agent CRUD, enrollment tokens, install scripts, commands, agent groups, <code>AgentStream</code>.</td></tr>
+        <tr><td><code>AgentService</code></td><td>Agent CRUD, enrollment tokens, install scripts, commands, revisions, and apply results.</td></tr>
+        <tr><td><code>AgentGroupService</code></td><td>Stable tag/explicit-agent targeting and match preview.</td></tr>
+        <tr><td><code>AgentStreamService</code></td><td>Authenticated bidi bundle, state, event, command, and challenge transport.</td></tr>
         <tr><td><code>TrustService</code></td><td>Client-IP trust profile (tenant + site overrides), CDN snapshot list/refresh, explain.</td></tr>
         <tr><td><code>AlertService</code></td><td>Alert rule + channel CRUD, active alert ack/resolve, channel test send.</td></tr>
-        <tr><td><code>LogService</code></td><td>Security/access/error/audit query, get, export, live tail.</td></tr>
+        <tr><td><code>LogService</code></td><td>Observation-v2 exact counters, retained evidence/detail, exports, API Inventory, and live tail.</td></tr>
+        <tr><td><code>AuditService</code></td><td>Tamper-evident audit query, status, and chain verification.</td></tr>
+        <tr><td><code>IncidentService</code></td><td>Finding membership, incident lifecycle, notes, summaries, and streams.</td></tr>
+        <tr><td><code>IncidentResponseRuleService</code></td><td>Default-off response automation rules and audited execution.</td></tr>
+        <tr><td><code>CampaignService</code></td><td>Persistent attack campaigns, revisions, graph/timeline, and conflict-safe triage.</td></tr>
+        <tr><td><code>MitreMappingService</code></td><td>Deterministic ATT&amp;CK tactic and technique projection.</td></tr>
+        <tr><td><code>AIService</code></td><td>Optional default-off enrichment, typed proposals, Copilot analysis, and chat.</td></tr>
       </tbody>
     </table>
 
@@ -160,7 +179,7 @@
     </table>
 
     <h2 id="rbac">RBAC</h2>
-    <p>Each RPC declares a required permission like <code>site:read</code>, <code>policy:write</code>, <code>log:read</code>, <code>system:write</code>. The middleware checks the JWT subject's roles against the permission table; the canonical mapping lives in <code>internal/api/middleware.go</code>. There are 52 fine-grained permissions in v3.0.4.</p>
+    <p>Each RPC declares a required permission like <code>site:read</code>, <code>policy:write</code>, <code>log:read</code>, or <code>system:write</code>. Middleware checks the JWT subject's roles against the permission table; the canonical mapping lives in <code>internal/api/middleware.go</code>. Use <code>tiyi role</code> or the Roles page to inspect the current permission catalog instead of relying on a frozen count.</p>
 
     <h2 id="streaming">Streaming RPCs</h2>
     <ul>
@@ -169,6 +188,7 @@
       <li><strong><code>AgentService.StreamAgentEvents</code></strong> — server-streaming. Live agent state (online/offline, metrics).</li>
       <li><strong><code>LogService.TailSecurityEvents</code></strong> — server-streaming. Live security log feed for the live-tail page.</li>
       <li><strong><code>SystemService.StreamUpgradeRun</code></strong> — server-streaming. Per-agent upgrade run progress events.</li>
+      <li><strong><code>CampaignService.TailCampaigns</code></strong> — server-streaming. Persistent campaign lifecycle revisions for SOC triage.</li>
     </ul>
 
     <h2 id="canonical-spec">Generated schema</h2>
@@ -201,7 +221,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.1.0 &middot; 2026-07-12</span>
+      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
     </div>
   </div>
 </footer>

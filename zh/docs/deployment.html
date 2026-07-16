@@ -43,6 +43,7 @@
 
   <aside class="docs-sidebar" aria-label="文档导航">
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -136,13 +137,16 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
     <p>太一在 CDN 或 L4 LB 后时,到达 WAF 的客户端 IP 不是真实 IP —— 那是前面的代理。信任配置告诉太一哪些代理可信、哪个 header 携带真实 IP。</p>
     <p>从 UI(设置 → 信任配置标签)或 CLI 设置一次:</p>
 <pre><code><span class="p">$</span> tiyi trust set <span class="o">\</span>
-    --trusted-proxies 10.0.0.0/8,172.16.0.0/12 <span class="o">\</span>
-    --client-ip-headers X-Forwarded-For
+    --proxy 10.0.0.0/8 <span class="o">\</span>
+    --proxy 172.16.0.0/12 <span class="o">\</span>
+    --cdn cloudflare <span class="o">\</span>
+    --header CF-Connecting-IP <span class="o">\</span>
+    --header X-Forwarded-For
 
 <span class="c"># 自动拉取 CDN 段:</span>
-<span class="p">$</span> tiyi trust cdn list
-<span class="p">$</span> tiyi trust cdn refresh cloudflare
-<span class="p">$</span> tiyi trust cdn refresh fastly
+<span class="p">$</span> tiyi trust show
+<span class="p">$</span> tiyi trust refresh cloudflare
+<span class="p">$</span> tiyi trust refresh fastly
 
 <span class="c"># 把任意 (peer, headers) 元组回溯到解析后的客户端 IP:</span>
 <span class="p">$</span> tiyi trust test --peer 10.0.0.5 --header <span class="s">"X-Forwarded-For: 1.2.3.4, 10.0.0.5"</span></code></pre>
@@ -150,10 +154,12 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
 
     <h2 id="siem">SIEM 转发</h2>
     <p>太一把安全、访问、错误、(可选)审计事件以 RFC 5424、CEF 或 LEEF 通过尽力的 TCP / UDP / unixgram 转发出去。从 设置 → SIEM 标签 或 CLI 配置一次:</p>
-<pre><code><span class="p">$</span> tiyi system settings update --key siem.enabled --value true
-<span class="p">$</span> tiyi system settings update --key siem.address --value <span class="s">"tcp://siem.internal:514"</span>
-<span class="p">$</span> tiyi system settings update --key siem.format --value rfc5424
-<span class="p">$</span> tiyi system settings update --key siem.filter.include_audit --value true</code></pre>
+<pre><code><span class="p">$</span> tiyi system settings update <span class="o">\</span>
+  --set siem.enabled=true <span class="o">\</span>
+  --set siem.endpoint=tcp://siem.internal:514 <span class="o">\</span>
+  --set siem.transport=tcp <span class="o">\</span>
+  --set siem.format=RFC5424 <span class="o">\</span>
+  --set siem.filter.include_audit=true</code></pre>
     <p>SIEM 转发是有意尽力的。接收端健康、可靠投递、回放属于 SIEM 管道,而不是太一。转发器为每个 dispatcher 缓存一条 <code>net.Conn</code>,出错时重连。</p>
 
     <h2 id="observability">可观测性</h2>
@@ -166,7 +172,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
 
     <h2 id="upgrades">滚动升级</h2>
     <p>导入二进制 release 后,<code>tiyi release apply</code> 把 <code>APPLY_BINARY</code> 命令散到所有 OS/arch 匹配的节点。每个节点下载替换、校验 SHA-256 与 Ed25519 发布签名,然后退出让 supervisor 重启进入新二进制。</p>
-<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_v3.1.0_linux_amd64.tar.gz
+<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_v3.2.0_linux_amd64.tar.gz
 <span class="p">$</span> tiyi release list
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span>             <span class="c"># 所有匹配节点</span>
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span>  <span class="c"># 灰度部署</span>
@@ -198,7 +204,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
           <li>从 Prometheus 抓取 <code>/metrics</code></li>
           <li>把 <code>state.db</code> + <code>kek.bin</code> 加入备份管道</li>
           <li>至少签发一个备节点,这样单主丢失不致命</li>
-          <li>校验审计链:<code>tiyi audit verify-chain</code> 退出 0</li>
+          <li>校验审计链：<code>tiyi audit verify</code> 退出 0</li>
         </ul>
       </div>
     </div>
@@ -219,7 +225,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.1.0 &middot; 2026-07-12</span>
+      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
     </div>
   </div>
 </footer>

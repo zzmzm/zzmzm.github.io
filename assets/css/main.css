@@ -1306,6 +1306,41 @@ body.docs { background: var(--bg-2); }
   line-height: 1.55;
 }
 
+/* Request-first orientation used by the operations guides. */
+.request-path {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 26px 0 34px;
+  padding: 18px;
+  border: 1px solid rgba(0, 229, 255, .22);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(0, 229, 255, .07), rgba(124, 58, 237, .05)),
+    var(--surface);
+}
+.request-path span {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  color: var(--fg);
+  font: 600 12px/1.2 var(--font-mono);
+  white-space: nowrap;
+}
+.request-path b { color: var(--brand-cyan); font-weight: 500; }
+.request-path small {
+  flex-basis: 100%;
+  color: var(--fg-3);
+  font: 500 12px/1.6 var(--font-mono);
+}
+@media (max-width: 700px) {
+  .request-path { align-items: stretch; flex-direction: column; }
+  .request-path span { text-align: center; }
+  .request-path b { text-align: center; transform: rotate(90deg); }
+}
+
 /* ============================================================
    Nav toggles (theme + language)
    ============================================================ */

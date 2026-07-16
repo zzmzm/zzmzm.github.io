@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Changelog — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi release notes from foundation work through v3.1.0." />
+<meta name="description" content="Tiyi release notes from foundation work through v3.2.0." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,6 +50,28 @@
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.2.0</span>
+          <span class="tl-date">2026-07-16</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Observation v2 + persistent attack campaigns</div>
+        <div class="tl-body">
+          <p>v3.2 turns request observation into an isolated, evidence-first pipeline and adds a durable campaign layer for correlating incidents without placing analytics in the data path.</p>
+          <ul>
+            <li><strong>Observation v2.</strong> Exact hot-path counters, compact <span class="mono">SecurityFact</span>/<span class="mono">Finding</span> evidence, retained request detail, and SIEM delivery are independent truth planes. Explicit global/per-site evidence policy and tiered retention replace legacy log settings.</li>
+            <li><strong>Durable agent delivery.</strong> Agent spool, ACK/retry, protocol fencing, partition management, and panic-isolated observation callbacks keep proxy traffic independent from log consumers and analytical workers.</li>
+            <li><strong>Persistent Attack Campaigns.</strong> Deterministic source/target, Geo/ASN, and MITRE projections feed an evidence graph and timeline with immutable revisions, conflict-safe triage, merge/split, membership, and edge review.</li>
+            <li><strong>API Inventory.</strong> Telemetry Explorer discovers endpoints with live QPS, status, and latency, then supports confirm, quarantine, hide, and block workflows.</li>
+            <li><strong>Actionable alerts.</strong> Localized alert titles and payloads include evidence URLs, target labels, campaign TTP context, and an explicit Geo/ASN caveat.</li>
+            <li><strong>Operator experience and docs.</strong> Updated EN/zh screenshots, campaign and incident workflows, plus task-based operations, troubleshooting, and upgrade guidance across the website and public repos.</li>
+            <li><strong>Clean-state boundary.</strong> Because there is no supported production upgrade population yet, pre-v3.2 development/test databases and agent identity/bundle state are rejected; reset and re-enrollment are explicit.</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -702,7 +724,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.1.0 · 2026-07-12</span>
+      <span class="build">build v3.2.0 · 2026-07-16</span>
     </div>
   </div>
 </footer>
