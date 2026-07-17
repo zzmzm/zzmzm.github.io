@@ -52,7 +52,7 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">参考</span>
     <h1>API 概览</h1>
-    <p class="lede">太一暴露唯一一份 ConnectRPC API。同一份 proto 同时为 Vben Admin UI（HTTP 上的 JSON）、<code>tiyi</code> CLI（HTTP 上的 JSON）与节点流（gRPC 双向）服务。<code>proto/tiyi/v1/*.proto</code> 是唯一的真相源 —— CLI 与 API 由架构保证同步。</p>
+    <p class="lede">太一暴露唯一一份 ConnectRPC API。同一份产品契约同时为 Vben Admin UI（HTTP 上的 JSON）、<code>tiyi</code> CLI（HTTP 上的 JSON）与节点流（gRPC 双向）服务，三者保持同步。</p>
 
     <h2 id="transport">传输</h2>
     <ul>
@@ -149,7 +149,7 @@
     </table>
 
     <h2 id="rbac">RBAC</h2>
-    <p>每一个 RPC 声明一个权限要求，例如 <code>site:read</code>、<code>policy:write</code>、<code>log:read</code> 或 <code>system:write</code>。中间件把 JWT subject 的角色与权限表比对；权威映射在 <code>internal/api/middleware.go</code>。请通过 <code>tiyi role</code> 或角色页面查看当前权限目录，不依赖容易过期的固定数量。</p>
+    <p>每一个 RPC 声明一个权限要求，例如 <code>site:read</code>、<code>policy:write</code>、<code>log:read</code> 或 <code>system:write</code>。服务端把 JWT subject 的角色与权限表比对。请通过 <code>tiyi role</code> 或角色页面查看当前权限目录，不依赖容易过期的固定数量。</p>
 
     <h2 id="streaming">流式 RPC</h2>
     <ul>
@@ -161,13 +161,8 @@
       <li><strong><code>CampaignService.TailCampaigns</code></strong> —— 服务端流。为 SOC 处置推送持久化 Campaign 生命周期 revision。</li>
     </ul>
 
-    <h2 id="canonical-spec">生成式 schema</h2>
-    <p>ConnectRPC 与 Protobuf 类型由 <code>proto/</code> 生成。本文档覆盖面向运维的 API 表面，并应与生成 schema 保持一致 —— 不一致请提 issue。</p>
-
-    <p>生成式参考从 <code>proto/</code> 重新生成 Connect Go 与 Protobuf Go：</p>
-<pre><code><span class="p">$</span> make proto
-<span class="p">$</span> ls internal/api/gen/tiyi/v1/
-<span class="c"># 每个 .proto 对应 &lt;service&gt;.pb.go 与 &lt;service&gt;.connect.go</span></code></pre>
+    <h2 id="canonical-spec">API 契约</h2>
+    <p>本文档覆盖面向运维的 API 表面，并应与已安装二进制保持一致 —— 不一致请提 issue。</p>
 
     <div class="docs-pager">
       <a href="cli.html"><span class="label">← 上一页</span><span class="title">CLI 参考</span></a>
@@ -185,7 +180,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
+      <span class="build">build v3.2.1 &middot; 2026-07-17</span>
     </div>
   </div>
 </footer>

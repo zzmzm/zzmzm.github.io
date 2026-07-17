@@ -82,7 +82,7 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">Reference</span>
     <h1>API overview</h1>
-    <p class="lede">Tiyi exposes one ConnectRPC API. The same proto schema serves the Vben Admin UI (JSON over HTTP), the <code>tiyi</code> CLI (JSON over HTTP), and the agent stream (gRPC bidi). One source of truth at <code>proto/tiyi/v1/*.proto</code> means the CLI and API stay in lockstep by construction.</p>
+    <p class="lede">Tiyi exposes one ConnectRPC API. The same product contract serves the Vben Admin UI (JSON over HTTP), the <code>tiyi</code> CLI (JSON over HTTP), and the agent stream (gRPC bidi), keeping the three surfaces in lockstep.</p>
 
     <h2 id="transport">Transport</h2>
     <ul>
@@ -179,7 +179,7 @@
     </table>
 
     <h2 id="rbac">RBAC</h2>
-    <p>Each RPC declares a required permission like <code>site:read</code>, <code>policy:write</code>, <code>log:read</code>, or <code>system:write</code>. Middleware checks the JWT subject's roles against the permission table; the canonical mapping lives in <code>internal/api/middleware.go</code>. Use <code>tiyi role</code> or the Roles page to inspect the current permission catalog instead of relying on a frozen count.</p>
+    <p>Each RPC declares a required permission like <code>site:read</code>, <code>policy:write</code>, <code>log:read</code>, or <code>system:write</code>. The server checks the JWT subject's roles against the permission table. Use <code>tiyi role</code> or the Roles page to inspect the current permission catalog instead of relying on a frozen count.</p>
 
     <h2 id="streaming">Streaming RPCs</h2>
     <ul>
@@ -191,13 +191,8 @@
       <li><strong><code>CampaignService.TailCampaigns</code></strong> — server-streaming. Persistent campaign lifecycle revisions for SOC triage.</li>
     </ul>
 
-    <h2 id="canonical-spec">Generated schema</h2>
-    <p>The ConnectRPC and Protobuf types are generated from <code>proto/</code>. These docs cover the operator-facing API surface and should agree with the generated schema — file an issue if they don't.</p>
-
-    <p>For a generated reference, regenerate Connect Go and Protobuf Go from <code>proto/</code>:</p>
-<pre><code><span class="p">$</span> make proto
-<span class="p">$</span> ls internal/api/gen/tiyi/v1/
-<span class="c"># &lt;service&gt;.pb.go and &lt;service&gt;.connect.go for each .proto file</span></code></pre>
+    <h2 id="canonical-spec">API contract</h2>
+    <p>These docs cover the operator-facing API surface and should agree with the installed binary — file an issue if they don't.</p>
 
     <div class="docs-pager">
       <a href="cli.html">
@@ -221,7 +216,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
+      <span class="build">build v3.2.1 &middot; 2026-07-17</span>
     </div>
   </div>
 </footer>

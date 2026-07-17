@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>快速开始 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="构建、运行并验证太一在五分钟内拦截真实攻击。" />
+<meta name="description" content="安装、运行并验证太一在五分钟内拦截真实攻击。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -77,39 +77,26 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">开始使用</span>
     <h1>快速开始</h1>
-    <p class="lede">从一份干净的 checkout 到一个太一实例拦截真实 OWASP CRS 攻击，只需要五分钟。我们会构建二进制、启动 <code>standalone</code>、创建一个站点，并看 WAF 干活。</p>
+    <p class="lede">从一台干净的 Linux 主机到一个太一实例拦截真实 OWASP CRS 攻击，只需要五分钟。我们会安装签名二进制、启动 <code>standalone</code>、创建一个站点，并看 WAF 干活。</p>
 
     <h2 id="prerequisites">前置条件</h2>
     <ul>
-      <li><strong>Linux</strong>（amd64 或 arm64）或 macOS 用于开发。Windows 不是目标主机。</li>
-      <li>从源码构建需要 <strong>Go 1.25+</strong>。</li>
-      <li>重新构建嵌入式管理 UI 需要 <strong>Node 20.19+</strong> 与 <strong>pnpm 10+</strong>。</li>
+      <li><strong>Linux</strong> amd64 或 arm64。Windows 与 macOS 不是目标主机。</li>
+      <li>用于运行公开二进制安装器的 <strong>curl</strong>。</li>
       <li>一个空闲的后端 —— 任何会说 HTTP 的都行。下方示例用 Python 的 <code>http.server</code>。</li>
     </ul>
 
-    <h2 id="build">1. 构建二进制</h2>
-    <p>从一份新的 checkout：</p>
-<pre><code><span class="p">$</span> make proto       <span class="c"># 从 proto/ 重新生成 Connect Go + Protobuf Go</span>
-<span class="p">$</span> make web         <span class="c"># 把 Vben Admin 前端构建到 web/dist/</span>
-<span class="p">$</span> make build       <span class="c"># 编译嵌入前端的 bin/tiyi</span></code></pre>
-    <p>或一条命令搞定：</p>
-<pre><code><span class="p">$</span> make build-all</code></pre>
-    <p>输出在 <code>./bin/tiyi</code>。它是一个静态链接的 Go 可执行文件，复制到任何地方都能跑。</p>
-
-    <div class="callout callout-tip">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-      <div class="callout-body">
-        <p><strong>没有 Go 工具链？</strong>跳到<a href="installation.html#prebuilt">安装 → 预构建二进制</a>看签名发布版的下载方式。</p>
-      </div>
-    </div>
+    <h2 id="install">1. 安装签名二进制</h2>
+    <p>使用权威公开安装器。它会选择匹配的 Linux 发行包、校验 SHA-256 manifest，并把 <code>tiyi</code> 安装到 <code>/usr/local/bin</code>：</p>
+<pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
+<span class="p">$</span> tiyi --version</code></pre>
+    <p>版本固定、安装目录覆盖与 Gitee 镜像用法见<a href="installation.html#prebuilt">安装</a>。</p>
 
     <h2 id="run">2. 以 standalone 模式运行</h2>
     <p>按你的权限选择一种方式。<strong>以 root 运行</strong>时默认值即可 —— 状态写入 <code>/var/lib/tiyi</code>，代理绑定 80/443 端口：</p>
-<pre><code><span class="p">$</span> sudo ./bin/tiyi standalone</code></pre>
+<pre><code><span class="p">$</span> sudo tiyi standalone</code></pre>
     <p><strong>以普通用户运行</strong>（不用 sudo）时，把太一指向可写路径并使用高端口：</p>
-<pre><code><span class="p">$</span> ./bin/tiyi standalone <span class="o">\</span>
+<pre><code><span class="p">$</span> tiyi standalone <span class="o">\</span>
     --state-db /tmp/tiyi.db <span class="o">\</span>
     --caddy-admin-socket /tmp/tiyi-caddy.sock <span class="o">\</span>
     --admin-socket /tmp/tiyi-admin.sock <span class="o">\</span>
@@ -117,7 +104,7 @@
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 
     <p>太一会打印一行包含 API 地址、引导管理员密码（仅首次启动显示一次）与 Caddy 管理 socket 路径的 banner：</p>
-<pre><code><span class="c">tiyi v3.2.0 standalone</span>
+<pre><code><span class="c">tiyi v3.2.1 standalone</span>
 <span class="c">  api      http://127.0.0.1:8080</span>
 <span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
 <span class="c">  state    /tmp/tiyi.db</span>
@@ -138,7 +125,7 @@
     <p>用于自动化、容器镜像或 CI 时，跳过自动生成的密码：在首次启动前设置 <code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code>，太一会原样采用且不打印任何 banner。用户名默认 <code>admin</code>；仅当尚不存在任何用户时才会自动生成密码，因此重启都是空操作。</p>
 <pre><code><span class="p">$</span> mkdir -p /tmp/waf
 <span class="p">$</span> TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
-    ./bin/tiyi standalone <span class="o">\</span>
+    tiyi standalone <span class="o">\</span>
     --addr 0.0.0.0:8080 <span class="o">\</span>
     --state-db /tmp/waf/state.db <span class="o">\</span>
     --caddy-admin-socket /tmp/waf/caddy.sock <span class="o">\</span>
@@ -153,7 +140,7 @@
     <h2 id="site">4. 创建第一个站点</h2>
     <p>UI 与 CLI 都行。CLI 使用本地管理 socket，无需 token：</p>
 <pre><code><span class="c"># 1. 创建站点并指向演示后端</span>
-<span class="p">$</span> ./bin/tiyi site create <span class="o">\</span>
+<span class="p">$</span> tiyi site create <span class="o">\</span>
     --name demo <span class="o">\</span>
     --host demo.local <span class="o">\</span>
     --upstream-url http://127.0.0.1:9000 <span class="o">\</span>
@@ -188,7 +175,7 @@
 
     <h2 id="next">下一步阅读</h2>
     <ul>
-      <li><a href="installation.html">安装</a> —— 配置文件、预构建二进制、四种运行模式，以及上线前需要显式设定的加固字段。</li>
+      <li><a href="installation.html">安装</a> —— 签名二进制安装、配置文件、运行模式，以及上线前需要显式设定的加固字段。</li>
       <li><a href="concepts.html">领域模型</a> —— 站点、上游、证书、策略、节点、遥测、审计链各是什么。</li>
       <li><a href="cli.html">CLI 参考</a> —— 每一个 <code>tiyi</code> 子命令按资源分组。</li>
     </ul>
@@ -215,7 +202,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
+      <span class="build">build v3.2.1 &middot; 2026-07-17</span>
     </div>
   </div>
 </footer>

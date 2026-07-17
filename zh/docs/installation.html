@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>安装 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="从源码安装或下载预构建二进制，写 YAML 配置，并选择运行模式。" />
+<meta name="description" content="安装太一签名二进制，写 YAML 配置，并选择运行模式。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -59,40 +59,20 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">开始使用</span>
     <h1>安装</h1>
-    <p class="lede">太一是一个 Go 二进制。挑一种构建路径、把二进制放到主机、写一份小 YAML 配置，并按主机在集群中扮演的角色挑一个运行模式。</p>
+    <p class="lede">太一以签名 Linux 二进制形式分发。从公开发行渠道安装，写一份小 YAML 配置，并按主机在集群中扮演的角色挑一个运行模式。</p>
 
     <div class="callout callout-warn"><div class="callout-body"><p><strong>v3.2 干净状态边界。</strong> Observation v2 会拒绝 pre-v3.2 开发/测试数据库、Agent 身份与缓存 bundle。保留源清单和必要密钥，把旧测试状态移走，以干净状态启动并重新注册 Agent；不要复制 v3.1 数据库。</p></div></div>
 
-    <h2 id="from-source">从源码构建</h2>
-    <p>从一份新的太一仓库 checkout：</p>
-<pre><code><span class="p">$</span> make proto       <span class="c"># 从 proto/ 重新生成 Connect Go + Protobuf Go</span>
-<span class="p">$</span> make web         <span class="c"># 把 Vben Admin 前端构建到 web/dist/</span>
-<span class="p">$</span> make build       <span class="c"># 编译嵌入前端的 bin/tiyi</span></code></pre>
-    <p>构建发布产物时使用带保护的一键目标。它会拒绝脏工作树、校验内嵌厂商授权公钥的指纹、重新构建 proto / 前端，并产出同一个单一二进制：</p>
-<pre><code><span class="p">$</span> make release</code></pre>
-    <p>构建依赖：</p>
-    <ul>
-      <li><strong>Go 1.25+</strong> —— 模块下限。基于 <code>modernc.org/sqlite</code> 的纯 Go SQLite 意味着没有 CGo，可以干净跨平台编译。</li>
-      <li><strong>Node 20.19+ 与 pnpm 10+</strong> —— 用于 <code>make web</code>。下次 <code>make build</code> 时会经由 <code>go:embed</code> 嵌入产物。</li>
-      <li><strong>buf</strong> —— 已捆绑在 <code>tmp/buf/bin/buf</code>，用于重新生成 proto。改完 <code>proto/tiyi/v1/*.proto</code> 后跑 <code>make proto</code> 刷新生成的 Connect/PB Go。</li>
-    </ul>
-
-    <h2 id="prebuilt">预构建二进制</h2>
+    <h2 id="prebuilt">安装签名二进制</h2>
     <p>太一是单一签名二进制 —— 在单节点上免费且功能完整。权威安装脚本发布在 <code>https://www.tiyisec.com/install.sh</code>：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.2.0 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.2.1 linux/amd64</span></code></pre>
     <p>脚本会下载与平台匹配的二进制，比对 SHA-256 manifest，并放到 <code>/usr/local/bin/tiyi</code>。默认先尝试 GitHub，失败或过慢时回退到 Gitee Release 镜像；必要时可用 <code>TIYI_MIRROR=gitee</code> 强制使用 Gitee：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.2.0</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
+    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.2.1</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
     <p>公开分发仓库：<a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> 与 <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>。</p>
-    <p><code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。</p>
-
-    <h2 id="bootstrap-from-server">从已运行的服务端引导节点</h2>
-    <p>已运行的太一服务端暴露 <code>GET /download/tiyi</code>，一个无鉴权端点会流式输出当前运行的二进制。在干净的机器上引导节点：</p>
-<pre><code><span class="p">$</span> curl -fsSL -o /usr/local/bin/tiyi http://primary:8080/download/tiyi
-<span class="p">$</span> chmod +x /usr/local/bin/tiyi</code></pre>
-    <p>跨平台下载，附加 <code>?os=linux&arch=arm64</code>，会改为提供已导入的二进制 release。</p>
+    <p><code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。请在每台 standalone、server、secondary、agent 与 dashboard 主机上分别从公开发行渠道安装签名版本，再配置对应角色。</p>
 
     <h2 id="config-file">配置文件</h2>
     <p>太一读取一份 Koanf 风格的 YAML 配置。从下面这份最小配置起步，其余靠默认：</p>
@@ -187,6 +167,7 @@
     <h2 id="systemd">以 systemd 服务运行</h2>
     <p>长期运行的部署，让太一把自己装成一个加固过的 systemd 服务。<code>tiyi install</code> 会创建 <code>tiyi</code> 服务用户与 <code>tiyi-admin</code> 套接字组、写入 unit，加上 <code>--now</code> 则同时开机自启并立即启动：</p>
 <pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
+    <div class="callout callout-tip"><div class="callout-body"><p>不带 <code>--now</code> 执行 <code>sudo tiyi install</code> 时，安装器会按设计只写入并 reload unit，保持未启用、未启动，方便先完成各运行模式的配置。首次启动 <strong>standalone</strong> 时，请在原安装命令上补上 <code>--now</code> 后重新执行，不要直接用 <code>systemctl</code> 启动 unit。这样安装器能先创建管理员，并把一次性登录信息打印在当前终端，而不是把密码写入 system journal。</p></div></div>
     <p>该服务以非 root 身份运行，通过 <code>CAP_NET_BIND_SERVICE</code> 绑定 80/443 端口。每次启动前，unit 会先用 root-only 的 pre-start 钩子把配置里的状态目录和 KEK 文件重新交给服务用户；之前 sudo 前台运行留下的 CRS 缓存、上传、排除包、release 暂存、日志、trust 快照或内嵌 agent 状态目录不会再阻塞运行期写入。首次安装时，<code>--now</code> 会预先创建管理员，并在启动服务后直接打印一次性登录信息（URL、用户名、密码）——无需再去 journal 里捞：</p>
 <pre><code><span class="c">tiyi is enabled and running as tiyi.service.</span>
 
@@ -249,7 +230,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
+      <span class="build">build v3.2.1 &middot; 2026-07-17</span>
     </div>
   </div>
 </footer>

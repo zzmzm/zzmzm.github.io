@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Quickstart — Tiyi docs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Build, run, and verify Tiyi blocking real attacks in five minutes." />
+<meta name="description" content="Install, run, and verify Tiyi blocking real attacks in five minutes." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -82,39 +82,26 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">Get started</span>
     <h1>Quickstart</h1>
-    <p class="lede">Five minutes from a clean checkout to a Tiyi instance blocking real OWASP CRS attacks against a real upstream. We'll build the binary, start it in <code>standalone</code> mode, create one site, and watch the WAF do its job.</p>
+    <p class="lede">Five minutes from a clean Linux host to a Tiyi instance blocking real OWASP CRS attacks against a real upstream. We'll install the signed binary, start it in <code>standalone</code> mode, create one site, and watch the WAF do its job.</p>
 
     <h2 id="prerequisites">Prerequisites</h2>
     <ul>
-      <li><strong>Linux</strong> (amd64 or arm64) or macOS for development. Windows is not a target host.</li>
-      <li><strong>Go 1.25+</strong> if you're building from source.</li>
-      <li><strong>Node 20.19+</strong> and <strong>pnpm 10+</strong> if you're rebuilding the embedded admin UI.</li>
+      <li><strong>Linux</strong> on amd64 or arm64. Windows and macOS are not target hosts.</li>
+      <li><strong>curl</strong> to run the public binary installer.</li>
       <li>A spare backend you can put behind Tiyi — anything that speaks HTTP. The examples below use a Python <code>http.server</code>.</li>
     </ul>
 
-    <h2 id="build">1. Build the binary</h2>
-    <p>From a fresh checkout:</p>
-<pre><code><span class="p">$</span> make proto       <span class="c"># regenerate Connect Go + Protobuf Go from proto/</span>
-<span class="p">$</span> make web         <span class="c"># build the Vben Admin frontend into web/dist/</span>
-<span class="p">$</span> make build       <span class="c"># compile bin/tiyi with the frontend embedded</span></code></pre>
-    <p>Or run all three in one shot:</p>
-<pre><code><span class="p">$</span> make build-all</code></pre>
-    <p>The output binary is written to <code>./bin/tiyi</code>. It's a single statically-linked Go executable; copy it anywhere.</p>
-
-    <div class="callout callout-tip">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-      <div class="callout-body">
-        <p><strong>No Go toolchain?</strong> Skip to <a href="installation.html#prebuilt">Installation → Prebuilt binaries</a> for the signed-release path.</p>
-      </div>
-    </div>
+    <h2 id="install">1. Install the signed binary</h2>
+    <p>Use the canonical public installer. It selects the matching Linux release, verifies its SHA-256 manifest, and installs <code>tiyi</code> into <code>/usr/local/bin</code>:</p>
+<pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
+<span class="p">$</span> tiyi --version</code></pre>
+    <p>See <a href="installation.html#prebuilt">Installation</a> for version pinning, install-prefix overrides, and the Gitee mirror.</p>
 
     <h2 id="run">2. Run in standalone mode</h2>
     <p>Pick the option that matches your privileges. <strong>As root</strong> the defaults work — state lands in <code>/var/lib/tiyi</code> and the proxy binds ports 80/443:</p>
-<pre><code><span class="p">$</span> sudo ./bin/tiyi standalone</code></pre>
+<pre><code><span class="p">$</span> sudo tiyi standalone</code></pre>
     <p><strong>As a normal user</strong> (no sudo), point Tiyi at writable paths and high ports:</p>
-<pre><code><span class="p">$</span> ./bin/tiyi standalone <span class="o">\</span>
+<pre><code><span class="p">$</span> tiyi standalone <span class="o">\</span>
     --state-db /tmp/tiyi.db <span class="o">\</span>
     --caddy-admin-socket /tmp/tiyi-caddy.sock <span class="o">\</span>
     --admin-socket /tmp/tiyi-admin.sock <span class="o">\</span>
@@ -122,7 +109,7 @@
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 
     <p>Tiyi prints a banner with the API URL, the bootstrap admin password (printed once on first run), and the Caddy admin socket path:</p>
-<pre><code><span class="c">tiyi v3.2.0 standalone</span>
+<pre><code><span class="c">tiyi v3.2.1 standalone</span>
 <span class="c">  api      http://127.0.0.1:8080</span>
 <span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
 <span class="c">  state    /tmp/tiyi.db</span>
@@ -143,7 +130,7 @@
     <p>For automation, container images, or CI, skip the generated password: set <code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code> before the first boot and Tiyi uses it verbatim — no banner is printed. The username defaults to <code>admin</code>, and auto-generation only fires when no users exist yet, so restarts are no-ops.</p>
 <pre><code><span class="p">$</span> mkdir -p /tmp/waf
 <span class="p">$</span> TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
-    ./bin/tiyi standalone <span class="o">\</span>
+    tiyi standalone <span class="o">\</span>
     --addr 0.0.0.0:8080 <span class="o">\</span>
     --state-db /tmp/waf/state.db <span class="o">\</span>
     --caddy-admin-socket /tmp/waf/caddy.sock <span class="o">\</span>
@@ -158,7 +145,7 @@
     <h2 id="site">4. Create your first site</h2>
     <p>You can do this in the UI or via the CLI. The CLI uses the local admin socket and needs no token:</p>
 <pre><code><span class="c"># 1. Create the site pointing at the demo server</span>
-<span class="p">$</span> ./bin/tiyi site create <span class="o">\</span>
+<span class="p">$</span> tiyi site create <span class="o">\</span>
     --name demo <span class="o">\</span>
     --host demo.local <span class="o">\</span>
     --upstream-url http://127.0.0.1:9000 <span class="o">\</span>
@@ -193,7 +180,7 @@
 
     <h2 id="next">What to read next</h2>
     <ul>
-      <li><a href="installation.html">Installation</a> — config file, prebuilt binaries, the four operational modes, and production-hardening fields you should set before going live.</li>
+      <li><a href="installation.html">Installation</a> — signed binary installation, config files, operational modes, and production-hardening fields you should set before going live.</li>
       <li><a href="concepts.html">Domain model</a> — what sites, upstreams, certificates, policies, agents, telemetry, and the audit chain actually are.</li>
       <li><a href="cli.html">CLI reference</a> — every <code>tiyi</code> subcommand grouped by resource, with flag defaults.</li>
     </ul>
@@ -220,7 +207,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
+      <span class="build">build v3.2.1 &middot; 2026-07-17</span>
     </div>
   </div>
 </footer>

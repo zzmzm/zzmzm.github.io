@@ -29,7 +29,7 @@ tiyi system health</code></pre>
     <ul><li>Confirm the configured <code>server.addr</code> and host firewall.</li><li>Ports 80/443 serve proxy traffic; the dashboard listener defaults to 8080.</li><li>Run <code>tiyi doctor</code> for conflicts and config errors.</li><li>For reported service state ownership, review the path then run <code>sudo tiyi doctor --fix-state-ownership</code>.</li></ul>
 
     <h2 id="password">Bootstrap password was lost</h2>
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>Do not delete <code>state.db</code>.</strong> Reset the existing account through the local admin socket; its filesystem permissions are the authentication boundary.</p></div></div>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>Do not delete <code>state.db</code>.</strong> If a first standalone unit was started directly with <code>systemctl</code>, its generated password went to the journal. Treat it as exposed and reset the existing account through the local admin socket; its filesystem permissions are the authentication boundary.</p></div></div>
 <pre><code>sudo tiyi user list
 sudo tiyi user reset-password <span class="v">&lt;user-id&gt;</span> --password <span class="s">'&lt;new-strong-password&gt;'</span></code></pre>
 
@@ -60,5 +60,5 @@ tiyi upstream list</code></pre>
     <div class="docs-pager"><a href="operations.html"><span class="label">← Previous</span><span class="title">Operations guide</span></a><a class="next" href="concepts.html"><span class="label">Next →</span><span class="title">Domain model</span></a></div>
   </main><aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4></aside>
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.2.0 &middot; 2026-07-16</span></div></div></footer><script src="../assets/js/main.js" defer></script>
+<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.2.1 &middot; 2026-07-17</span></div></div></footer><script src="../assets/js/main.js" defer></script>
 </body></html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Installation — Tiyi docs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Install Tiyi from source or a signed prebuilt binary, configure the YAML config, and pick the right operational mode." />
+<meta name="description" content="Install the signed Tiyi binary, configure the YAML config, and pick the right operational mode." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -82,40 +82,20 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">Get started</span>
     <h1>Installation</h1>
-    <p class="lede">Tiyi is a single Go binary. Pick a build path, drop the binary on your host, write a small YAML config, and choose the operational mode that matches the role this host should play in the cluster.</p>
+    <p class="lede">Tiyi is distributed as a signed Linux binary. Install it from the public release channel, write a small YAML config, and choose the operational mode that matches the role this host should play in the cluster.</p>
 
     <div class="callout callout-warn"><div class="callout-body"><p><strong>v3.2 clean-state boundary.</strong> Observation v2 rejects pre-v3.2 development/test databases, agent identities, and cached bundles. Preserve source manifests and required secrets, move the old test state aside, start clean, and re-enroll agents. Do not copy a v3.1 database forward.</p></div></div>
 
-    <h2 id="from-source">Build from source</h2>
-    <p>From a fresh checkout of the Tiyi repo:</p>
-<pre><code><span class="p">$</span> make proto       <span class="c"># regenerate Connect Go + Protobuf Go from proto/</span>
-<span class="p">$</span> make web         <span class="c"># build the Vben Admin frontend into web/dist/</span>
-<span class="p">$</span> make build       <span class="c"># compile bin/tiyi with the frontend embedded</span></code></pre>
-    <p>For a release artifact, use the guarded one-shot target. It refuses a dirty worktree, verifies the embedded vendor-license public-key fingerprint, rebuilds proto/frontend outputs, and produces the same single binary:</p>
-<pre><code><span class="p">$</span> make release</code></pre>
-    <p>Build inputs:</p>
-    <ul>
-      <li><strong>Go 1.25+</strong> — the module floor. Pure-Go SQLite via <code>modernc.org/sqlite</code> means no CGo and clean cross-compilation.</li>
-      <li><strong>Node 20.19+ and pnpm 10+</strong> — for <code>make web</code>. The output is embedded with <code>go:embed</code> at the next <code>make build</code>.</li>
-      <li><strong>buf</strong> — bundled at <code>tmp/buf/bin/buf</code> for proto regeneration. Run <code>make proto</code> to refresh generated Connect/PB Go after editing <code>proto/tiyi/v1/*.proto</code>.</li>
-    </ul>
-
-    <h2 id="prebuilt">Prebuilt binaries</h2>
+    <h2 id="prebuilt">Install the signed binary</h2>
     <p>Tiyi is one signed binary — free and full-featured on a single node. The canonical install script is published at <code>https://www.tiyisec.com/install.sh</code>:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.2.0 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.2.1 linux/amd64</span></code></pre>
     <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. It tries GitHub first and falls back to the Gitee release mirror; force Gitee with <code>TIYI_MIRROR=gitee</code> when needed:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.2.0</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
+    <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.2.1</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
     <p>Public distribution repos: <a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> and <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>.</p>
-    <p><code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets.</p>
-
-    <h2 id="bootstrap-from-server">Bootstrap an agent from a running server</h2>
-    <p>A running Tiyi server exposes <code>GET /download/tiyi</code>, an unauthenticated endpoint that streams the running binary. Use it to bootstrap agents on fresh machines:</p>
-<pre><code><span class="p">$</span> curl -fsSL -o /usr/local/bin/tiyi http://primary:8080/download/tiyi
-<span class="p">$</span> chmod +x /usr/local/bin/tiyi</code></pre>
-    <p>For cross-platform downloads, append <code>?os=linux&arch=arm64</code> to serve an imported binary release instead of the running binary.</p>
+    <p><code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets. Install the signed release from the public channel independently on every standalone, server, secondary, agent, and dashboard host before configuring its role.</p>
 
     <h2 id="config-file">Config file</h2>
     <p>Tiyi reads a Koanf-based YAML config. Start from this minimal config and let the defaults handle the rest:</p>
@@ -210,6 +190,7 @@
     <h2 id="systemd">Run as a systemd service</h2>
     <p>For a long-lived deployment, let Tiyi install itself as a hardened systemd service. <code>tiyi install</code> creates the <code>tiyi</code> service user and the <code>tiyi-admin</code> socket group, writes the unit, and with <code>--now</code> enables and starts it on boot:</p>
 <pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
+    <div class="callout callout-tip"><div class="callout-body"><p>Running <code>sudo tiyi install</code> without <code>--now</code> intentionally leaves the unit disabled and stopped so you can finish mode-specific configuration. For the first <strong>standalone</strong> start, re-run the same install command with <code>--now</code> added; do not start the unit directly with <code>systemctl</code>. The installer can then create the administrator first and print the one-time login here instead of sending the password to the system journal.</p></div></div>
     <p>The service runs unprivileged and binds ports 80/443 via <code>CAP_NET_BIND_SERVICE</code>. Before each start, a root-only pre-start hook re-owns the configured state directory and KEK file for the service user, so CRS caches, uploads, exclusion packages, release staging, logs, trust snapshots, and embedded-agent state left by a prior sudo foreground run cannot block runtime writes. On a first install, <code>--now</code> pre-creates the administrator and prints the one-time login itself — no journal scraping:</p>
 <pre><code><span class="c">tiyi is enabled and running as tiyi.service.</span>
 
@@ -272,7 +253,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.2.0 &middot; 2026-07-16</span>
+      <span class="build">build v3.2.1 &middot; 2026-07-17</span>
     </div>
   </div>
 </footer>

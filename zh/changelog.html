@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>更新日志 — 太一</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="太一从基础工作到 v3.2.0 的完整更新记录。" />
+<meta name="description" content="太一从基础工作到 v3.2.1 的完整更新记录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -52,6 +52,18 @@
 
     <div class="timeline">
 
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.2.1</span>
+          <span class="tl-date">2026-07-17</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">v3.2.0 质量与可靠性加固</div>
+        <div class="tl-body">
+          修复 v3.2.0 QA 全量回归发现的问题：未匹配 Host 头改为返回 421 而非绕过 WAF，CRS 980099 出站关联规则不再报错，并修复抽屉、自动关闭与国际化等体验缺陷。可靠性增强包括 SQLite BUSY 重试、孤儿证据查找索引与持久化关联 worker、按响应限量的网络 GeoIP 富化。
+        </div>
+      </div>
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -725,7 +737,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.2.0 · 2026-07-16</span>
+      <span class="build">build v3.2.1 · 2026-07-17</span>
     </div>
   </div>
 </footer>
