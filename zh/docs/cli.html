@@ -225,7 +225,7 @@ tiyi system settings update --set siem.endpoint=tcp://siem.internal:514 --set si
     <p>日志与证据策略是带 revision CAS 的 LogService 资源，请在<strong>系统管理 → 设置 → 日志与证据</strong>管理；旧 <code>telemetry.*</code>、<code>logsink.*</code>、<code>log_mode.*</code> 与 <code>log_retention</code> 设置会被拒绝。</p>
 
     <h2 id="release-mgmt">发布（滚动节点升级）</h2>
-<pre><code>tiyi release import --tarball ./tiyi_v3.2.1_linux_amd64.tar.gz
+<pre><code>tiyi release import --tarball ./tiyi_v3.3.0_linux_amd64.tar.gz
 tiyi release list
 tiyi release apply <span class="v">&lt;release-id&gt;</span>           <span class="c"># 把 APPLY_BINARY 散到所有匹配的节点</span>
 tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span> --agent-id <span class="v">B</span>
@@ -277,7 +277,7 @@ tiyi promote --force             <span class="c"># 跳过 demote;接受有界数
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.2.1 &middot; 2026-07-17</span>
+      <span class="build">build v3.3.0 &middot; 2026-07-22</span>
     </div>
   </div>
 </footer>

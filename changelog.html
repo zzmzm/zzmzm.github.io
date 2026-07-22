@@ -54,6 +54,18 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.3.0</span>
+          <span class="tl-date">2026-07-22</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">SecurityFacts consolidation + alert auto-remediation</div>
+        <div class="tl-body">
+          The sessionized incident, attack-campaign, and MITRE-mapping layer is removed; immutable, partitioned SecurityFacts are now the sole security-event truth, with a fresh-install schema-43 cutover (no in-place upgrade from older state). Alert auto-remediation turns a firing alert into a reviewed IP-list or custom-rule draft; a durable fact journal and bounded Live Tail (≤200 rows, one event per 500 ms window) keep investigation fast. Operator docs, merge log, and website synchronized in EN + zh.
+        </div>
+      </div>
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.2.1</span>
           <span class="tl-date">2026-07-17</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -736,7 +748,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.2.1 · 2026-07-17</span>
+      <span class="build">build v3.3.0 · 2026-07-22</span>
     </div>
   </div>
 </footer>

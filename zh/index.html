@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.2.1</span>
-    Observation v2 + 持久化 Attack Campaign
+    <span class="tag">v3.3.0</span>
+    Observation v2 + 告警自动处置
   </span>
 
   <h1>
@@ -263,8 +263,8 @@
           <!-- layers -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
         </div>
-        <h3>安全事件聚合，而非一片火海</h3>
-        <p><span class="mono">security_incident</span> 层把同 <span class="mono">(站点, 客户端 IP, 攻击类别)</span> 的事件在滑动窗口内折叠为一个可操作的事件 —— 严重等级上卷、生命周期可追踪，创建即打上 MITRE ATT&amp;CK + 杀伤链 + 地理标签，并可选默认关闭的自动响应。</p>
+        <h3>SecurityFact + 自动处置</h3>
+        <p>每个被拦截或可疑请求写入一条不可变、按天分区的 <span class="mono">SecurityFact</span>--规则命中、攻击类别、严重等级与匹配数据--作为唯一的安全事件真相，取代会话化的事件与攻击活动。一条正在触发的告警可起草 <span class="mono">IP 列表</span>或自定义规则处置方案，由你审核批准；未经同意不会自动应用。</p>
       </div>
 
       <div class="feature reveal">
@@ -385,48 +385,6 @@
           <span class="url">/telemetry/explorer</span>
         </div>
         <img src="../assets/img/screenshots/zh-dark/telemetry.png" data-shot="telemetry" alt="遥测深度视图：实时 QPS 与按客户端 IP 的 Top-K" width="1440" height="900" loading="lazy" />
-      </div>
-    </div>
-
-    <!-- Tour 5: Security incidents -->
-    <div class="tour-row reveal">
-      <div class="tour-text">
-        <span class="tour-eyebrow">安全事件</span>
-        <h3>把请求噪声收敛成一个调查对象。</h3>
-        <p>确定性的 L2 聚合按站点、观测来源、攻击类型与空闲窗口归并安全发现。详情把拦截 / 放行结果、规则命中与本地保留证据覆盖放在同一个研判面板中。</p>
-        <ul>
-          <li>活跃 → 冷却 → 已确认 → 已关闭生命周期与实时追踪</li>
-          <li>主要 CRS 规则、路径、关联 Finding 与保留证据</li>
-          <li>告警与响应联动不丢失任何来源事实</li>
-        </ul>
-      </div>
-      <div class="frame">
-        <div class="frame-tabs">
-          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="url">/logs/security-incidents</span>
-        </div>
-        <img src="../assets/img/screenshots/zh-dark/incidents.png" data-shot="incidents" alt="安全事件详情：规则命中与本地保留证据覆盖" width="1440" height="900" loading="lazy" />
-      </div>
-    </div>
-
-    <!-- Tour 6: Attack campaigns -->
-    <div class="tour-row reveal">
-      <div class="tour-text">
-        <span class="tour-eyebrow">攻击活动</span>
-        <h3>看清一次攻击活动，而不是只看一堆告警。</h3>
-        <p>持久化 L3 Campaign 把事件关联成可修订的攻击活动，呈现确定性支撑、风险与置信度、来源 / 目标、攻击链和 MITRE 行为，同时不会把观测到的网络出口误说成攻击者身份。</p>
-        <ul>
-          <li>跨轮换来源与共享目标形成已验证候选</li>
-          <li>事实、本地保留证据与 SIEM 覆盖分别呈现</li>
-          <li>确认、排除、合并、拆分与关闭全程留痕</li>
-        </ul>
-      </div>
-      <div class="frame">
-        <div class="frame-tabs">
-          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="url">/logs/security-campaigns</span>
-        </div>
-        <img src="../assets/img/screenshots/zh-dark/campaigns.png" data-shot="campaigns" alt="攻击活动详情：风险、置信度、事实覆盖与 MITRE 视图" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
@@ -569,6 +527,18 @@
 
     <div class="timeline reveal">
 
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.3.0</span>
+          <span class="tl-date">2026-07-22</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">SecurityFact 收敛 + 告警自动处置</div>
+        <div class="tl-body">
+          移除会话化的事件、攻击活动与 MITRE 映射层；不可变、按天分区的 SecurityFact 成为唯一的安全事件真相，采用全新安装的 schema-43 切换（不支持从旧状态原地升级）。告警自动处置把一条正在触发的告警转为待审核的 IP 列表或自定义规则草案；持久化事实日志与有界实时追踪（≤200 行，每 500ms 窗口至多一条）让调查保持高效。运维文档、合并日志与网站已同步中英文。
+        </div>
+      </div>
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -892,6 +862,18 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.3.0</span>
+          <span class="tl-date">2026-07-22</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">SecurityFact 收敛 + 告警自动处置</div>
+        <div class="tl-body">
+          会话化的事件、攻击活动与 MITRE 映射层被不可变、按天分区的 SecurityFact 取代，作为唯一的安全事件真相，采用全新安装的 schema-43 切换。告警自动处置从一条正在触发的告警起草待审核的 IP 列表/自定义规则动作；持久化事实日志与有界实时追踪让调查保持高效。
+        </div>
+      </div>
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.2.1</span>
           <span class="tl-date">2026-07-17</span>
           <span class="tl-tag shipped">已发布</span>
@@ -921,16 +903,16 @@
           <span class="tl-date">2026 Q4 · 目标</span>
           <span class="tl-tag current">下一步</span>
         </div>
-        <div class="tl-title">事件关联 DSL + 响应动作库</div>
+        <div class="tl-title">请求证据 + 直达 SIEM 投递</div>
         <div class="tl-body">
-          已发布的事件聚合层按固定的 <span class="mono">(站点, 客户端 IP, 攻击类别)</span> 键分组。下一阶段事件响应里程碑将引入运维自定义的 Sigma 风格关联 DSL（从 v1 聚合工作中显式推迟）、更丰富的自动响应动作库，以及构建在告警生命周期之上的通知通道路由树。
+          在 Observation v2 之外新增两个独立平面：请求证据平面保留未脱敏的已解析请求头与有界请求体字节，供控制台复核；直达 SIEM 平面从产生事件的节点转发源生 Caddy 访问 JSON、Coraza 审计 JSON 与 Tiyi 格式事件。各自独立队列、字节预算与失败计数；任一平面的压力都不会改变 WAF 决策或响应。
         </div>
       </div>
 
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.3</span>
+          <span class="tl-version">v3.4</span>
           <span class="tl-date">2027 Q1 · 目标</span>
           <span class="tl-tag future">规划中</span>
         </div>
@@ -943,7 +925,7 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.4</span>
+          <span class="tl-version">v3.5</span>
           <span class="tl-date">2027 Q2 · 目标</span>
           <span class="tl-tag future">规划中</span>
         </div>
@@ -1030,7 +1012,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.2.1 · 2026-07-17</span>
+      <span class="build">build v3.3.0 · 2026-07-22</span>
     </div>
   </div>
 </footer>

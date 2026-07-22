@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.2.1</span>
-    Observation v2 + persistent attack campaigns
+    <span class="tag">v3.3.0</span>
+    Observation v2 + alert auto-remediation
   </span>
 
   <h1>
@@ -274,8 +274,8 @@
           <!-- layers -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
         </div>
-        <h3>Security incidents, not a firehose</h3>
-        <p>A <span class="mono">security_incident</span> layer folds same <span class="mono">(site, client IP, attack class)</span> events over a sliding window into one actionable incident — severity rolled up, lifecycle tracked, MITRE ATT&amp;CK + kill-chain + geo tagged at creation, with optional default-off automated response.</p>
+        <h3>SecurityFacts + auto-remediation</h3>
+        <p>Every blocked or suspicious request writes an immutable, partitioned <span class="mono">SecurityFact</span> — rule matches, attack class, severity, and matched data — as the single security-event truth, replacing sessionized incidents and campaigns. A firing alert can draft an <span class="mono">IP-list</span> or custom-rule remediation you review and approve; nothing applies without consent.</p>
       </div>
 
       <div class="feature reveal">
@@ -398,48 +398,6 @@
           <span class="url">/telemetry/explorer</span>
         </div>
         <img src="assets/img/screenshots/en-dark/telemetry.png" data-shot="telemetry" alt="Telemetry explorer showing real-time QPS and Top-K by client IP" width="1440" height="900" loading="lazy" />
-      </div>
-    </div>
-
-    <!-- Tour 5: Security incidents -->
-    <div class="tour-row reveal">
-      <div class="tour-text">
-        <span class="tour-eyebrow">Security incidents</span>
-        <h3>Turn request noise into one investigation.</h3>
-        <p>Deterministic L2 aggregation groups findings by site, observed source, attack class, and idle window. The detail view keeps outcomes, rule hits, and retained-evidence coverage in one triage surface.</p>
-        <ul>
-          <li>Firing → cooled → acknowledged → closed lifecycle with live tail</li>
-          <li>Primary CRS rules, paths, finding timeline, and retained evidence</li>
-          <li>Alert and response handoffs without losing the source facts</li>
-        </ul>
-      </div>
-      <div class="frame">
-        <div class="frame-tabs">
-          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="url">/logs/security-incidents</span>
-        </div>
-        <img src="assets/img/screenshots/en-dark/incidents.png" data-shot="incidents" alt="Security incident detail with rule hits and retained evidence coverage" width="1440" height="900" loading="lazy" />
-      </div>
-    </div>
-
-    <!-- Tour 6: Attack campaigns -->
-    <div class="tour-row reveal">
-      <div class="tour-text">
-        <span class="tour-eyebrow">Attack campaigns</span>
-        <h3>See the operation, not just the alerts.</h3>
-        <p>Persistent L3 campaigns correlate incidents into revisioned attack activity with deterministic support, risk and confidence, source/target views, attack chain, and MITRE behavior — without treating an observed network exit as attacker identity.</p>
-        <ul>
-          <li>Validated candidates across rotating sources and shared targets</li>
-          <li>Fact, retained-evidence, and SIEM coverage shown independently</li>
-          <li>Audited confirm, dismiss, merge, split, and close workflow</li>
-        </ul>
-      </div>
-      <div class="frame">
-        <div class="frame-tabs">
-          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="url">/logs/security-campaigns</span>
-        </div>
-        <img src="assets/img/screenshots/en-dark/campaigns.png" data-shot="campaigns" alt="Attack campaign detail with risk, confidence, fact coverage, and MITRE views" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
@@ -582,6 +540,18 @@
 
     <div class="timeline reveal">
 
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.3.0</span>
+          <span class="tl-date">2026-07-22</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">SecurityFacts consolidation + alert auto-remediation</div>
+        <div class="tl-body">
+          The sessionized incident, attack-campaign, and MITRE-mapping layer is removed; immutable, partitioned SecurityFacts are now the sole security-event truth, with a fresh-install schema-43 cutover. Alert auto-remediation turns a firing alert into a reviewed IP-list or custom-rule draft; a durable fact journal and bounded Live Tail (≤200 rows, one event per 500 ms window) keep investigation fast. Operator docs, merge log, and website synchronized in EN + zh.
+        </div>
+      </div>
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -905,6 +875,18 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.3.0</span>
+          <span class="tl-date">2026-07-22</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">SecurityFacts consolidation + alert auto-remediation</div>
+        <div class="tl-body">
+          The sessionized incident, attack-campaign, and MITRE-mapping layer is replaced by immutable, partitioned SecurityFacts as the sole security-event truth, with a fresh-install schema-43 cutover. Alert auto-remediation drafts reviewed IP-list/custom-rule actions from a firing alert; a durable fact journal and bounded Live Tail keep investigation fast.
+        </div>
+      </div>
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.2.1</span>
           <span class="tl-date">2026-07-17</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -934,16 +916,16 @@
           <span class="tl-date">Q4 2026 · target</span>
           <span class="tl-tag current">Next</span>
         </div>
-        <div class="tl-title">Incident correlation DSL + response library</div>
+        <div class="tl-title">Request evidence + direct SIEM egress</div>
         <div class="tl-body">
-          The shipped incident layer groups on a fixed <span class="mono">(site, client IP, attack class)</span> key. The next incident-response milestone opens that up with an operator-defined Sigma-style correlation DSL (explicitly deferred from the v1 aggregation work), a broader automated-response action library, and notification-channel routing trees on top of the alerting lifecycle.
+          Two independent planes beside Observation v2: a Request Evidence plane retaining unredacted parsed headers and bounded body bytes for in-console review, and a Direct SIEM plane forwarding source-native Caddy access JSON, Coraza audit JSON, and Tiyi-formatted events from the node that produced them. Separate queues, byte budgets, and failure counters; pressure in either plane never changes a WAF decision or response.
         </div>
       </div>
 
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.3</span>
+          <span class="tl-version">v3.4</span>
           <span class="tl-date">Q1 2027 · target</span>
           <span class="tl-tag future">Planned</span>
         </div>
@@ -956,7 +938,7 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.4</span>
+          <span class="tl-version">v3.5</span>
           <span class="tl-date">Q2 2027 · target</span>
           <span class="tl-tag future">Planned</span>
         </div>
@@ -1043,7 +1025,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.2.1 · 2026-07-17</span>
+      <span class="build">build v3.3.0 · 2026-07-22</span>
     </div>
   </div>
 </footer>
