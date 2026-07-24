@@ -54,6 +54,25 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.3.1</span>
+          <span class="tl-date">2026-07-24</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Request evidence + producer-direct SIEM</div>
+        <div class="tl-body">
+          <p>v3.3.1 adds two optional, bounded observation planes and hardens long-running telemetry storage without moving any storage or network work into the WAF request path.</p>
+          <ul>
+            <li><strong>Request Evidence.</strong> Global and per-site <span class="mono">off</span>, <span class="mono">security_only</span>, and <span class="mono">retained_logs</span> policies retain unredacted parsed headers and bounded body bytes beside authorized Attack/Access log drawers; fresh installs remain off.</li>
+            <li><strong>Durable local and Agent storage.</strong> Append-only daily segments, quotas, retention, deterministic exemplar convergence, resumable 64 KiB CRC32C Agent uploads, and durable acknowledgements bound memory, disk, and reconnect behavior.</li>
+            <li><strong>Producer-direct SIEM.</strong> Up to 32 independent UDP/TCP/TLS destinations select native Caddy access JSON, native Coraza audit JSON, or Tiyi-formatted sources with per-target queues, framing, timeouts, and diagnostics. Signed Agent last-known-good profiles continue while Primary is offline.</li>
+            <li><strong>Operational visibility.</strong> Log Pipeline exposes evidence, raw-source, and per-destination queue/drop/failure/panic lanes. Dashboard Top cards use exact normalized URL templates and fixed UA classes.</li>
+            <li><strong>Runtime hardening.</strong> Idle previous-day SQLite WALs are safely truncated behind partition lease fences, and Tiyi defaults to <span class="mono">GOGC=200</span> plus a soft memory limit at 90% of the detected host/container limit unless standard Go overrides are supplied.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.3.0</span>
           <span class="tl-date">2026-07-22</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -748,7 +767,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.3.0 · 2026-07-22</span>
+      <span class="build">build v3.3.1 · 2026-07-24</span>
     </div>
   </div>
 </footer>

@@ -55,6 +55,25 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.3.1</span>
+          <span class="tl-date">2026-07-24</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">请求证据 + 生产节点直达 SIEM</div>
+        <div class="tl-body">
+          <p>v3.3.1 新增两个可选、有界的观测平面，并加固长时间运行的遥测存储；任何存储或网络工作都不会进入 WAF 请求路径。</p>
+          <ul>
+            <li><strong>请求证据。</strong>全局与站点级 <span class="mono">off</span>、<span class="mono">security_only</span>、<span class="mono">retained_logs</span> 策略，在授权的攻击/访问日志抽屉旁保留未脱敏的已解析请求头和有界请求体；新安装默认关闭。</li>
+            <li><strong>本地与 Agent 持久化。</strong>追加式每日段、配额、保留期、确定性 exemplar 收敛、可恢复的 64 KiB CRC32C Agent 上传与持久化 ACK，共同限制内存、磁盘和重连行为。</li>
+            <li><strong>生产节点直达 SIEM。</strong>最多 32 个独立 UDP/TCP/TLS 目标可选择源生 Caddy 访问 JSON、Coraza 审计 JSON 或太一格式源，并分别配置队列、framing、超时与诊断。已签名的 Agent 最近良好配置在 Primary 离线时仍可继续工作。</li>
+            <li><strong>运维可见性。</strong>日志管道暴露证据、原始源与每个目标的队列/丢弃/失败/panic 通道。Dashboard Top 卡片改用精确规范化 URL 模板与固定 UA 分类。</li>
+            <li><strong>运行时加固。</strong>空闲的前一日 SQLite WAL 会在分区 lease 栅栏后安全截断；除非提供标准 Go 覆盖，太一默认使用 <span class="mono">GOGC=200</span> 并把软内存上限设为检测到的主机/容器限制的 90%。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.3.0</span>
           <span class="tl-date">2026-07-22</span>
           <span class="tl-tag shipped">已发布</span>
@@ -749,7 +768,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.3.0 · 2026-07-22</span>
+      <span class="build">build v3.3.1 · 2026-07-24</span>
     </div>
   </div>
 </footer>

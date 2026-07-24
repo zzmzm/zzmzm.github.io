@@ -36,9 +36,9 @@
     <h1>From request to response</h1>
     <p class="lede">A practical loop for publishing an application, seeing what Tiyi sees, investigating suspicious traffic, and making the narrowest safe change.</p>
 
-    <div class="request-path" role="img" aria-label="Client request passes through listener and TLS, site and path routing, WAF policy, then upstream; observation produces findings, incidents, campaigns, alerts, and SIEM output.">
+    <div class="request-path" role="img" aria-label="Client request passes through listener and TLS, site and path routing, WAF policy, then upstream; independent observation planes produce exact counters, SecurityFacts, optional evidence, alerts, and SIEM output.">
       <span>Client</span><b>→</b><span>Listener + TLS</span><b>→</b><span>Site + path</span><b>→</b><span>WAF policy</span><b>→</b><span>Upstream</span>
-      <small>exact counters · retained evidence · findings → incidents → campaigns · alerts/SIEM</small>
+      <small>exact counters · immutable SecurityFacts · optional detail/evidence · alerts/direct SIEM</small>
     </div>
 
     <h2 id="publish">1. Publish an application</h2>
@@ -53,21 +53,25 @@ curl -i -H <span class="s">'Host: shop.example.com'</span> http://127.0.0.1/</co
     <p>Use <strong>Application Delivery → Sites</strong> for TLS, path routes, health state, and site-level security overrides. For one hostname with several apps, use longest-prefix routes such as <code>/api/</code> and <code>/static/</code>, keep a fallback, and probe every route after saving.</p>
 
     <h2 id="baseline">2. Establish a baseline</h2>
-    <p>In <strong>Overview</strong>, select a site and time range, then inspect request rate, blocked rate, status classes, latency, and top attackers. Use <strong>Monitoring → Telemetry Explorer</strong> for Top-K and API Inventory; use <strong>Monitoring → Log Pipeline</strong> for consumer health.</p>
+    <p>In <strong>Overview</strong>, select a site and time range, then inspect request rate, blocked rate, status classes, top attackers, normalized URL Top, and fixed-class UA Top. Use <strong>Security &amp; Traffic → API Inventory</strong> for discovered assets; use <strong>System Monitoring → Log Pipeline</strong> for consumer health.</p>
     <table><thead><tr><th>Truth plane</th><th>Answers</th><th>Failure isolation</th></tr></thead><tbody>
       <tr><td>Exact counters</td><td>How much traffic passed or was blocked?</td><td>Never sampled by detail policy.</td></tr>
-      <tr><td>Findings/evidence</td><td>What happened and which requests prove it?</td><td>Compact and retained for investigation.</td></tr>
-      <tr><td>Detail + SIEM</td><td>What must be exported or examined deeply?</td><td>Independent retry; cannot block proxy traffic.</td></tr>
+      <tr><td>SecurityFacts</td><td>Which security matches occurred?</td><td>Immutable compact investigation truth.</td></tr>
+      <tr><td>Retained detail/evidence</td><td>Which request-level context should remain available?</td><td>Independent policy, retention, and storage quotas.</td></tr>
+      <tr><td>Direct SIEM</td><td>Which native or formatted events should leave each node?</td><td>Independent per-destination queues; cannot block proxy traffic.</td></tr>
     </tbody></table>
+    <h3 id="evidence-siem">Request Evidence and direct SIEM</h3>
+    <p>Request Evidence is <strong>off by default</strong>. Configure it under <strong>System Administration → Settings → Global logging &amp; evidence policy</strong>, then optionally override a site from its <strong>Logging &amp; evidence</strong> drawer. <code>security_only</code> retains evidence only for requests that produced a SecurityFact; <code>retained_logs</code> attaches evidence to retained Attack/Access rows. Captured Cookie, Authorization, API keys, personal data, and request bodies are intentionally unredacted, so restrict log-read access and keep retention short. Open an Attack or Access log, expand <strong>Request evidence</strong>, and load the bounded preview only when needed.</p>
+    <p>Configure producer-side targets under <strong>System Administration → Settings → SIEM</strong>. Each destination independently selects native Caddy access JSON, native Coraza audit JSON, or Tiyi-formatted security/access/error/audit events and uses its own UDP/TCP/TLS queue, byte budget, framing, and timeout. A queue-full or network failure drops that destination's event and increments its Log Pipeline lane; it never delays a WAF response.</p>
 
     <h2 id="investigate">3. Investigate an alert</h2>
     <ol>
-      <li>Open <strong>Detection &amp; Response → Active Alerts</strong> and follow its evidence URL.</li>
+      <li>Open <strong>Alerts &amp; Notifications → Alert Center</strong> and follow its evidence URL.</li>
       <li>Pin site and time range, then copy the <code>X-Request-Id</code>.</li>
-      <li>Correlate the Security Finding with access and error evidence.</li>
-      <li>Review the Incident lifecycle, source/target, Geo/ASN caveat, and MITRE projection.</li>
-      <li>When incidents share a larger source/target/TTP pattern, triage the persistent Attack Campaign and its revisions, graph, and timeline.</li>
-      <li>Acknowledge, assign, and note the case; resolve only after mitigation is verified.</li>
+      <li>Use <strong>Security &amp; Traffic → Security Events</strong> to pivot the immutable facts by attacker, attack type, or target.</li>
+      <li>Open the matching <strong>Attack Logs</strong> row for rule evidence, then correlate Access and Runtime Error rows by request ID.</li>
+      <li>Load Request Evidence only when authorized and needed; treat Geo/ASN as advisory network-exit metadata.</li>
+      <li>Acknowledge and note the alert; resolve only after mitigation is verified.</li>
     </ol>
     <div class="callout callout-info"><div class="callout-body"><p><strong>AI is advisory.</strong> Enrichment is optional and default-off. Verify retained evidence and the compiled policy before applying any suggestion.</p></div></div>
 
@@ -78,11 +82,11 @@ curl -i -H <span class="s">'Host: shop.example.com'</span> http://127.0.0.1/</co
     <h2 id="agents">5. Operate agents</h2>
 <pre><code>tiyi agents issue-token --tag edge --ttl 1h
 tiyi agents list</code></pre>
-    <p>Use Agent Groups for stable targeting. Before rollout, inspect the bundle diff; afterward verify online state, applied revision/hash, apply result, and proxy health. “Offline” and “online on an old revision” are different failures.</p>
+    <p>Use Agent Groups for stable targeting. Before rollout, inspect the bundle diff; afterward verify online state, applied revision/hash, apply result, proxy health, and—when enabled—Evidence upload backlog plus direct-SIEM destination lanes. “Offline” and “online on an old revision” are different failures.</p>
 
     <h2 id="checklist">6. Daily and change checks</h2>
     <div class="docs-cards">
-      <div class="docs-card"><div class="docs-card-title">Daily</div><p>Health, disk, certificate expiry, agents, pipeline backlog, firing alerts, open incidents, campaign changes, API Inventory, failed SIEM/channel delivery, and audit chain.</p></div>
+      <div class="docs-card"><div class="docs-card-title">Daily</div><p>Health, disk, certificate expiry, agents, evidence/pipeline backlog, firing alerts, SecurityFact trends, API Inventory, failed SIEM/channel delivery, and audit chain.</p></div>
       <div class="docs-card"><div class="docs-card-title">Every change</div><p><code>tiyi doctor</code> → <code>tiyi diff</code> → apply → health → functional request → <code>tiyi audit verify</code>.</p></div>
     </div>
     <p>Back up <code>state.db</code>, the KEK, uploaded certificate sources, license, and declarative manifests. Test restoration, not just backup creation.</p>
@@ -91,8 +95,7 @@ tiyi agents list</code></pre>
   </main>
   <aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4></aside>
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.3.0 &middot; 2026-07-22</span></div></div></footer>
+<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.3.1 &middot; 2026-07-24</span></div></div></footer>
 <script src="../assets/js/main.js" defer></script>
 </body>
 </html>
-

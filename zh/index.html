@@ -54,7 +54,7 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.3.0</span>
+    <span class="tag">v3.3.1</span>
     Observation v2 + 告警自动处置
   </span>
 
@@ -230,8 +230,8 @@
         <div class="feature-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l8 6 8-6"/><path d="M4 17l8-6 8 6"/></svg>
         </div>
-        <h3>SIEM 转发，开箱即用</h3>
-        <p>安全、访问、错误、审计事件以 RFC&nbsp;5424、CEF 或 LEEF 格式，通过 TCP / UDP / unixgram 尽力转发。对接 Splunk、Elastic、Sentinel、Wazuh 都行。</p>
+        <h3>请求证据 + 直达 SIEM</h3>
+        <p>默认关闭且有界的请求头/请求体证据可在攻击与访问日志旁按需打开。生产节点使用独立 SIEM 队列，通过 UDP、TCP 或 TLS 发送源生 Caddy/Coraza 或格式化事件，绝不进入请求路径。</p>
       </div>
 
       <div class="feature reveal">
@@ -527,6 +527,18 @@
 
     <div class="timeline reveal">
 
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.3.1</span>
+          <span class="tl-date">2026-07-24</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">请求证据 + 生产节点直达 SIEM</div>
+        <div class="tl-body">
+          默认关闭的请求证据可在攻击与访问日志旁保留已解析请求头和有界请求体，并提供全局/站点策略、配额、保留期与可恢复的 Agent 上传。生产节点直达 SIEM 为源生 Caddy 访问 JSON、Coraza 审计 JSON 和太一格式事件提供独立目标。规范化 URL/UA Top、前一日 WAL 回收与 Go 自动内存限制改善日常运维；所有新通道都保持有界并与 WAF 流量 panic 隔离。
+        </div>
+      </div>
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -896,16 +908,16 @@
         </div>
       </div>
 
-      <div class="tl-item current">
+      <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">下一步</span>
-          <span class="tl-date">2026 Q4 · 目标</span>
-          <span class="tl-tag current">下一步</span>
+          <span class="tl-version">v3.3.1</span>
+          <span class="tl-date">2026-07-24</span>
+          <span class="tl-tag shipped">已发布</span>
         </div>
         <div class="tl-title">请求证据 + 直达 SIEM 投递</div>
         <div class="tl-body">
-          在 Observation v2 之外新增两个独立平面：请求证据平面保留未脱敏的已解析请求头与有界请求体字节，供控制台复核；直达 SIEM 平面从产生事件的节点转发源生 Caddy 访问 JSON、Coraza 审计 JSON 与 Tiyi 格式事件。各自独立队列、字节预算与失败计数；任一平面的压力都不会改变 WAF 决策或响应。
+          在 Observation v2 之外新增两个独立平面：默认关闭的请求证据平面保留未脱敏的已解析请求头与有界请求体字节，供授权控制台复核；直达 SIEM 平面从产生事件的节点转发源生 Caddy 访问 JSON、Coraza 审计 JSON 与太一格式事件。各自独立队列、字节预算与失败计数；任一平面的压力都不会改变 WAF 决策或响应。
         </div>
       </div>
 
@@ -1012,7 +1024,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.3.0 · 2026-07-22</span>
+      <span class="build">build v3.3.1 · 2026-07-24</span>
     </div>
   </div>
 </footer>

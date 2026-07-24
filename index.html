@@ -54,7 +54,7 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.3.0</span>
+    <span class="tag">v3.3.1</span>
     Observation v2 + alert auto-remediation
   </span>
 
@@ -238,8 +238,8 @@
           <!-- siphon -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l8 6 8-6"/><path d="M4 17l8-6 8 6"/></svg>
         </div>
-        <h3>SIEM egress, ready</h3>
-        <p>Best-effort TCP/UDP/unixgram forwarding for security, access, error, and audit events in RFC&nbsp;5424, CEF, or LEEF. Bring your own Splunk, Elastic, Sentinel, or Wazuh.</p>
+        <h3>Request evidence + direct SIEM</h3>
+        <p>Default-off, bounded request headers/body evidence opens beside retained Attack and Access logs. Independent producer-side SIEM queues send native Caddy/Coraza or formatted events over UDP, TCP, or TLS without entering the request path.</p>
       </div>
 
       <div class="feature reveal">
@@ -540,6 +540,18 @@
 
     <div class="timeline reveal">
 
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.3.1</span>
+          <span class="tl-date">2026-07-24</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Request evidence + producer-direct SIEM</div>
+        <div class="tl-body">
+          Default-off Request Evidence can retain parsed headers and bounded body bytes beside Attack and Access logs, with global/site policy, quotas, retention, and resumable Agent upload. Producer-direct SIEM adds independent destinations for native Caddy access JSON, Coraza audit JSON, and Tiyi-formatted events. Normalized URL/UA Top, prior-day WAL reclamation, and automatic Go memory limits improve day-two operations; every new lane remains bounded and panic-isolated from WAF traffic.
+        </div>
+      </div>
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -909,16 +921,16 @@
         </div>
       </div>
 
-      <div class="tl-item current">
+      <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">Next</span>
-          <span class="tl-date">Q4 2026 · target</span>
-          <span class="tl-tag current">Next</span>
+          <span class="tl-version">v3.3.1</span>
+          <span class="tl-date">2026-07-24</span>
+          <span class="tl-tag shipped">Shipped</span>
         </div>
         <div class="tl-title">Request evidence + direct SIEM egress</div>
         <div class="tl-body">
-          Two independent planes beside Observation v2: a Request Evidence plane retaining unredacted parsed headers and bounded body bytes for in-console review, and a Direct SIEM plane forwarding source-native Caddy access JSON, Coraza audit JSON, and Tiyi-formatted events from the node that produced them. Separate queues, byte budgets, and failure counters; pressure in either plane never changes a WAF decision or response.
+          Two independent planes beside Observation v2: default-off Request Evidence retains unredacted parsed headers and bounded body bytes for authorized in-console review; Direct SIEM forwards source-native Caddy access JSON, Coraza audit JSON, and Tiyi-formatted events from the node that produced them. Separate queues, byte budgets, and failure counters keep pressure in either plane from changing a WAF decision or response.
         </div>
       </div>
 
@@ -1025,7 +1037,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.3.0 · 2026-07-22</span>
+      <span class="build">build v3.3.1 · 2026-07-24</span>
     </div>
   </div>
 </footer>

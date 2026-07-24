@@ -16,7 +16,7 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">运维</span><h1>从请求到响应</h1>
     <p class="lede">按一个可重复闭环发布应用、理解太一看到的信号、调查可疑流量，并做范围最小且可验证的变更。</p>
-    <div class="request-path" role="img" aria-label="客户端请求依次经过监听与 TLS、站点与路径路由、WAF 策略和上游；观测结果形成 Finding、Incident、Campaign、告警和 SIEM 输出。"><span>客户端</span><b>→</b><span>监听 + TLS</span><b>→</b><span>站点 + 路径</span><b>→</b><span>WAF 策略</span><b>→</b><span>上游</span><small>精确计数 · 保留证据 · Finding → Incident → Campaign · 告警/SIEM</small></div>
+    <div class="request-path" role="img" aria-label="客户端请求依次经过监听与 TLS、站点与路径路由、WAF 策略和上游；独立观测平面产生精确计数、SecurityFact、可选证据、告警和 SIEM 输出。"><span>客户端</span><b>→</b><span>监听 + TLS</span><b>→</b><span>站点 + 路径</span><b>→</b><span>WAF 策略</span><b>→</b><span>上游</span><small>精确计数 · 不可变 SecurityFact · 可选明细/证据 · 告警/直达 SIEM</small></div>
 
     <h2 id="publish">1. 发布应用</h2>
     <p>先启动后端并创建站点，在修改公网 DNS 前验证路由。新站点创建后立即生效；一步式命令会创建上游池并使用内置 Standard 策略。</p>
@@ -30,11 +30,14 @@ curl -i -H <span class="s">'Host: shop.example.com'</span> http://127.0.0.1/</co
     <p>在<strong>应用交付 → 站点</strong>管理 TLS、路径路由、健康状态与站点安全覆盖。同一域名承载多个应用时，使用 `/api/`、`/static/` 等最长前缀路由，保留 fallback，并在保存后逐条探测。</p>
 
     <h2 id="baseline">2. 建立基线</h2>
-    <p>在<strong>总览</strong>选择站点和时间范围，检查请求率、拦截率、状态码、延迟与 Top 攻击源。通过<strong>监控 → 遥测探索器</strong>查看 Top-K 与 API Inventory；通过<strong>监控 → 日志管道</strong>检查消费者健康。</p>
-    <table><thead><tr><th>真相平面</th><th>回答的问题</th><th>隔离边界</th></tr></thead><tbody><tr><td>精确计数</td><td>通过或拦截了多少流量？</td><td>不被明细策略采样。</td></tr><tr><td>Finding/证据</td><td>发生了什么，哪些请求能证明？</td><td>紧凑并为调查保留。</td></tr><tr><td>明细 + SIEM</td><td>什么需要导出或深入检查？</td><td>独立重试，不能阻塞代理。</td></tr></tbody></table>
+    <p>在<strong>总览</strong>选择站点和时间范围，检查请求率、拦截率、状态码、Top 攻击源、规范化 URL Top 与固定类别 UA Top。通过<strong>安全与流量 → API Inventory</strong>查看发现资产；通过<strong>系统监控 → 日志管道</strong>检查消费者健康。</p>
+    <table><thead><tr><th>真相平面</th><th>回答的问题</th><th>隔离边界</th></tr></thead><tbody><tr><td>精确计数</td><td>通过或拦截了多少流量？</td><td>不被明细策略采样。</td></tr><tr><td>SecurityFact</td><td>发生了哪些安全匹配？</td><td>不可变的紧凑调查真相。</td></tr><tr><td>保留明细/证据</td><td>哪些请求级上下文需要保留？</td><td>独立策略、保留期与存储配额。</td></tr><tr><td>直达 SIEM</td><td>每个节点需要外发哪些源生或格式化事件？</td><td>每目标独立队列，不能阻塞代理。</td></tr></tbody></table>
+    <h3 id="evidence-siem">请求证据与直达 SIEM</h3>
+    <p>请求证据<strong>默认关闭</strong>。在<strong>系统管理 → 设置 → 全局日志与证据策略</strong>配置，再从站点的<strong>日志与证据</strong>抽屉按需覆盖。<code>security_only</code> 只为产生 SecurityFact 的请求保留证据；<code>retained_logs</code> 把证据附着到已保留的攻击/访问行。Cookie、Authorization、API key、个人数据与请求体按设计不脱敏，必须限制日志读取权限并缩短保留期。仅在需要时打开攻击或访问日志，展开<strong>请求证据</strong>并加载有界预览。</p>
+    <p>在<strong>系统管理 → 设置 → SIEM</strong>配置生产节点目标。每个目标独立选择源生 Caddy 访问 JSON、Coraza 审计 JSON 或太一格式安全/访问/错误/审计事件，并使用自己的 UDP/TCP/TLS 队列、字节预算、framing 与超时。队列满或网络失败只丢弃该目标当前事件并增加日志管道计数，绝不会拖慢 WAF 响应。</p>
 
     <h2 id="investigate">3. 调查告警</h2>
-    <ol><li>打开<strong>检测与响应 → 活跃告警</strong>并跟随证据 URL。</li><li>固定站点和时间范围，复制 <code>X-Request-Id</code>。</li><li>把 Security Finding 与访问、错误证据关联起来。</li><li>查看 Incident 生命周期、来源/目标、Geo/ASN 限制与 MITRE 投影。</li><li>多个 Incident 形成更大来源/目标/TTP 模式时，调查持久化 Attack Campaign 的 revision、图与时间线。</li><li>确认、分派并记录；缓解措施验证后再解决。</li></ol>
+    <ol><li>打开<strong>告警与通知 → 告警中心</strong>并跟随证据 URL。</li><li>固定站点和时间范围，复制 <code>X-Request-Id</code>。</li><li>在<strong>安全与流量 → 安全事件</strong>按攻击者、攻击类型或目标分析不可变事实。</li><li>打开匹配的<strong>攻击日志</strong>查看规则证据，再按请求 ID 关联访问日志和运行时错误。</li><li>仅在获得授权且确有需要时加载请求证据；Geo/ASN 只能作为网络出口参考。</li><li>确认并记录告警；缓解措施验证后再解决。</li></ol>
     <div class="callout callout-info"><div class="callout-body"><p><strong>AI 仅提供建议。</strong> Enrichment 可选且默认关闭。应用建议前必须核对保留证据与编译后策略。</p></div></div>
 
     <h2 id="tune">4. 安全调优</h2>
@@ -44,14 +47,13 @@ curl -i -H <span class="s">'Host: shop.example.com'</span> http://127.0.0.1/</co
     <h2 id="agents">5. 运维 Agent</h2>
 <pre><code>tiyi agents issue-token --tag edge --ttl 1h
 tiyi agents list</code></pre>
-    <p>使用 Agent Group 做稳定目标选择。发布前检查 bundle diff，发布后核对在线状态、applied revision/hash、apply 结果与代理健康。“离线”和“在线但停留在旧 revision”是两类故障。</p>
+    <p>使用 Agent Group 做稳定目标选择。发布前检查 bundle diff，发布后核对在线状态、applied revision/hash、apply 结果、代理健康，以及启用后请求证据上传积压和直达 SIEM 目标通道。“离线”和“在线但停留在旧 revision”是两类故障。</p>
 
     <h2 id="checklist">6. 日常与变更检查</h2>
-    <div class="docs-cards"><div class="docs-card"><div class="docs-card-title">每天</div><p>健康、磁盘、证书到期、Agent、管道积压、firing 告警、开放 Incident、Campaign 变化、API Inventory、SIEM/通道失败与审计链。</p></div><div class="docs-card"><div class="docs-card-title">每次变更</div><p><code>tiyi doctor</code> → <code>tiyi diff</code> → 应用 → health → 功能请求 → <code>tiyi audit verify</code>。</p></div></div>
+    <div class="docs-cards"><div class="docs-card"><div class="docs-card-title">每天</div><p>健康、磁盘、证书到期、Agent、证据/管道积压、firing 告警、SecurityFact 趋势、API Inventory、SIEM/通道失败与审计链。</p></div><div class="docs-card"><div class="docs-card-title">每次变更</div><p><code>tiyi doctor</code> → <code>tiyi diff</code> → 应用 → health → 功能请求 → <code>tiyi audit verify</code>。</p></div></div>
     <p>备份 <code>state.db</code>、KEK、上传证书源文件、license 与声明式清单。必须测试恢复，不能只测试备份生成。</p>
     <div class="docs-pager"><a href="installation.html"><span class="label">← 上一页</span><span class="title">安装</span></a><a class="next" href="troubleshooting.html"><span class="label">下一页 →</span><span class="title">排障</span></a></div>
   </main><aside class="docs-toc" id="docs-toc" aria-label="本页大纲"><h4>本页大纲</h4></aside>
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span><span class="build">build v3.3.0 &middot; 2026-07-22</span></div></div></footer><script src="../../assets/js/main.js" defer></script>
+<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span><span class="build">build v3.3.1 &middot; 2026-07-24</span></div></div></footer><script src="../../assets/js/main.js" defer></script>
 </body></html>
-
