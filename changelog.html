@@ -24,7 +24,7 @@
       <img src="assets/img/tiyi-logo.png" alt="Tiyi logo" />
       <span>Tiyi</span>
     </a>
-    <nav class="nav-links" aria-label="Primary">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="index.html#features">Features</a>
       <a href="index.html#tour">Product</a>
       <a href="index.html#pricing">Pricing</a>
@@ -46,10 +46,31 @@
     <div class="section-head" style="text-align:left; margin-bottom:32px;">
       <span class="eyebrow">Changelog</span>
       <h2 style="font-size: clamp(32px, 4vw, 48px);">Tiyi release history.</h2>
-      <p style="margin: 0;">Every entry maps back to a commit and a verification command. Items are <span class="tl-tag shipped" style="display:inline-block; vertical-align:middle;">Shipped</span> only after implementation, verification, and required docs are complete — otherwise <span class="tl-tag future" style="display:inline-block; vertical-align:middle;">Planned</span> or <span class="tl-tag current" style="display:inline-block; vertical-align:middle;">In progress</span>.</p>
+      <p style="margin: 0;">Every entry maps back to a commit and a verification command. Items are <span class="tl-tag shipped" style="display:inline-block; vertical-align:middle;">Shipped</span> only after implementation, verification, and required docs are complete — otherwise <span class="tl-tag future" style="display:inline-block; vertical-align:middle;">Planned</span> or <span class="tl-tag current" style="display:inline-block; vertical-align:middle;">In progress</span>. Archived entries preserve the terminology and commands that existed at that time; use the newest entry and current documentation for supported operations.</p>
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.4.0</span>
+          <span class="tl-date">2026-07-30</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">One Controller, convergent configuration, operator trust</div>
+        <div class="tl-body">
+          <p>v3.4.0 makes the served state explicit from durable configuration through the operator UI, while removing the legacy HA contract.</p>
+          <ul>
+            <li><strong>Single Controller.</strong> <span class="mono">tiyi run</span> owns state, API, UI, and a factual built-in local data plane. Role, epoch, promotion, replication, standby, and alternate-Controller surfaces are removed; remote Agents continue serving their last accepted signed bundle during an outage.</li>
+            <li><strong>Convergent configuration.</strong> Durable desired/active revisions, immutable artifacts, local rollback, per-target delivery, content-addressed Agent envelopes, and contextual retry replace handler-local mutate/apply compensation.</li>
+            <li><strong>Health truth.</strong> Active upstreams pass a strict Controller-side submit probe before mutation. Continuous Caddy health is bound to the exact configuration generation and artifact hash, so stale reports cannot claim a candidate is active.</li>
+            <li><strong>Security and reliability.</strong> Generated fail-closed authorization, rotating HttpOnly refresh sessions, password token revocation, structured logging, correlated internal errors, panic-isolated workers, bounded shutdown, and pre-write quotas harden the management plane.</li>
+            <li><strong>Operator experience.</strong> Exact request/bandwidth dashboards, shared local/remote node trends, site request-path overviews, local configuration history, adaptive row actions, automatic Geo lifecycle, and security-only Request Evidence defaults make day-two state easier to read and safer to operate.</li>
+            <li><strong>Clean-break boundary.</strong> Databases below schema 47 are rejected without mutation; start v3.4.0 with fresh state and re-enroll remote Agents.</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -64,7 +85,7 @@
           <ul>
             <li><strong>Request Evidence.</strong> Global and per-site <span class="mono">off</span>, <span class="mono">security_only</span>, and <span class="mono">retained_logs</span> policies retain unredacted parsed headers and bounded body bytes beside authorized Attack/Access log drawers; fresh installs remain off.</li>
             <li><strong>Durable local and Agent storage.</strong> Append-only daily segments, quotas, retention, deterministic exemplar convergence, resumable 64 KiB CRC32C Agent uploads, and durable acknowledgements bound memory, disk, and reconnect behavior.</li>
-            <li><strong>Producer-direct SIEM.</strong> Up to 32 independent UDP/TCP/TLS destinations select native Caddy access JSON, native Coraza audit JSON, or Tiyi-formatted sources with per-target queues, framing, timeouts, and diagnostics. Signed Agent last-known-good profiles continue while Primary is offline.</li>
+            <li><strong>Producer-direct SIEM.</strong> Up to 32 independent UDP/TCP/TLS destinations select native Caddy access JSON, native Coraza audit JSON, or Tiyi-formatted sources with per-target queues, framing, timeouts, and diagnostics. Signed Agent last-known-good profiles continue while the Controller is offline.</li>
             <li><strong>Operational visibility.</strong> Log Pipeline exposes evidence, raw-source, and per-destination queue/drop/failure/panic lanes. Dashboard Top cards use exact normalized URL templates and fixed UA classes.</li>
             <li><strong>Runtime hardening.</strong> Idle previous-day SQLite WALs are safely truncated behind partition lease fences, and Tiyi defaults to <span class="mono">GOGC=200</span> plus a soft memory limit at 90% of the detected host/container limit unless standard Go overrides are supplied.</li>
           </ul>
@@ -767,7 +788,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.3.1 · 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

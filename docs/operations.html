@@ -17,7 +17,7 @@
 <div class="bg-field" aria-hidden="true"></div>
 <header class="nav"><div class="container nav-inner">
   <a class="brand" href="../index.html"><img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" /><span>Tiyi</span></a>
-  <nav class="nav-links" aria-label="Primary">
+  <nav class="nav-links" aria-label="Main navigation">
     <a href="../index.html#features">Features</a><a href="../index.html#tour">Product</a><a href="../index.html#pricing">Pricing</a><a href="index.html" style="color:var(--fg)">Docs</a><a href="../changelog.html">Changelog</a>
     <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button>
     <a class="nav-toggle nav-lang" href="../zh/docs/operations.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a><a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
@@ -28,7 +28,7 @@
     <div class="docs-nav-group"><h4>Get started</h4><ul><li><a href="index.html">Overview</a></li><li><a href="quickstart.html">Quickstart</a></li><li><a href="installation.html">Installation</a></li></ul></div>
     <div class="docs-nav-group"><h4>Operate</h4><ul><li><a href="operations.html">Operations guide</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li></ul></div>
     <div class="docs-nav-group"><h4>Concepts</h4><ul><li><a href="concepts.html">Domain model</a></li></ul></div>
-    <div class="docs-nav-group"><h4>Reference</h4><ul><li><a href="cli.html">CLI reference</a></li><li><a href="api.html">API overview</a></li></ul></div>
+    <div class="docs-nav-group"><h4>Reference</h4><ul><li><a href="cli.html">CLI reference</a></li><li><a href="api.html">API reference</a></li></ul></div>
     <div class="docs-nav-group"><h4>Run in production</h4><ul><li><a href="deployment.html">Deployment</a></li></ul></div>
   </aside>
   <main class="docs-content" role="main">
@@ -61,7 +61,7 @@ curl -i -H <span class="s">'Host: shop.example.com'</span> http://127.0.0.1/</co
       <tr><td>Direct SIEM</td><td>Which native or formatted events should leave each node?</td><td>Independent per-destination queues; cannot block proxy traffic.</td></tr>
     </tbody></table>
     <h3 id="evidence-siem">Request Evidence and direct SIEM</h3>
-    <p>Request Evidence is <strong>off by default</strong>. Configure it under <strong>System Administration → Settings → Global logging &amp; evidence policy</strong>, then optionally override a site from its <strong>Logging &amp; evidence</strong> drawer. <code>security_only</code> retains evidence only for requests that produced a SecurityFact; <code>retained_logs</code> attaches evidence to retained Attack/Access rows. Captured Cookie, Authorization, API keys, personal data, and request bodies are intentionally unredacted, so restrict log-read access and keep retention short. Open an Attack or Access log, expand <strong>Request evidence</strong>, and load the bounded preview only when needed.</p>
+    <p>Fresh installations default Request Evidence to the recommended <code>security_only</code> scope; upgrades preserve the operator's explicitly stored scope. Configure it under <strong>System Administration → Settings → Global logging &amp; evidence policy</strong>, then optionally override a site from its <strong>Logging &amp; evidence</strong> drawer. <code>security_only</code> retains evidence only for requests that produced a SecurityFact; <code>retained_logs</code> attaches evidence to retained Attack/Access rows. Captured Cookie, Authorization, API keys, personal data, and request bodies are intentionally unredacted, so restrict log-read access and keep retention short. Open an Attack or Access log, expand <strong>Request evidence</strong>, and load the bounded preview only when needed.</p>
     <p>Configure producer-side targets under <strong>System Administration → Settings → SIEM</strong>. Each destination independently selects native Caddy access JSON, native Coraza audit JSON, or Tiyi-formatted security/access/error/audit events and uses its own UDP/TCP/TLS queue, byte budget, framing, and timeout. A queue-full or network failure drops that destination's event and increments its Log Pipeline lane; it never delays a WAF response.</p>
 
     <h2 id="investigate">3. Investigate an alert</h2>
@@ -95,7 +95,7 @@ tiyi agents list</code></pre>
   </main>
   <aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4></aside>
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.3.1 &middot; 2026-07-24</span></div></div></footer>
+<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.4.0 · 2026-07-30</span></div></div></footer>
 <script src="../assets/js/main.js" defer></script>
 </body>
 </html>

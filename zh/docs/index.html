@@ -69,7 +69,7 @@
       <h4>参考</h4>
       <ul>
         <li><a href="cli.html">CLI 参考</a></li>
-        <li><a href="api.html">API 概览</a></li>
+        <li><a href="api.html">API 参考</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -84,7 +84,7 @@
     <span class="docs-eyebrow">文档</span>
     <h1>太一文档</h1>
     <p class="lede">
-      太一是一个 Go 二进制，运行 Caddy 反向代理、带 OWASP 核心规则集的 Coraza WAF、嵌入式 SQLite 控制平面与 Vben Admin UI。这些文档涵盖从五分钟首次启动到加固的多节点生产部署的全部内容。
+      太一是一个 Go 二进制，运行 Caddy 反向代理、带 OWASP 核心规则集的 Coraza WAF、嵌入式 SQLite 控制平面与 Vben Admin UI。这些文档涵盖从五分钟首次启动到带可选远程数据平面的生产部署。
     </p>
 
     <h2 id="start-here">从这里开始</h2>
@@ -93,11 +93,11 @@
     <div class="docs-cards">
       <a class="docs-card" href="quickstart.html">
         <div class="docs-card-title"><span class="docs-card-num">1</span>快速开始</div>
-        <p>安装签名二进制，启动 <code>tiyi standalone</code>，创建第一个站点，看 WAF 拦截真实攻击。五分钟。</p>
+        <p>安装签名二进制，启动 <code>tiyi run</code>，创建第一个站点，看 WAF 拦截真实攻击。五分钟。</p>
       </a>
       <a class="docs-card" href="installation.html">
         <div class="docs-card-title"><span class="docs-card-num">2</span>安装</div>
-        <p>安装签名版本，写 YAML 配置，并在 <code>standalone</code>、<code>server</code> 与 <code>agent</code> 模式之间选择。</p>
+        <p>安装签名版本，写 YAML 配置，运行 Controller 或入网远程 Agent。</p>
       </a>
       <a class="docs-card" href="concepts.html">
         <div class="docs-card-title">领域模型</div>
@@ -116,12 +116,12 @@
         <p>每一个 <code>tiyi</code> 子命令按资源分组，附上重要的 flag 与退出码契约。</p>
       </a>
       <a class="docs-card" href="api.html">
-        <div class="docs-card-title">API 概览</div>
+        <div class="docs-card-title">API 参考</div>
         <p>驱动 UI、CLI、节点流的 ConnectRPC 契约：鉴权、错误码与当前服务目录。</p>
       </a>
       <a class="docs-card" href="deployment.html">
         <div class="docs-card-title">部署</div>
-        <p>生产加固、带 epoch 隔离的 HA 故障转移、SIEM 转发、可观测性与升级路径。</p>
+        <p>生产加固、远程 Agent 连续运行与 Controller 中断边界、SIEM 转发、可观测性与升级路径。</p>
       </a>
     </div>
 
@@ -143,7 +143,7 @@
     </div>
 
     <h2 id="versions">覆盖的版本</h2>
-    <p>这些文档面向当前公开版本 <strong>v3.3.1</strong>。v3.2 对旧开发/测试安装采用干净状态切换，见<a href="troubleshooting.html#v32-reset">重置边界</a>。CLI flag、默认值或输出格式变化会在<a href="../changelog.html">更新日志</a>中追踪并同步到这里。若命令与二进制冲突，以二进制为准。</p>
+    <p>这些文档面向当前公开版本 <strong>v3.4.0</strong>。单 Controller schema 对低于 47 的数据库采用干净状态边界，见<a href="troubleshooting.html#v34-reset">重置步骤</a>。CLI flag、默认值或输出格式变化会在<a href="../changelog.html">更新日志</a>中追踪并同步到这里。若命令与二进制冲突，以二进制为准。</p>
 
     <div class="docs-pager">
       <a href="../index.html">
@@ -167,7 +167,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>API overview — Tiyi docs</title>
+<title>API reference — Tiyi docs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="The ConnectRPC contract that drives the UI, CLI, and agent stream. Authentication, errors, streaming, and the current service catalog." />
+<meta name="description" content="The ConnectRPC contract behind the Tiyi UI, CLI, and agent stream: transports, authentication, request conventions, error codes, RBAC, streaming, and the 23-service catalog." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -24,7 +24,7 @@
       <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
       <span>Tiyi</span>
     </a>
-    <nav class="nav-links" aria-label="Primary">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="../index.html#features">Features</a>
       <a href="../index.html#tour">Product</a>
       <a href="../index.html#pricing">Pricing</a>
@@ -68,7 +68,7 @@
       <h4>Reference</h4>
       <ul>
         <li><a href="cli.html">CLI reference</a></li>
-        <li><a href="api.html">API overview</a></li>
+        <li><a href="api.html">API reference</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -81,15 +81,20 @@
 
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">Reference</span>
-    <h1>API overview</h1>
-    <p class="lede">Tiyi exposes one ConnectRPC API. The same product contract serves the Vben Admin UI (JSON over HTTP), the <code>tiyi</code> CLI (JSON over HTTP), and the agent stream (gRPC bidi), keeping the three surfaces in lockstep.</p>
+    <h1>API reference</h1>
+    <p class="lede">Tiyi exposes one ConnectRPC API. The same contract serves the embedded Admin UI (JSON over HTTP), the <code>tiyi</code> CLI (JSON over HTTP), and the agent stream (gRPC bidi) — so anything the UI can do, a script can do too. <strong>238 RPCs across 23 services</strong>, plus a small non-RPC HTTP surface.</p>
 
     <h2 id="transport">Transport</h2>
-    <ul>
-      <li><strong>JSON</strong> for UI and CLI clients. Default <code>Content-Type: application/json</code>; URLs follow the ConnectRPC convention <code>/{service}/{Method}</code>.</li>
-      <li><strong>gRPC</strong> for the agent bidi stream and any other client that prefers binary.</li>
-      <li><strong>Connect-Web</strong> for the embedded Vben UI — no separate REST shim, no separate gateway.</li>
-    </ul>
+    <p>Every procedure is a <code>POST</code> to <code>/{package}.{Service}/{Method}</code>, for example <code>POST /tiyi.v1.SiteService/ListSites</code>. Three wire protocols share the same routes:</p>
+    <table>
+      <thead><tr><th>Protocol</th><th><code>Content-Type</code></th><th>Use it for</th></tr></thead>
+      <tbody>
+        <tr><td>Connect (unary)</td><td><code>application/json</code></td><td>curl, scripts, CI — no framing and no generated code required.</td></tr>
+        <tr><td>Connect (streaming)</td><td><code>application/connect+json</code></td><td>server-streaming and bidi RPCs from non-gRPC clients.</td></tr>
+        <tr><td>gRPC / gRPC-Web</td><td><code>application/grpc</code></td><td>generated gRPC clients; the agent stream.</td></tr>
+      </tbody>
+    </table>
+    <p>The API listens on the management address (<code>--addr</code>, default <code>0.0.0.0:8080</code>) and, in parallel, on a local Unix socket (<code>--admin-socket</code>, default <code>/run/tiyi/admin.sock</code>).</p>
 
     <h2 id="auth">Authentication</h2>
     <p>Three auth surfaces, picked by deployment context:</p>
@@ -102,97 +107,175 @@
         <tr>
           <td>Local admin socket</td>
           <td>OS file permissions on <code>admin.sock</code></td>
-          <td><code>tiyi</code> CLI on the same host as the server.</td>
+          <td><code>tiyi</code> CLI on the same host as the server. Requests run as a synthetic superadmin, which is why password recovery works with no credentials.</td>
         </tr>
         <tr>
           <td>HS256 JWT</td>
           <td><code>Authorization: Bearer &lt;jwt&gt;</code> over HTTP</td>
-          <td>Vben Admin UI, remote CLI, anything driving the API from off-host. Issued by <code>AuthService.Login</code>; refreshed by <code>RefreshToken</code>.</td>
+          <td>Admin UI, remote CLI, anything driving the API from off-host. Issued by <code>AuthService.Login</code>, renewed by <code>AuthService.Refresh</code>.</td>
         </tr>
         <tr>
           <td>Agent stream token</td>
           <td>One-use enrollment token → long-lived stream token</td>
-          <td>Agents on the bidi <code>AgentStream</code>. Tokens are issued through <code>AgentService.IssueEnrollmentToken</code>.</td>
+          <td>Agents on <code>AgentStreamService.Connect</code>. Tokens come from <code>AgentService.IssueEnrollmentToken</code>.</td>
         </tr>
       </tbody>
     </table>
 
-    <h3 id="login-example">Login example</h3>
-<pre><code><span class="p">$</span> curl -sS http://primary:8080/tiyi.v1.AuthService/Login <span class="o">\</span>
+    <h3 id="login-example">Login</h3>
+<pre><code><span class="p">$</span> curl -sS http://tiyi:8080/tiyi.v1.AuthService/Login <span class="o">\</span>
     -H <span class="s">"Content-Type: application/json"</span> <span class="o">\</span>
     -d <span class="s">'{"username":"admin","password":"..."}'</span>
 {
   <span class="s">"accessToken"</span>: <span class="s">"&lt;jwt&gt;"</span>,
-  <span class="s">"refreshToken"</span>: <span class="s">"&lt;refresh&gt;"</span>,
-  <span class="s">"user"</span>: { <span class="s">"id"</span>: <span class="s">"&lt;uuid&gt;"</span>, <span class="s">"role"</span>: <span class="s">"Administrator"</span> }
+  <span class="s">"expiresAt"</span>: <span class="s">"2026-07-26T21:13:41Z"</span>,
+  <span class="s">"user"</span>: {
+    <span class="s">"id"</span>: <span class="s">"&lt;uuid&gt;"</span>,
+    <span class="s">"tenantId"</span>: <span class="s">"&lt;uuid&gt;"</span>,
+    <span class="s">"username"</span>: <span class="s">"admin"</span>,
+    <span class="s">"roles"</span>: [<span class="s">"Administrator"</span>],
+    <span class="s">"accessCodes"</span>: [<span class="s">"site:read"</span>, <span class="s">"site:write"</span>, <span class="s">"..."</span>]
+  }
 }</code></pre>
 
-    <h2 id="services">The 26 services</h2>
+    <p>Three things that are easy to get wrong:</p>
+    <ul>
+      <li>The login body is <strong>flat</strong> — <code>{"username":…,"password":…}</code>, not nested under a credentials object.</li>
+      <li>The <strong>refresh token is not in the response body</strong>. It is set as an <code>HttpOnly</code>, <code>SameSite=Strict</code> cookie named <code>tiyi_refresh</code> scoped to <code>Path=/tiyi.v1.AuthService/</code>. Browsers replay it automatically; a script must capture it (<code>curl -c</code>) or pass it explicitly as <code>{"refreshToken":"…"}</code> to <code>Refresh</code>.</li>
+      <li><code>Refresh</code> <strong>rotates</strong> the refresh token, and replaying a consumed one is treated as theft: the call fails <code>unauthenticated</code> and the session is cleared. Always store the newest value.</li>
+    </ul>
+    <p>Default lifetimes are 8 hours for the access token (<code>auth.access_token_ttl</code>) and 7 days for the refresh token (<code>auth.refresh_token_ttl</code>). LDAP and RADIUS, when configured, are tried as fallbacks on the same <code>Login</code> call.</p>
+
+    <h3 id="local-socket">Local admin socket</h3>
+<pre><code><span class="p">$</span> curl -sS --unix-socket /run/tiyi/admin.sock <span class="o">\</span>
+    http://tiyi.local/tiyi.v1.SystemService/GetSystemSettings <span class="o">\</span>
+    -H <span class="s">"Content-Type: application/json"</span> -d <span class="s">'{}'</span></code></pre>
+    <p><code>http://tiyi.local</code> is a placeholder — the socket path decides the destination. The socket is <code>0600</code> by default; <code>--admin-socket-mode 0660 --admin-socket-group tiyi-admin</code> shares it with a Unix group. Anyone who can open it has full control, so treat that group as root-equivalent.</p>
+
+    <h3 id="cli-config">CLI</h3>
+<pre><code><span class="p">$</span> export TIYI_API=https://tiyi.example.com   <span class="c"># omit to use the local socket</span>
+<span class="p">$</span> export TIYI_TOKEN=<span class="s">"$TOKEN"</span>
+<span class="p">$</span> tiyi site list</code></pre>
+    <p>Flags <code>--api</code>, <code>--token</code>, and <code>--admin-socket</code> override the environment per command.</p>
+
+    <h2 id="conventions">Request conventions</h2>
+    <ul>
+      <li><strong>Responses use camelCase</strong> (<code>primaryHost</code>); requests accept camelCase <em>or</em> the original snake_case (<code>primary_host</code>).</li>
+      <li><strong>64-bit integers are JSON strings</strong> — <code>"revision": "2"</code>. Send them quoted too.</li>
+      <li><strong>Enums are prefixed strings</strong> — <code>"RESOURCE_STATUS_ACTIVE"</code>, <code>"WAF_MODE_BLOCKING"</code>. The zero value is always <code>*_UNSPECIFIED</code>.</li>
+      <li><strong>Timestamps are RFC 3339 UTC</strong> — <code>"2026-07-26T13:15:08.217701748Z"</code>.</li>
+      <li><strong>Mutations wrap their resource</strong>: <code>CreateSite</code> takes <code>{"site": {…}}</code>, not the fields at top level. Sending them bare returns <code>invalid_argument: site is required</code>.</li>
+      <li><strong>Field masks are comma-joined strings</strong>, not arrays: <code>"updateMask": "name,status"</code>. Without a mask the whole message is applied, so a client unaware of a newer field can blank it.</li>
+      <li><strong>Unknown fields are ignored, not rejected.</strong> A misspelled key silently does nothing — verify writes by reading the resource back.</li>
+      <li><strong>Every request is tenant-scoped</strong> from the token, never from a field in the request.</li>
+    </ul>
+
+    <h3 id="revisions">Revisions</h3>
+    <p>Versioned resources carry a <code>revision</code> that increments on every write. Send the revision you read; if another writer got there first the call fails with <code>failed_precondition: revision conflict</code>. Re-read, re-apply, retry. Omitting <code>revision</code> skips the check.</p>
+    <p>Routing and per-site policy overrides have their own RPCs (<code>UpdateSiteRouting</code>, <code>UpsertSitePolicyOverride</code>) so that a routing-unaware client cannot erase them with a plain <code>UpdateSite</code>.</p>
+
+    <h3 id="pagination">Pagination</h3>
+    <p>Bounded lists (sites, users, certs, policies) use offset pages: <code>{"page":{"page":1,"pageSize":50}}</code>, 1-based, default size 50, capped at 200. Log and event queries use cursors: pass the previous <code>nextCursor</code> and stop when <code>hasMore</code> is false. For direct page jumps set <code>offset</code> instead of <code>cursor</code> — capped at 100,000 rows, past which you should narrow the time range.</p>
+
+    <h2 id="services">The 23 services</h2>
     <table>
       <thead>
         <tr><th>Service</th><th>Scope</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>SystemService</code></td><td>Health, version, dashboard rollups, settings, releases, replication, promote/demote.</td></tr>
-        <tr><td><code>AuthService</code></td><td>Login, logout, refresh, current user, OIDC redirect, access codes.</td></tr>
+        <tr><td><code>AuthService</code></td><td>Login, logout, refresh, current user, access codes, password change.</td></tr>
+        <tr><td><code>SystemService</code></td><td>Health, settings, dashboard rollups, declarative apply, CRS/GeoIP/binary releases, upgrade runs.</td></tr>
         <tr><td><code>MenuService</code></td><td>Permission-filtered navigation for the management UI.</td></tr>
-        <tr><td><code>UserService</code></td><td>User CRUD, lock/unlock, password reset.</td></tr>
-        <tr><td><code>RoleService</code></td><td>Role + permission lookup. RBAC table is built-in.</td></tr>
-        <tr><td><code>SiteService</code></td><td>Site CRUD, enable/disable, preview, per-site policy override.</td></tr>
+        <tr><td><code>UserService</code></td><td>User CRUD, role assignment, lock/unlock, password reset.</td></tr>
+        <tr><td><code>RoleService</code></td><td>Role CRUD and the permission catalog.</td></tr>
+        <tr><td><code>SiteService</code></td><td>Site CRUD, enable/disable, compiled-config preview, path routing, per-site policy override.</td></tr>
         <tr><td><code>UpstreamService</code></td><td>Upstream pool CRUD; deletion refused while in use.</td></tr>
-        <tr><td><code>CertService</code></td><td>Upload, ACME issue/renew, DNS provider CRUD.</td></tr>
-        <tr><td><code>PolicyService</code></td><td>WAF policy CRUD, layer updates, version snapshots, SecLang preview, test lab.</td></tr>
-        <tr><td><code>RuleOverrideService</code></td><td>Per-rule CRS behavior and scoped override lifecycle.</td></tr>
-        <tr><td><code>CustomRuleService</code></td><td>Custom SecLang and visual-rule lifecycle.</td></tr>
-        <tr><td><code>IpListService</code></td><td>Reusable IP data, scoped bindings, lookup, and precedence.</td></tr>
+        <tr><td><code>CertService</code></td><td>Upload, ACME issue/renew, download, DNS provider CRUD.</td></tr>
+        <tr><td><code>PolicyService</code></td><td>WAF policy CRUD, layer updates, version snapshots and rollback, SecLang preview, test lab.</td></tr>
+        <tr><td><code>RuleOverrideService</code></td><td>Per-CRS-rule behaviour and scoped override lifecycle.</td></tr>
+        <tr><td><code>CustomRuleService</code></td><td>Custom SecLang and visual-rule lifecycle, ordering, templates.</td></tr>
+        <tr><td><code>IpListService</code></td><td>Reusable IP data, scoped bindings, CSV import/export, lookup and precedence.</td></tr>
         <tr><td><code>RateLimitService</code></td><td>Endpoint and client-scope rate-limit resources.</td></tr>
-        <tr><td><code>CrsService</code></td><td>CRS catalog browse + ingest + exclusion-package install/attach.</td></tr>
-        <tr><td><code>AgentService</code></td><td>Agent CRUD, enrollment tokens, install scripts, commands, revisions, and apply results.</td></tr>
-        <tr><td><code>AgentGroupService</code></td><td>Stable tag/explicit-agent targeting and match preview.</td></tr>
-        <tr><td><code>AgentStreamService</code></td><td>Authenticated bidi bundle, state, event, command, and challenge transport.</td></tr>
-        <tr><td><code>TrustService</code></td><td>Client-IP trust profile (tenant + site overrides), CDN snapshot list/refresh, explain.</td></tr>
-        <tr><td><code>AlertService</code></td><td>Alert rule + channel CRUD, active alert ack/resolve, channel test send.</td></tr>
-        <tr><td><code>LogService</code></td><td>Observation-v2 exact counters, retained evidence/detail, exports, API Inventory, and live tail.</td></tr>
-        <tr><td><code>AuditService</code></td><td>Tamper-evident audit query, status, and chain verification.</td></tr>
-        <tr><td><code>IncidentService</code></td><td>Finding membership, incident lifecycle, notes, summaries, and streams.</td></tr>
-        <tr><td><code>IncidentResponseRuleService</code></td><td>Default-off response automation rules and audited execution.</td></tr>
-        <tr><td><code>CampaignService</code></td><td>Persistent attack campaigns, revisions, graph/timeline, and conflict-safe triage.</td></tr>
-        <tr><td><code>MitreMappingService</code></td><td>Deterministic ATT&amp;CK tactic and technique projection.</td></tr>
-        <tr><td><code>AIService</code></td><td>Optional default-off enrichment, typed proposals, Copilot analysis, and chat.</td></tr>
+        <tr><td><code>CrsService</code></td><td>CRS catalog browse, ingest, exclusion-package install and attach.</td></tr>
+        <tr><td><code>AgentService</code></td><td>Agent CRUD, enrollment tokens, install scripts, commands, config bundles, metric samples.</td></tr>
+        <tr><td><code>AgentGroupService</code></td><td>Tag-based and explicit agent targeting with match preview.</td></tr>
+        <tr><td><code>AgentStreamService</code></td><td>The authenticated bidi agent session.</td></tr>
+        <tr><td><code>EvidenceUploadService</code></td><td>Request-evidence upload on its own stream, so large bodies never block control traffic.</td></tr>
+        <tr><td><code>TrustService</code></td><td>Client-IP trust profile (tenant + site overrides), CDN snapshots, explain.</td></tr>
+        <tr><td><code>AlertService</code></td><td>Alert rule and channel CRUD, ack/resolve, silences, notes, channel test send.</td></tr>
+        <tr><td><code>LogService</code></td><td>Security/access/error event queries, retained evidence, exports, log policy, live tail.</td></tr>
+        <tr><td><code>AuditService</code></td><td>Tamper-evident audit query, chain status, and verification.</td></tr>
+        <tr><td><code>AIService</code></td><td>Optional, default-off advisory proposals, copilot analysis, and chat.</td></tr>
       </tbody>
     </table>
+    <p>The exhaustive per-RPC reference — every request and response field, with the permission each RPC requires — is generated from the schema and ships in the source tree under <code>docs/api/</code>, alongside the protobuf definitions in <code>proto/tiyi/v1/</code>.</p>
 
-    <h2 id="errors">Error codes</h2>
-    <p>Tiyi returns standard ConnectRPC error codes mapped from gRPC. The CLI and UI surface localized messages on top of the canonical code:</p>
+    <h2 id="errors">Errors</h2>
+    <p>Errors return a canonical code, a human message, and sometimes typed details. Branch on <code>code</code> (and <code>details[].debug.reason</code>), never on <code>message</code>.</p>
+<pre><code>{
+  <span class="s">"code"</span>: <span class="s">"unauthenticated"</span>,
+  <span class="s">"message"</span>: <span class="s">"invalid session"</span>,
+  <span class="s">"details"</span>: [{ <span class="s">"type"</span>: <span class="s">"google.rpc.ErrorInfo"</span>,
+               <span class="s">"debug"</span>: { <span class="s">"reason"</span>: <span class="s">"TOKEN_INVALID"</span>, <span class="s">"domain"</span>: <span class="s">"tiyi.io"</span> } }]
+}</code></pre>
     <table>
-      <thead><tr><th>Code</th><th>HTTP</th><th>Typical cause</th></tr></thead>
+      <thead><tr><th>Code</th><th>HTTP</th><th>Typical cause</th><th>Retry?</th></tr></thead>
       <tbody>
-        <tr><td><code>invalid_argument</code></td><td>400</td><td>Bad input shape or value rejected by the validator.</td></tr>
-        <tr><td><code>unauthenticated</code></td><td>401</td><td>Missing or invalid JWT.</td></tr>
-        <tr><td><code>permission_denied</code></td><td>403</td><td>JWT lacks the required RBAC permission.</td></tr>
-        <tr><td><code>not_found</code></td><td>404</td><td>Resource id does not exist or is soft-deleted.</td></tr>
-        <tr><td><code>already_exists</code></td><td>409</td><td>Unique constraint violated (site name, policy name, etc.).</td></tr>
-        <tr><td><code>failed_precondition</code></td><td>412</td><td>Revision conflict, <code>UPSTREAM_IN_USE</code>, replication-lag gate, etc.</td></tr>
-        <tr><td><code>unimplemented</code></td><td>501</td><td>RPC not yet wired (rare — the <code>2026-05-26</code> changelog entry closed the last batch).</td></tr>
-        <tr><td><code>internal</code></td><td>500</td><td>Server-side bug or infrastructure failure. Audit chain receives a row when relevant.</td></tr>
+        <tr><td><code>invalid_argument</code></td><td>400</td><td>Input rejected by the validator.</td><td>No — fix the request.</td></tr>
+        <tr><td><code>failed_precondition</code></td><td>400</td><td>Revision conflict, resource in use, or another state guard.</td><td>Re-read, then retry.</td></tr>
+        <tr><td><code>unauthenticated</code></td><td>401</td><td>Missing, malformed, or expired token.</td><td>Refresh, retry once.</td></tr>
+        <tr><td><code>permission_denied</code></td><td>403</td><td>Valid session without the required permission; also <code>ACCOUNT_LOCKED</code>.</td><td>No.</td></tr>
+        <tr><td><code>not_found</code></td><td>404</td><td>Id does not exist or is soft-deleted.</td><td>No.</td></tr>
+        <tr><td><code>already_exists</code></td><td>409</td><td>Uniqueness violated.</td><td>No.</td></tr>
+        <tr><td><code>resource_exhausted</code></td><td>429</td><td>Write-admission queue is full.</td><td>Yes — honour <code>Retry-After</code>.</td></tr>
+        <tr><td><code>unimplemented</code></td><td>501</td><td>Declared in the schema but not wired yet.</td><td>No.</td></tr>
+        <tr><td><code>unavailable</code></td><td>503</td><td>SQLite busy or a dependency is down.</td><td>Yes — backoff.</td></tr>
+        <tr><td><code>deadline_exceeded</code></td><td>504</td><td>Server-side timeout.</td><td>Narrow the query.</td></tr>
+        <tr><td><code>internal</code></td><td>500</td><td>Unhandled server-side failure.</td><td>No — report it.</td></tr>
       </tbody>
     </table>
+    <p>Known <code>ErrorInfo</code> reasons: <code>BAD_CREDENTIALS</code>, <code>TOKEN_INVALID</code>, <code>ACCOUNT_LOCKED</code>.</p>
+
+    <h3 id="backpressure">Write admission</h3>
+    <p>Mutating RPCs are queued through a write-admission gate so a burst of writers cannot overwhelm the embedded SQLite store. When the queue is full the call returns <code>resource_exhausted</code> with a <code>Retry-After</code> header in seconds. Reads are never queued. Bulk importers should limit write concurrency and respect that header.</p>
 
     <h2 id="rbac">RBAC</h2>
-    <p>Each RPC declares a required permission like <code>site:read</code>, <code>policy:write</code>, <code>log:read</code>, or <code>system:write</code>. The server checks the JWT subject's roles against the permission table. Use <code>tiyi role</code> or the Roles page to inspect the current permission catalog instead of relying on a frozen count.</p>
+    <p>Each RPC declares the permission it needs — <code>site:read</code>, <code>policy:write</code>, <code>log:export</code>, <code>system:apply</code>, and so on across 57 permissions. The server checks the JWT subject's roles against the permission table; a role holding <code>tiyi:superadmin</code> passes every check. <code>Administrator</code> is the only built-in role and holds everything, so build least-privilege roles with <code>tiyi role</code> or the Roles page, and inspect the live catalog with <code>RoleService.ListPermissions</code> rather than trusting a frozen list.</p>
+    <p>Seven procedures are reachable without a session: <code>SystemService.Health</code>, <code>AuthService.Login</code> / <code>Refresh</code> / <code>Logout</code>, <code>AgentService.Enroll</code>, <code>AgentStreamService.Connect</code>, and <code>EvidenceUploadService.Upload</code>. The last three are gated by enrollment or stream tokens instead.</p>
 
     <h2 id="streaming">Streaming RPCs</h2>
+    <p>Streaming works over gRPC or the Connect streaming protocol. For Connect, set <code>Content-Type: application/connect+json</code> and frame each message with a five-byte envelope: one flag byte, then a big-endian <code>uint32</code> length. <strong>A failed stream still returns HTTP 200</strong> — the status lives in the trailing frame (flag <code>0x02</code>), so a client that only checks the HTTP code will miss the error.</p>
     <ul>
-      <li><strong><code>AgentService.AgentStream</code></strong> — long-lived bidi stream. Agent sends Hello, StateReport, AgentEventPush, ApplyResult, ChallengeResponse. Server sends Welcome, ConfigUpdate, Command, ChallengeDispatch.</li>
-      <li><strong><code>AlertService.StreamAlerts</code></strong> — server-streaming. Pushes alert lifecycle events to the dashboard with reconnect-with-backoff on the client side.</li>
-      <li><strong><code>AgentService.StreamAgentEvents</code></strong> — server-streaming. Live agent state (online/offline, metrics).</li>
-      <li><strong><code>LogService.TailSecurityEvents</code></strong> — server-streaming. Live security log feed for the live-tail page.</li>
-      <li><strong><code>SystemService.StreamUpgradeRun</code></strong> — server-streaming. Per-agent upgrade run progress events.</li>
-      <li><strong><code>CampaignService.TailCampaigns</code></strong> — server-streaming. Persistent campaign lifecycle revisions for SOC triage.</li>
+      <li><strong><code>AgentStreamService.Connect</code></strong> — bidi. The agent session: hello, state reports, events, apply results, observation batches; the server sends welcome, config updates, commands, challenges.</li>
+      <li><strong><code>EvidenceUploadService.Upload</code></strong> — bidi. Request-evidence bodies, isolated from the control stream.</li>
+      <li><strong><code>AgentService.StreamAgentEvents</code></strong> — server. Live agent online/offline and metrics.</li>
+      <li><strong><code>LogService.TailSecurityEvents</code></strong> — server. Live security-event feed for the live-tail page.</li>
+      <li><strong><code>LogService.StreamRequestEvidenceBody</code></strong> / <strong><code>DownloadRequestEvidenceBody</code></strong> — server. Retained request bodies, chunked.</li>
+      <li><strong><code>AlertService.StreamAlerts</code></strong> — server. Alert lifecycle events.</li>
+      <li><strong><code>SystemService.StreamUpgradeRun</code></strong> — server. Per-agent upgrade progress.</li>
+      <li><strong><code>AIService.StreamAnalysis</code></strong> / <strong><code>StreamChat</code></strong> — server. Incremental copilot output.</li>
     </ul>
+    <p>Reconnect with backoff. None of these streams replay history, so re-query for anything missed during a gap.</p>
+
+    <h2 id="http">Non-RPC HTTP endpoints</h2>
+    <table>
+      <thead><tr><th>Endpoint</th><th>Listener</th><th>Auth</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET /healthz</code></td><td>both</td><td>none</td><td>Liveness/readiness probe: 200 healthy, 503 otherwise, JSON body either way.</td></tr>
+        <tr><td><code>GET /download/tiyi</code></td><td>both</td><td>none</td><td>Serves the running binary so a new agent can bootstrap before it has credentials.</td></tr>
+        <tr><td><code>/api/v1/telemetry/*</code></td><td>both</td><td>JWT + <code>telemetry:read</code></td><td>Exact counters: <code>qps</code>, <code>series</code>, <code>topk</code>, <code>apitree</code>, and the API-inventory action route.</td></tr>
+        <tr><td><code>GET /metrics</code></td><td>socket only</td><td>socket permissions</td><td>Prometheus/OpenMetrics scrape for the observation pipeline.</td></tr>
+        <tr><td><code>GET /debug/*</code></td><td>socket only</td><td>socket permissions</td><td>Diagnostic counters for logsink, alerts, AI, and licensing. Not a stable contract.</td></tr>
+      </tbody>
+    </table>
+    <p>The management listener also serves the Admin UI, and unknown paths fall back to the SPA with HTTP 200 — so a successful <code>curl</code> against a path that only exists on the socket is returning HTML, not data. Check the <code>Content-Type</code>.</p>
+
+    <h2 id="clients">Generating a client</h2>
+    <p>Point your codegen at <code>proto/tiyi/v1</code> in the source tree. Known-good combinations are <code>connect-go</code> (what the CLI uses), <code>connect-es</code> / <code>@connectrpc/connect-web</code> (what the Admin UI uses), and any standard gRPC client for streaming-heavy work. Because unary Connect is plain JSON over HTTP, a small <code>fetch</code> or <code>requests</code> wrapper is also a perfectly good client.</p>
+    <p>The package is <code>tiyi.v1</code>; field numbers are never reused and removed fields stay <code>reserved</code>, so older clients keep parsing newer responses. New optional fields and new RPCs arrive in minor releases — treat unknown response fields as ignorable.</p>
 
     <h2 id="canonical-spec">API contract</h2>
-    <p>These docs cover the operator-facing API surface and should agree with the installed binary — file an issue if they don't.</p>
+    <p>These docs describe the operator-facing API and should agree with the installed binary — file an issue if they don't.</p>
 
     <div class="docs-pager">
       <a href="cli.html">
@@ -216,7 +299,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

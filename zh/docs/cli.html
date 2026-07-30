@@ -45,7 +45,7 @@
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
     <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
-    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
+    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
   </aside>
 
@@ -66,7 +66,7 @@
           <td><strong>本地管理 socket</strong></td>
           <td><em>(默认)</em></td>
           <td>Unix socket 上的 OS 文件权限</td>
-          <td>跑在与 <code>tiyi standalone</code> 或 <code>tiyi server</code> 同一主机上。</td>
+          <td>跑在与 <code>tiyi run</code> 同一主机上。</td>
         </tr>
         <tr>
           <td><strong>远程</strong></td>
@@ -78,7 +78,7 @@
     </table>
 
     <p>从用户名/密码取一个 JWT：</p>
-<pre><code><span class="p">$</span> tiyi auth login --api http://primary:8080 --username admin
+<pre><code><span class="p">$</span> tiyi auth login --api http://controller:8080 --username admin
 <span class="c"># 输入密码,打印 JWT,可选写入 ~/.config/tiyi/credentials</span></code></pre>
 
     <h2 id="diagnostics">诊断</h2>
@@ -225,7 +225,7 @@ tiyi system settings update --set siem.endpoint=tcp://siem.internal:514 --set si
     <p>日志与证据策略是带 revision CAS 的 LogService 资源，请在<strong>系统管理 → 设置 → 日志与证据</strong>管理；旧 <code>telemetry.*</code>、<code>logsink.*</code>、<code>log_mode.*</code> 与 <code>log_retention</code> 设置会被拒绝。</p>
 
     <h2 id="release-mgmt">发布（滚动节点升级）</h2>
-<pre><code>tiyi release import --tarball ./tiyi_v3.3.1_linux_amd64.tar.gz
+<pre><code>tiyi release import --tarball ./tiyi_v3.4.0_linux_amd64.tar.gz
 tiyi release list
 tiyi release apply <span class="v">&lt;release-id&gt;</span>           <span class="c"># 把 APPLY_BINARY 散到所有匹配的节点</span>
 tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span> --agent-id <span class="v">B</span>
@@ -244,9 +244,11 @@ tiyi user unlock <span class="v">&lt;id&gt;</span>
 tiyi role list
 tiyi role get <span class="v">&lt;id&gt;</span></code></pre>
 
-    <h2 id="failover">集群故障转移</h2>
-<pre><code>tiyi promote                     <span class="c"># 在备节点上,确认主节点不可达后</span>
-tiyi promote --force             <span class="c"># 跳过 demote;接受有界数据丢失</span></code></pre>
+    <h2 id="nodes">Controller 与 Agent 进程</h2>
+<pre><code>tiyi run                         <span class="c"># 完整可写 Controller + 本机数据平面</span>
+tiyi install --mode agent --unit-name tiyi-agent --now <span class="c"># Agent systemd 服务；读取 /etc/tiyi/tiyi-agent.env</span>
+tiyi agent --controller-url http://controller:8080 --enrollment-token <span class="v">&lt;一次性-token&gt;</span> <span class="c"># 前台 Agent</span>
+tiyi dashboard                   <span class="c"># 仅 UI 进程</span></code></pre>
 
     <h2 id="exit-codes">退出码</h2>
     <table>
@@ -263,7 +265,7 @@ tiyi promote --force             <span class="c"># 跳过 demote;接受有界数
 
     <div class="docs-pager">
       <a href="concepts.html"><span class="label">← 上一页</span><span class="title">领域模型</span></a>
-      <a class="next" href="api.html"><span class="label">下一页 →</span><span class="title">API 概览</span></a>
+      <a class="next" href="api.html"><span class="label">下一页 →</span><span class="title">API 参考</span></a>
     </div>
   </main>
 
@@ -277,7 +279,7 @@ tiyi promote --force             <span class="c"># 跳过 demote;接受有界数
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

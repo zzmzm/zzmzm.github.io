@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<title>API 概览 — 太一文档</title>
+<title>API 参考 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="驱动 UI、CLI、节点流的 ConnectRPC 契约。鉴权、错误码与关键服务。" />
+<meta name="description" content="驱动太一 UI、CLI 与节点流的 ConnectRPC 契约：传输、鉴权、请求约定、错误码、RBAC、流式调用与 23 个服务目录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -45,21 +45,26 @@
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
     <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
-    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
+    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
   </aside>
 
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">参考</span>
-    <h1>API 概览</h1>
-    <p class="lede">太一暴露唯一一份 ConnectRPC API。同一份产品契约同时为 Vben Admin UI（HTTP 上的 JSON）、<code>tiyi</code> CLI（HTTP 上的 JSON）与节点流（gRPC 双向）服务，三者保持同步。</p>
+    <h1>API 参考</h1>
+    <p class="lede">太一只暴露一份 ConnectRPC API。同一份契约同时服务内置管理 UI（HTTP 上的 JSON）、<code>tiyi</code> CLI（HTTP 上的 JSON）与节点流（gRPC 双向）—— UI 能做的事，脚本同样能做。共 <strong>23 个服务、238 个 RPC</strong>，另有一小组非 RPC 的 HTTP 端点。</p>
 
     <h2 id="transport">传输</h2>
-    <ul>
-      <li><strong>JSON</strong> 用于 UI 与 CLI 客户端。默认 <code>Content-Type: application/json</code>；URL 遵循 ConnectRPC 约定 <code>/{service}/{Method}</code>。</li>
-      <li><strong>gRPC</strong> 用于节点双向流以及任何偏好二进制协议的客户端。</li>
-      <li><strong>Connect-Web</strong> 用于嵌入式 Vben UI —— 无需独立 REST 适配器，无需独立网关。</li>
-    </ul>
+    <p>每个过程都是对 <code>/{package}.{Service}/{Method}</code> 的 <code>POST</code>，例如 <code>POST /tiyi.v1.SiteService/ListSites</code>。同一批路由上支持三种线上协议：</p>
+    <table>
+      <thead><tr><th>协议</th><th><code>Content-Type</code></th><th>适用场景</th></tr></thead>
+      <tbody>
+        <tr><td>Connect（一元）</td><td><code>application/json</code></td><td>curl、脚本、CI —— 无需帧封装，也无需生成代码。</td></tr>
+        <tr><td>Connect（流式）</td><td><code>application/connect+json</code></td><td>非 gRPC 客户端调用服务端流与双向流。</td></tr>
+        <tr><td>gRPC / gRPC-Web</td><td><code>application/grpc</code></td><td>生成的 gRPC 客户端；节点流。</td></tr>
+      </tbody>
+    </table>
+    <p>API 同时监听管理地址（<code>--addr</code>，默认 <code>0.0.0.0:8080</code>）与本地 Unix socket（<code>--admin-socket</code>，默认 <code>/run/tiyi/admin.sock</code>）。</p>
 
     <h2 id="auth">鉴权</h2>
     <p>三种鉴权面，按部署上下文选用：</p>
@@ -72,94 +77,172 @@
         <tr>
           <td>本地管理 socket</td>
           <td><code>admin.sock</code> 上的 OS 文件权限</td>
-          <td>与服务端同主机的 <code>tiyi</code> CLI。</td>
+          <td>与服务端同主机的 <code>tiyi</code> CLI。请求以合成的超级管理员身份运行 —— 这正是无凭据也能重置密码的原因。</td>
         </tr>
         <tr>
           <td>HS256 JWT</td>
           <td>HTTP 上的 <code>Authorization: Bearer &lt;jwt&gt;</code></td>
-          <td>Vben Admin UI、远程 CLI、任何从主机外驱动 API 的客户端。由 <code>AuthService.Login</code> 签发；<code>RefreshToken</code> 刷新。</td>
+          <td>管理 UI、远程 CLI、任何从主机外驱动 API 的客户端。由 <code>AuthService.Login</code> 签发，<code>AuthService.Refresh</code> 续期。</td>
         </tr>
         <tr>
           <td>节点流 token</td>
           <td>一次性入网 token → 长期流 token</td>
-          <td>双向 <code>AgentStream</code> 上的节点。token 通过 <code>AgentService.IssueEnrollmentToken</code> 签发。</td>
+          <td><code>AgentStreamService.Connect</code> 上的节点。token 由 <code>AgentService.IssueEnrollmentToken</code> 签发。</td>
         </tr>
       </tbody>
     </table>
 
-    <h3 id="login-example">登录示例</h3>
-<pre><code><span class="p">$</span> curl -sS http://primary:8080/tiyi.v1.AuthService/Login <span class="o">\</span>
+    <h3 id="login-example">登录</h3>
+<pre><code><span class="p">$</span> curl -sS http://tiyi:8080/tiyi.v1.AuthService/Login <span class="o">\</span>
     -H <span class="s">"Content-Type: application/json"</span> <span class="o">\</span>
     -d <span class="s">'{"username":"admin","password":"..."}'</span>
 {
   <span class="s">"accessToken"</span>: <span class="s">"&lt;jwt&gt;"</span>,
-  <span class="s">"refreshToken"</span>: <span class="s">"&lt;refresh&gt;"</span>,
-  <span class="s">"user"</span>: { <span class="s">"id"</span>: <span class="s">"&lt;uuid&gt;"</span>, <span class="s">"role"</span>: <span class="s">"Administrator"</span> }
+  <span class="s">"expiresAt"</span>: <span class="s">"2026-07-26T21:13:41Z"</span>,
+  <span class="s">"user"</span>: {
+    <span class="s">"id"</span>: <span class="s">"&lt;uuid&gt;"</span>,
+    <span class="s">"tenantId"</span>: <span class="s">"&lt;uuid&gt;"</span>,
+    <span class="s">"username"</span>: <span class="s">"admin"</span>,
+    <span class="s">"roles"</span>: [<span class="s">"Administrator"</span>],
+    <span class="s">"accessCodes"</span>: [<span class="s">"site:read"</span>, <span class="s">"site:write"</span>, <span class="s">"..."</span>]
+  }
 }</code></pre>
 
-    <h2 id="services">26 个服务</h2>
+    <p>三个容易踩的点：</p>
+    <ul>
+      <li>登录请求体是<strong>扁平</strong>的 —— <code>{"username":…,"password":…}</code>，不要再包一层凭据对象。</li>
+      <li><strong>refresh token 不在响应体里</strong>。它以 <code>HttpOnly</code>、<code>SameSite=Strict</code> 的 cookie <code>tiyi_refresh</code> 下发，作用域为 <code>Path=/tiyi.v1.AuthService/</code>。浏览器会自动回带；脚本需要自己保存（<code>curl -c</code>），或在调用 <code>Refresh</code> 时显式传 <code>{"refreshToken":"…"}</code>。</li>
+      <li><code>Refresh</code> 会<strong>轮换</strong> refresh token；重放已消费的 token 会被当作凭据泄露处理：调用返回 <code>unauthenticated</code> 并清除会话。请始终保存最新值。</li>
+    </ul>
+    <p>默认有效期：access token 8 小时（<code>auth.access_token_ttl</code>），refresh token 7 天（<code>auth.refresh_token_ttl</code>）。配置了 LDAP 或 RADIUS 时，同一个 <code>Login</code> 调用会按顺序回退尝试。</p>
+
+    <h3 id="local-socket">本地管理 socket</h3>
+<pre><code><span class="p">$</span> curl -sS --unix-socket /run/tiyi/admin.sock <span class="o">\</span>
+    http://tiyi.local/tiyi.v1.SystemService/GetSystemSettings <span class="o">\</span>
+    -H <span class="s">"Content-Type: application/json"</span> -d <span class="s">'{}'</span></code></pre>
+    <p><code>http://tiyi.local</code> 只是占位符 —— 真正决定去向的是 socket 路径。socket 默认权限 <code>0600</code>；<code>--admin-socket-mode 0660 --admin-socket-group tiyi-admin</code> 可以共享给一个 Unix 组。能打开该 socket 就等于拥有完全控制权，请把该组视同 root。</p>
+
+    <h3 id="cli-config">CLI</h3>
+<pre><code><span class="p">$</span> export TIYI_API=https://tiyi.example.com   <span class="c"># 不设置则走本地 socket</span>
+<span class="p">$</span> export TIYI_TOKEN=<span class="s">"$TOKEN"</span>
+<span class="p">$</span> tiyi site list</code></pre>
+    <p>命令级参数 <code>--api</code>、<code>--token</code>、<code>--admin-socket</code> 会覆盖环境变量。</p>
+
+    <h2 id="conventions">请求约定</h2>
+    <ul>
+      <li><strong>响应使用 camelCase</strong>（<code>primaryHost</code>）；请求同时接受 camelCase 与原始 snake_case（<code>primary_host</code>）。</li>
+      <li><strong>64 位整数是 JSON 字符串</strong> —— <code>"revision": "2"</code>，发送时同样要加引号。</li>
+      <li><strong>枚举是带前缀的字符串</strong> —— <code>"RESOURCE_STATUS_ACTIVE"</code>、<code>"WAF_MODE_BLOCKING"</code>，零值恒为 <code>*_UNSPECIFIED</code>。</li>
+      <li><strong>时间戳是 RFC 3339 UTC</strong> —— <code>"2026-07-26T13:15:08.217701748Z"</code>。</li>
+      <li><strong>写操作要包一层资源字段</strong>：<code>CreateSite</code> 收的是 <code>{"site": {…}}</code>，不是把字段平铺在顶层。平铺会返回 <code>invalid_argument: site is required</code>。</li>
+      <li><strong>field mask 是逗号连接的字符串</strong>，不是数组：<code>"updateMask": "name,status"</code>。不传 mask 会整体覆盖，导致不认识新字段的旧客户端把它清空。</li>
+      <li><strong>未知字段会被忽略而不是报错。</strong>写错的 key 静默失效 —— 写完请回读确认。</li>
+      <li><strong>每个请求都按调用方 token 的租户隔离</strong>，绝不取请求体里的租户字段。</li>
+    </ul>
+
+    <h3 id="revisions">revision 与乐观并发</h3>
+    <p>带版本的资源都有 <code>revision</code>，每次写入自增。提交时带上你读到的 revision；若已被他人抢先写入，调用会返回 <code>failed_precondition: revision conflict</code>。重新读取、重放改动、再重试即可。省略 <code>revision</code> 则跳过该检查。</p>
+    <p>路由与站点级策略覆盖有各自独立的 RPC（<code>UpdateSiteRouting</code>、<code>UpsertSitePolicyOverride</code>），正是为了避免不理解路由的客户端用一次普通 <code>UpdateSite</code> 把它们抹掉。</p>
+
+    <h3 id="pagination">分页</h3>
+    <p>有界列表（站点、用户、证书、策略）用偏移分页：<code>{"page":{"page":1,"pageSize":50}}</code>，页码从 1 开始，默认每页 50，上限 200。日志与事件查询用游标：把上一次的 <code>nextCursor</code> 传回，直到 <code>hasMore</code> 为 false。需要直接跳页时用 <code>offset</code> 代替 <code>cursor</code>，上限 10 万行，超出应改为收窄时间范围。</p>
+
+    <h2 id="services">23 个服务</h2>
     <table>
       <thead>
         <tr><th>服务</th><th>范围</th></tr>
       </thead>
       <tbody>
-        <tr><td><code>SystemService</code></td><td>健康、版本、Dashboard 汇总、设置、发布、复制、提主/降级。</td></tr>
-        <tr><td><code>AuthService</code></td><td>登录、登出、刷新、当前用户、OIDC 重定向、access code。</td></tr>
-        <tr><td><code>MenuService</code></td><td>按权限过滤管理界面导航。</td></tr>
-        <tr><td><code>UserService</code></td><td>用户 CRUD、锁定/解锁、密码重置。</td></tr>
-        <tr><td><code>RoleService</code></td><td>角色 + 权限查询。RBAC 表内置。</td></tr>
-        <tr><td><code>SiteService</code></td><td>站点 CRUD、启用/停用、预览、按站点策略覆盖。</td></tr>
-        <tr><td><code>UpstreamService</code></td><td>上游池 CRUD；引用中拒绝删除。</td></tr>
-        <tr><td><code>CertService</code></td><td>上传、ACME 签发/续期、DNS provider CRUD。</td></tr>
-        <tr><td><code>PolicyService</code></td><td>WAF 策略 CRUD、按层更新、版本快照、SecLang 预览、测试台。</td></tr>
-        <tr><td><code>RuleOverrideService</code></td><td>按规则 CRS 行为与范围化覆盖生命周期。</td></tr>
-        <tr><td><code>CustomRuleService</code></td><td>自定义 SecLang 与可视化规则生命周期。</td></tr>
-        <tr><td><code>IpListService</code></td><td>可复用 IP 数据、分层绑定、查询与优先级。</td></tr>
-        <tr><td><code>RateLimitService</code></td><td>端点与客户端范围限速资源。</td></tr>
-        <tr><td><code>CrsService</code></td><td>CRS 目录浏览 + 导入 + 排除包安装/挂载。</td></tr>
-        <tr><td><code>AgentService</code></td><td>节点 CRUD、注册 token、安装脚本、命令、revision 与 apply 结果。</td></tr>
-        <tr><td><code>AgentGroupService</code></td><td>稳定标签/显式 Agent 目标与匹配预览。</td></tr>
-        <tr><td><code>AgentStreamService</code></td><td>带鉴权的双向 bundle、状态、事件、命令与 challenge 传输。</td></tr>
-        <tr><td><code>TrustService</code></td><td>客户端 IP 信任配置（租户 + 站点覆盖）、CDN 快照列表/刷新、explain。</td></tr>
-        <tr><td><code>AlertService</code></td><td>告警规则 + 通道 CRUD、活动告警 ack/resolve、通道发送测试。</td></tr>
-        <tr><td><code>LogService</code></td><td>Observation-v2 精确计数、保留证据/明细、导出、API Inventory 与实时流。</td></tr>
-        <tr><td><code>AuditService</code></td><td>防篡改审计查询、状态与链校验。</td></tr>
-        <tr><td><code>IncidentService</code></td><td>Finding 成员、Incident 生命周期、备注、汇总与流。</td></tr>
-        <tr><td><code>IncidentResponseRuleService</code></td><td>默认关闭的响应自动化规则与审计执行。</td></tr>
-        <tr><td><code>CampaignService</code></td><td>持久化 Attack Campaign、revision、图/时间线与冲突安全的处置。</td></tr>
-        <tr><td><code>MitreMappingService</code></td><td>确定性 ATT&amp;CK tactic/technique 投影。</td></tr>
-        <tr><td><code>AIService</code></td><td>可选且默认关闭的 enrichment、类型化建议、Copilot 分析与 Chat。</td></tr>
+        <tr><td><code>AuthService</code></td><td>登录、登出、刷新、当前用户、access code、修改密码。</td></tr>
+        <tr><td><code>SystemService</code></td><td>健康、设置、Dashboard 汇总、声明式 apply、CRS/GeoIP/二进制发布、升级批次。</td></tr>
+        <tr><td><code>MenuService</code></td><td>按权限过滤的管理界面导航。</td></tr>
+        <tr><td><code>UserService</code></td><td>用户 CRUD、角色分配、锁定/解锁、密码重置。</td></tr>
+        <tr><td><code>RoleService</code></td><td>角色 CRUD 与权限目录。</td></tr>
+        <tr><td><code>SiteService</code></td><td>站点 CRUD、启用/停用、编译配置预览、路径路由、站点级策略覆盖。</td></tr>
+        <tr><td><code>UpstreamService</code></td><td>上游池 CRUD；被引用时拒绝删除。</td></tr>
+        <tr><td><code>CertService</code></td><td>上传、ACME 签发/续期、下载、DNS provider CRUD。</td></tr>
+        <tr><td><code>PolicyService</code></td><td>WAF 策略 CRUD、分层更新、版本快照与回滚、SecLang 预览、测试台。</td></tr>
+        <tr><td><code>RuleOverrideService</code></td><td>单条 CRS 规则的行为与范围化覆盖生命周期。</td></tr>
+        <tr><td><code>CustomRuleService</code></td><td>自定义 SecLang 与可视化规则的生命周期、排序、模板。</td></tr>
+        <tr><td><code>IpListService</code></td><td>可复用 IP 数据、分层绑定、CSV 导入导出、查询与优先级。</td></tr>
+        <tr><td><code>RateLimitService</code></td><td>端点与客户端范围的限速资源。</td></tr>
+        <tr><td><code>CrsService</code></td><td>CRS 目录浏览、导入、排除包安装与挂载。</td></tr>
+        <tr><td><code>AgentService</code></td><td>节点 CRUD、入网 token、安装脚本、命令、配置 bundle、指标采样。</td></tr>
+        <tr><td><code>AgentGroupService</code></td><td>基于标签与显式列表的节点分组及匹配预览。</td></tr>
+        <tr><td><code>AgentStreamService</code></td><td>带鉴权的节点双向会话流。</td></tr>
+        <tr><td><code>EvidenceUploadService</code></td><td>请求证据上传独占一条流，避免大请求体阻塞控制面流量。</td></tr>
+        <tr><td><code>TrustService</code></td><td>客户端 IP 信任配置（租户 + 站点覆盖）、CDN 快照、explain。</td></tr>
+        <tr><td><code>AlertService</code></td><td>告警规则与通道 CRUD、ack/resolve、静默、备注、通道测试发送。</td></tr>
+        <tr><td><code>LogService</code></td><td>安全/访问/错误事件查询、保留证据、导出、日志策略、实时 tail。</td></tr>
+        <tr><td><code>AuditService</code></td><td>防篡改审计查询、链状态与校验。</td></tr>
+        <tr><td><code>AIService</code></td><td>可选且默认关闭的建议、Copilot 分析与 Chat。</td></tr>
       </tbody>
     </table>
+    <p>逐 RPC 的完整参考 —— 每个请求/响应字段以及所需权限 —— 由 schema 自动生成，随源码树发布在 <code>docs/api/</code>，protobuf 定义在 <code>proto/tiyi/v1/</code>。</p>
 
-    <h2 id="errors">错误码</h2>
-    <p>太一返回标准 ConnectRPC 错误码（从 gRPC 映射）。CLI 与 UI 在标准码之上展现本地化消息：</p>
+    <h2 id="errors">错误</h2>
+    <p>错误返回标准码、给人看的 message，有时还带类型化 details。请基于 <code>code</code>（以及 <code>details[].debug.reason</code>）分支，不要基于 <code>message</code>。</p>
+<pre><code>{
+  <span class="s">"code"</span>: <span class="s">"unauthenticated"</span>,
+  <span class="s">"message"</span>: <span class="s">"invalid session"</span>,
+  <span class="s">"details"</span>: [{ <span class="s">"type"</span>: <span class="s">"google.rpc.ErrorInfo"</span>,
+               <span class="s">"debug"</span>: { <span class="s">"reason"</span>: <span class="s">"TOKEN_INVALID"</span>, <span class="s">"domain"</span>: <span class="s">"tiyi.io"</span> } }]
+}</code></pre>
     <table>
-      <thead><tr><th>码</th><th>HTTP</th><th>常见原因</th></tr></thead>
+      <thead><tr><th>码</th><th>HTTP</th><th>常见原因</th><th>可重试？</th></tr></thead>
       <tbody>
-        <tr><td><code>invalid_argument</code></td><td>400</td><td>参数形状或值被验证器拒绝。</td></tr>
-        <tr><td><code>unauthenticated</code></td><td>401</td><td>缺失或无效 JWT。</td></tr>
-        <tr><td><code>permission_denied</code></td><td>403</td><td>JWT 没有所需 RBAC 权限。</td></tr>
-        <tr><td><code>not_found</code></td><td>404</td><td>资源 ID 不存在或已软删除。</td></tr>
-        <tr><td><code>already_exists</code></td><td>409</td><td>违反唯一性约束（站点名、策略名等）。</td></tr>
-        <tr><td><code>failed_precondition</code></td><td>412</td><td>版本冲突、<code>UPSTREAM_IN_USE</code>、复制延迟门槛等。</td></tr>
-        <tr><td><code>unimplemented</code></td><td>501</td><td>RPC 未挂载（罕见 —— <code>2026-05-26</code> 的 changelog 关闭了最后一批）。</td></tr>
-        <tr><td><code>internal</code></td><td>500</td><td>服务端 bug 或基础设施失败。相关情况下审计链有一行。</td></tr>
+        <tr><td><code>invalid_argument</code></td><td>400</td><td>参数被验证器拒绝。</td><td>否 —— 先改请求。</td></tr>
+        <tr><td><code>failed_precondition</code></td><td>400</td><td>revision 冲突、资源被引用或其他状态保护。</td><td>重新读取后重试。</td></tr>
+        <tr><td><code>unauthenticated</code></td><td>401</td><td>token 缺失、格式错误或过期。</td><td>刷新后重试一次。</td></tr>
+        <tr><td><code>permission_denied</code></td><td>403</td><td>会话有效但缺少所需权限；也用于 <code>ACCOUNT_LOCKED</code>。</td><td>否。</td></tr>
+        <tr><td><code>not_found</code></td><td>404</td><td>ID 不存在或已软删除。</td><td>否。</td></tr>
+        <tr><td><code>already_exists</code></td><td>409</td><td>违反唯一性约束。</td><td>否。</td></tr>
+        <tr><td><code>resource_exhausted</code></td><td>429</td><td>写入准入队列已满。</td><td>是 —— 遵守 <code>Retry-After</code>。</td></tr>
+        <tr><td><code>unimplemented</code></td><td>501</td><td>schema 中已声明但尚未接线。</td><td>否。</td></tr>
+        <tr><td><code>unavailable</code></td><td>503</td><td>SQLite 繁忙或依赖不可用。</td><td>是 —— 退避重试。</td></tr>
+        <tr><td><code>deadline_exceeded</code></td><td>504</td><td>服务端超时。</td><td>收窄查询范围。</td></tr>
+        <tr><td><code>internal</code></td><td>500</td><td>未处理的服务端故障。</td><td>否 —— 请反馈。</td></tr>
       </tbody>
     </table>
+    <p>已知的 <code>ErrorInfo</code> reason：<code>BAD_CREDENTIALS</code>、<code>TOKEN_INVALID</code>、<code>ACCOUNT_LOCKED</code>。</p>
+
+    <h3 id="backpressure">写入准入</h3>
+    <p>写类 RPC 会经过写入准入闸门排队，避免并发写入压垮内嵌 SQLite。队列满时返回 <code>resource_exhausted</code>，并带上以秒为单位的 <code>Retry-After</code> 头。读取从不排队。批量导入应限制写并发并遵守该响应头。</p>
 
     <h2 id="rbac">RBAC</h2>
-    <p>每一个 RPC 声明一个权限要求，例如 <code>site:read</code>、<code>policy:write</code>、<code>log:read</code> 或 <code>system:write</code>。服务端把 JWT subject 的角色与权限表比对。请通过 <code>tiyi role</code> 或角色页面查看当前权限目录，不依赖容易过期的固定数量。</p>
+    <p>每个 RPC 声明所需权限 —— <code>site:read</code>、<code>policy:write</code>、<code>log:export</code>、<code>system:apply</code> 等，共 57 项。服务端将 JWT subject 的角色与权限表比对；持有 <code>tiyi:superadmin</code> 的角色通过所有检查。内置角色只有 <code>Administrator</code> 且拥有全部权限，因此请用 <code>tiyi role</code> 或角色页面创建最小权限角色，并用 <code>RoleService.ListPermissions</code> 查看实时目录，而不是依赖固定清单。</p>
+    <p>七个过程无需会话即可访问：<code>SystemService.Health</code>、<code>AuthService.Login</code> / <code>Refresh</code> / <code>Logout</code>、<code>AgentService.Enroll</code>、<code>AgentStreamService.Connect</code>、<code>EvidenceUploadService.Upload</code>。后三者改由入网 token 或流 token 把关。</p>
 
     <h2 id="streaming">流式 RPC</h2>
+    <p>流式调用可走 gRPC，也可走 Connect 流式协议。使用 Connect 时设置 <code>Content-Type: application/connect+json</code>，并给每条消息加 5 字节信封：1 字节标志位 + 大端 <code>uint32</code> 长度。<strong>流失败时 HTTP 状态码仍是 200</strong> —— 真正的状态在结尾帧（标志位 <code>0x02</code>）里，只看 HTTP 码的客户端会漏掉错误。</p>
     <ul>
-      <li><strong><code>AgentService.AgentStream</code></strong> —— 长连双向流。节点发送 Hello、StateReport、AgentEventPush、ApplyResult、ChallengeResponse。服务端发送 Welcome、ConfigUpdate、Command、ChallengeDispatch。</li>
-      <li><strong><code>AlertService.StreamAlerts</code></strong> —— 服务端流。把告警生命周期事件推送到 dashboard，客户端使用退避重连。</li>
-      <li><strong><code>AgentService.StreamAgentEvents</code></strong> —— 服务端流。实时节点状态（在线/下线、指标）。</li>
-      <li><strong><code>LogService.TailSecurityEvents</code></strong> —— 服务端流。实时跟踪页的实时安全日志流。</li>
-      <li><strong><code>SystemService.StreamUpgradeRun</code></strong> —— 服务端流。按节点的升级运行进度事件。</li>
-      <li><strong><code>CampaignService.TailCampaigns</code></strong> —— 服务端流。为 SOC 处置推送持久化 Campaign 生命周期 revision。</li>
+      <li><strong><code>AgentStreamService.Connect</code></strong> —— 双向。节点会话：hello、状态上报、事件、apply 结果、观测批次；服务端下发 welcome、配置更新、命令、challenge。</li>
+      <li><strong><code>EvidenceUploadService.Upload</code></strong> —— 双向。请求证据体，与控制流隔离。</li>
+      <li><strong><code>AgentService.StreamAgentEvents</code></strong> —— 服务端流。节点在线/离线与指标。</li>
+      <li><strong><code>LogService.TailSecurityEvents</code></strong> —— 服务端流。实时安全事件流。</li>
+      <li><strong><code>LogService.StreamRequestEvidenceBody</code></strong> / <strong><code>DownloadRequestEvidenceBody</code></strong> —— 服务端流。分块下发保留的请求体。</li>
+      <li><strong><code>AlertService.StreamAlerts</code></strong> —— 服务端流。告警生命周期事件。</li>
+      <li><strong><code>SystemService.StreamUpgradeRun</code></strong> —— 服务端流。按节点的升级进度。</li>
+      <li><strong><code>AIService.StreamAnalysis</code></strong> / <strong><code>StreamChat</code></strong> —— 服务端流。Copilot 增量输出。</li>
     </ul>
+    <p>断线请退避重连。这些流都不会重放历史，断连期间遗漏的数据需要另行查询补齐。</p>
+
+    <h2 id="http">非 RPC 的 HTTP 端点</h2>
+    <table>
+      <thead><tr><th>端点</th><th>监听面</th><th>鉴权</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET /healthz</code></td><td>两者</td><td>无</td><td>存活/就绪探针：健康 200，否则 503，两种情况都返回 JSON。</td></tr>
+        <tr><td><code>GET /download/tiyi</code></td><td>两者</td><td>无</td><td>下发当前二进制，供尚无凭据的新节点自举。</td></tr>
+        <tr><td><code>/api/v1/telemetry/*</code></td><td>两者</td><td>JWT + <code>telemetry:read</code></td><td>精确计数：<code>qps</code>、<code>series</code>、<code>topk</code>、<code>apitree</code> 以及 API 资产处置路由。</td></tr>
+        <tr><td><code>GET /metrics</code></td><td>仅 socket</td><td>socket 权限</td><td>观测管线的 Prometheus/OpenMetrics 抓取端点。</td></tr>
+        <tr><td><code>GET /debug/*</code></td><td>仅 socket</td><td>socket 权限</td><td>logsink、告警、AI、许可的诊断计数器。非稳定契约。</td></tr>
+      </tbody>
+    </table>
+    <p>管理监听同时提供管理 UI，未知路径会回落到 SPA 并返回 HTTP 200 —— 所以对「仅 socket」路径 <code>curl</code> 成功，拿到的其实是 HTML 而非数据。请检查 <code>Content-Type</code>。</p>
+
+    <h2 id="clients">生成客户端</h2>
+    <p>把代码生成器指向源码树中的 <code>proto/tiyi/v1</code>。已验证的组合：<code>connect-go</code>（CLI 使用）、<code>connect-es</code> / <code>@connectrpc/connect-web</code>（管理 UI 使用），以及任意标准 gRPC 客户端（适合流式为主的集成）。由于一元 Connect 就是 HTTP 上的普通 JSON，一个简单的 <code>fetch</code> 或 <code>requests</code> 封装同样够用。</p>
+    <p>包名是 <code>tiyi.v1</code>；字段号永不复用，删除的字段保留为 <code>reserved</code>，因此旧客户端可以继续解析新响应。新的可选字段与新 RPC 在小版本中引入 —— 请把未知响应字段当作可忽略。</p>
 
     <h2 id="canonical-spec">API 契约</h2>
     <p>本文档覆盖面向运维的 API 表面，并应与已安装二进制保持一致 —— 不一致请提 issue。</p>
@@ -180,7 +263,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

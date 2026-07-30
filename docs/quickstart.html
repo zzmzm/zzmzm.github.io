@@ -24,7 +24,7 @@
       <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
       <span>Tiyi</span>
     </a>
-    <nav class="nav-links" aria-label="Primary">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="../index.html#features">Features</a>
       <a href="../index.html#tour">Product</a>
       <a href="../index.html#pricing">Pricing</a>
@@ -68,7 +68,7 @@
       <h4>Reference</h4>
       <ul>
         <li><a href="cli.html">CLI reference</a></li>
-        <li><a href="api.html">API overview</a></li>
+        <li><a href="api.html">API reference</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -82,7 +82,7 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">Get started</span>
     <h1>Quickstart</h1>
-    <p class="lede">Five minutes from a clean Linux host to a Tiyi instance blocking real OWASP CRS attacks against a real upstream. We'll install the signed binary, start it in <code>standalone</code> mode, create one site, and watch the WAF do its job.</p>
+    <p class="lede">Five minutes from a clean Linux host to a Tiyi instance blocking real OWASP CRS attacks against a real upstream. We'll install the signed binary, start <code>tiyi run</code>, create one site, and watch the WAF do its job.</p>
 
     <h2 id="prerequisites">Prerequisites</h2>
     <ul>
@@ -97,11 +97,11 @@
 <span class="p">$</span> tiyi --version</code></pre>
     <p>See <a href="installation.html#prebuilt">Installation</a> for version pinning, install-prefix overrides, and the Gitee mirror.</p>
 
-    <h2 id="run">2. Run in standalone mode</h2>
+    <h2 id="run">2. Run in complete runtime</h2>
     <p>Pick the option that matches your privileges. <strong>As root</strong> the defaults work — state lands in <code>/var/lib/tiyi</code> and the proxy binds ports 80/443:</p>
-<pre><code><span class="p">$</span> sudo tiyi standalone</code></pre>
+<pre><code><span class="p">$</span> sudo tiyi run</code></pre>
     <p><strong>As a normal user</strong> (no sudo), point Tiyi at writable paths and high ports:</p>
-<pre><code><span class="p">$</span> tiyi standalone <span class="o">\</span>
+<pre><code><span class="p">$</span> tiyi run <span class="o">\</span>
     --state-db /tmp/tiyi.db <span class="o">\</span>
     --caddy-admin-socket /tmp/tiyi-caddy.sock <span class="o">\</span>
     --admin-socket /tmp/tiyi-admin.sock <span class="o">\</span>
@@ -109,7 +109,7 @@
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 
     <p>Tiyi prints a banner with the API URL, the bootstrap admin password (printed once on first run), and the Caddy admin socket path:</p>
-<pre><code><span class="c">tiyi v3.3.1 standalone</span>
+<pre><code><span class="c">tiyi v3.4.0 run</span>
 <span class="c">  api      http://127.0.0.1:8080</span>
 <span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
 <span class="c">  state    /tmp/tiyi.db</span>
@@ -130,7 +130,7 @@
     <p>For automation, container images, or CI, skip the generated password: set <code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code> before the first boot and Tiyi uses it verbatim — no banner is printed. The username defaults to <code>admin</code>, and auto-generation only fires when no users exist yet, so restarts are no-ops.</p>
 <pre><code><span class="p">$</span> mkdir -p /tmp/waf
 <span class="p">$</span> TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
-    tiyi standalone <span class="o">\</span>
+    tiyi run <span class="o">\</span>
     --addr 0.0.0.0:8080 <span class="o">\</span>
     --state-db /tmp/waf/state.db <span class="o">\</span>
     --caddy-admin-socket /tmp/waf/caddy.sock <span class="o">\</span>
@@ -180,7 +180,7 @@
 
     <h2 id="next">What to read next</h2>
     <ul>
-      <li><a href="installation.html">Installation</a> — signed binary installation, config files, operational modes, and production-hardening fields you should set before going live.</li>
+      <li><a href="installation.html">Installation</a> — signed binary installation, config files, Controller and Agent operation, and production-hardening fields you should set before going live.</li>
       <li><a href="concepts.html">Domain model</a> — what sites, upstreams, certificates, policies, agents, telemetry, and the audit chain actually are.</li>
       <li><a href="cli.html">CLI reference</a> — every <code>tiyi</code> subcommand grouped by resource, with flag defaults.</li>
     </ul>
@@ -207,7 +207,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

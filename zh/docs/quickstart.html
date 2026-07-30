@@ -65,7 +65,7 @@
       <h4>参考</h4>
       <ul>
         <li><a href="cli.html">CLI 参考</a></li>
-        <li><a href="api.html">API 概览</a></li>
+        <li><a href="api.html">API 参考</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -77,7 +77,7 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">开始使用</span>
     <h1>快速开始</h1>
-    <p class="lede">从一台干净的 Linux 主机到一个太一实例拦截真实 OWASP CRS 攻击，只需要五分钟。我们会安装签名二进制、启动 <code>standalone</code>、创建一个站点，并看 WAF 干活。</p>
+    <p class="lede">从一台干净的 Linux 主机到一个太一实例拦截真实 OWASP CRS 攻击，只需要五分钟。我们会安装签名二进制、启动 <code>tiyi run</code>、创建一个站点，并看 WAF 干活。</p>
 
     <h2 id="prerequisites">前置条件</h2>
     <ul>
@@ -92,11 +92,11 @@
 <span class="p">$</span> tiyi --version</code></pre>
     <p>版本固定、安装目录覆盖与 Gitee 镜像用法见<a href="installation.html#prebuilt">安装</a>。</p>
 
-    <h2 id="run">2. 以 standalone 模式运行</h2>
+    <h2 id="run">2. 运行太一</h2>
     <p>按你的权限选择一种方式。<strong>以 root 运行</strong>时默认值即可 —— 状态写入 <code>/var/lib/tiyi</code>，代理绑定 80/443 端口：</p>
-<pre><code><span class="p">$</span> sudo tiyi standalone</code></pre>
+<pre><code><span class="p">$</span> sudo tiyi run</code></pre>
     <p><strong>以普通用户运行</strong>（不用 sudo）时，把太一指向可写路径并使用高端口：</p>
-<pre><code><span class="p">$</span> tiyi standalone <span class="o">\</span>
+<pre><code><span class="p">$</span> tiyi run <span class="o">\</span>
     --state-db /tmp/tiyi.db <span class="o">\</span>
     --caddy-admin-socket /tmp/tiyi-caddy.sock <span class="o">\</span>
     --admin-socket /tmp/tiyi-admin.sock <span class="o">\</span>
@@ -104,13 +104,13 @@
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 
     <p>太一会打印一行包含 API 地址、引导管理员密码（仅首次启动显示一次）与 Caddy 管理 socket 路径的 banner：</p>
-<pre><code><span class="c">tiyi v3.3.1 standalone</span>
+<pre><code><span class="c">tiyi v3.4.0 run</span>
 <span class="c">  api      http://127.0.0.1:8080</span>
 <span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
 <span class="c">  state    /tmp/tiyi.db</span>
 <span class="c">  bootstrap admin password: <span class="v">&lt;random-shown-once&gt;</span></span></code></pre>
 
-    <p>浏览器打开 <code>http://127.0.0.1:8080/</code>，用 <code>admin</code> 与上面的密码登录。控制台会进入<strong>总览</strong>。稳定任务区为总览、应用交付、防护策略、节点集群、事件与日志、检测与响应、监控、系统管理；权限过滤会隐藏空分组，但不会改变深链地址。</p>
+    <p>浏览器打开 <code>http://127.0.0.1:8080/</code>，用 <code>admin</code> 与上面的密码登录。控制台会进入<strong>总览</strong>。稳定任务区为总览、应用交付、防护策略、节点、事件与日志、检测与响应、监控、系统管理；权限过滤会隐藏空分组，但不会改变深链地址。</p>
 
     <div class="callout callout-warn">
       <div class="callout-icon">
@@ -125,7 +125,7 @@
     <p>用于自动化、容器镜像或 CI 时，跳过自动生成的密码：在首次启动前设置 <code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code>，太一会原样采用且不打印任何 banner。用户名默认 <code>admin</code>；仅当尚不存在任何用户时才会自动生成密码，因此重启都是空操作。</p>
 <pre><code><span class="p">$</span> mkdir -p /tmp/waf
 <span class="p">$</span> TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
-    tiyi standalone <span class="o">\</span>
+    tiyi run <span class="o">\</span>
     --addr 0.0.0.0:8080 <span class="o">\</span>
     --state-db /tmp/waf/state.db <span class="o">\</span>
     --caddy-admin-socket /tmp/waf/caddy.sock <span class="o">\</span>
@@ -202,7 +202,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

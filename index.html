@@ -34,7 +34,7 @@
       <img src="assets/img/tiyi-logo.png" alt="Tiyi logo" />
       <span>Tiyi</span>
     </a>
-    <nav class="nav-links" aria-label="Primary">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="#features">Features</a>
       <a href="#tour">Product</a>
       <a href="#pricing">Pricing</a>
@@ -54,7 +54,7 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.3.1</span>
+    <span class="tag">v3.4.0</span>
     Observation v2 + alert auto-remediation
   </span>
 
@@ -106,7 +106,7 @@
         <span class="url">tiyi.example.com/dashboard</span>
       </div>
       <img src="assets/img/screenshots/en-dark/dashboard.png" data-shot="dashboard"
-           alt="Tiyi dashboard showing 13,883 requests with 4,871 blocked (35.1%) and live attack distribution."
+           alt="Tiyi dashboard with live request, block, attack-distribution, and edge-health signals."
            width="1440" height="900" loading="eager" />
     </div>
   </div>
@@ -211,8 +211,8 @@
           <!-- network -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="4" cy="18" r="2"/><circle cx="20" cy="18" r="2"/><path d="M6 6l4 4M18 6l-4 4M6 18l4-4M18 18l-4-4"/></svg>
         </div>
-        <h3>Multi-agent topology</h3>
-        <p>Primary + warm secondary + N pure agents over a long-lived gRPC bidi stream. Live config push lands on every node in ~50 ms; agents keep proxying on last-known config indefinitely if the CP is unreachable.</p>
+        <h3>Local-first node topology</h3>
+        <p>One writable Controller includes a built-in local data plane. Nodes → Install guides binary download, token issuance, systemd setup, or foreground startup for each remote Agent, which keeps proxying with the last accepted bundle while the Controller is unavailable.</p>
       </div>
 
       <div class="feature reveal">
@@ -221,7 +221,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg>
         </div>
         <h3>Built-in observability</h3>
-        <p>Open-bucket telemetry pipeline with Top-K via Misra-Gries, sample rings, and a per-site URL prefix tree. Prometheus exporter on the local admin socket. No external time-series database required.</p>
+        <p>Exact request and bandwidth counters, normalized URL/UA Top, per-site API Inventory, immutable SecurityFacts, local/remote node trends, and a Prometheus exporter on the local admin socket. No external time-series database required.</p>
       </div>
 
       <div class="feature reveal">
@@ -239,7 +239,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l8 6 8-6"/><path d="M4 17l8-6 8 6"/></svg>
         </div>
         <h3>Request evidence + direct SIEM</h3>
-        <p>Default-off, bounded request headers/body evidence opens beside retained Attack and Access logs. Independent producer-side SIEM queues send native Caddy/Coraza or formatted events over UDP, TCP, or TLS without entering the request path.</p>
+        <p>Fresh installs retain bounded request headers/body evidence for security events; operators can turn it off or attach it to retained Attack and Access logs. Independent producer-side SIEM queues send native Caddy/Coraza or formatted events over UDP, TCP, or TLS without entering the request path.</p>
       </div>
 
       <div class="feature reveal">
@@ -317,37 +317,58 @@
       <p>Every screenshot below was captured against a running Tiyi instance. Same data plane, same UI, same RPC.</p>
     </div>
 
-    <!-- Tour 1: Dashboard -->
+    <!-- Tour 1: Site request path -->
     <div class="tour-row reveal">
       <div class="tour-text">
-        <span class="tour-eyebrow">Overview</span>
-        <h3>One screen, your whole edge.</h3>
-        <p>QPS, total requests and blocks, attack distribution by tag, top attackers, and a live alert pane — all driven by the same telemetry pipeline that powers your Prometheus exporter.</p>
+        <span class="tour-eyebrow">Application delivery</span>
+        <h3>Trace every request from host to upstream.</h3>
+        <p>A site's operational overview joins its public hostname, TLS, WAF policy, path routing, upstream health, and exact 24-hour counters into one request path.</p>
         <ul>
-          <li>5-minute QPS with auto-refresh, paused on document hidden</li>
-          <li>Real-time attack tags from the Coraza audit stream</li>
-          <li>Site-scoped or fleet-wide views from the same toggle</li>
+          <li>Host → TLS → WAF → route → upstream, with no hidden hand-off</li>
+          <li>Jump directly to scoped access logs, security events, or rendered config</li>
+          <li>The built-in local data plane and remote agents use the same control surface</li>
         </ul>
       </div>
       <div class="frame">
         <div class="frame-tabs">
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="url">/dashboard</span>
+          <span class="url">/sites/all</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/dashboard.png" data-shot="dashboard" alt="Tiyi dashboard with KPIs and traffic chart" width="1440" height="900" loading="lazy" />
+        <img src="assets/img/screenshots/en-dark/sites.png" data-shot="sites" alt="Site overview tracing hostname, TLS, WAF, routing, and upstream status" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
-    <!-- Tour 2: Security log -->
+    <!-- Tour 2: SecurityFact analysis -->
     <div class="tour-row reveal">
       <div class="tour-text">
-        <span class="tour-eyebrow">Security events</span>
-        <h3>Every blocked request, with the rule that fired.</h3>
-        <p>Per-request rows enriched with the Coraza rule id, severity, message, and attack tags — extracted from the bracketed ModSecurity payload through a tolerant parser, not Coraza's typed accessor.</p>
+        <span class="tour-eyebrow">SecurityFact analysis</span>
+        <h3>Pivot from attacker to technique to target.</h3>
+        <p>Immutable, partitioned security facts turn the attack stream into three investigation perspectives without inventing sessions or putting analytics in the request path.</p>
         <ul>
-          <li>SQL injection, XSS, RCE, RFI, path traversal — labeled and drillable</li>
-          <li>Cross-stream jump from a security event to the matching access log</li>
-          <li>Direct page-jump pagination — page 320 of a 7-day window in one round trip</li>
+          <li>Exact totals and block rate remain independent of bounded Top-N rankings</li>
+          <li>Drill through source IP, attack class, site, target, and matched rule</li>
+          <li>Open the precisely scoped request log only when per-request evidence is needed</li>
+        </ul>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">/security/events</span>
+        </div>
+        <img src="assets/img/screenshots/en-dark/security-analysis.png" data-shot="security-analysis" alt="SecurityFact analysis grouped by attack class with related sources, sites, targets, and rules" width="1440" height="900" loading="lazy" />
+      </div>
+    </div>
+
+    <!-- Tour 3: Request evidence -->
+    <div class="tour-row reveal">
+      <div class="tour-text">
+        <span class="tour-eyebrow">Request evidence</span>
+        <h3>See why it was blocked — and act.</h3>
+        <p>The event drawer keeps the request identity, Geo/ASN context, CRS matches, actual detection values, and response controls together without obscuring the underlying log stream.</p>
+        <ul>
+          <li>Jump to the matching access event using the same request identity</li>
+          <li>Preview bounded retained headers/body separately from the hot-path finding</li>
+          <li>Block, allow, or draft a rule from the evidence; AI remains redacted and advisory</li>
         </ul>
       </div>
       <div class="frame">
@@ -355,41 +376,41 @@
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/logs/security</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/security-log.png" data-shot="security-log" alt="Security event list with SQL injection, XSS, and RCE blocks" width="1440" height="900" loading="lazy" />
+        <img src="assets/img/screenshots/en-dark/security-log.png" data-shot="security-log" alt="Blocked RCE request detail with CRS rule matches, evidence, and scoped response actions" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
-    <!-- Tour 3: Policies -->
+    <!-- Tour 4: Policies -->
     <div class="tour-row reveal">
       <div class="tour-text">
         <span class="tour-eyebrow">WAF policies</span>
         <h3>Tune CRS without forking it.</h3>
-        <p>Built-in Strict / Standard / Permissive templates, each compiled to deterministic SecLang on save. Per-site overlays can add thresholds, paranoia, sampling, rule/custom tuning, IP-list bindings, and rate limits over the shared bundle.</p>
+        <p>The focused tuning workspace makes each protection layer explicit, then compiles the structured policy into deterministic SecLang on save.</p>
         <ul>
           <li>12 focused tabs: Overview · CRS Protection · HTTP Protection · Request Limits · Rule Exceptions · IP Access · Custom Rules · Plugins · Rate Limits · Exclusions · Preview &amp; Test · Versions</li>
-          <li>Compare any two policy revisions side-by-side</li>
-          <li>Audit-chain row for every mutation, including IP-list bindings</li>
+          <li>Preview compiled output, test a request, and compare any two revisions</li>
+          <li>Every mutation, including scoped IP-list bindings, enters the audit chain</li>
         </ul>
       </div>
       <div class="frame">
         <div class="frame-tabs">
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="url">/waf/policies</span>
+          <span class="url">/waf/policies/:id</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/policies.png" data-shot="policies" alt="WAF policies list with built-in templates" width="1440" height="900" loading="lazy" />
+        <img src="assets/img/screenshots/en-dark/policies.png" data-shot="policies" alt="WAF policy tuning workspace with twelve focused protection and validation modules" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
-    <!-- Tour 4: Telemetry -->
+    <!-- Tour 5: Telemetry and API inventory -->
     <div class="tour-row reveal">
       <div class="tour-text">
-        <span class="tour-eyebrow">Telemetry explorer</span>
-        <h3>100k EPS, no external TSDB.</h3>
-        <p>Sharded ingress ring, 10-second open-bucket aggregator, daily SQLite partitions, Misra-Gries Top-K with an <span class="mono">__other__</span> bucket so SUM(*) equals true traffic. Read it via a typed REST API, scrape it via Prometheus, or browse it here.</p>
+        <span class="tour-eyebrow">Telemetry + API inventory</span>
+        <h3>Know the traffic — and the API surface behind it.</h3>
+        <p>Real-time QPS and exact dimension rankings share a page with a per-site API tree that separates durable confirmed assets from traffic-derived candidates.</p>
         <ul>
-          <li>Top-K by client IP, path, UA, ASN, attack tag — one click each</li>
-          <li>Per-site URL prefix tree with bounded node and depth guards</li>
-          <li>Per-IP sample rings and a circular-file WAL for replay-on-boot</li>
+          <li>Exact request and status-code counts beside the live QPS crosshair</li>
+          <li>Searchable method, host, and normalized path inventory scoped by site</li>
+          <li>Bounded open buckets and daily SQLite partitions — no external TSDB required</li>
         </ul>
       </div>
       <div class="frame">
@@ -397,7 +418,28 @@
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/telemetry/explorer</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/telemetry.png" data-shot="telemetry" alt="Telemetry explorer showing real-time QPS and Top-K by client IP" width="1440" height="900" loading="lazy" />
+        <img src="assets/img/screenshots/en-dark/telemetry.png" data-shot="telemetry" alt="Real-time request telemetry with exact rankings and a per-site API inventory tree" width="1440" height="900" loading="lazy" />
+      </div>
+    </div>
+
+    <!-- Tour 6: Alert response -->
+    <div class="tour-row reveal">
+      <div class="tour-text">
+        <span class="tour-eyebrow">Alert response</span>
+        <h3>Carry a detection through review and resolution.</h3>
+        <p>A durable evidence snapshot explains why the rule fired while the alert continues through pending, firing, acknowledged, and resolved states.</p>
+        <ul>
+          <li>Top sources, attack classes, targets, and rules link back to scoped evidence</li>
+          <li>Acknowledge, resolve, silence, group, inhibit, and retain the handling timeline</li>
+          <li>Remediation stays a human-reviewed IP-list or custom-rule draft</li>
+        </ul>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">/alerts/active</span>
+        </div>
+        <img src="assets/img/screenshots/en-dark/alerts.png" data-shot="alerts" alt="Active alert detail with evidence snapshot, response controls, and investigation links" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
@@ -423,11 +465,11 @@
           <span class="amount">$0</span>
           <span class="unit">/ forever</span>
         </div>
-        <p class="price-note">Local standalone node. Full product feature set.</p>
+        <p class="price-note">One built-in local node. Full product feature set.</p>
         <ul>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
-            <strong>1 local standalone node</strong> — unlimited sites &amp; policies
+            <strong>1 local node</strong> — unlimited sites &amp; policies
           </li>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
@@ -458,7 +500,7 @@
           <span class="amount">$20</span>
           <span class="unit">/ month</span>
         </div>
-        <p class="price-note">Per Tiyi cluster. Annual billing available.</p>
+        <p class="price-note">Per Tiyi deployment. Annual billing available.</p>
         <ul>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
@@ -466,7 +508,7 @@
           </li>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
-            Run multi-node topologies already present in the binary, including warm-secondary HA
+            Add remote data planes without changing Controller modes or roles
           </li>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
@@ -495,7 +537,7 @@
         <ul>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
-            Custom remote-agent budget, multi-cluster, and multi-region commercial terms
+            Custom remote-Agent budget and multi-region commercial terms
           </li>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
@@ -539,6 +581,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.4.0</span>
+          <span class="tl-date">2026-07-30</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">One Controller, convergent configuration, operator trust</div>
+        <div class="tl-body">
+          <span class="mono">tiyi run</span> is the sole writable Controller and owns a factual built-in local node; legacy HA, role, promotion, and replication surfaces are gone. Durable desired/active revisions, immutable artifacts, local rollback, exact Agent delivery, and generation-bound upstream health make the served configuration inspectable and recoverable. Generated fail-closed authorization, rotating HttpOnly sessions, automatic Geo data, exact bandwidth views, site request-path overviews, and adaptive row actions complete the operator hardening. This clean-break release requires fresh state for databases below schema 47.
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -663,7 +718,7 @@
         </div>
         <div class="tl-title">Agent metrics trend + apply/update hardening</div>
         <div class="tl-body">
-          The agent detail drawer keeps 7 days of metrics with a trend view; the dashboard top-attacker drill-down honors the selected time range; IP-literal site hosts apply cleanly via a single-certificate loopback health check; <span class="mono">standalone</span>/<span class="mono">agent</span> run a startup preflight; and <span class="mono">tiyi update</span> shows progress and pre-checks privileges.
+          The agent detail drawer keeps 7 days of metrics with a trend view; the dashboard top-attacker drill-down honors the selected time range; IP-literal site hosts apply cleanly via a single-certificate loopback health check; <span class="mono">run</span>/<span class="mono">agent</span> run a startup preflight; and <span class="mono">tiyi update</span> shows progress and pre-checks privileges.
         </div>
       </div>
 
@@ -676,7 +731,7 @@
         </div>
         <div class="tl-title">Install diagnostics + tiyi doctor</div>
         <div class="tl-body">
-          <span class="mono">install.sh</span> keeps the default <span class="mono">sudo tiyi install --now</span> path, then highlights sudo PATH and 80/443/8080 listener conflicts with exact next steps. New <span class="mono">tiyi doctor</span> reruns the same non-mutating diagnostics for standalone, server, secondary, agent, and dashboard installs.
+          <span class="mono">install.sh</span> keeps the default <span class="mono">sudo tiyi install --now</span> path, then highlights sudo PATH and 80/443/8080 listener conflicts with exact next steps. <span class="mono">tiyi doctor</span> reruns the same non-mutating diagnostics for run, agent, and dashboard installations.
         </div>
       </div>
 
@@ -713,9 +768,9 @@
           <span class="tl-date">2026-06-27</span>
           <span class="tl-tag shipped">Shipped</span>
         </div>
-        <div class="tl-title">Multi-node cluster install + agent operations</div>
+        <div class="tl-title">Multi-node Agent install + operations</div>
         <div class="tl-body">
-          Run a multi-node HA cluster with every node managed by systemd on the default 80/443: <span class="mono">tiyi install --mode server|secondary|agent</span> plus an <span class="mono">/etc/tiyi/tiyi.env</span> drop-in for the agent's control-plane URL and enrollment token. WAF-enabled sites now deploy and block (SQLi / XSS / LFI → <span class="mono">403</span>) on remote agents — the embedded CRS is materialized agent-side — per-agent QPS / blocked / connection metrics stream accurately, and a healthy agent stays online instead of flapping. Console fixes: agent commands no longer error, the Install Agent code blocks read correctly in dark mode (with a systemd-service variant), and the dashboard reloads cleanly after an upgrade.
+          Run one Controller as a hardened systemd service with <span class="mono">tiyi install --now</span>, then use Nodes → Install to download the binary, issue a one-use token, and choose systemd or foreground startup for each remote data plane. WAF-enabled sites deploy and block (SQLi / XSS / LFI → <span class="mono">403</span>) on remote Agents, the embedded CRS is materialized Agent-side, and per-Agent metrics stream continuously.
         </div>
       </div>
 
@@ -740,7 +795,7 @@
         </div>
         <div class="tl-title">One-binary scale licensing + first-run admin</div>
         <div class="tl-body">
-          Tiyi now ships as one always-enforced binary that gates <strong>scale, not features</strong>. Without a valid license it runs Community on the local standalone node with zero remote agents; importing a vendor-signed license activates the Pro or Enterprise remote-node budget. The embedded vendor public key is the sole trust anchor, legacy <span class="mono">license.mode</span> writes are rejected, expired or invalid licenses safely degrade to Community, and known agents always reconnect. The authenticated About page shows edition, licensee, expiry, and live node count. A standalone first boot with no users auto-creates an <span class="mono">admin</span> with a one-time random password instead of a dead-end login.
+          Tiyi ships as one always-enforced binary that gates <strong>scale, not features</strong>. Without a valid license, Community includes the built-in local node and zero remote Agents; importing a vendor-signed license activates the Pro or Enterprise remote-node budget. The embedded vendor public key is the sole trust anchor, legacy <span class="mono">license.mode</span> writes are rejected, expired or invalid licenses safely degrade to Community, and known Agents always reconnect. The authenticated About page shows edition, licensee, expiry, and live node count. A first <span class="mono">tiyi run</span> start with no users auto-creates an <span class="mono">admin</span> with a one-time random password instead of a dead-end login.
         </div>
       </div>
 
@@ -812,7 +867,7 @@
         </div>
         <div class="tl-title">Alerting redesign + security hardening</div>
         <div class="tl-body">
-          The alert evaluator gains the evaluation/notification split the industry converged on: <span class="mono">for</span>-duration debounce, a <span class="mono">pending → firing → resolved</span> lifecycle, a durable notification outbox, re-notify, retry-with-backoff, grouping, inhibition, and silences. Channel secrets moved to KEK-encrypted storage. Also closed a fail-open RBAC gap on system/cert admin RPCs and fixed standalone dashboards reading zero traffic (telemetry now ingested from <span class="mono">StoreAccess</span>).
+          The alert evaluator gains the evaluation/notification split the industry converged on: <span class="mono">for</span>-duration debounce, a <span class="mono">pending → firing → resolved</span> lifecycle, a durable notification outbox, re-notify, retry-with-backoff, grouping, inhibition, and silences. Channel secrets moved to KEK-encrypted storage. Also closed a fail-open RBAC gap on system/cert admin RPCs and fixed built-in dashboards reading zero traffic (telemetry now ingested from <span class="mono">StoreAccess</span>).
         </div>
       </div>
 
@@ -837,7 +892,7 @@
         </div>
         <div class="tl-title">Six post-deploy QA fixes</div>
         <div class="tl-body">
-          IP-list <span class="mono">geo:CC</span> entries accepted at the API; bookmarkable parametric routes (<span class="mono">/agents/:id</span>, <span class="mono">/waf/policies/:id</span>) re-registered after backend menu generation; <span class="mono">ResolveAgentGroup</span> implemented with id and ad-hoc spec; standalone agent commands now drained; trust-profile mutations chained into the audit log; access-log default flipped to <span class="mono">on</span>.
+          IP-list <span class="mono">geo:CC</span> entries accepted at the API; bookmarkable parametric routes (<span class="mono">/agents/:id</span>, <span class="mono">/waf/policies/:id</span>) re-registered after backend menu generation; <span class="mono">ResolveAgentGroup</span> implemented with id and ad-hoc spec; remote Agent command delivery hardened; trust-profile mutations chained into the audit log; access-log default flipped to <span class="mono">on</span>.
         </div>
       </div>
 
@@ -883,6 +938,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.4.0</span>
+          <span class="tl-date">2026-07-30</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Single Controller + convergent configuration</div>
+        <div class="tl-body">
+          One writable Controller now owns the built-in local data plane and publishes immutable, revisioned configuration to local and remote nodes. Exact active-versus-attempt state, rollback, retry, generation-bound health, generated authorization, secure browser sessions, automatic Geo data, bandwidth trends, site overviews, and adaptive actions replace legacy HA semantics and ambiguous operator state.
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -937,8 +1005,8 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.4</span>
-          <span class="tl-date">Q1 2027 · target</span>
+          <span class="tl-version">Post-v3.4</span>
+          <span class="tl-date">Future · target</span>
           <span class="tl-tag future">Planned</span>
         </div>
         <div class="tl-title">Workload-cert mTLS + multi-tenant</div>
@@ -1037,7 +1105,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.3.1 · 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

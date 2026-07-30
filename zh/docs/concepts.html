@@ -45,7 +45,7 @@
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
     <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
-    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
+    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
   </aside>
 
@@ -68,8 +68,8 @@
       <dt>WAF 策略（Policy）</dt>
       <dd>Coraza 在每个请求上执行的编译产物。CRS Core 层 + HTTP 策略 + 限制 + 规则调优 + IP 列表 + 自定义规则 + 插件 + 限速 + 排除项。</dd>
 
-      <dt>节点（Agent）</dt>
-      <dd>运行数据平面（Caddy + Coraza）的一台机器。通过长连 gRPC 流从主节点接收已签名的配置 bundle。</dd>
+      <dt>节点（Node）</dt>
+      <dd>运行 Caddy + Coraza 的数据平面。每个部署固定包含一个本机内置节点；授权允许时可添加从 Controller 接收签名 bundle 的远程 Agent。</dd>
 
       <dt>遥测汇总（Telemetry rollup）</dt>
       <dd>开桶管道产生的计数器与 Top-K 采样。驱动 dashboard、Top-K 浏览器与 Prometheus 导出器。</dd>
@@ -119,16 +119,16 @@
     </ol>
     <p>按站点覆盖会把标量字段（偏执、阈值、采样）以及站点级规则覆盖、自定义规则、IP 列表绑定、限速端点叠加到挂载的策略上而不必 fork 它。</p>
 
-    <h2 id="agents">节点</h2>
-    <p>每一个代理流量的节点都跑一个嵌入式节点 —— 包括主节点与热备。节点持有一条长连 ConnectRPC 双向流到主节点。重连循环先试主节点、再试备节点、然后用指数退避重试。备节点接受只读的节点流。</p>
-    <p>更新以 <code>ConfigUpdate{revision, bundle, signature}</code> 消息流转。节点用首次连接固定的 ed25519 公钥校验 bundle 签名（首次连接 TOFU，之后拒绝重新固定），检查版本号严格大于上次应用的，再 apply 到本地 Caddy 并上报结果。重放与乱序都安全 —— 更新按版本号幂等。</p>
+    <h2 id="agents">本机节点与远程 Agent</h2>
+    <p>Controller 固定拥有一个进程内本机数据平面。它使用同一套签名与验证流程应用配置，但不会作为 Agent 入网、持久化、心跳或接收命令。节点页把它固定显示在第一行：<strong>本机 · 本地 · 内置</strong>。</p>
+    <p>远程 Agent 只连接配置的 Controller URL。它校验 ed25519 签名、拒绝重放和乱序、把已接受 bundle 应用到本地 Caddy 并上报结果。Controller 不可用时，Agent 按退避重连，同时继续使用最后一次已接受的配置代理流量。</p>
 
     <div class="callout callout-info">
       <div class="callout-icon">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       </div>
       <div class="callout-body">
-        <p><strong>为什么节点保持一致？</strong>主节点的嵌入式节点没有特殊地位。它通过与任何远程节点完全相同的入网与流协议连到自己的 API 地址。这意味着数据平面在所有地方都被同一段代码路径测试 —— 不存在 "主节点是不一样的" 这种特例。</p>
+        <p><strong>一个拓扑，不切角色。</strong>添加或移除远程 Agent 只改变节点数量，Controller 不会切换模式或角色；远程数据平面的连续代理能力也不等于 Controller 高可用。</p>
       </div>
     </div>
 
@@ -181,7 +181,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

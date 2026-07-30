@@ -24,7 +24,7 @@
       <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
       <span>Tiyi</span>
     </a>
-    <nav class="nav-links" aria-label="Primary">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="../index.html#features">Features</a>
       <a href="../index.html#tour">Product</a>
       <a href="../index.html#pricing">Pricing</a>
@@ -68,7 +68,7 @@
       <h4>Reference</h4>
       <ul>
         <li><a href="cli.html">CLI reference</a></li>
-        <li><a href="api.html">API overview</a></li>
+        <li><a href="api.html">API reference</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -82,24 +82,24 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">Get started</span>
     <h1>Installation</h1>
-    <p class="lede">Tiyi is distributed as a signed Linux binary. Install it from the public release channel, write a small YAML config, and choose the operational mode that matches the role this host should play in the cluster.</p>
+    <p class="lede">Tiyi is distributed as a signed Linux binary. Install it from the public release channel, write a small YAML config, and start the complete Controller runtime or enroll a remote Agent.</p>
 
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>v3.2 clean-state boundary.</strong> Observation v2 rejects pre-v3.2 development/test databases, agent identities, and cached bundles. Preserve source manifests and required secrets, move the old test state aside, start clean, and re-enroll agents. Do not copy a v3.1 database forward.</p></div></div>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>v3.4.0 clean-state boundary.</strong> The single-Controller build rejects databases below schema 47, plus older Agent identities and cached bundles. Preserve source manifests and required secrets, move the old state aside, start clean, and re-enroll Agents. Do not copy an older database into the new state directory.</p></div></div>
 
     <h2 id="prebuilt">Install the signed binary</h2>
     <p>Tiyi is one signed binary — free and full-featured on a single node. The canonical install script is published at <code>https://www.tiyisec.com/install.sh</code>:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.3.1 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.4.0 linux/amd64</span></code></pre>
     <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. It tries GitHub first and falls back to the Gitee release mirror; force Gitee with <code>TIYI_MIRROR=gitee</code> when needed:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.3.1</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
+    <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.4.0</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
     <p>Public distribution repos: <a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> and <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>.</p>
-    <p><code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets. Install the signed release from the public channel independently on every standalone, server, secondary, agent, and dashboard host before configuring its role.</p>
+    <p><code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets. Install the signed release from the public channel independently on every Controller, Agent, and dashboard host before configuring its role.</p>
 
     <h2 id="config-file">Config file</h2>
     <p>Tiyi reads a Koanf-based YAML config. Start from this minimal config and let the defaults handle the rest:</p>
-<pre><code><span class="c"># /etc/tiyi/server.yaml</span>
+<pre><code><span class="c"># /etc/tiyi/tiyi.yaml</span>
 <span class="k">server</span>:
   <span class="k">addr</span>: <span class="s">"0.0.0.0:8080"</span>
 
@@ -117,7 +117,7 @@
   <span class="k">https_addr</span>: <span class="s">":443"</span>
   <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
     <p>Pass it with <code>--config</code>. This config uses <code>/var/lib/tiyi</code> and ports 80/443, so run it as root (or under the systemd unit below):</p>
-<pre><code><span class="p">$</span> sudo tiyi standalone --config /etc/tiyi/server.yaml || sudo /usr/local/bin/tiyi standalone --config /etc/tiyi/server.yaml</code></pre>
+<pre><code><span class="p">$</span> sudo tiyi run --config /etc/tiyi/tiyi.yaml || sudo /usr/local/bin/tiyi run --config /etc/tiyi/tiyi.yaml</code></pre>
     <p>To try Tiyi as a normal user without <code>sudo</code>, skip the config file and pass writable paths and high ports on the command line instead — see the <a href="quickstart.html#run">Quickstart</a>.</p>
 
     <div class="callout callout-warn">
@@ -130,7 +130,7 @@
     </div>
 
     <h2 id="environment">Config environment variables</h2>
-    <p>Prefer <code>/etc/tiyi/server.yaml</code> for persistent service configuration. Use environment variables only when your service manager, container runtime, or secret manager injects config at runtime. Precedence is built-in defaults, then <code>server.yaml</code>, then config environment variables, then explicit CLI flags.</p>
+    <p>Prefer <code>/etc/tiyi/tiyi.yaml</code> for persistent service configuration. Use environment variables only when your service manager, container runtime, or secret manager injects config at runtime. Precedence is built-in defaults, then <code>tiyi.yaml</code>, then config environment variables, then explicit CLI flags.</p>
     <p>Environment names mirror config keys: prefix <code>TIYI_</code>, uppercase the key, and replace dots with underscores. For example, <code>auth.jwt_secret</code> becomes <code>TIYI_AUTH_JWT_SECRET</code>.</p>
 
     <h3>Common config overrides</h3>
@@ -155,42 +155,34 @@
     </table>
     <p>Less common config keys follow the same rule, including <code>auth.access_token_ttl</code>, <code>auth.refresh_token_ttl</code>, <code>auth.refresh_cookie_secure</code>, <code>auth.bootstrap_admin_email</code>, <code>auth.bootstrap_admin_name</code>, <code>auth.provider</code>, <code>auth.ldap.*</code>, <code>auth.radius.*</code>, and <code>update.api_base_url</code>. Prefer YAML for these unless your deployment platform requires env injection.</p>
 
-    <h2 id="modes">Operational modes</h2>
-    <p>The same binary exposes five subcommands. Pick the one that matches the host's role:</p>
+    <h2 id="modes">Runtime commands</h2>
+    <p>The same binary has one complete runtime and two focused processes:</p>
 
     <dl class="dl-grid">
-      <dt><code>standalone</code></dt>
-      <dd>Master + agent in one process. Default for single-host installs. Mutations RW; data plane proxies on the same node. Five-minute install path.</dd>
-
-      <dt><code>server</code></dt>
-      <dd>Cluster control-plane leader plus its own embedded agent. Accepts agent registrations, serves the API and dashboard, proxies traffic.</dd>
-
-      <dt><code>secondary</code></dt>
-      <dd>Warm CP replica plus its own embedded agent. Read-only API, proxies traffic, gets promoted manually on failover with <code>tiyi promote</code>.</dd>
+      <dt><code>run</code></dt>
+      <dd>The Controller, built-in local data plane, API, and admin UI in one writable process. This is the normal install and five-minute path.</dd>
 
       <dt><code>agent</code></dt>
-      <dd>Pure data plane: Caddy + Coraza receiving signed config bundles from the primary over a long-lived gRPC stream. No CP responsibility.</dd>
+      <dd>A remote data plane: Caddy + Coraza receiving signed config bundles from one Controller URL over a long-lived ConnectRPC stream.</dd>
 
       <dt><code>dashboard</code></dt>
-      <dd>UI-only mode for split deployments where the dashboard host doesn't proxy traffic.</dd>
+      <dd>A UI-only process for a host that does not own state or proxy traffic.</dd>
     </dl>
 
     <h2 id="enrollment">Enrolling an agent</h2>
-    <p>Agents enroll with a one-use token issued by the primary. From the primary host:</p>
-<pre><code><span class="p">$</span> TOKEN=<span class="s">"$(tiyi agents issue-token --tag edge-c | jq -r .token)"</span></code></pre>
-    <p>On the agent host, with the binary already in place:</p>
-<pre><code><span class="p">$</span> tiyi agent <span class="o">\</span>
-    --api http://primary:8080 <span class="o">\</span>
-    --enrollment-token <span class="s">"$TOKEN"</span> <span class="o">\</span>
-    --state-dir /var/lib/tiyi/agent <span class="o">\</span>
-    --proxy-http-addr 0.0.0.0:80 <span class="o">\</span>
-    --proxy-https-addr 0.0.0.0:443</code></pre>
-    <p>The token is consumed on first contact. After enrollment, the agent persists its identity in <code>&lt;state-dir&gt;/identity.json</code> and the token is no longer needed. Lose the state directory and you'll need a fresh token to re-enroll.</p>
+    <p>Open <strong>Nodes → Install</strong>, issue a token, then follow the separate binary-download and systemd instructions. The same page also shows the raw token, a foreground command, and a complete download-and-start script:</p>
+<pre><code><span class="p">$</span> sudo curl -fsSL -o /usr/local/bin/tiyi <span class="s">'https://tiyi.example.com/download/tiyi'</span>
+<span class="p">$</span> sudo chmod 0755 /usr/local/bin/tiyi
+<span class="p">$</span> sudo mkdir -p /etc/tiyi
+<span class="p">$</span> printf <span class="s">'TIYI_CONTROLLER_URL=https://tiyi.example.com\nTIYI_AGENT_ENROLLMENT_TOKEN=&lt;one-use-token&gt;\n'</span> <span class="o">|</span> sudo tee /etc/tiyi/tiyi-agent.env &gt;/dev/null
+<span class="p">$</span> sudo chmod 0600 /etc/tiyi/tiyi-agent.env
+<span class="p">$</span> sudo tiyi install --mode agent --unit-name tiyi-agent --now</code></pre>
+    <p>Lose the state directory and you'll need a fresh token to re-enroll.</p>
 
     <h2 id="systemd">Run as a systemd service</h2>
     <p>For a long-lived deployment, let Tiyi install itself as a hardened systemd service. <code>tiyi install</code> creates the <code>tiyi</code> service user and the <code>tiyi-admin</code> socket group, writes the unit, and with <code>--now</code> enables and starts it on boot:</p>
 <pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
-    <div class="callout callout-tip"><div class="callout-body"><p>Running <code>sudo tiyi install</code> without <code>--now</code> intentionally leaves the unit disabled and stopped so you can finish mode-specific configuration. For the first <strong>standalone</strong> start, re-run the same install command with <code>--now</code> added; do not start the unit directly with <code>systemctl</code>. The installer can then create the administrator first and print the one-time login here instead of sending the password to the system journal.</p></div></div>
+    <div class="callout callout-tip"><div class="callout-body"><p>Running <code>sudo tiyi install</code> without <code>--now</code> intentionally leaves the unit disabled and stopped so you can finish mode-specific configuration. For the first <strong>Controller</strong> start, re-run the same install command with <code>--now</code> added; do not start the unit directly with <code>systemctl</code>. The installer can then create the administrator first and print the one-time login here instead of sending the password to the system journal.</p></div></div>
     <p>The service runs unprivileged and binds ports 80/443 via <code>CAP_NET_BIND_SERVICE</code>. Before each start, a root-only pre-start hook re-owns the configured state directory and KEK file for the service user, so CRS caches, uploads, exclusion packages, release staging, logs, trust snapshots, and embedded-agent state left by a prior sudo foreground run cannot block runtime writes. On a first install, <code>--now</code> pre-creates the administrator and prints the one-time login itself — no journal scraping:</p>
 <pre><code><span class="c">tiyi is enabled and running as tiyi.service.</span>
 
@@ -207,8 +199,8 @@
 <span class="k">User</span>=tiyi
 <span class="k">Group</span>=tiyi
 <span class="k">PermissionsStartOnly</span>=true
-<span class="k">ExecStartPre</span>=/usr/local/bin/tiyi systemd-prestart --config /etc/tiyi/server.yaml --user tiyi --group tiyi
-<span class="k">ExecStart</span>=/usr/local/bin/tiyi standalone --config /etc/tiyi/server.yaml --admin-socket /run/tiyi/admin.sock --admin-socket-group tiyi-admin --admin-socket-mode 0660 --caddy-admin-socket /run/tiyi/caddy.sock
+<span class="k">ExecStartPre</span>=/usr/local/bin/tiyi systemd-prestart --config /etc/tiyi/tiyi.yaml --user tiyi --group tiyi
+<span class="k">ExecStart</span>=/usr/local/bin/tiyi run --config /etc/tiyi/tiyi.yaml --admin-socket /run/tiyi/admin.sock --admin-socket-group tiyi-admin --admin-socket-mode 0660 --caddy-admin-socket /run/tiyi/caddy.sock
 <span class="k">Restart</span>=on-failure
 <span class="k">AmbientCapabilities</span>=CAP_NET_BIND_SERVICE
 <span class="k">CapabilityBoundingSet</span>=CAP_NET_BIND_SERVICE
@@ -222,13 +214,13 @@
 
 <span class="k">[Install]</span>
 <span class="k">WantedBy</span>=multi-user.target</code></pre>
-    <p>Run <code>tiyi doctor</code> to check sudo PATH, systemd, config loading, installed-service state ownership, and listeners on ports 80/443/8080. If no systemd unit is installed, state ownership is skipped unless you pass <code>--service-user</code>/<code>--service-group</code> or request repair. If it warns that sudo cannot find <code>tiyi</code>, use the printed full-path command or add <code>/usr/local/bin</code> to sudo <code>secure_path</code>. If it reports root-owned state, repair it explicitly with <code>sudo tiyi doctor --fix-state-ownership</code>. If it reports a port conflict, either stop the owning service or move Tiyi with <code>proxy.http_addr</code>, <code>proxy.https_addr</code>, or <code>server.addr</code>. Pick a different role with <code>--mode</code> (e.g. <code>server</code>, <code>agent</code>). Remove the service with <code>sudo tiyi uninstall</code>: state under <code>/var/lib/tiyi</code>, config under <code>/etc/tiyi</code>, and the service user are preserved unless you add <code>--purge</code>.</p>
+    <p>Run <code>tiyi doctor</code> to check sudo PATH, systemd, config loading, installed-service state ownership, and listeners on ports 80/443/8080. If no systemd unit is installed, state ownership is skipped unless you pass <code>--service-user</code>/<code>--service-group</code> or request repair. If it warns that sudo cannot find <code>tiyi</code>, use the printed full-path command or add <code>/usr/local/bin</code> to sudo <code>secure_path</code>. If it reports root-owned state, repair it explicitly with <code>sudo tiyi doctor --fix-state-ownership</code>. If it reports a port conflict, either stop the owning service or move Tiyi with <code>proxy.http_addr</code>, <code>proxy.https_addr</code>, or <code>server.addr</code>. Select <code>--mode run</code> for the Controller or <code>--mode agent</code> for a remote data plane. Remove the service with <code>sudo tiyi uninstall</code>: state under <code>/var/lib/tiyi</code>, config under <code>/etc/tiyi</code>, and the service user are preserved unless you add <code>--purge</code>.</p>
 
     <h2 id="next">What to read next</h2>
     <ul>
       <li><a href="concepts.html">Domain model</a> — what sites, upstreams, certs, policies, and agents are.</li>
       <li><a href="cli.html">CLI reference</a> — every <code>tiyi</code> subcommand grouped by resource.</li>
-      <li><a href="deployment.html">Deployment</a> — production hardening, HA failover, SIEM egress.</li>
+      <li><a href="deployment.html">Deployment</a> — production hardening, remote Agents, outage boundaries, and SIEM egress.</li>
     </ul>
 
     <div class="docs-pager">
@@ -253,7 +245,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

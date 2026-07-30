@@ -24,7 +24,7 @@
       <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
       <span>Tiyi</span>
     </a>
-    <nav class="nav-links" aria-label="Primary">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="../index.html#features">Features</a>
       <a href="../index.html#tour">Product</a>
       <a href="../index.html#pricing">Pricing</a>
@@ -68,7 +68,7 @@
       <h4>Reference</h4>
       <ul>
         <li><a href="cli.html">CLI reference</a></li>
-        <li><a href="api.html">API overview</a></li>
+        <li><a href="api.html">API reference</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -96,7 +96,7 @@
           <td><strong>Local admin socket</strong></td>
           <td><em>(default)</em></td>
           <td>OS file permissions on the Unix socket</td>
-          <td>Running on the same host as <code>tiyi standalone</code> or <code>tiyi server</code>.</td>
+          <td>Running on the same host as <code>tiyi run</code>.</td>
         </tr>
         <tr>
           <td><strong>Remote</strong></td>
@@ -108,7 +108,7 @@
     </table>
 
     <p>Get a JWT from a username/password:</p>
-<pre><code><span class="p">$</span> tiyi auth login --api http://primary:8080 --username admin
+<pre><code><span class="p">$</span> tiyi auth login --api http://controller:8080 --username admin
 <span class="c"># prompts for password, prints the JWT, optionally writes ~/.config/tiyi/credentials</span></code></pre>
 
     <h2 id="diagnostics">Diagnostics</h2>
@@ -255,7 +255,7 @@ tiyi system settings update --set siem.endpoint=tcp://siem.internal:514 --set si
     <p>Logging and evidence policy is a revision-CAS LogService resource, managed under <strong>Administration → Settings → Logs &amp; evidence</strong>; legacy <code>telemetry.*</code>, <code>logsink.*</code>, <code>log_mode.*</code>, and <code>log_retention</code> settings are rejected.</p>
 
     <h2 id="release-mgmt">Releases (rolling agent upgrades)</h2>
-<pre><code>tiyi release import --tarball ./tiyi_v3.3.1_linux_amd64.tar.gz
+<pre><code>tiyi release import --tarball ./tiyi_v3.4.0_linux_amd64.tar.gz
 tiyi release list
 tiyi release apply <span class="v">&lt;release-id&gt;</span>           <span class="c"># fan APPLY_BINARY to all matching agents</span>
 tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span> --agent-id <span class="v">B</span>
@@ -274,9 +274,11 @@ tiyi user unlock <span class="v">&lt;id&gt;</span>
 tiyi role list
 tiyi role get <span class="v">&lt;id&gt;</span></code></pre>
 
-    <h2 id="failover">Cluster failover</h2>
-<pre><code>tiyi promote                     <span class="c"># on the secondary, after verifying the primary is unreachable</span>
-tiyi promote --force             <span class="c"># skip the demote step; accept bounded data loss</span></code></pre>
+    <h2 id="nodes">Controller and Agent processes</h2>
+<pre><code>tiyi run                         <span class="c"># complete writable Controller + local data plane</span>
+tiyi install --mode agent --unit-name tiyi-agent --now <span class="c"># Agent systemd service; reads /etc/tiyi/tiyi-agent.env</span>
+tiyi agent --controller-url http://controller:8080 --enrollment-token <span class="v">&lt;one-use-token&gt;</span> <span class="c"># foreground Agent</span>
+tiyi dashboard                   <span class="c"># UI-only process</span></code></pre>
 
     <h2 id="exit-codes">Exit codes</h2>
     <table>
@@ -298,7 +300,7 @@ tiyi promote --force             <span class="c"># skip the demote step; accept 
       </a>
       <a class="next" href="api.html">
         <span class="label">Next →</span>
-        <span class="title">API overview</span>
+        <span class="title">API reference</span>
       </a>
     </div>
   </main>
@@ -313,7 +315,7 @@ tiyi promote --force             <span class="c"># skip the demote step; accept 
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

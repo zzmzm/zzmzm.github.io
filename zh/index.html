@@ -54,7 +54,7 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.3.1</span>
+    <span class="tag">v3.4.0</span>
     Observation v2 + 告警自动处置
   </span>
 
@@ -105,7 +105,7 @@
         <span class="url">tiyi.example.com/dashboard</span>
       </div>
       <img src="../assets/img/screenshots/zh-dark/dashboard.png" data-shot="dashboard"
-           alt="太一概览：13,883 次请求中拦截 4,871 次（35.1%），实时攻击分布。"
+           alt="太一概览：实时请求、拦截、攻击分布与边缘健康信号。"
            width="1440" height="900" loading="eager" />
     </div>
   </div>
@@ -166,7 +166,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="11" width="8" height="10" rx="2"/></svg>
         </div>
         <h3>任务导向管理平面</h3>
-        <p>八个稳定工作域分别是总览、应用交付、防护策略、节点集群、事件与日志、检测与响应、监控和系统管理。响应式导航、键盘语义、权限感知分组和一致的空状态/差异/应用反馈，让复杂工作流更易理解。</p>
+        <p>八个稳定工作域分别是总览、应用交付、防护策略、节点、事件与日志、检测与响应、监控和系统管理。响应式导航、键盘语义、权限感知分组和一致的空状态/差异/应用反馈，让复杂工作流更易理解。</p>
       </div>
 
       <div class="feature reveal">
@@ -206,8 +206,8 @@
         <div class="feature-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="4" cy="18" r="2"/><circle cx="20" cy="18" r="2"/><path d="M6 6l4 4M18 6l-4 4M6 18l4-4M18 18l-4-4"/></svg>
         </div>
-        <h3>多节点拓扑</h3>
-        <p>主节点 + 热备 + N 个纯节点，通过长连 gRPC 双向流。配置实时推送在 ~50 ms 内到达每个节点；控制平面失联时节点继续按上一份已知配置代理流量。</p>
+        <h3>本机优先的节点拓扑</h3>
+        <p>一个始终可写的 Controller 自带本机数据平面；节点 → 安装远端节点会分步引导下载二进制、签发 Token，并选择 systemd 或前台启动。Controller 不可用期间，Agent 继续按最后一次已接受的 bundle 代理流量。</p>
       </div>
 
       <div class="feature reveal">
@@ -215,7 +215,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg>
         </div>
         <h3>内置可观测性</h3>
-        <p>开桶式遥测管道：Misra-Gries Top-K、采样环、按站 URL 前缀树。本地管理 socket 上提供 Prometheus 导出器。无需外部时序数据库。</p>
+        <p>精确请求与带宽计数、规范化 URL/UA Top、按站点 API Inventory、不可变 SecurityFact、本机/远程节点趋势，以及本地管理 socket 上的 Prometheus 导出器；无需外部时序数据库。</p>
       </div>
 
       <div class="feature reveal">
@@ -231,7 +231,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l8 6 8-6"/><path d="M4 17l8-6 8 6"/></svg>
         </div>
         <h3>请求证据 + 直达 SIEM</h3>
-        <p>默认关闭且有界的请求头/请求体证据可在攻击与访问日志旁按需打开。生产节点使用独立 SIEM 队列，通过 UDP、TCP 或 TLS 发送源生 Caddy/Coraza 或格式化事件，绝不进入请求路径。</p>
+        <p>新安装默认为安全事件保留有界请求头/请求体证据；运维人员可关闭，或把它附着到保留的攻击与访问日志。生产节点使用独立 SIEM 队列，通过 UDP、TCP 或 TLS 发送源生 Caddy/Coraza 或格式化事件，绝不进入请求路径。</p>
       </div>
 
       <div class="feature reveal">
@@ -304,37 +304,58 @@
       <p>下方每一张截图都来自实际运行的太一实例。同一份数据平面，同一份 UI，同一份 RPC。</p>
     </div>
 
-    <!-- Tour 1: Dashboard -->
+    <!-- Tour 1: Site request path -->
     <div class="tour-row reveal">
       <div class="tour-text">
-        <span class="tour-eyebrow">概览</span>
-        <h3>一屏掌握整个边缘。</h3>
-        <p>QPS、累计请求与拦截、按标签的攻击分布、Top 攻击者、实时告警面板 —— 全部由驱动 Prometheus 导出器的同一条遥测管道供数据。</p>
+        <span class="tour-eyebrow">应用交付</span>
+        <h3>从域名到上游，追踪每一个请求。</h3>
+        <p>站点运行概览把公网域名、TLS、WAF 策略、路径路由、上游健康和过去 24 小时精确计数串成一条请求链路。</p>
         <ul>
-          <li>5 分钟 QPS，自动刷新，标签页隐藏时暂停</li>
-          <li>来自 Coraza 审计流的实时攻击标签</li>
-          <li>同一个开关在站点维度与全集群之间切换</li>
+          <li>域名 → TLS → WAF → 路由 → 上游，交接过程不再隐藏</li>
+          <li>直接跳转到本站访问日志、安全事件或最终渲染配置</li>
+          <li>本机内置数据平面与远端 Agent 使用同一套控制界面</li>
         </ul>
       </div>
       <div class="frame">
         <div class="frame-tabs">
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="url">/dashboard</span>
+          <span class="url">/sites/all</span>
         </div>
-        <img src="../assets/img/screenshots/zh-dark/dashboard.png" data-shot="dashboard" alt="太一概览页：核心指标与流量曲线" width="1440" height="900" loading="lazy" />
+        <img src="../assets/img/screenshots/zh-dark/sites.png" data-shot="sites" alt="站点概览串联域名、TLS、WAF、路由与上游状态" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
-    <!-- Tour 2: Security log -->
+    <!-- Tour 2: SecurityFact analysis -->
     <div class="tour-row reveal">
       <div class="tour-text">
-        <span class="tour-eyebrow">安全事件</span>
-        <h3>每一次拦截，都带着触发的规则。</h3>
-        <p>每个请求一行，附带 Coraza 规则 ID、严重等级、消息与攻击标签 —— 通过宽容的解析器从 ModSecurity 方括号 payload 中提取，而不是依赖 Coraza 的强类型访问器。</p>
+        <span class="tour-eyebrow">SecurityFact 分析</span>
+        <h3>在攻击者、攻击类型和目标之间切换视角。</h3>
+        <p>不可变、按天分区的安全事实把攻击流组织成三个调查视角，不虚构会话，也不把分析逻辑放进请求路径。</p>
         <ul>
-          <li>SQL 注入、XSS、RCE、RFI、目录穿越 —— 全部已分类、可下钻</li>
-          <li>从安全事件直接跳转到匹配的访问日志</li>
-          <li>直跳分页 —— 7 天窗口的第 320 页只需要一次 RPC</li>
+          <li>精确总数与阻断率不受有界 Top-N 排名影响</li>
+          <li>沿来源 IP、攻击类别、站点、目标和命中规则逐层下钻</li>
+          <li>只有需要逐请求证据时才打开精确筛选后的安全日志</li>
+        </ul>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">/security/events</span>
+        </div>
+        <img src="../assets/img/screenshots/zh-dark/security-analysis.png" data-shot="security-analysis" alt="按攻击类别聚合的 SecurityFact 分析，以及关联来源、站点、目标和规则" width="1440" height="900" loading="lazy" />
+      </div>
+    </div>
+
+    <!-- Tour 3: Request evidence -->
+    <div class="tour-row reveal">
+      <div class="tour-text">
+        <span class="tour-eyebrow">请求证据</span>
+        <h3>看清为什么拦截，并立即处置。</h3>
+        <p>事件抽屉把请求身份、Geo/ASN、CRS 命中、实际检测值与处置控件放在一起，同时保留底层日志流的上下文。</p>
+        <ul>
+          <li>使用同一请求标识跳转到匹配的访问事件</li>
+          <li>有界请求头 / 请求体证据与热路径 Finding 分开按需预览</li>
+          <li>基于证据封禁、放行或起草规则；AI 始终脱敏且只做建议</li>
         </ul>
       </div>
       <div class="frame">
@@ -342,41 +363,41 @@
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/logs/security</span>
         </div>
-        <img src="../assets/img/screenshots/zh-dark/security-log.png" data-shot="security-log" alt="安全事件列表：SQL 注入、XSS 与 RCE 拦截记录" width="1440" height="900" loading="lazy" />
+        <img src="../assets/img/screenshots/zh-dark/security-log.png" data-shot="security-log" alt="被拦截 RCE 请求详情：CRS 命中、检测证据与限定范围处置" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
-    <!-- Tour 3: Policies -->
+    <!-- Tour 4: Policies -->
     <div class="tour-row reveal">
       <div class="tour-text">
         <span class="tour-eyebrow">WAF 策略</span>
         <h3>调优 CRS 而不必 fork。</h3>
-        <p>内置 Strict / Standard / Permissive 三套模板，每一次保存都会编译成确定的 SecLang。按站点覆盖可把阈值、偏执等级、采样率、规则 / 自定义调优、IP 列表绑定与限速叠加在共享 bundle 之上。</p>
+        <p>聚焦式调优工作区明确展示每一层防护，并在保存时把结构化策略编译为确定性的 SecLang。</p>
         <ul>
           <li>12 个聚焦标签页：概览 · CRS 防护 · HTTP 防护 · 请求限制 · 规则例外 · IP 访问 · 自定义规则 · 插件 · 限速 · 误报豁免包 · 预览与测试 · 版本</li>
-          <li>任意两个策略版本之间并排 diff</li>
-          <li>每一次变更都写入审计链，包括 IP 列表绑定</li>
+          <li>预览编译结果、用单次请求测试，并比较任意两个修订</li>
+          <li>每一次变更都写入审计链，包括限定范围的 IP 列表绑定</li>
         </ul>
       </div>
       <div class="frame">
         <div class="frame-tabs">
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-          <span class="url">/waf/policies</span>
+          <span class="url">/waf/policies/:id</span>
         </div>
-        <img src="../assets/img/screenshots/zh-dark/policies.png" data-shot="policies" alt="WAF 策略列表与内置模板" width="1440" height="900" loading="lazy" />
+        <img src="../assets/img/screenshots/zh-dark/policies.png" data-shot="policies" alt="包含十二个防护与验证模块的 WAF 策略调优工作区" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
-    <!-- Tour 4: Telemetry -->
+    <!-- Tour 5: Telemetry and API inventory -->
     <div class="tour-row reveal">
       <div class="tour-text">
-        <span class="tour-eyebrow">遥测深度视图</span>
-        <h3>100k EPS，无需外部时序库。</h3>
-        <p>分片入流环、10 秒开桶聚合、每日 SQLite 分区、Misra-Gries Top-K 带 <span class="mono">__other__</span> 桶让 SUM(*) 等于真实流量。可通过 REST API 读取，可让 Prometheus 抓取，也可在这里浏览。</p>
+        <span class="tour-eyebrow">遥测 + API 资产</span>
+        <h3>同时掌握流量与背后的 API 表面。</h3>
+        <p>实时 QPS、精确维度排行与按站点 API 树同屏展示，并明确区分长期确认资产和由当前流量发现的候选项。</p>
         <ul>
-          <li>按客户端 IP、路径、UA、ASN、攻击标签 Top-K，每项一键</li>
-          <li>按站点的 URL 前缀树，节点数与深度均有上限</li>
-          <li>按 IP 的采样环 + 启动时回放的循环文件 WAL</li>
+          <li>实时 QPS 十字线旁展示精确请求数与状态码计数</li>
+          <li>按站点搜索方法、主机和规范化路径资产</li>
+          <li>有界开桶与每日 SQLite 分区，无需外部时序库</li>
         </ul>
       </div>
       <div class="frame">
@@ -384,7 +405,28 @@
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/telemetry/explorer</span>
         </div>
-        <img src="../assets/img/screenshots/zh-dark/telemetry.png" data-shot="telemetry" alt="遥测深度视图：实时 QPS 与按客户端 IP 的 Top-K" width="1440" height="900" loading="lazy" />
+        <img src="../assets/img/screenshots/zh-dark/telemetry.png" data-shot="telemetry" alt="实时请求遥测、精确排行与按站点 API 资产树" width="1440" height="900" loading="lazy" />
+      </div>
+    </div>
+
+    <!-- Tour 6: Alert response -->
+    <div class="tour-row reveal">
+      <div class="tour-text">
+        <span class="tour-eyebrow">告警响应</span>
+        <h3>让一次检测完整走过审核与解除。</h3>
+        <p>持久化证据快照解释规则为何触发，告警则继续经历 pending、firing、已确认与已解除的完整状态。</p>
+        <ul>
+          <li>Top 来源、攻击类型、目标与规则可回到限定范围的原始证据</li>
+          <li>确认、解除、静默、分组、抑制，并保留完整处理时间线</li>
+          <li>处置始终是需要人工审核的 IP 列表或自定义规则草案</li>
+        </ul>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">/alerts/active</span>
+        </div>
+        <img src="../assets/img/screenshots/zh-dark/alerts.png" data-shot="alerts" alt="活跃告警详情：证据快照、响应控件与调查链接" width="1440" height="900" loading="lazy" />
       </div>
     </div>
 
@@ -410,11 +452,11 @@
           <span class="amount">¥0</span>
           <span class="unit">/ 永久</span>
         </div>
-        <p class="price-note">本地单机节点，包含完整产品能力。</p>
+        <p class="price-note">一个本机内置节点，包含完整产品能力。</p>
         <ul>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
-            <strong>1 个本地单机节点</strong> —— 站点与策略数量不限
+            <strong>1 个本机节点</strong> —— 站点与策略数量不限
           </li>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
@@ -445,7 +487,7 @@
           <span class="amount">¥20</span>
           <span class="unit">/ 月</span>
         </div>
-        <p class="price-note">每个太一集群计费。年付可选。</p>
+        <p class="price-note">每个太一部署计费。年付可选。</p>
         <ul>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
@@ -453,7 +495,7 @@
           </li>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
-            运行二进制中已有的多节点拓扑，包括热备 HA
+            直接添加远程数据平面，无需切换 Controller 模式或角色
           </li>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
@@ -482,7 +524,7 @@
         <ul>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
-            自定义远程节点配额，以及多集群、多地域商务条款
+            自定义远程 Agent 配额与多地域商务条款
           </li>
           <li>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>
@@ -526,6 +568,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.4.0</span>
+          <span class="tl-date">2026-07-30</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">单 Controller、收敛配置与运维可信度</div>
+        <div class="tl-body">
+          <span class="mono">tiyi run</span> 成为唯一可写 Controller，并持有事实化本机节点；旧 HA、角色、提主与复制界面全部移除。持久化目标/活动 revision、不可变 artifact、本机回滚、精确 Agent 投递和绑定配置代际的上游健康，让实际服务配置可检查、可恢复。生成式 fail-closed 授权、轮换 HttpOnly 会话、Geo 自动数据、精确带宽视图、站点请求路径概览与自适应行操作完成运维加固。数据库 schema 低于 47 的安装必须以干净状态启动。
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -650,7 +705,7 @@
         </div>
         <div class="tl-title">Agent 指标趋势 + 应用 / 更新加固</div>
         <div class="tl-body">
-          Agent 详情抽屉保留 7 天指标并提供趋势视图;仪表盘顶部攻击者下钻遵循所选时间范围;IP 字面值站点通过单证书回环健康检查顺利应用;<span class="mono">standalone</span>/<span class="mono">agent</span> 执行启动预检;<span class="mono">tiyi update</span> 显示进度并预检权限。
+          Agent 详情抽屉保留 7 天指标并提供趋势视图;仪表盘顶部攻击者下钻遵循所选时间范围;IP 字面值站点通过单证书回环健康检查顺利应用;<span class="mono">run</span>/<span class="mono">agent</span> 执行启动预检;<span class="mono">tiyi update</span> 显示进度并预检权限。
         </div>
       </div>
 
@@ -663,7 +718,7 @@
         </div>
         <div class="tl-title">安装诊断 + tiyi doctor</div>
         <div class="tl-body">
-          <span class="mono">install.sh</span> 保持默认 <span class="mono">sudo tiyi install --now</span> 路径,随后高亮提示 sudo PATH 与 80/443/8080 监听冲突,并给出明确下一步。新的 <span class="mono">tiyi doctor</span> 可为 standalone、server、secondary、agent、dashboard 安装重复执行同样的非破坏性诊断。
+          <span class="mono">install.sh</span> 保持默认 <span class="mono">sudo tiyi install --now</span> 路径,随后高亮提示 sudo PATH 与 80/443/8080 监听冲突,并给出明确下一步。<span class="mono">tiyi doctor</span> 可为 run、agent、dashboard 安装重复执行同样的非破坏性诊断。
         </div>
       </div>
 
@@ -700,9 +755,9 @@
           <span class="tl-date">2026-06-27</span>
           <span class="tl-tag shipped">已发布</span>
         </div>
-        <div class="tl-title">多节点集群安装 + Agent 运维</div>
+        <div class="tl-title">多节点 Agent 安装 + 运维</div>
         <div class="tl-body">
-          以 systemd 在默认 80/443 上托管每个节点来运行多节点 HA 集群：<span class="mono">tiyi install --mode server|secondary|agent</span>,再加一个 <span class="mono">/etc/tiyi/tiyi.env</span> drop-in 提供 agent 的控制面 URL 与入册 token。启用 WAF 的站点现在会在远端 Agent 上部署并拦截(SQLi / XSS / LFI → <span class="mono">403</span>,内置 CRS 在 agent 端落地);每个 Agent 的 QPS / 阻断 / 连接数指标准确上报;健康的 Agent 保持在线不再抖动。控制台修复:下发命令不再报错,安装节点代码块在暗色模式下可读(含 systemd 变体),升级后仪表盘干净重载。
+          使用 <span class="mono">tiyi install --now</span> 把唯一 Controller 作为加固 systemd 服务运行，再通过节点 → 安装远端节点分步下载二进制、签发一次性 Token，并为每个远程数据平面选择 systemd 或前台启动。启用 WAF 的站点会在远程 Agent 上部署并拦截（SQLi / XSS / LFI → <span class="mono">403</span>），内置 CRS 在 Agent 端落地，节点指标持续上报。
         </div>
       </div>
 
@@ -727,7 +782,7 @@
         </div>
         <div class="tl-title">单一二进制按规模授权 + 首次启动管理员</div>
         <div class="tl-body">
-          太一现在只发布一个始终执行规模限制的二进制，只对<strong>规模而非功能</strong>设限。没有有效授权时，社区版运行在本地单机节点并允许 0 个远程节点；导入厂商签名授权后即可激活 Pro 或企业版的远程节点配额。内嵌厂商公钥是唯一信任锚，旧的 <span class="mono">license.mode</span> 写入会被拒绝，过期或无效授权安全降级为社区版，已知节点始终可重连。需登录的关于页展示版本、被授权方、到期与实时节点数。单机首次启动且无用户时会自动创建 <span class="mono">admin</span> 并生成一次性随机密码。
+          太一只发布一个始终执行规模限制的二进制，只对<strong>规模而非功能</strong>设限。没有有效授权时，社区版包含本机内置节点并允许 0 个远程 Agent；导入厂商签名授权后即可激活 Pro 或企业版的远程节点配额。内嵌厂商公钥是唯一信任锚，旧的 <span class="mono">license.mode</span> 写入会被拒绝，过期或无效授权安全降级为社区版，已知 Agent 始终可重连。需登录的关于页展示版本、被授权方、到期与实时节点数。首次执行 <span class="mono">tiyi run</span> 且无用户时，会自动创建 <span class="mono">admin</span> 并生成一次性随机密码。
         </div>
       </div>
 
@@ -824,7 +879,7 @@
         </div>
         <div class="tl-title">六项发布后 QA 修复</div>
         <div class="tl-body">
-          API 边界接受 IP 列表 <span class="mono">geo:CC</span> 条目；可书签的参数化路由（<span class="mono">/agents/:id</span>、<span class="mono">/waf/policies/:id</span>）在后端菜单生成后重新注册；<span class="mono">ResolveAgentGroup</span> 实现接受已保存组与即兴规约;单机模式下节点命令现在能被消费;信任配置变更已上链;访问日志默认值翻为 <span class="mono">on</span>。
+          API 边界接受 IP 列表 <span class="mono">geo:CC</span> 条目；可书签的参数化路由（<span class="mono">/agents/:id</span>、<span class="mono">/waf/policies/:id</span>）在后端菜单生成后重新注册；<span class="mono">ResolveAgentGroup</span> 实现接受已保存组与即兴规约；远程 Agent 命令投递得到加固；信任配置变更已上链；访问日志默认值翻为 <span class="mono">on</span>。
         </div>
       </div>
 
@@ -870,6 +925,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.4.0</span>
+          <span class="tl-date">2026-07-30</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">单 Controller + 收敛配置</div>
+        <div class="tl-body">
+          一个可写 Controller 现在持有本机数据平面，并把不可变、带 revision 的配置发布到本机与远程节点。精确的活动/尝试状态、回滚、重试、绑定配置代际的健康状态、生成式授权、安全浏览器会话、Geo 自动数据、带宽趋势、站点概览和自适应操作，取代旧 HA 语义与含糊运维状态。
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -924,8 +992,8 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.4</span>
-          <span class="tl-date">2027 Q1 · 目标</span>
+          <span class="tl-version">v3.4 之后</span>
+          <span class="tl-date">未来 · 目标</span>
           <span class="tl-tag future">规划中</span>
         </div>
         <div class="tl-title">工作负载证书 mTLS + 多租户</div>
@@ -1024,7 +1092,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.3.1 · 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

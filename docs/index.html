@@ -24,7 +24,7 @@
       <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
       <span>Tiyi</span>
     </a>
-    <nav class="nav-links" aria-label="Primary">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="../index.html#features">Features</a>
       <a href="../index.html#tour">Product</a>
       <a href="../index.html#pricing">Pricing</a>
@@ -68,7 +68,7 @@
       <h4>Reference</h4>
       <ul>
         <li><a href="cli.html">CLI reference</a></li>
-        <li><a href="api.html">API overview</a></li>
+        <li><a href="api.html">API reference</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -86,7 +86,7 @@
       Tiyi is a single Go binary that runs a Caddy reverse proxy, a Coraza WAF
       with the OWASP Core Rule Set, an embedded SQLite control plane, and a Vben
       Admin UI. These docs cover everything from a five-minute first run to a
-      hardened multi-node production deployment.
+      hardened Controller with optional remote data planes.
     </p>
 
     <h2 id="start-here">Start here</h2>
@@ -95,11 +95,11 @@
     <div class="docs-cards">
       <a class="docs-card" href="quickstart.html">
         <div class="docs-card-title"><span class="docs-card-num">1</span>Quickstart</div>
-        <p>Install the signed binary, start <code>tiyi standalone</code>, create your first site, and watch the WAF block real attacks. Five minutes.</p>
+        <p>Install the signed binary, start <code>tiyi run</code>, create your first site, and watch the WAF block real attacks. Five minutes.</p>
       </a>
       <a class="docs-card" href="installation.html">
         <div class="docs-card-title"><span class="docs-card-num">2</span>Installation</div>
-        <p>Install a signed release, configure the YAML config, and choose between <code>standalone</code>, <code>server</code>, and <code>agent</code> modes.</p>
+        <p>Install a signed release, configure the YAML config, and run the Controller or enroll remote Agents.</p>
       </a>
       <a class="docs-card" href="concepts.html">
         <div class="docs-card-title">Domain model</div>
@@ -118,12 +118,12 @@
         <p>Every <code>tiyi</code> subcommand grouped by resource, with the flags that matter and the exit-code contract.</p>
       </a>
       <a class="docs-card" href="api.html">
-        <div class="docs-card-title">API overview</div>
+        <div class="docs-card-title">API reference</div>
         <p>The ConnectRPC contract that drives the UI, CLI, and agent stream: authentication, errors, and the current service catalog.</p>
       </a>
       <a class="docs-card" href="deployment.html">
         <div class="docs-card-title">Deployment</div>
-        <p>Production hardening, HA failover with epoch fencing, SIEM egress, observability, and the upgrade path.</p>
+        <p>Production hardening, remote-Agent continuity and Controller outage boundaries, SIEM egress, observability, and the upgrade path.</p>
       </a>
     </div>
 
@@ -132,7 +132,7 @@
     <ul>
       <li><strong>One binary, zero runtime deps.</strong> No Docker daemon, no Nginx, no Postgres, no Redis. The binary embeds Caddy, Coraza, SQLite, and the Vben Admin UI. A reasonable sysadmin should bring up a usable instance in under five minutes.</li>
       <li><strong>API-first with declarative YAML.</strong> One ConnectRPC API owns every mutation. The UI and CLI are thin clients. <code>tiyi apply -f site.yaml</code> produces the same effect as clicking <em>Save</em> — same validator, same mutator, same audit row.</li>
-      <li><strong>Push + reconcile, not push alone.</strong> Agents hold a long-lived ConnectRPC bidi stream. Every change writes SQLite, bumps a monotonic revision, and pushes a signed bundle to every open agent stream in ~50&nbsp;ms. Agents reconcile every 15&nbsp;s as a safety net. Updates are idempotent by revision — replay and reorder are free.</li>
+      <li><strong>Local first, remote when needed.</strong> The built-in local data plane applies in-process. Remote Agents hold one long-lived ConnectRPC stream to the Controller, verify signed bundles, reconcile after reconnect, and continue serving the last accepted bundle during a Controller outage.</li>
     </ul>
 
     <div class="callout callout-info">
@@ -145,7 +145,7 @@
     </div>
 
     <h2 id="versions">Versions covered</h2>
-    <p>These docs target <strong>v3.3.1</strong>, the current public release. v3.2 uses a clean-state cutover for older development/test installations; see <a href="troubleshooting.html#v32-reset">the reset boundary</a>. Changes to CLI flags, defaults, or output shape are tracked in the <a href="../changelog.html">changelog</a> and reflected here in the same patch. If a command disagrees with the binary, the binary is authoritative.</p>
+    <p>These docs target <strong>v3.4.0</strong>, the current public release. The single-Controller schema is a clean-state boundary for databases below schema 47; see <a href="troubleshooting.html#v34-reset">the reset procedure</a>. Changes to CLI flags, defaults, or output shape are tracked in the <a href="../changelog.html">changelog</a> and reflected here in the same patch. If a command disagrees with the binary, the binary is authoritative.</p>
 
     <div class="docs-pager">
       <a href="../index.html">
@@ -169,7 +169,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

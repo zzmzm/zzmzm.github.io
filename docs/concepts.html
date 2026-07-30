@@ -24,7 +24,7 @@
       <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
       <span>Tiyi</span>
     </a>
-    <nav class="nav-links" aria-label="Primary">
+    <nav class="nav-links" aria-label="Main navigation">
       <a href="../index.html#features">Features</a>
       <a href="../index.html#tour">Product</a>
       <a href="../index.html#pricing">Pricing</a>
@@ -68,7 +68,7 @@
       <h4>Reference</h4>
       <ul>
         <li><a href="cli.html">CLI reference</a></li>
-        <li><a href="api.html">API overview</a></li>
+        <li><a href="api.html">API reference</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -98,8 +98,8 @@
       <dt>WAF policy</dt>
       <dd>The compiled artifact Coraza enforces per request. CRS Core layer + HTTP policy + limits + rule tuning + IP lists + custom rules + plugins + rate limits + exclusions.</dd>
 
-      <dt>Agent</dt>
-      <dd>A node running the data plane (Caddy + Coraza). Receives signed config bundles from the primary over a long-lived gRPC stream.</dd>
+      <dt>Node</dt>
+      <dd>A data plane running Caddy + Coraza. Every deployment has one built-in local node; licensed deployments can add remote Agents that receive signed bundles from the Controller.</dd>
 
       <dt>Telemetry rollup</dt>
       <dd>Counters and Top-K samples produced by the open-bucket pipeline. Drives the dashboard, the Top-K explorer, and the Prometheus exporter.</dd>
@@ -149,16 +149,16 @@
     </ol>
     <p>Per-site overlays layer scalar fields (paranoia, thresholds, sampling) plus site-scoped rule overrides, custom rules, IP-list bindings, and rate-limit endpoints on top of an attached policy without forking it.</p>
 
-    <h2 id="agents">Agents</h2>
-    <p>Every node that proxies traffic runs an embedded agent — including the primary and the warm secondary. Agents hold a long-lived ConnectRPC bidi stream to the primary. The reconnect loop tries the primary first, then the secondary, then retries with exponential backoff. The secondary accepts read-only agent streams.</p>
-    <p>Updates flow as <code>ConfigUpdate{revision, bundle, signature}</code> messages. The agent verifies the bundle signature against the pinned ed25519 public key (TOFU on first contact, refuses to re-pin afterwards), checks that the revision is strictly greater than the last applied, applies it to the local Caddy, and reports the result. Replay and reorder are free — updates are idempotent by revision.</p>
+    <h2 id="agents">Local node and remote Agents</h2>
+    <p>The Controller always owns one built-in local data plane. It applies the same signed, validated configuration in-process, but it is not enrolled, persisted, heartbeated, or commanded as an Agent. The Nodes page shows it first as <strong>This machine · Local · Built in</strong>.</p>
+    <p>Remote Agents hold one long-lived ConnectRPC stream to the configured Controller URL. Each Agent verifies the bundle signature against its pinned ed25519 public key, rejects replay or reordering, applies the accepted bundle to local Caddy, and reports the result. If the Controller is unavailable, the Agent reconnects with backoff while continuing to proxy with its last accepted bundle.</p>
 
     <div class="callout callout-info">
       <div class="callout-icon">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
       </div>
       <div class="callout-body">
-        <p><strong>Why uniform agents?</strong> The primary's embedded agent is not special. It connects to its own API address using the same enrollment and streaming protocol as any remote agent. The data plane is therefore tested by the same code path everywhere — no "primary is different" caveats.</p>
+        <p><strong>One topology, no role switch.</strong> Adding or removing remote Agents changes the node count only. The Controller does not change modes or roles, and remote continuity does not make the Controller highly available.</p>
       </div>
     </div>
 
@@ -211,7 +211,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

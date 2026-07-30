@@ -52,31 +52,31 @@
     </div>
     <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
-    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
+    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
   </aside>
 
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">开始使用</span>
     <h1>安装</h1>
-    <p class="lede">太一以签名 Linux 二进制形式分发。从公开发行渠道安装，写一份小 YAML 配置，并按主机在集群中扮演的角色挑一个运行模式。</p>
+    <p class="lede">太一以签名 Linux 二进制形式分发。从公开发行渠道安装，写一份小 YAML 配置，然后运行完整 Controller 或入网一个远程 Agent。</p>
 
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>v3.2 干净状态边界。</strong> Observation v2 会拒绝 pre-v3.2 开发/测试数据库、Agent 身份与缓存 bundle。保留源清单和必要密钥，把旧测试状态移走，以干净状态启动并重新注册 Agent；不要复制 v3.1 数据库。</p></div></div>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>v3.4.0 干净状态边界。</strong>单 Controller 构建会拒绝 schema 低于 47 的数据库、旧 Agent 身份与缓存 bundle。保留源清单和必要密钥，把旧状态移走，以干净状态启动并重新注册 Agent；不要把旧数据库复制到新状态目录。</p></div></div>
 
     <h2 id="prebuilt">安装签名二进制</h2>
     <p>太一是单一签名二进制 —— 在单节点上免费且功能完整。权威安装脚本发布在 <code>https://www.tiyisec.com/install.sh</code>：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.3.1 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.4.0 linux/amd64</span></code></pre>
     <p>脚本会下载与平台匹配的二进制，比对 SHA-256 manifest，并放到 <code>/usr/local/bin/tiyi</code>。默认先尝试 GitHub，失败或过慢时回退到 Gitee Release 镜像；必要时可用 <code>TIYI_MIRROR=gitee</code> 强制使用 Gitee：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.3.1</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
+    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.4.0</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
     <p>公开分发仓库：<a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> 与 <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>。</p>
-    <p><code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。请在每台 standalone、server、secondary、agent 与 dashboard 主机上分别从公开发行渠道安装签名版本，再配置对应角色。</p>
+    <p><code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。请在 Controller、远程 Agent 与独立 dashboard 主机上安装同一个签名版本。</p>
 
     <h2 id="config-file">配置文件</h2>
     <p>太一读取一份 Koanf 风格的 YAML 配置。从下面这份最小配置起步，其余靠默认：</p>
-<pre><code><span class="c"># /etc/tiyi/server.yaml</span>
+<pre><code><span class="c"># /etc/tiyi/tiyi.yaml</span>
 <span class="k">server</span>:
   <span class="k">addr</span>: <span class="s">"0.0.0.0:8080"</span>
 
@@ -94,7 +94,7 @@
   <span class="k">https_addr</span>: <span class="s">":443"</span>
   <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
     <p>用 <code>--config</code> 传入。这份配置使用 <code>/var/lib/tiyi</code> 与 80/443 端口，因此请以 root 运行（或用下面的 systemd unit）：</p>
-<pre><code><span class="p">$</span> sudo tiyi standalone --config /etc/tiyi/server.yaml || sudo /usr/local/bin/tiyi standalone --config /etc/tiyi/server.yaml</code></pre>
+<pre><code><span class="p">$</span> sudo tiyi run --config /etc/tiyi/tiyi.yaml || sudo /usr/local/bin/tiyi run --config /etc/tiyi/tiyi.yaml</code></pre>
     <p>若想以普通用户、不用 <code>sudo</code> 试用，可以不走配置文件，而是在命令行上传入可写路径与高端口 —— 见<a href="quickstart.html#run">快速开始</a>。</p>
 
     <div class="callout callout-warn">
@@ -107,7 +107,7 @@
     </div>
 
     <h2 id="environment">配置环境变量</h2>
-    <p>持久化服务配置优先写入 <code>/etc/tiyi/server.yaml</code>。只有当 service manager、容器运行时或密钥管理器需要在运行时注入配置时，才使用环境变量。优先级是：内置默认值、<code>server.yaml</code>、配置环境变量、显式 CLI 参数。</p>
+    <p>持久化服务配置优先写入 <code>/etc/tiyi/tiyi.yaml</code>。只有当 service manager、容器运行时或密钥管理器需要在运行时注入配置时，才使用环境变量。优先级是：内置默认值、<code>tiyi.yaml</code>、配置环境变量、显式 CLI 参数。</p>
     <p>环境变量名与配置键一一对应：加 <code>TIYI_</code> 前缀，转为大写，并把点替换为下划线。例如 <code>auth.jwt_secret</code> 对应 <code>TIYI_AUTH_JWT_SECRET</code>。</p>
 
     <h3>常用配置覆盖</h3>
@@ -132,42 +132,34 @@
     </table>
     <p>较少使用的配置键也遵循同一规则，包括 <code>auth.access_token_ttl</code>、<code>auth.refresh_token_ttl</code>、<code>auth.refresh_cookie_secure</code>、<code>auth.bootstrap_admin_email</code>、<code>auth.bootstrap_admin_name</code>、<code>auth.provider</code>、<code>auth.ldap.*</code>、<code>auth.radius.*</code> 与 <code>update.api_base_url</code>。除非部署平台必须通过环境变量注入，否则这些项优先写 YAML。</p>
 
-    <h2 id="modes">运行模式</h2>
-    <p>同一个二进制暴露五个子命令。按这台主机的角色挑一个：</p>
+    <h2 id="modes">运行命令</h2>
+    <p>同一个二进制提供一个完整运行时与两个专用进程：</p>
 
     <dl class="dl-grid">
-      <dt><code>standalone</code></dt>
-      <dd>主控 + 节点合一。单机部署的默认值。可写；数据平面也在同一节点上代理。五分钟安装路径。</dd>
-
-      <dt><code>server</code></dt>
-      <dd>集群控制平面 leader，外加自带嵌入式节点。接受节点注册、对外提供 API 与 dashboard、代理流量。</dd>
-
-      <dt><code>secondary</code></dt>
-      <dd>热备控制平面，外加自带嵌入式节点。只读 API、代理流量、用 <code>tiyi promote</code> 手工切主。</dd>
+      <dt><code>run</code></dt>
+      <dd>一个始终可写的 Controller，包含本机数据平面、API 与管理界面。这是默认安装与五分钟路径。</dd>
 
       <dt><code>agent</code></dt>
-      <dd>纯数据平面：Caddy + Coraza，从主节点接收已签名的配置 bundle。无控制平面职责。</dd>
+      <dd>远程数据平面：Caddy + Coraza，通过一条 ConnectRPC 长连接从唯一的 Controller URL 接收已签名 bundle。</dd>
 
       <dt><code>dashboard</code></dt>
-      <dd>仅 UI，用于不代理流量的拆分部署。</dd>
+      <dd>仅 UI 的专用进程，不持有状态也不代理流量。</dd>
     </dl>
 
     <h2 id="enrollment">入网一个节点</h2>
-    <p>节点用主节点签发的一次性 token 入网。在主节点上：</p>
-<pre><code><span class="p">$</span> TOKEN=<span class="s">"$(tiyi agents issue-token --tag edge-c | jq -r .token)"</span></code></pre>
-    <p>在节点主机上，确保二进制已就位：</p>
-<pre><code><span class="p">$</span> tiyi agent <span class="o">\</span>
-    --api http://primary:8080 <span class="o">\</span>
-    --enrollment-token <span class="s">"$TOKEN"</span> <span class="o">\</span>
-    --state-dir /var/lib/tiyi/agent <span class="o">\</span>
-    --proxy-http-addr 0.0.0.0:80 <span class="o">\</span>
-    --proxy-https-addr 0.0.0.0:443</code></pre>
-    <p>token 在首次接入时被消耗。入网后节点把身份持久化到 <code>&lt;state-dir&gt;/identity.json</code>，token 不再需要。丢了 state 目录就需要新的 token 重新入网。</p>
+    <p>打开<strong>节点 → 安装远端节点</strong>签发 Token，再按页面分别显示的二进制下载和 systemd 步骤操作。页面也会显示原始 Token、前台命令和完整下载启动脚本：</p>
+<pre><code><span class="p">$</span> sudo curl -fsSL -o /usr/local/bin/tiyi <span class="s">'https://tiyi.example.com/download/tiyi'</span>
+<span class="p">$</span> sudo chmod 0755 /usr/local/bin/tiyi
+<span class="p">$</span> sudo mkdir -p /etc/tiyi
+<span class="p">$</span> printf <span class="s">'TIYI_CONTROLLER_URL=https://tiyi.example.com\nTIYI_AGENT_ENROLLMENT_TOKEN=&lt;一次性Token&gt;\n'</span> <span class="o">|</span> sudo tee /etc/tiyi/tiyi-agent.env &gt;/dev/null
+<span class="p">$</span> sudo chmod 0600 /etc/tiyi/tiyi-agent.env
+<span class="p">$</span> sudo tiyi install --mode agent --unit-name tiyi-agent --now</code></pre>
+    <p>丢失 state 目录后，需要重新签发 Token 入网。</p>
 
     <h2 id="systemd">以 systemd 服务运行</h2>
     <p>长期运行的部署，让太一把自己装成一个加固过的 systemd 服务。<code>tiyi install</code> 会创建 <code>tiyi</code> 服务用户与 <code>tiyi-admin</code> 套接字组、写入 unit，加上 <code>--now</code> 则同时开机自启并立即启动：</p>
 <pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
-    <div class="callout callout-tip"><div class="callout-body"><p>不带 <code>--now</code> 执行 <code>sudo tiyi install</code> 时，安装器会按设计只写入并 reload unit，保持未启用、未启动，方便先完成各运行模式的配置。首次启动 <strong>standalone</strong> 时，请在原安装命令上补上 <code>--now</code> 后重新执行，不要直接用 <code>systemctl</code> 启动 unit。这样安装器能先创建管理员，并把一次性登录信息打印在当前终端，而不是把密码写入 system journal。</p></div></div>
+    <div class="callout callout-tip"><div class="callout-body"><p>不带 <code>--now</code> 执行 <code>sudo tiyi install</code> 时，安装器会按设计只写入并 reload unit，保持未启用、未启动，方便先完成各运行模式的配置。首次启动 <strong>Controller</strong> 时，请在原安装命令上补上 <code>--now</code> 后重新执行，不要直接用 <code>systemctl</code> 启动 unit。这样安装器能先创建管理员，并把一次性登录信息打印在当前终端，而不是把密码写入 system journal。</p></div></div>
     <p>该服务以非 root 身份运行，通过 <code>CAP_NET_BIND_SERVICE</code> 绑定 80/443 端口。每次启动前，unit 会先用 root-only 的 pre-start 钩子把配置里的状态目录和 KEK 文件重新交给服务用户；之前 sudo 前台运行留下的 CRS 缓存、上传、排除包、release 暂存、日志、trust 快照或内嵌 agent 状态目录不会再阻塞运行期写入。首次安装时，<code>--now</code> 会预先创建管理员，并在启动服务后直接打印一次性登录信息（URL、用户名、密码）——无需再去 journal 里捞：</p>
 <pre><code><span class="c">tiyi is enabled and running as tiyi.service.</span>
 
@@ -184,8 +176,8 @@
 <span class="k">User</span>=tiyi
 <span class="k">Group</span>=tiyi
 <span class="k">PermissionsStartOnly</span>=true
-<span class="k">ExecStartPre</span>=/usr/local/bin/tiyi systemd-prestart --config /etc/tiyi/server.yaml --user tiyi --group tiyi
-<span class="k">ExecStart</span>=/usr/local/bin/tiyi standalone --config /etc/tiyi/server.yaml --admin-socket /run/tiyi/admin.sock --admin-socket-group tiyi-admin --admin-socket-mode 0660 --caddy-admin-socket /run/tiyi/caddy.sock
+<span class="k">ExecStartPre</span>=/usr/local/bin/tiyi systemd-prestart --config /etc/tiyi/tiyi.yaml --user tiyi --group tiyi
+<span class="k">ExecStart</span>=/usr/local/bin/tiyi run --config /etc/tiyi/tiyi.yaml --admin-socket /run/tiyi/admin.sock --admin-socket-group tiyi-admin --admin-socket-mode 0660 --caddy-admin-socket /run/tiyi/caddy.sock
 <span class="k">Restart</span>=on-failure
 <span class="k">AmbientCapabilities</span>=CAP_NET_BIND_SERVICE
 <span class="k">CapabilityBoundingSet</span>=CAP_NET_BIND_SERVICE
@@ -199,13 +191,13 @@
 
 <span class="k">[Install]</span>
 <span class="k">WantedBy</span>=multi-user.target</code></pre>
-    <p>用 <code>tiyi doctor</code> 检查 sudo PATH、systemd、配置加载、已安装服务的状态目录所有权，以及 80/443/8080 端口监听者。如果还没有安装 systemd unit,状态目录所有权检查会跳过,除非传入 <code>--service-user</code>/<code>--service-group</code> 或显式请求修复。如果它提示 sudo 找不到 <code>tiyi</code>，使用输出里的完整路径命令，或把 <code>/usr/local/bin</code> 加入 sudo <code>secure_path</code>。如果它提示状态目录里有 root 拥有的路径，显式运行 <code>sudo tiyi doctor --fix-state-ownership</code> 修复。如果它提示端口冲突，可以停止占用端口的服务，或通过 <code>proxy.http_addr</code>、<code>proxy.https_addr</code>、<code>server.addr</code> 修改太一端口。用 <code>--mode</code> 选择其他角色（如 <code>server</code>、<code>agent</code>）。用 <code>sudo tiyi uninstall</code> 移除该服务：除非加上 <code>--purge</code>，否则 <code>/var/lib/tiyi</code> 下的状态、<code>/etc/tiyi</code> 下的配置以及服务用户都会保留。</p>
+    <p>用 <code>tiyi doctor</code> 检查 sudo PATH、systemd、配置加载、已安装服务的状态目录所有权，以及 80/443/8080 端口监听者。如果还没有安装 systemd unit,状态目录所有权检查会跳过,除非传入 <code>--service-user</code>/<code>--service-group</code> 或显式请求修复。如果它提示 sudo 找不到 <code>tiyi</code>，使用输出里的完整路径命令，或把 <code>/usr/local/bin</code> 加入 sudo <code>secure_path</code>。如果它提示状态目录里有 root 拥有的路径，显式运行 <code>sudo tiyi doctor --fix-state-ownership</code> 修复。如果它提示端口冲突，可以停止占用端口的服务，或通过 <code>proxy.http_addr</code>、<code>proxy.https_addr</code>、<code>server.addr</code> 修改太一端口。用 <code>--mode run</code> 检查 Controller，或用 <code>--mode agent</code> 检查远程 Agent。用 <code>sudo tiyi uninstall</code> 移除该服务：除非加上 <code>--purge</code>，否则 <code>/var/lib/tiyi</code> 下的状态、<code>/etc/tiyi</code> 下的配置以及服务用户都会保留。</p>
 
     <h2 id="next">下一步阅读</h2>
     <ul>
       <li><a href="concepts.html">领域模型</a> —— 站点、上游、证书、策略、节点各是什么。</li>
       <li><a href="cli.html">CLI 参考</a> —— 每一个 <code>tiyi</code> 子命令按资源分组。</li>
-      <li><a href="deployment.html">部署</a> —— 生产加固、HA 故障转移、SIEM 转发。</li>
+      <li><a href="deployment.html">部署</a> —— 生产加固、远程 Agent 连续运行、Controller 中断边界与 SIEM 转发。</li>
     </ul>
 
     <div class="docs-pager">
@@ -230,7 +222,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

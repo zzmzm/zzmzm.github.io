@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>部署 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="在生产环境运行太一：加固、HA 故障转移、SIEM 转发、可观测性与升级路径。" />
+<meta name="description" content="在生产环境运行太一：加固、远程 Agent 连续运行、Controller 中断边界、SIEM 转发、可观测性与升级。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -45,14 +45,14 @@
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
     <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
-    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 概览</a></li></ul></div>
+    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
   </aside>
 
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">生产环境</span>
     <h1>部署</h1>
-    <p class="lede">从一个开发用的 standalone 实例到一个生产集群，需要做四个决定:密钥放在哪、跑几个控制平面节点、日志去哪、怎么升级。本页一一过。</p>
+    <p class="lede">把太一 Controller 投入生产，需要决定密钥放在哪、需要哪些远程数据平面、日志去哪，以及如何备份恢复和升级。</p>
 
     <h2 id="hardening">生产加固</h2>
     <p>有两个配置字段带不能跨重启幸存的开发友好回退。上线前显式设定它们。</p>
@@ -77,59 +77,30 @@
     <h3 id="jwt-secret">JWT 签名密钥</h3>
 <pre><code><span class="k">auth</span>:
   <span class="k">jwt_secret</span>: <span class="s">"<span class="v">&lt;32+ 字节随机&gt;</span>"</span>     <span class="c"># 或通过 TIYI_AUTH_JWT_SECRET 环境变量</span></code></pre>
-    <p>Access token 的 HS256 签名密钥。字段为空时,太一在每次重启时生成 32 字节临时密钥,并打印 <code>WARNING</code>。会话在重启时失效,副本之间不能共享 refresh token —— 在生产中通常都是问题。</p>
+    <p>Access token 的 HS256 签名密钥。字段为空时，太一在每次重启时生成 32 字节临时密钥并打印 <code>WARNING</code>；已有会话会在重启时失效。</p>
 
     <h3 id="bundle-key">Bundle 签名密钥</h3>
     <p>服务端的 ed25519 配置签名密钥落在 <code>bundle_signing_key</code> 单例行,使用 KEK 信封加密。节点首次接入时固定公钥(TOFU),之后拒绝重新固定。<strong>轮换需要重新入网</strong> —— 用 <code>tiyi agents issue-token</code> 签新 token,把节点重新拉起。</p>
 
-    <h2 id="ha">HA 故障转移</h2>
-    <p>太一集群可以只有一个主节点 + N 个节点(零热备也允许)。规模较大的部署建议跑一个热备,主节点宕机时不至于长时间不能写。</p>
+    <h2 id="nodes">一个 Controller，可选远程 Agent</h2>
+    <p>只运行一个 <code>tiyi run</code> Controller。它始终拥有可写 SQLite 状态、API、管理界面与一个本机内置数据平面。需要流量扩展或不同位置时添加远程 Agent；节点数量变化不会改变 Controller 的运行模式。</p>
 
-    <h3 id="ha-topology">拓扑</h3>
-<pre><code><span class="c"># 全部四个节点都代理流量。L4/L7 LB 在每个节点上轮询 /healthz。</span>
-<span class="p">$</span> TOKEN_B=<span class="s">"$(tiyi agents issue-token --tag secondary | jq -r .token)"</span>
-<span class="p">$</span> TOKEN_C=<span class="s">"$(tiyi agents issue-token --tag edge-c | jq -r .token)"</span>
+    <h3 id="agent-systemd">安装远程 Agent</h3>
+    <p>打开<strong>节点 → 安装远端节点</strong>，选择 URL、标签和 Token 有效期，再签发 Token。页面会分别显示二进制下载、原始 Token、推荐 systemd 步骤、前台命令和完整脚本：</p>
+<pre><code><span class="p">$</span> sudo curl -fsSL -o /usr/local/bin/tiyi <span class="s">'https://tiyi.example.com/download/tiyi'</span>
+<span class="p">$</span> sudo chmod 0755 /usr/local/bin/tiyi
+<span class="p">$</span> sudo mkdir -p /etc/tiyi
+<span class="p">$</span> printf <span class="s">'TIYI_CONTROLLER_URL=https://tiyi.example.com\nTIYI_AGENT_ENROLLMENT_TOKEN=&lt;一次性Token&gt;\n'</span> <span class="o">|</span> sudo tee /etc/tiyi/tiyi-agent.env &gt;/dev/null
+<span class="p">$</span> sudo chmod 0600 /etc/tiyi/tiyi-agent.env
+<span class="p">$</span> sudo tiyi install --mode agent --unit-name tiyi-agent --now</code></pre>
+    <p>节点页随后固定先显示本机，再显示已入网的远程 Agent。</p>
 
-Node A: tiyi server     --addr 0.0.0.0:8080
-Node B: tiyi secondary  --primary-api http://A:8080 --enrollment-token <span class="v">$TOKEN_B</span>
-Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$TOKEN_C</span></code></pre>
+    <h3 id="controller-outage">Controller 中断边界</h3>
+    <p>Controller 停止后，远程 Agent 继续使用最后一次已接受的签名 bundle 代理和执行 WAF。配置变更、入网、中央管理界面和汇总视图会不可用，直到同一个逻辑 Controller 地址恢复。Agent 按退避重连并恢复收敛，不存在备用 Controller URL 或自动角色切换。</p>
 
-    <h3 id="ha-systemd">以 systemd 服务运行集群</h3>
-    <p>上面的拓扑用的是前台命令;生产环境中每个节点都应作为各自加固的 <code>tiyi.service</code> 运行。<code>tiyi install --mode {server|secondary|agent}</code> 写入 unit(数据面模式通过 <code>CAP_NET_BIND_SERVICE</code> 绑定 80/443)。不在 <code>server.yaml</code> 里的控制面 URL 与一次性入册 token,从 unit 可选的 <code>EnvironmentFile</code>(<code>/etc/tiyi/tiyi.env</code>)读取 —— 与 <code>/etc/default/nginx</code> 同理。</p>
-<pre><code><span class="c"># 每个节点:安装签名二进制</span>
-<span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh <span class="o">|</span> bash
-
-<span class="c"># Node A —— 主节点:对外可达的 API,然后开机自启服务</span>
-<span class="p">$</span> printf <span class="s">'server:\n  addr: 0.0.0.0:8080\n'</span> <span class="o">|</span> sudo tee /etc/tiyi/server.yaml
-<span class="p">$</span> sudo tiyi install --mode server --now
-<span class="p">$</span> TOKEN_C=<span class="s">"$(sudo tiyi agents issue-token --tag edge --admin-socket /run/tiyi/admin.sock | jq -r .token)"</span>
-
-<span class="c"># Node C —— agent:连接参数写入 env 文件,然后启用</span>
-<span class="p">$</span> printf <span class="s">'TIYI_API=http://A:8080\nTIYI_AGENT_ENROLLMENT_TOKEN=%s\n'</span> <span class="s">"$TOKEN_C"</span> <span class="o">|</span> sudo tee /etc/tiyi/tiyi.env
-<span class="p">$</span> sudo tiyi install --mode agent --now
-
-<span class="c"># Node B —— secondary:自身 API 配置 + 主节点 URL + token</span>
-<span class="p">$</span> printf <span class="s">'server:\n  addr: 0.0.0.0:8080\n'</span> <span class="o">|</span> sudo tee /etc/tiyi/server.yaml
-<span class="p">$</span> printf <span class="s">'TIYI_PRIMARY_API=http://A:8080\nTIYI_AGENT_ENROLLMENT_TOKEN=%s\n'</span> <span class="s">"$TOKEN_B"</span> <span class="o">|</span> sudo tee /etc/tiyi/tiyi.env
-<span class="p">$</span> sudo tiyi install --mode secondary --now</code></pre>
-    <p>token 仅在首次入册时消费;之后每个节点凭 <code>/var/lib/tiyi/agent</code> 下持久化的身份重连,因此即使 env 文件里留着 token 行,服务重启也照常工作。可选地用文件托管 license —— <code>sudo cp license.json /etc/tiyi/license.json</code> 并在 env 文件里写 <code>TIYI_LICENSE_KEY_PATH=/etc/tiyi/license.json</code> —— 以解除单节点限制。需要预检 sudo PATH 与端口冲突时,在对应节点运行 <code>tiyi doctor --mode server</code>、<code>tiyi doctor --mode agent</code> 或 <code>tiyi doctor --mode secondary</code>。用 <code>sudo tiyi agents list --admin-socket /run/tiyi/admin.sock</code> 确认入册;用 <code>sudo tiyi uninstall</code> 移除节点。</p>
-
-    <h3 id="promotion">提主</h3>
-    <p>Node A 宕机,在 Node B 上跑 <code>tiyi promote</code>。两阶段切换避免脑裂:</p>
-    <ol>
-      <li>通过 <code>SystemService.Demote</code> 联系老主节点 —— 主节点切换为只读,返回当前 epoch 与最后一次写序号。</li>
-      <li>验证备节点已经追到了主节点最后的序号。如果落后则放弃。</li>
-      <li>在备节点上自增 epoch(<code>primary_epoch + 1</code>),切换角色为主,接受写入。</li>
-      <li>老主节点的嵌入式节点重新连接到新主节点,变成普通节点。</li>
-    </ol>
-    <p>主节点确认不可达时,<code>tiyi promote --force</code> 跳过 demote。你接受最后一次 bundle 同步到主节点失败之间的写丢失。如果老主节点回来,看到节点报告了更高 epoch 会自动降级为节点。</p>
-
-    <div class="callout callout-info">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      </div>
+    <div class="callout callout-warn">
       <div class="callout-body">
-        <p><strong>Epoch 隔离</strong>避免脑裂。每一次写入检查本地 epoch;任何节点收到 state 报告中的更高 epoch 会自动降级。Epoch 单调递增,持久化在 <code>cluster_state</code>。</p>
+        <p><strong>远程数据平面连续运行不等于 Controller 高可用。</strong>太一不提供备用 Controller 或可写状态复制。请用运维侧备份恢复流程保护 <code>state.db</code>、<code>kek.bin</code> 与配置。</p>
       </div>
     </div>
 
@@ -165,14 +136,14 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
     <h2 id="observability">可观测性</h2>
     <ul>
       <li><strong>Prometheus 导出器</strong>位于本地管理 socket 的 <code>/metrics</code>。从 sidecar 抓取;指标来自驱动 dashboard 的同一条遥测管道。</li>
-      <li><strong><code>/healthz</code></strong> 返回 <code>{epoch, role, proxy_healthy}</code>。L4/L7 LB 健康检查用它。</li>
+      <li><strong><code>/healthz</code></strong> 报告 Controller 身份、数据库、代理、配置、站点与远程 Agent 事实。可用于服务健康检查。</li>
       <li><strong><code>/debug/logsink/stats</code></strong> 在本地管理 socket 暴露每种类别的 <code>attempted</code>/<code>written</code>/<code>dropped_full</code>/<code>panicked</code>/<code>queue_depth</code>/<code>last_error</code> 计数。<code>panicked</code> 计数是边界 <code>defer recover</code> 处理器的跨层金丝雀。</li>
       <li><strong>遥测深度视图 UI</strong> 位于 <code>/telemetry/explorer</code>,可在不离开 dashboard 的情况下做按需 Top-K 与采样浏览。</li>
     </ul>
 
     <h2 id="upgrades">滚动升级</h2>
     <p>导入二进制 release 后,<code>tiyi release apply</code> 把 <code>APPLY_BINARY</code> 命令散到所有 OS/arch 匹配的节点。每个节点下载替换、校验 SHA-256 与 Ed25519 发布签名,然后退出让 supervisor 重启进入新二进制。</p>
-<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_v3.3.1_linux_amd64.tar.gz
+<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_v3.4.0_linux_amd64.tar.gz
 <span class="p">$</span> tiyi release list
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span>             <span class="c"># 所有匹配节点</span>
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span>  <span class="c"># 灰度部署</span>
@@ -186,7 +157,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
       <li><strong><code>kek.bin</code></strong> —— 静态加密密钥。丢失即不可恢复。备份到与其他长期密钥相同的保险库。</li>
       <li><strong><code>jwt_secret</code></strong> —— 已经在你的配置仓库里,但要确认那个仓库也备份了。</li>
     </ul>
-    <p>支持(并推荐)Litestream 风格的 WAL 流式异地备份。<code>logs/</code> 分区文件不属于备份集 —— 它们是有自己保留循环的运营数据。</p>
+    <p>使用 SQLite 在线备份机制，或停止 Controller 后做一致的文件系统副本。通过网络文件系统复制正在运行的 WAL 数据库目录不是受支持的故障转移方案。<code>logs/</code> 分区文件是有独立保留周期的运营数据。</p>
 
     <h2 id="checklist">上线检查表</h2>
     <div class="callout callout-tip">
@@ -203,14 +174,14 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
           <li>把 <code>/healthz</code> 接到 L4/L7 LB</li>
           <li>从 Prometheus 抓取 <code>/metrics</code></li>
           <li>把 <code>state.db</code> + <code>kek.bin</code> 加入备份管道</li>
-          <li>至少签发一个备节点,这样单主丢失不致命</li>
+          <li>在隔离主机上验证 <code>state.db</code> 与 <code>kek.bin</code> 的恢复流程</li>
           <li>校验审计链：<code>tiyi audit verify</code> 退出 0</li>
         </ul>
       </div>
     </div>
 
     <div class="docs-pager">
-      <a href="api.html"><span class="label">← 上一页</span><span class="title">API 概览</span></a>
+      <a href="api.html"><span class="label">← 上一页</span><span class="title">API 参考</span></a>
       <a class="next" href="../index.html"><span class="label">→ 完成</span><span class="title">返回首页</span></a>
     </div>
   </main>
@@ -225,7 +196,7 @@ Node C: tiyi agent      --api http://A:8080 --enrollment-token <span class="v">$
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.3.1 &middot; 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>

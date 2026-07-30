@@ -47,10 +47,31 @@
     <div class="section-head" style="text-align:left; margin-bottom:32px;">
       <span class="eyebrow">更新日志</span>
       <h2 style="font-size: clamp(32px, 4vw, 48px);">太一发布历史。</h2>
-      <p style="margin: 0;">每一项都对应一次提交与一次验证命令。条目只在实现、验证、文档全部完成后才会标记为 <span class="tl-tag shipped" style="display:inline-block; vertical-align:middle;">已发布</span>，否则就是 <span class="tl-tag future" style="display:inline-block; vertical-align:middle;">规划中</span> 或 <span class="tl-tag current" style="display:inline-block; vertical-align:middle;">进行中</span>。</p>
+      <p style="margin: 0;">每一项都对应一次提交与一次验证命令。条目只在实现、验证、文档全部完成后才会标记为 <span class="tl-tag shipped" style="display:inline-block; vertical-align:middle;">已发布</span>，否则就是 <span class="tl-tag future" style="display:inline-block; vertical-align:middle;">规划中</span> 或 <span class="tl-tag current" style="display:inline-block; vertical-align:middle;">进行中</span>。历史条目保留当时的术语和命令；当前支持的操作请以最新条目和现行文档为准。</p>
     </div>
 
     <div class="timeline">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.4.0</span>
+          <span class="tl-date">2026-07-30</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">单 Controller、收敛配置与运维可信度</div>
+        <div class="tl-body">
+          <p>v3.4.0 从持久化配置到运维界面明确展示真实服务状态，并移除旧 HA 契约。</p>
+          <ul>
+            <li><strong>单 Controller。</strong><span class="mono">tiyi run</span> 持有状态、API、管理界面与事实化本机数据平面。角色、epoch、提主、复制、热备和备用 Controller 界面全部移除；Controller 中断时，远程 Agent 继续使用最后一次已接受的签名 bundle。</li>
+            <li><strong>收敛配置。</strong>持久化目标/活动 revision、不可变 artifact、本机回滚、按目标投递、内容寻址 Agent envelope 与上下文重试，取代 handler 内部的 mutate/apply 补偿。</li>
+            <li><strong>健康真相。</strong>启用主动健康检查的上游在变更前必须通过 Controller 严格提交探针；持续 Caddy 健康状态绑定准确配置代际与 artifact 哈希，旧报告不能把候选配置误报成活动配置。</li>
+            <li><strong>安全与可靠性。</strong>生成式 fail-closed 授权、轮换 HttpOnly refresh 会话、密码 token 撤销、结构化日志、内部错误关联、worker panic 隔离、有界关闭与写入前配额共同加固管理平面。</li>
+            <li><strong>运维体验。</strong>精确请求/带宽 Dashboard、本机与远程节点共享趋势、站点请求路径概览、本机配置历史、自适应行操作、Geo 自动生命周期，以及新安装默认仅保留安全事件的请求证据，让日常状态更易读、更安全。</li>
+            <li><strong>干净状态边界。</strong>数据库 schema 低于 47 时会无修改拒绝启动；v3.4.0 必须使用新状态并重新注册远程 Agent。</li>
+          </ul>
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -65,7 +86,7 @@
           <ul>
             <li><strong>请求证据。</strong>全局与站点级 <span class="mono">off</span>、<span class="mono">security_only</span>、<span class="mono">retained_logs</span> 策略，在授权的攻击/访问日志抽屉旁保留未脱敏的已解析请求头和有界请求体；新安装默认关闭。</li>
             <li><strong>本地与 Agent 持久化。</strong>追加式每日段、配额、保留期、确定性 exemplar 收敛、可恢复的 64 KiB CRC32C Agent 上传与持久化 ACK，共同限制内存、磁盘和重连行为。</li>
-            <li><strong>生产节点直达 SIEM。</strong>最多 32 个独立 UDP/TCP/TLS 目标可选择源生 Caddy 访问 JSON、Coraza 审计 JSON 或太一格式源，并分别配置队列、framing、超时与诊断。已签名的 Agent 最近良好配置在 Primary 离线时仍可继续工作。</li>
+            <li><strong>生产节点直达 SIEM。</strong>最多 32 个独立 UDP/TCP/TLS 目标可选择源生 Caddy 访问 JSON、Coraza 审计 JSON 或太一格式源，并分别配置队列、framing、超时与诊断。已签名的 Agent 最近良好配置在 Controller 离线时仍可继续工作。</li>
             <li><strong>运维可见性。</strong>日志管道暴露证据、原始源与每个目标的队列/丢弃/失败/panic 通道。Dashboard Top 卡片改用精确规范化 URL 模板与固定 UA 分类。</li>
             <li><strong>运行时加固。</strong>空闲的前一日 SQLite WAL 会在分区 lease 栅栏后安全截断；除非提供标准 Go 覆盖，太一默认使用 <span class="mono">GOGC=200</span> 并把软内存上限设为检测到的主机/容器限制的 90%。</li>
           </ul>
@@ -768,7 +789,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.3.1 · 2026-07-24</span>
+      <span class="build">build v3.4.0 · 2026-07-30</span>
     </div>
   </div>
 </footer>
