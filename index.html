@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.4.0</span>
-    Observation v2 + alert auto-remediation
+    <span class="tag">v3.5.0</span>
+    Executable client-IP topology + security insights
   </span>
 
   <h1>
@@ -106,7 +106,7 @@
         <span class="url">tiyi.example.com/dashboard</span>
       </div>
       <img src="assets/img/screenshots/en-dark/dashboard.png" data-shot="dashboard"
-           alt="Tiyi dashboard with live request, block, attack-distribution, and edge-health signals."
+           alt="Tiyi overview with live QPS, blocked traffic spike, open alerts, and top attackers."
            width="1440" height="900" loading="eager" />
     </div>
   </div>
@@ -248,7 +248,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a4 4 0 0 0 0-8 6 6 0 0 0-11.7-1.5A4.5 4.5 0 0 0 6.5 18z"/></svg>
         </div>
         <h3>CDN-aware client IP</h3>
-        <p>One trust pipeline ends XFF parsing fragmentation. Auto-fetched CIDR snapshots for Cloudflare, Fastly, Akamai, CloudFront, Front Door, and GCLB; per-site overrides and an <span class="mono">explain</span> tool that traces every header.</p>
+        <p>An executable node/edge/rule topology ends XFF parsing fragmentation. Auto-fetched CIDR snapshots for Cloudflare, Fastly, Akamai, CloudFront, Front Door, and GCLB; Sites-owned global defaults, per-site analysis, and path-conditioned multi-CDN headers.</p>
       </div>
 
       <div class="feature reveal">
@@ -443,6 +443,48 @@
       </div>
     </div>
 
+    <!-- Tour 7: Fleet topology -->
+    <div class="tour-row reveal">
+      <div class="tour-text">
+        <span class="tour-eyebrow">Fleet topology</span>
+        <h3>One Controller. Local plane + remote Agents.</h3>
+        <p>The same binary runs as Controller or Agent. The built-in local data plane and every remote node share live metrics, config revision, and install guidance from one Nodes surface.</p>
+        <ul>
+          <li>Local + remote placement, online status, and per-node CPU / memory / QPS</li>
+          <li>Agents keep proxying on the last accepted bundle if the Controller is unavailable</li>
+          <li>Install guides cover binary download, token issuance, systemd, or foreground startup</li>
+        </ul>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">/agents/all</span>
+        </div>
+        <img src="assets/img/screenshots/en-dark/agents.png" data-shot="agents" alt="Multi-node fleet with local built-in plane and remote Agent online metrics" width="1440" height="900" loading="lazy" />
+      </div>
+    </div>
+
+    <!-- Tour 8: Hash-chain audit -->
+    <div class="tour-row reveal">
+      <div class="tour-text">
+        <span class="tour-eyebrow">Hash-chain audit</span>
+        <h3>Every mutation leaves a tamper-evident trail.</h3>
+        <p>Site, policy, trust-profile, IP-list, and auth changes append signed audit rows. Operators verify the chain in-product instead of trusting an export.</p>
+        <ul>
+          <li>Action, resource, actor, and View diff for every committed change</li>
+          <li>In-UI <span class="mono">Verify chain</span> plus daily anchor commitments</li>
+          <li>Same audit row whether the mutation came from the UI, CLI, or <span class="mono">tiyi apply</span></li>
+        </ul>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">/logs/audit</span>
+        </div>
+        <img src="assets/img/screenshots/en-dark/audit.png" data-shot="audit" alt="Hash-chain audit log with Verify chain and per-row View diff" width="1440" height="900" loading="lazy" />
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -581,6 +623,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.0</span>
+          <span class="tl-date">2026-08-03</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Executable client-IP topology + dashboard security insights</div>
+        <div class="tl-body">
+          Client IP moves to an executable node/edge/rule topology with Sites as the sole global entry, live sampling analysis, verified drafts, and path-conditioned multi-CDN headers. Dashboard security intelligence shows six simultaneous ranking cards plus attack-origin countries, with one-click global IP or <span class="mono">geo:CC</span> block. Geo country quick-block compiles through a shared Country→CIDR snapshot, and the product tour now includes fleet topology and hash-chain audit screenshots.
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -942,6 +997,19 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.5.0</span>
+          <span class="tl-date">2026-08-03</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Executable client-IP topology + security insights</div>
+        <div class="tl-body">
+          Sites owns the global client-IP surface with an executable topology, sampling analysis, verified drafts, and path-conditioned multi-CDN headers. Dashboard security intelligence adds six ranking cards, attack-origin countries, and one-click global IP/<span class="mono">geo:CC</span> block backed by a shared Country→CIDR compiler snapshot.
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.4.0</span>
           <span class="tl-date">2026-07-30</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -1005,7 +1073,7 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">Post-v3.4</span>
+          <span class="tl-version">Post-v3.5</span>
           <span class="tl-date">Future · target</span>
           <span class="tl-tag future">Planned</span>
         </div>
@@ -1018,7 +1086,7 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.5</span>
+          <span class="tl-version">v3.6</span>
           <span class="tl-date">Q2 2027 · target</span>
           <span class="tl-tag future">Planned</span>
         </div>
@@ -1105,7 +1173,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.4.0 · 2026-07-30</span>
+      <span class="build">build v3.5.0 · 2026-08-03</span>
     </div>
   </div>
 </footer>

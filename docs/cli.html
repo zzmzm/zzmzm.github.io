@@ -255,7 +255,7 @@ tiyi system settings update --set siem.endpoint=tcp://siem.internal:514 --set si
     <p>Logging and evidence policy is a revision-CAS LogService resource, managed under <strong>Administration → Settings → Logs &amp; evidence</strong>; legacy <code>telemetry.*</code>, <code>logsink.*</code>, <code>log_mode.*</code>, and <code>log_retention</code> settings are rejected.</p>
 
     <h2 id="release-mgmt">Releases (rolling agent upgrades)</h2>
-<pre><code>tiyi release import --tarball ./tiyi_v3.4.0_linux_amd64.tar.gz
+<pre><code>tiyi release import --tarball ./tiyi_3.5.0_linux_amd64.tar.gz
 tiyi release list
 tiyi release apply <span class="v">&lt;release-id&gt;</span>           <span class="c"># fan APPLY_BINARY to all matching agents</span>
 tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span> --agent-id <span class="v">B</span>
@@ -315,7 +315,7 @@ tiyi dashboard                   <span class="c"># UI-only process</span></code>
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.4.0 · 2026-07-30</span>
+      <span class="build">build v3.5.0 · 2026-08-03</span>
     </div>
   </div>
 </footer>
