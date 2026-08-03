@@ -56,6 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.0</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -101,13 +102,17 @@
         <div class="docs-card-title"><span class="docs-card-num">2</span>Installation</div>
         <p>Install a signed release, configure the YAML config, and run the Controller or enroll remote Agents.</p>
       </a>
+      <a class="docs-card" href="upgrade-v3.5.html">
+        <div class="docs-card-title">Upgrade to v3.5.0</div>
+        <p>Back up, completely uninstall v3.4.0 or earlier, install a clean v3.5.0 service, and re-enroll Agents.</p>
+      </a>
       <a class="docs-card" href="concepts.html">
         <div class="docs-card-title">Domain model</div>
         <p>Sites, upstream pools, certificates, WAF policies, agents, telemetry, and the audit chain — what each one is and how they fit together.</p>
       </a>
       <a class="docs-card" href="operations.html">
         <div class="docs-card-title"><span class="docs-card-num">3</span>Operations guide</div>
-        <p>Publish an application, read exact counters and evidence, investigate incidents and campaigns, tune safely, and operate agents.</p>
+        <p>Publish an application, read exact counters and evidence, investigate SecurityFacts and attack logs, tune safely, and operate Agents.</p>
       </a>
       <a class="docs-card" href="troubleshooting.html">
         <div class="docs-card-title">Troubleshooting</div>
@@ -115,7 +120,7 @@
       </a>
       <a class="docs-card" href="cli.html">
         <div class="docs-card-title">CLI reference</div>
-        <p>Every <code>tiyi</code> subcommand grouped by resource, with the flags that matter and the exit-code contract.</p>
+        <p>Current v3.5.0 commands grouped by resource, with safe examples and a reminder to check each command's built-in help.</p>
       </a>
       <a class="docs-card" href="api.html">
         <div class="docs-card-title">API reference</div>
@@ -145,7 +150,7 @@
     </div>
 
     <h2 id="versions">Versions covered</h2>
-    <p>These docs target <strong>v3.5.0</strong>, the current public release. The single-Controller schema is a clean-state boundary for databases below schema 47; see <a href="troubleshooting.html#v34-reset">the reset procedure</a>. Changes to CLI flags, defaults, or output shape are tracked in the <a href="../changelog.html">changelog</a> and reflected here in the same patch. If a command disagrees with the binary, the binary is authoritative.</p>
+    <p>These docs target <strong>v3.5.0</strong>, the current public release. Replacing v3.4.0 or any earlier installation requires a verified backup, complete purge, clean v3.5.0 service install, and Agent re-enrollment; see the <a href="upgrade-v3.5.html">v3.5.0 upgrade guide</a>. Changes to CLI flags, defaults, or output shape are tracked in the <a href="../changelog.html">changelog</a>. If an example disagrees with the installed binary, <code>tiyi &lt;command&gt; --help</code> is authoritative.</p>
 
     <div class="docs-pager">
       <a href="../index.html">

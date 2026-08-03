@@ -56,6 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.0</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -84,7 +85,7 @@
     <h1>Installation</h1>
     <p class="lede">Tiyi is distributed as a signed Linux binary. Install it from the public release channel, write a small YAML config, and start the complete Controller runtime or enroll a remote Agent.</p>
 
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>v3.4.0 clean-state boundary.</strong> The single-Controller build rejects databases below schema 47, plus older Agent identities and cached bundles. Preserve source manifests and required secrets, move the old state aside, start clean, and re-enroll Agents. Do not copy an older database into the new state directory.</p></div></div>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>Replacing v3.4.0 or earlier with v3.5.0 requires a destructive full uninstall.</strong> Stop the old service, make and verify a complete backup, run <code>sudo tiyi uninstall --purge</code>, then install a fresh v3.5.0 service and re-enroll every Agent. Do not restore the old database into v3.5. Follow the <a href="upgrade-v3.5.html">dedicated upgrade guide</a> before installing.</p></div></div>
 
     <h2 id="prebuilt">Install the signed binary</h2>
     <p>Tiyi is one signed binary — free and full-featured on a single node. The canonical install script is published at <code>https://www.tiyisec.com/install.sh</code>:</p>
@@ -219,7 +220,7 @@
     <h2 id="next">What to read next</h2>
     <ul>
       <li><a href="concepts.html">Domain model</a> — what sites, upstreams, certs, policies, and agents are.</li>
-      <li><a href="cli.html">CLI reference</a> — every <code>tiyi</code> subcommand grouped by resource.</li>
+      <li><a href="cli.html">CLI reference</a> — current v3.5.0 operator commands grouped by resource.</li>
       <li><a href="deployment.html">Deployment</a> — production hardening, remote Agents, outage boundaries, and SIEM egress.</li>
     </ul>
 
@@ -228,9 +229,9 @@
         <span class="label">← Previous</span>
         <span class="title">Quickstart</span>
       </a>
-      <a class="next" href="concepts.html">
+      <a class="next" href="upgrade-v3.5.html">
         <span class="label">Next →</span>
-        <span class="title">Domain model</span>
+        <span class="title">Upgrade to v3.5.0</span>
       </a>
     </div>
   </main>

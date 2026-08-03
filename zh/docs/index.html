@@ -57,6 +57,7 @@
       <ul>
         <li><a href="operations.html">日常运维</a></li>
         <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-v3.5.html">升级到 v3.5.0</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -99,13 +100,17 @@
         <div class="docs-card-title"><span class="docs-card-num">2</span>安装</div>
         <p>安装签名版本，写 YAML 配置，运行 Controller 或入网远程 Agent。</p>
       </a>
+      <a class="docs-card" href="upgrade-v3.5.html">
+        <div class="docs-card-title">升级到 v3.5.0</div>
+        <p>完整备份，完整卸载 v3.4.0 或更早版本，安装全新 v3.5.0 服务并重新注册 Agent。</p>
+      </a>
       <a class="docs-card" href="concepts.html">
         <div class="docs-card-title">领域模型</div>
         <p>站点、上游池、证书、WAF 策略、节点、遥测、审计链 —— 它们各是什么，又是如何配合的。</p>
       </a>
       <a class="docs-card" href="operations.html">
         <div class="docs-card-title"><span class="docs-card-num">3</span>日常运维</div>
-        <p>发布应用，理解精确计数与证据，调查 Incident/Campaign，安全调优并运维 Agent。</p>
+        <p>发布应用，理解精确计数与证据，调查 SecurityFact 与攻击日志，安全调优并运维 Agent。</p>
       </a>
       <a class="docs-card" href="troubleshooting.html">
         <div class="docs-card-title">排障</div>
@@ -113,7 +118,7 @@
       </a>
       <a class="docs-card" href="cli.html">
         <div class="docs-card-title">CLI 参考</div>
-        <p>每一个 <code>tiyi</code> 子命令按资源分组，附上重要的 flag 与退出码契约。</p>
+        <p>按资源整理当前 v3.5.0 命令与安全示例，并提醒使用每条命令的内置 help。</p>
       </a>
       <a class="docs-card" href="api.html">
         <div class="docs-card-title">API 参考</div>
@@ -130,7 +135,7 @@
     <ul>
       <li><strong>一个二进制，零运行时依赖。</strong>无 Docker daemon、无 Nginx、无 Postgres、无 Redis。二进制内置 Caddy、Coraza、SQLite 与 Vben Admin UI。一个合格的运维应该能在五分钟内拉起一个可用实例。</li>
       <li><strong>API 优先 + 声明式 YAML。</strong>每一个写入路径都由一个 ConnectRPC API 拥有。UI 与 CLI 都是它的瘦客户端。<code>tiyi apply -f site.yaml</code> 与点击<em>保存</em>效果完全相同 —— 同一个验证器、同一个写入器、同一行审计。</li>
-      <li><strong>推送 + 协调，不只是推送。</strong>节点持有一条长连 ConnectRPC 双向流。每一次变更写 SQLite、自增单调版本号，并把签名 bundle 推送到所有打开的节点流，~50&nbsp;ms 内到达。节点每 15&nbsp;s 协调一次作为兜底。更新按版本号幂等 —— 重放与乱序都安全。</li>
+      <li><strong>本地优先，按需远程。</strong>内置本地数据平面在进程内应用配置。远程 Agent 与 Controller 保持 ConnectRPC 长连接、校验签名 bundle、断线重连后继续协调，并在 Controller 中断时继续使用最后接受的 bundle 提供服务。</li>
     </ul>
 
     <div class="callout callout-info">
@@ -143,7 +148,7 @@
     </div>
 
     <h2 id="versions">覆盖的版本</h2>
-    <p>这些文档面向当前公开版本 <strong>v3.5.0</strong>。单 Controller schema 对低于 47 的数据库采用干净状态边界，见<a href="troubleshooting.html#v34-reset">重置步骤</a>。CLI flag、默认值或输出格式变化会在<a href="../changelog.html">更新日志</a>中追踪并同步到这里。若命令与二进制冲突，以二进制为准。</p>
+    <p>这些文档面向当前公开版本 <strong>v3.5.0</strong>。用 v3.5.0 替换 v3.4.0 或更早安装时，必须验证完整备份、完整 purge、全新安装 v3.5.0 服务并重新注册 Agent；详见 <a href="upgrade-v3.5.html">v3.5.0 升级指引</a>。CLI flag、默认值或输出格式变化会记录在<a href="../changelog.html">更新日志</a>中。若示例与已安装二进制不一致，以 <code>tiyi &lt;command&gt; --help</code> 为准。</p>
 
     <div class="docs-pager">
       <a href="../index.html">

@@ -55,6 +55,7 @@
       <ul>
         <li><a href="operations.html">日常运维</a></li>
         <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-v3.5.html">升级到 v3.5.0</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -91,6 +92,7 @@
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version</code></pre>
     <p>版本固定、安装目录覆盖与 Gitee 镜像用法见<a href="installation.html#prebuilt">安装</a>。</p>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>已有 v3.4.0 或更早安装？</strong>不要继续执行新安装流程，也不要在通用 update 后直接重启。必须先完成并验证完整备份，再按 <a href="upgrade-v3.5.html">v3.5.0 完整卸载升级指引</a>操作。</p></div></div>
 
     <h2 id="run">2. 运行太一</h2>
     <p>按你的权限选择一种方式。<strong>以 root 运行</strong>时默认值即可 —— 状态写入 <code>/var/lib/tiyi</code>，代理绑定 80/443 端口：</p>
@@ -177,7 +179,7 @@
     <ul>
       <li><a href="installation.html">安装</a> —— 签名二进制安装、配置文件、运行模式，以及上线前需要显式设定的加固字段。</li>
       <li><a href="concepts.html">领域模型</a> —— 站点、上游、证书、策略、节点、遥测、审计链各是什么。</li>
-      <li><a href="cli.html">CLI 参考</a> —— 每一个 <code>tiyi</code> 子命令按资源分组。</li>
+      <li><a href="cli.html">CLI 参考</a> —— 按资源整理当前 v3.5.0 运维命令，完整 flag 以内置 help 为准。</li>
     </ul>
 
     <div class="docs-pager">

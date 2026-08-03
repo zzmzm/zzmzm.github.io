@@ -50,7 +50,7 @@
         <li><a href="installation.html">安装</a></li>
       </ul>
     </div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li></ul></div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.0</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -61,7 +61,7 @@
     <h1>安装</h1>
     <p class="lede">太一以签名 Linux 二进制形式分发。从公开发行渠道安装，写一份小 YAML 配置，然后运行完整 Controller 或入网一个远程 Agent。</p>
 
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>v3.4.0 干净状态边界。</strong>单 Controller 构建会拒绝 schema 低于 47 的数据库、旧 Agent 身份与缓存 bundle。保留源清单和必要密钥，把旧状态移走，以干净状态启动并重新注册 Agent；不要把旧数据库复制到新状态目录。</p></div></div>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>用 v3.5.0 替换 v3.4.0 或更早版本时，必须执行破坏性完整卸载。</strong>停止旧服务，完成并验证完整备份，运行 <code>sudo tiyi uninstall --purge</code>，再安装全新的 v3.5.0 服务并重新注册全部 Agent。不要把旧数据库恢复进 v3.5；安装前先阅读<a href="upgrade-v3.5.html">专用升级指引</a>。</p></div></div>
 
     <h2 id="prebuilt">安装签名二进制</h2>
     <p>太一是单一签名二进制 —— 在单节点上免费且功能完整。权威安装脚本发布在 <code>https://www.tiyisec.com/install.sh</code>：</p>
@@ -196,7 +196,7 @@
     <h2 id="next">下一步阅读</h2>
     <ul>
       <li><a href="concepts.html">领域模型</a> —— 站点、上游、证书、策略、节点各是什么。</li>
-      <li><a href="cli.html">CLI 参考</a> —— 每一个 <code>tiyi</code> 子命令按资源分组。</li>
+      <li><a href="cli.html">CLI 参考</a> —— 按资源整理当前 v3.5.0 运维命令。</li>
       <li><a href="deployment.html">部署</a> —— 生产加固、远程 Agent 连续运行、Controller 中断边界与 SIEM 转发。</li>
     </ul>
 
@@ -205,9 +205,9 @@
         <span class="label">← 上一页</span>
         <span class="title">快速开始</span>
       </a>
-      <a class="next" href="concepts.html">
+      <a class="next" href="upgrade-v3.5.html">
         <span class="label">下一页 →</span>
-        <span class="title">领域模型</span>
+        <span class="title">升级到 v3.5.0</span>
       </a>
     </div>
   </main>

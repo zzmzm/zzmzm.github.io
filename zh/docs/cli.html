@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>CLI 参考 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="每一个 tiyi CLI 子命令按资源分组。本地管理 socket 鉴权、远程 API 鉴权、退出码。" />
+<meta name="description" content="按资源整理太一 v3.5.0 CLI 命令，包含本地管理 socket 鉴权、远程 API 鉴权、安全示例与退出码。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -43,7 +43,7 @@
 
   <aside class="docs-sidebar" aria-label="文档导航">
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li></ul></div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.0</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -52,7 +52,7 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">参考</span>
     <h1>CLI 参考</h1>
-    <p class="lede"><code>tiyi</code> CLI 是驱动 UI 的同一个 ConnectRPC API 的瘦客户端。每一个写入路径只有一处；CLI 与 API 由架构保证同步。本页按资源分组列出命令 —— 任意子命令的完整 flag 接口请运行 <code>tiyi &lt;cmd&gt; --help</code>。</p>
+    <p class="lede"><code>tiyi</code> CLI 是驱动 UI 的同一个 ConnectRPC API 的瘦客户端。本页按资源整理当前 v3.5.0 运维命令；示例只列常用 flag。写入前请运行 <code>tiyi &lt;command&gt; --help</code>，并以已安装二进制为准。</p>
 
     <h2 id="auth-modes">鉴权模式</h2>
     <p>CLI 用两种方式之一与太一通信。本地命令不需要 token；远程命令需要 API URL 与一个 JWT。</p>
@@ -102,21 +102,24 @@ tiyi site update <span class="v">&lt;id&gt;</span> [...flag]
 tiyi site enable <span class="v">&lt;id&gt;</span>
 tiyi site disable <span class="v">&lt;id&gt;</span>
 tiyi site delete <span class="v">&lt;id&gt;</span>
-tiyi site preview <span class="v">&lt;id&gt;</span>           <span class="c"># dump 写入器要发出的 Caddy JSON</span>
-tiyi site policy-override <span class="v">&lt;id&gt;</span> [--blocking-pl N --inbound-threshold N ...]</code></pre>
+tiyi site routing get <span class="v">&lt;id&gt;</span>
+tiyi site routing set <span class="v">&lt;id&gt;</span> --route /api=<span class="v">UPSTREAM_ID</span> --unmatched default|404
+tiyi site policy-override get <span class="v">&lt;id&gt;</span>
+tiyi site policy-override set <span class="v">&lt;id&gt;</span> [--blocking-pl N --inbound-threshold N ...]
+tiyi site policy-override delete <span class="v">&lt;id&gt;</span></code></pre>
 
     <h2 id="upstreams">上游</h2>
 <pre><code>tiyi upstream list
 tiyi upstream get <span class="v">&lt;name|id&gt;</span>
-tiyi upstream create --name <span class="v">N</span> --target <span class="v">URL</span> [--target <span class="v">URL2</span> ...]
+tiyi upstream create --name <span class="v">N</span> --endpoint-url <span class="v">URL</span> [--endpoint-url <span class="v">URL2</span> ...]
 tiyi upstream update <span class="v">&lt;id&gt;</span> [...flag]
 tiyi upstream delete <span class="v">&lt;id&gt;</span>      <span class="c"># 若任何站点引用,拒绝(UPSTREAM_IN_USE)</span></code></pre>
 
     <h2 id="certs">证书</h2>
 <pre><code>tiyi cert list
 tiyi cert get <span class="v">&lt;id&gt;</span>
-tiyi cert upload --name <span class="v">N</span> --cert <span class="v">FILE</span> --key <span class="v">FILE</span>
-tiyi cert issue --domain <span class="v">D</span> --email <span class="v">E</span> [--challenge-type http-01|dns-01] [--acme-issuer letsencrypt|letsencrypt-staging|custom] [--directory-url <span class="v">URL</span>]
+tiyi cert upload --name <span class="v">N</span> --cert-pem <span class="v">FILE</span> --key-pem <span class="v">FILE</span>
+tiyi cert issue <span class="v">DOMAIN</span> --email <span class="v">E</span> [--challenge-type http-01|dns-01] [--acme-issuer letsencrypt|letsencrypt-staging|custom] [--directory-url <span class="v">URL</span>]
 tiyi cert renew <span class="v">&lt;id&gt;</span>
 tiyi cert delete <span class="v">&lt;id&gt;</span>
 tiyi cert dns-provider drivers
@@ -138,44 +141,49 @@ tiyi cert dns-provider delete <span class="v">&lt;id&gt;</span></code></pre>
     <h2 id="policies">WAF 策略</h2>
 <pre><code>tiyi policy list
 tiyi policy get <span class="v">&lt;id&gt;</span>
-tiyi policy create --name <span class="v">N</span> --template strict|standard|permissive
+tiyi policy templates
+tiyi policy create-from-template --name <span class="v">N</span> --template-id <span class="v">TEMPLATE_ID</span>
+tiyi policy create --name <span class="v">N</span> [--engine-state on|detection-only|off]
 tiyi policy update <span class="v">&lt;id&gt;</span> [...layer flag]
 tiyi policy delete <span class="v">&lt;id&gt;</span>
-tiyi policy preview <span class="v">&lt;id&gt;</span> [--site-id <span class="v">S</span>]   <span class="c"># 实际编译后的 SecLang</span>
-tiyi policy versions <span class="v">&lt;id&gt;</span>                       <span class="c"># 列出快照版本</span>
-tiyi policy diff <span class="v">&lt;id&gt;</span> --from <span class="v">A</span> --to <span class="v">B</span>           <span class="c"># 并排 diff</span>
-tiyi policy rollback <span class="v">&lt;id&gt;</span> --to <span class="v">REV</span></code></pre>
+tiyi policy preview-seclang <span class="v">&lt;id&gt;</span>              <span class="c"># 编译后的 SecLang</span>
+tiyi policy preview-impact <span class="v">&lt;id&gt;</span> [--crs-ruleset-id <span class="v">R</span>]
+tiyi policy test <span class="v">&lt;id&gt;</span> --url /login --method POST
+tiyi policy versions <span class="v">&lt;id&gt;</span>                      <span class="c"># 列出已保存版本</span>
+tiyi policy diff <span class="v">&lt;left-version-id&gt;</span> <span class="v">&lt;right-version-id&gt;</span>
+tiyi policy rollback <span class="v">&lt;id&gt;</span> --version-id <span class="v">REV</span></code></pre>
 
     <h3 id="rule-tuning">规则覆盖、自定义规则、IP 列表</h3>
-<pre><code>tiyi rule override upsert --policy <span class="v">P</span> --rule-id <span class="v">N</span> --action default|disable|log_only|score_override [--score-override N] [--scope global|site --site-id <span class="v">S</span>]
-tiyi rule override delete --policy <span class="v">P</span> --rule-id <span class="v">N</span>
-tiyi rule custom create --policy <span class="v">P</span> --seclang <span class="v">FILE</span>
-tiyi rule custom delete --policy <span class="v">P</span> --rule-id <span class="v">N</span>
-tiyi rule ip-list create --policy <span class="v">P</span> --kind allow|deny|monitor --name <span class="v">N</span>
-tiyi rule ip-list add-entries <span class="v">&lt;id&gt;</span> 203.0.113.0/24 geo:CN
-tiyi rule ip-list import-csv <span class="v">&lt;id&gt;</span> --file <span class="v">F</span>
-tiyi rule ip-list bind <span class="v">&lt;id&gt;</span> --policy <span class="v">P</span> [--path-prefix /api]
-tiyi rule rate-limit upsert --policy <span class="v">P</span> --endpoint /login --rps 5 --action block</code></pre>
+<pre><code>tiyi rule override upsert <span class="v">&lt;policy-id&gt;</span> --crs-rule-id <span class="v">N</span> --action default|disable|log_only|score_override [--site-id <span class="v">S</span>] [--scope /api]
+tiyi rule override delete <span class="v">&lt;override-id&gt;</span>
+tiyi rule custom create <span class="v">&lt;policy-id&gt;</span> --name <span class="v">N</span> --rule-id <span class="v">8000001</span> --seclang-file <span class="v">FILE</span>
+tiyi rule custom delete <span class="v">&lt;custom-rule-id&gt;</span>
+tiyi rule ip-list create --kind allow|deny|monitor --name <span class="v">N</span> --entry 203.0.113.0/24
+tiyi rule ip-list add-entry <span class="v">&lt;id&gt;</span> --entry 198.51.100.0/24
+tiyi policy bind-ip-list <span class="v">&lt;policy-id&gt;</span> --ip-list-id <span class="v">&lt;id&gt;</span> --decision allow|deny|monitor
+tiyi rule rate-limit upsert --policy-id <span class="v">P</span> --path-pattern /login --per-minute 60 --action block</code></pre>
 
     <h2 id="crs">CRS 目录</h2>
 <pre><code>tiyi crs ingest --tag <span class="v">v4.25.0</span>            <span class="c"># 从上游抓取 release</span>
 tiyi crs ingest --archive <span class="v">FILE</span>             <span class="c"># 离线归档导入</span>
 tiyi crs releases                            <span class="c"># 列出可用上游 tag</span>
 tiyi crs list                                <span class="c"># 已安装 CRS 规则集</span>
-tiyi crs rules --tag <span class="v">v4.25.0</span> --paranoia 1 --tag attack-sqli
-tiyi crs exclusion-package list
-tiyi crs exclusion-package install --slug wordpress
-tiyi crs exclusion-package attach --policy <span class="v">P</span> --slug wordpress [--scope /wp-admin/]</code></pre>
+tiyi crs rules <span class="v">&lt;ruleset-id&gt;</span> --paranoia-level 1 --tag attack-sqli
+tiyi crs rule <span class="v">&lt;ruleset-id&gt;</span> <span class="v">&lt;rule-id&gt;</span>
+tiyi crs plugins
+tiyi crs plugin-schema <span class="v">&lt;plugin-id&gt;</span></code></pre>
 
     <h2 id="agents">节点</h2>
 <pre><code>tiyi agents list
 tiyi agents get <span class="v">&lt;id&gt;</span>
 tiyi agents issue-token [--tag edge] [--ttl-seconds 86400]
-tiyi agents send-command <span class="v">&lt;id&gt;</span> --kind reload|restart|collect_diagnostics
-tiyi agents commands [--agent-id <span class="v">id&gt;</span>]
+tiyi agents install-script --controller-url <span class="v">URL</span> --enrollment-token <span class="v">TOKEN</span>
+tiyi agents bundles [<span class="v">agent-id</span>]
+tiyi agents bundle <span class="v">&lt;bundle-id&gt;</span>
 tiyi agent-group list
-tiyi agent-group create --name <span class="v">N</span> --tag-selector <span class="v">role=edge</span>
-tiyi agent-group resolve <span class="v">&lt;id&gt;</span></code></pre>
+tiyi agent-group get <span class="v">&lt;id&gt;</span>
+tiyi agent-group create --name <span class="v">N</span> --tag role=edge
+tiyi agent-group delete <span class="v">&lt;id&gt;</span></code></pre>
 
     <h2 id="trust">信任配置</h2>
 <pre><code>tiyi trust show
@@ -186,31 +194,30 @@ tiyi trust test --peer 10.0.0.5 --header <span class="s">"X-Forwarded-For: 1.2.3
 tiyi trust refresh cloudflare</code></pre>
 
     <h2 id="alerts">告警</h2>
-<pre><code>tiyi alert active list
-tiyi alert active ack <span class="v">&lt;id&gt;</span>
-tiyi alert active resolve <span class="v">&lt;id&gt;</span>
+<pre><code>tiyi alert list
+tiyi alert get <span class="v">&lt;id&gt;</span>
+tiyi alert ack <span class="v">&lt;id&gt;</span> [--note <span class="v">TEXT</span>]
+tiyi alert notes <span class="v">&lt;id&gt;</span>
+tiyi alert resolve <span class="v">&lt;id&gt;</span> [--note <span class="v">TEXT</span>]
 tiyi alert rule list
-tiyi alert rule upsert --name <span class="v">N</span> --kind security_threshold --condition <span class="v">FILE</span>
+tiyi alert rule upsert --name <span class="v">N</span> --expression-json <span class="v">JSON</span>
 tiyi alert channel list
-tiyi alert channel upsert --name <span class="v">N</span> --kind webhook|slack|pagerduty|feishu|wecom --config <span class="v">FILE</span>
+tiyi alert channel upsert --name <span class="v">N</span> --kind webhook|slack|pagerduty|feishu|wecom|email --config-json <span class="v">JSON</span>
 tiyi alert channel test <span class="v">&lt;id&gt;</span></code></pre>
 
     <h2 id="logs">日志</h2>
-<pre><code>tiyi log security list [--site <span class="v">S</span>] [--client-ip <span class="v">IP</span>] [--rule-id <span class="v">N</span>] [--from <span class="v">T</span>] [--to <span class="v">T</span>]
+<pre><code>tiyi log security list [--site-id <span class="v">S</span>] [--client-ip-cidr <span class="v">CIDR</span>] [--rule-id <span class="v">N</span>] [--start <span class="v">T</span>] [--end <span class="v">T</span>]
 tiyi log security get <span class="v">&lt;event-id&gt;</span>
-tiyi log security export --format ndjson --output <span class="v">F</span>
+tiyi log security export --site-id <span class="v">S</span> --out <span class="v">F</span>
 tiyi log access  list [...过滤器]
 tiyi log error   list [...过滤器]
 tiyi log tail-security                       <span class="c"># 实时流</span></code></pre>
 
-    <h2 id="incidents-campaigns">Incident 与 Attack Campaign</h2>
-<pre><code>tiyi incident list|get|findings|ack|close ...
-tiyi campaign list|get|revisions|confirm|ack|close|dismiss ...
-tiyi campaign refresh [<span class="v">id</span>]
-tiyi campaign merge|split ...</code></pre>
+    <h2 id="security-investigation">SecurityFact 调查</h2>
+    <p>v3.5.0 没有 <code>incident</code> 或 <code>campaign</code> CLI 资源。从 <code>tiyi alert list</code> 或 <code>tiyi log security list</code> 开始，再按 <code>--unique-id</code>、站点、规则、客户端 CIDR 与时间窗口筛选，并在 UI 中关联匹配的攻击、访问和运行时错误日志。</p>
 
     <h2 id="audit-cli">审计链</h2>
-<pre><code>tiyi audit list [--actor <span class="v">UUID</span>] [--action <span class="v">prefix</span>] [--from <span class="v">T</span>] [--to <span class="v">T</span>]
+<pre><code>tiyi audit list [--actor-id <span class="v">UUID</span>] [--action <span class="v">ACTION</span>] [--start <span class="v">T</span>] [--end <span class="v">T</span>]
 tiyi audit get <span class="v">&lt;id&gt;</span>
 tiyi audit verify                            <span class="c"># 走完整条链并报告每一段</span></code></pre>
 

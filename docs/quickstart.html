@@ -56,6 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.0</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -96,6 +97,7 @@
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version</code></pre>
     <p>See <a href="installation.html#prebuilt">Installation</a> for version pinning, install-prefix overrides, and the Gitee mirror.</p>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>Existing v3.4.0 or earlier installation?</strong> Do not continue with the new-install flow or restart after a generic update. First make a complete verified backup, then follow the <a href="upgrade-v3.5.html">v3.5.0 full-uninstall upgrade</a>.</p></div></div>
 
     <h2 id="run">2. Run in complete runtime</h2>
     <p>Pick the option that matches your privileges. <strong>As root</strong> the defaults work — state lands in <code>/var/lib/tiyi</code> and the proxy binds ports 80/443:</p>
@@ -182,7 +184,7 @@
     <ul>
       <li><a href="installation.html">Installation</a> — signed binary installation, config files, Controller and Agent operation, and production-hardening fields you should set before going live.</li>
       <li><a href="concepts.html">Domain model</a> — what sites, upstreams, certificates, policies, agents, telemetry, and the audit chain actually are.</li>
-      <li><a href="cli.html">CLI reference</a> — every <code>tiyi</code> subcommand grouped by resource, with flag defaults.</li>
+      <li><a href="cli.html">CLI reference</a> — current v3.5.0 operator commands grouped by resource; use built-in help for the complete flag surface.</li>
     </ul>
 
     <div class="docs-pager">
