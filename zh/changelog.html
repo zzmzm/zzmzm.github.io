@@ -59,14 +59,17 @@
           <span class="tl-date">2026-08-03</span>
           <span class="tl-tag shipped">已发布</span>
         </div>
-        <div class="tl-title">可执行客户端 IP 拓扑 + Dashboard 安全洞察</div>
+        <div class="tl-title">可执行客户端 IP 拓扑 + 更安全的防护编写</div>
         <div class="tl-body">
-          <p>v3.5.0 把客户端 IP 解析做成运维可采样、可验证、可应用的可执行拓扑，并把 Dashboard 安全排行变成可立即响应的操作。</p>
+          <p>v3.5.0 把客户端 IP 解析做成运维可采样、可验证、可应用的可执行拓扑，把 Dashboard 安全排行变成可立即响应的操作，并让规则与端点限速从证据到执行都沿着唯一、确定的路径流转。</p>
           <ul>
             <li><strong>可执行客户端 IP 拓扑。</strong>站点页是唯一全局入口。完整/快速编辑器展示实时节点/边/规则图，含 CDN/代理胶囊、按路径条件化的 Header 规则、未保存预览状态，以及可应用到源站点或提升为全局默认的已验证草案。</li>
             <li><strong>站点分析。</strong>仅内存采样（五分钟或 50 个请求）在保存前区分事实、范围/路径验证、建议性提供商标识与冲突。多 CDN/堆叠拓扑上可共存提供商专用与通用 Header，因为每条规则都绑定已验证的节点路径。</li>
             <li><strong>Dashboard 安全洞察。</strong>六个同步的 SecurityFact 排行卡片（含“被攻击站点”）加上攻击来源国家/地区条带；悬停可从当前视图排除排行，或全局封禁攻击者 IP 与 <span class="mono">geo:CC</span> 条目 24 小时。</li>
             <li><strong>Geo 国家编译。</strong>实时 DB-IP Country 读取器在启动/上传/刷新/删除时发布不可变 Country→CIDR 快照；所有策略编译路径共用同一解析器，使 Dashboard/全局国家封禁可干净编译。</li>
+            <li><strong>端点限速唯一真相源。</strong>端点行现在贯通 API、CLI、策略、站点覆盖与编译后数据面。路径在策略或站点范围内唯一，创建和更新语义明确；同路径站点行会在 CRS 之前确定性覆盖继承的策略行。</li>
+            <li><strong>从证据到防护。</strong>Attack Logs 可起草精确路径、分段有界路径树、方法/路径、IP/路径或保留 User-Agent 规则。结构化 CRS 证据还可起草按路径限定的目标排除或规则禁用；不再重复 IP 操作，也不再提供整路径 WAF 绕过草案。</li>
+            <li><strong>草案安全编辑。</strong>策略与站点自定义规则使用聚焦子视图，站点限速在行内编辑并显示字段级校验；离开页面或关闭抽屉前，修改过的草案必须明确确认丢弃。</li>
             <li><strong>运维界面。</strong>产品导览截图基于实时多节点实例刷新，并新增节点拓扑与哈希链审计；QUICKSTART、PRD 与生成的 API 文档同步客户端 IP 干净切换契约。</li>
           </ul>
         </div>

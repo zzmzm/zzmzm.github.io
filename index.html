@@ -55,7 +55,7 @@
 <section class="hero container">
   <span class="hero-eyebrow">
     <span class="tag">v3.5.0</span>
-    Executable client-IP topology + security insights
+    Executable client-IP topology + safer protection authoring
   </span>
 
   <h1>
@@ -274,8 +274,8 @@
           <!-- layers -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
         </div>
-        <h3>SecurityFacts + auto-remediation</h3>
-        <p>Every blocked or suspicious request writes an immutable, partitioned <span class="mono">SecurityFact</span> — rule matches, attack class, severity, and matched data — as the single security-event truth, replacing sessionized incidents and campaigns. A firing alert can draft an <span class="mono">IP-list</span> or custom-rule remediation you review and approve; nothing applies without consent.</p>
+        <h3>SecurityFacts + reviewed response</h3>
+        <p>Every blocked or suspicious request writes an immutable, partitioned <span class="mono">SecurityFact</span>. From Attack Logs, operators can draft exact/tree/method/IP/UA rules or narrow CRS target exclusions; global IP actions stay separate, and whole-path WAF bypass is never suggested. Nothing applies without review.</p>
       </div>
 
       <div class="feature reveal">
@@ -368,7 +368,7 @@
         <ul>
           <li>Jump to the matching access event using the same request identity</li>
           <li>Preview bounded retained headers/body separately from the hot-path finding</li>
-          <li>Block, allow, or draft a rule from the evidence; AI remains redacted and advisory</li>
+          <li>Block or allow an IP, or draft an exact/tree/context rule or narrow CRS exclusion from the evidence</li>
         </ul>
       </div>
       <div class="frame">
@@ -388,8 +388,8 @@
         <p>The focused tuning workspace makes each protection layer explicit, then compiles the structured policy into deterministic SecLang on save.</p>
         <ul>
           <li>12 focused tabs: Overview · CRS Protection · HTTP Protection · Request Limits · Rule Exceptions · IP Access · Custom Rules · Plugins · Rate Limits · Exclusions · Preview &amp; Test · Versions</li>
-          <li>Preview compiled output, test a request, and compare any two revisions</li>
-          <li>Every mutation, including scoped IP-list bindings, enters the audit chain</li>
+          <li>Focused custom-rule drafts and inline endpoint-limit rows protect unsaved work with explicit discard</li>
+          <li>Unique per-scope paths and explicit create/update semantics compile site limits before inherited policy limits and CRS</li>
         </ul>
       </div>
       <div class="frame">
@@ -631,9 +631,9 @@
           <span class="tl-date">2026-08-03</span>
           <span class="tl-tag shipped">Shipped</span>
         </div>
-        <div class="tl-title">Executable client-IP topology + dashboard security insights</div>
+        <div class="tl-title">Executable client-IP topology + safer protection authoring</div>
         <div class="tl-body">
-          Client IP moves to an executable node/edge/rule topology with Sites as the sole global entry, live sampling analysis, verified drafts, and path-conditioned multi-CDN headers. Dashboard security intelligence shows six simultaneous ranking cards plus attack-origin countries, with one-click global IP or <span class="mono">geo:CC</span> block. Geo country quick-block compiles through a shared Country→CIDR snapshot, and the product tour now includes fleet topology and hash-chain audit screenshots.
+          Client IP moves to an executable node/edge/rule topology with Sites as the sole global entry, live sampling analysis, verified drafts, and path-conditioned multi-CDN headers. Dashboard rankings support one-click global IP or <span class="mono">geo:CC</span> response. Endpoint rate limits now use one canonical inventory with unique per-scope paths and deterministic site precedence; Attack Logs draft exact/tree/context rules or narrow CRS exclusions, and focused editors protect modified drafts.
         </div>
       </div>
 
@@ -1001,9 +1001,9 @@
           <span class="tl-date">2026-08-03</span>
           <span class="tl-tag shipped">Shipped</span>
         </div>
-        <div class="tl-title">Executable client-IP topology + security insights</div>
+        <div class="tl-title">Executable client-IP topology + safer protection authoring</div>
         <div class="tl-body">
-          Sites owns the global client-IP surface with an executable topology, sampling analysis, verified drafts, and path-conditioned multi-CDN headers. Dashboard security intelligence adds six ranking cards, attack-origin countries, and one-click global IP/<span class="mono">geo:CC</span> block backed by a shared Country→CIDR compiler snapshot.
+          Sites owns the global client-IP surface with an executable topology, sampling analysis, verified drafts, and path-conditioned multi-CDN headers. Dashboard rankings support immediate IP/<span class="mono">geo:CC</span> response. Canonical endpoint rows enforce unique per-scope paths and deterministic site precedence; Attack Logs seed narrow custom rules or CRS exclusions, and focused editors protect modified drafts.
         </div>
       </div>
 

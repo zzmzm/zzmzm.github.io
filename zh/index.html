@@ -55,7 +55,7 @@
 <section class="hero container">
   <span class="hero-eyebrow">
     <span class="tag">v3.5.0</span>
-    可执行客户端 IP 拓扑 + 安全洞察
+    可执行客户端 IP 拓扑 + 更安全的防护编写
   </span>
 
   <h1>
@@ -263,8 +263,8 @@
           <!-- layers -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
         </div>
-        <h3>SecurityFact + 自动处置</h3>
-        <p>每个被拦截或可疑请求写入一条不可变、按天分区的 <span class="mono">SecurityFact</span>--规则命中、攻击类别、严重等级与匹配数据--作为唯一的安全事件真相，取代会话化的事件与攻击活动。一条正在触发的告警可起草 <span class="mono">IP 列表</span>或自定义规则处置方案，由你审核批准；未经同意不会自动应用。</p>
+        <h3>SecurityFact + 审核式响应</h3>
+        <p>每个被拦截或可疑请求写入一条不可变、按天分区的 <span class="mono">SecurityFact</span>。运维可从 Attack Logs 起草精确/路径树/方法/IP/UA 规则或窄范围 CRS 目标排除；全局 IP 操作保持独立，绝不建议整路径 WAF 绕过。未经审核不会应用。</p>
       </div>
 
       <div class="feature reveal">
@@ -355,7 +355,7 @@
         <ul>
           <li>使用同一请求标识跳转到匹配的访问事件</li>
           <li>有界请求头 / 请求体证据与热路径 Finding 分开按需预览</li>
-          <li>基于证据封禁、放行或起草规则；AI 始终脱敏且只做建议</li>
+          <li>从证据封禁/放行 IP，或起草精确/路径树/上下文规则与窄范围 CRS 排除</li>
         </ul>
       </div>
       <div class="frame">
@@ -375,8 +375,8 @@
         <p>聚焦式调优工作区明确展示每一层防护，并在保存时把结构化策略编译为确定性的 SecLang。</p>
         <ul>
           <li>12 个聚焦标签页：概览 · CRS 防护 · HTTP 防护 · 请求限制 · 规则例外 · IP 访问 · 自定义规则 · 插件 · 限速 · 误报豁免包 · 预览与测试 · 版本</li>
-          <li>预览编译结果、用单次请求测试，并比较任意两个修订</li>
-          <li>每一次变更都写入审计链，包括限定范围的 IP 列表绑定</li>
+          <li>聚焦的自定义规则草案与行内端点限速通过明确丢弃确认保护未保存内容</li>
+          <li>范围内唯一路径与明确创建/更新语义，按站点限速、继承策略限速、CRS 的顺序编译</li>
         </ul>
       </div>
       <div class="frame">
@@ -618,9 +618,9 @@
           <span class="tl-date">2026-08-03</span>
           <span class="tl-tag shipped">已发布</span>
         </div>
-        <div class="tl-title">可执行客户端 IP 拓扑 + Dashboard 安全洞察</div>
+        <div class="tl-title">可执行客户端 IP 拓扑 + 更安全的防护编写</div>
         <div class="tl-body">
-          客户端 IP 升级为可执行的节点/边/规则拓扑，并以站点页作为唯一全局入口；支持实时采样分析、已验证草案，以及按路径条件化的多 CDN Header。Dashboard 安全情报同时展示六个排行卡片与攻击来源国家，并支持一键全局 IP 或 <span class="mono">geo:CC</span> 封禁。国家快捷封禁通过共享的 Country→CIDR 快照编译；产品导览新增节点拓扑与哈希链审计截图。
+          客户端 IP 升级为可执行的节点/边/规则拓扑，并以站点页作为唯一全局入口；支持实时采样分析、已验证草案与按路径条件化的多 CDN Header。Dashboard 排行支持一键全局 IP 或 <span class="mono">geo:CC</span> 响应。端点限速统一为范围内唯一路径与确定性站点优先级；Attack Logs 可起草精确/路径树/上下文规则或窄范围 CRS 排除，聚焦编辑器会保护已修改草案。
         </div>
       </div>
 
@@ -988,9 +988,9 @@
           <span class="tl-date">2026-08-03</span>
           <span class="tl-tag shipped">已发布</span>
         </div>
-        <div class="tl-title">可执行客户端 IP 拓扑 + 安全洞察</div>
+        <div class="tl-title">可执行客户端 IP 拓扑 + 更安全的防护编写</div>
         <div class="tl-body">
-          站点页持有全局客户端 IP 界面，提供可执行拓扑、采样分析、已验证草案与按路径条件化的多 CDN Header。Dashboard 安全情报新增六个排行卡片、攻击来源国家，以及由共享 Country→CIDR 编译快照支撑的一键全局 IP/<span class="mono">geo:CC</span> 封禁。
+          站点页持有全局客户端 IP 界面，提供可执行拓扑、采样分析、已验证草案与按路径条件化的多 CDN Header。Dashboard 排行支持即时 IP/<span class="mono">geo:CC</span> 响应。端点限速行实行范围内唯一路径和确定性站点优先级；Attack Logs 起草窄范围自定义规则或 CRS 排除，聚焦编辑器保护已修改草案。
         </div>
       </div>
 
