@@ -43,7 +43,7 @@
 
   <aside class="docs-sidebar" aria-label="文档导航">
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.0</a></li></ul></div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.1</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -142,9 +142,9 @@
     </ul>
 
     <h2 id="upgrades">远程 Agent 滚动升级</h2>
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>此发布流程不能把旧 Controller 升级到 v3.5.0。</strong>v3.4.0 或更早 Controller 必须先完成并验证完整备份，再执行破坏性 purge、全新安装 v3.5.0 服务并重新注册 Agent；请按 <a href="upgrade-v3.5.html">v3.5.0 升级指引</a>操作。</p></div></div>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>此发布流程不能把旧 Controller 升级到 v3.5.1。</strong>v3.4.0 或更早 Controller 必须先完成并验证完整备份，再执行破坏性 purge、全新安装 v3.5.1 服务并重新注册 Agent；请按 <a href="upgrade-v3.5.html">v3.5.1 升级指引</a>操作。</p></div></div>
     <p>对于兼容且已注册的 Agent，导入二进制 release 后，<code>tiyi release apply</code> 会把 <code>APPLY_BINARY</code> 命令发给 OS/arch 匹配的 Agent。每个 Agent 下载替换、校验 SHA-256 与 Ed25519 发布签名，然后退出，由 supervisor 用新二进制重启。</p>
-<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_3.5.0_linux_amd64.tar.gz
+<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_3.5.1_linux_amd64.tar.gz
 <span class="p">$</span> tiyi release list
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span>             <span class="c"># 所有匹配节点</span>
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span>  <span class="c"># 灰度部署</span>
@@ -197,7 +197,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.0 · 2026-08-03</span>
+      <span class="build">build v3.5.1 · 2026-08-06</span>
     </div>
   </div>
 </footer>

@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.5.0</span>
-    可执行客户端 IP 拓扑 + 更安全的防护编写
+    <span class="tag">v3.5.1</span>
+    失败关闭的客户端 IP 拓扑 + 意图化规则起草
   </span>
 
   <h1>
@@ -239,7 +239,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a4 4 0 0 0 0-8 6 6 0 0 0-11.7-1.5A4.5 4.5 0 0 0 6.5 18z"/></svg>
         </div>
         <h3>CDN 感知客户端 IP</h3>
-        <p>可执行的节点/边/规则拓扑终结了零散的 XFF 解析。自动拉取 Cloudflare、Fastly、Akamai、CloudFront、Front Door、GCLB 的 CIDR；站点页持有全局默认，支持按站点分析，以及按路径条件化的多 CDN Header。</p>
+        <p>可执行的节点/边/规则拓扑终结了零散的 XFF 解析。每个 Header 可选择自动跳过已验证代理，或按固定位置提取；CDN/代理网段编译为单一物理池，并做失败关闭的拓扑校验。站点页持有全局默认，支持按站点分析与多 CDN Header。</p>
       </div>
 
       <div class="feature reveal">
@@ -264,7 +264,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
         </div>
         <h3>SecurityFact + 审核式响应</h3>
-        <p>每个被拦截或可疑请求写入一条不可变、按天分区的 <span class="mono">SecurityFact</span>。运维可从 Attack Logs 起草精确/路径树/方法/IP/UA 规则或窄范围 CRS 目标排除；全局 IP 操作保持独立，绝不建议整路径 WAF 绕过。未经审核不会应用。</p>
+        <p>每个被拦截或可疑请求写入一条不可变、按天分区的 <span class="mono">SecurityFact</span>。运维可从 Attack Logs 按意图起草：拦截精确方法/路径、调优 CRS 误报，或确认高风险的仅跳过 CRS（自定义与 IP 控制仍生效）。全局 IP 操作保持独立。未经审核不会应用。</p>
       </div>
 
       <div class="feature reveal">
@@ -610,6 +610,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.1</span>
+          <span class="tl-date">2026-08-06</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">失败关闭的客户端 IP 拓扑 + 意图化规则起草</div>
+        <div class="tl-body">
+          每个客户端 IP Header 可选择自动跳过已验证代理或按固定位置提取；CDN/代理网段编译为单一物理池并做失败关闭的拓扑校验。Attack Logs 将「从此事件创建规则」按运维意图重组——拦截、调优 CRS 误报，或确认仅跳过 CRS（自定义与 IP 控制仍生效）——并明确路径/方法范围与根路径限制。
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -984,6 +997,19 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.5.1</span>
+          <span class="tl-date">2026-08-06</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">失败关闭的客户端 IP 拓扑 + 意图化规则起草</div>
+        <div class="tl-body">
+          Header 级提取、递归池编译与失败关闭拓扑校验加固客户端 IP 解析。Attack Logs 按意图起草规则，并提供保留自定义/IP 控制的仅跳过 CRS 结果；根路径不可用于路径级草案。
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.5.0</span>
           <span class="tl-date">2026-08-03</span>
           <span class="tl-tag shipped">已发布</span>
@@ -1160,7 +1186,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.0 · 2026-08-03</span>
+      <span class="build">build v3.5.1 · 2026-08-06</span>
     </div>
   </div>
 </footer>

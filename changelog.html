@@ -54,6 +54,26 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.5.1</span>
+          <span class="tl-date">2026-08-06</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Fail-closed client-IP topology + intent-based rule drafting</div>
+        <div class="tl-body">
+          <p>v3.5.1 hardens the v3.5 executable client-IP topology and turns Attack Log rule drafting into an intent-based workflow that can skip CRS without disabling the rest of the WAF.</p>
+          <ul>
+            <li><strong>Header-owned extraction.</strong> Each Header independently chooses automatic verified-proxy skipping or fixed extraction (single IP, leftmost, rightmost, Nth-from-right). CDN and proxy ranges compile into one physical lookup pool while node labels and legal topology transitions stay intact.</li>
+            <li><strong>Fail-closed topology checks.</strong> Automatic extraction requires a terminal <span class="mono">RemoteAddr</span> on a proxy node connected to Tiyi, then scans right to left. Cross-branch hops, all-trusted chains, XFF paths through preserve/duplicate/unknown writers, and claimed upstream hops behind an overwrite writer reject that rule and continue to the next Header or <span class="mono">RemoteAddr</span> fallback.</li>
+            <li><strong>Intent-based Attack Log drafting.</strong> <span class="mono">Create rule from this event</span> groups actions as Block request, Tune CRS false positives, and High-risk CRS exceptions. Every item states query/descendant/method scope; root <span class="mono">/</span> cannot create path-scoped drafts.</li>
+            <li><strong>CRS-only skip outcome.</strong> Visual and seeded rules can compile <span class="mono">ctl:ruleRemoveByTag=OWASP_CRS</span> so OWASP CRS is skipped while Tiyi custom rules, IP controls, and other rule sets remain active. High-risk actions require an extra confirmation.</li>
+            <li><strong>Operator docs.</strong> QUICKSTART, PRDs, trust/API docs, and website EN/zh changelog and build stamps track the patch.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.5.0</span>
           <span class="tl-date">2026-08-03</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -811,7 +831,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.0 · 2026-08-03</span>
+      <span class="build">build v3.5.1 · 2026-08-06</span>
     </div>
   </div>
 </footer>

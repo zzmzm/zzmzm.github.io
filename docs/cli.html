@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>CLI reference — Tiyi docs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi v3.5.0 CLI commands grouped by resource, with local admin socket auth, remote API auth, safe examples, and exit codes." />
+<meta name="description" content="Tiyi v3.5.1 CLI commands grouped by resource, with local admin socket auth, remote API auth, safe examples, and exit codes." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -56,7 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
-        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.0</a></li>
+        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.1</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -83,7 +83,7 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">Reference</span>
     <h1>CLI reference</h1>
-    <p class="lede">The <code>tiyi</code> CLI is a thin client over the same ConnectRPC API that drives the UI. This page groups the current v3.5.0 operator commands by resource. Examples intentionally show only common flags; before a mutation, run <code>tiyi &lt;command&gt; --help</code> and treat the installed binary as authoritative.</p>
+    <p class="lede">The <code>tiyi</code> CLI is a thin client over the same ConnectRPC API that drives the UI. This page groups the current v3.5.1 operator commands by resource. Examples intentionally show only common flags; before a mutation, run <code>tiyi &lt;command&gt; --help</code> and treat the installed binary as authoritative.</p>
 
     <h2 id="auth-modes">Authentication modes</h2>
     <p>The CLI talks to Tiyi in one of two ways. Local commands need no token; remote commands need both an API URL and a JWT.</p>
@@ -245,7 +245,7 @@ tiyi log error   list [...filters]
 tiyi log tail-security                       <span class="c"># live stream</span></code></pre>
 
     <h2 id="security-investigation">SecurityFact investigation</h2>
-    <p>v3.5.0 has no <code>incident</code> or <code>campaign</code> CLI resource. Start from <code>tiyi alert list</code> or <code>tiyi log security list</code>, then pivot by <code>--unique-id</code>, site, rule, client CIDR, and time window. Correlate the matching Attack, Access, and Runtime Error rows in the UI.</p>
+    <p>v3.5.1 has no <code>incident</code> or <code>campaign</code> CLI resource. Start from <code>tiyi alert list</code> or <code>tiyi log security list</code>, then pivot by <code>--unique-id</code>, site, rule, client CIDR, and time window. Correlate the matching Attack, Access, and Runtime Error rows in the UI.</p>
 
     <h2 id="audit-cli">Audit chain</h2>
 <pre><code>tiyi audit list [--actor-id <span class="v">UUID</span>] [--action <span class="v">ACTION</span>] [--start <span class="v">T</span>] [--end <span class="v">T</span>]
@@ -263,7 +263,7 @@ tiyi system settings update --set siem.endpoint=tcp://siem.internal:514 --set si
     <p>Logging and evidence policy is a revision-CAS LogService resource, managed under <strong>Administration → Settings → Logs &amp; evidence</strong>; legacy <code>telemetry.*</code>, <code>logsink.*</code>, <code>log_mode.*</code>, and <code>log_retention</code> settings are rejected.</p>
 
     <h2 id="release-mgmt">Releases (rolling agent upgrades)</h2>
-<pre><code>tiyi release import --tarball ./tiyi_3.5.0_linux_amd64.tar.gz
+<pre><code>tiyi release import --tarball ./tiyi_3.5.1_linux_amd64.tar.gz
 tiyi release list
 tiyi release apply <span class="v">&lt;release-id&gt;</span>           <span class="c"># fan APPLY_BINARY to all matching agents</span>
 tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span> --agent-id <span class="v">B</span>
@@ -323,7 +323,7 @@ tiyi dashboard                   <span class="c"># UI-only process</span></code>
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.0 · 2026-08-03</span>
+      <span class="build">build v3.5.1 · 2026-08-06</span>
     </div>
   </div>
 </footer>

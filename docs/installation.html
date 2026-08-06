@@ -56,7 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
-        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.0</a></li>
+        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.1</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -85,16 +85,16 @@
     <h1>Installation</h1>
     <p class="lede">Tiyi is distributed as a signed Linux binary. Install it from the public release channel, write a small YAML config, and start the complete Controller runtime or enroll a remote Agent.</p>
 
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>Replacing v3.4.0 or earlier with v3.5.0 requires a destructive full uninstall.</strong> Stop the old service, make and verify a complete backup, run <code>sudo tiyi uninstall --purge</code>, then install a fresh v3.5.0 service and re-enroll every Agent. Do not restore the old database into v3.5. Follow the <a href="upgrade-v3.5.html">dedicated upgrade guide</a> before installing.</p></div></div>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>Replacing v3.4.0 or earlier with v3.5.1 requires a destructive full uninstall.</strong> Stop the old service, make and verify a complete backup, run <code>sudo tiyi uninstall --purge</code>, then install a fresh v3.5.1 service and re-enroll every Agent. Do not restore the old database into v3.5. Follow the <a href="upgrade-v3.5.html">dedicated upgrade guide</a> before installing.</p></div></div>
 
     <h2 id="prebuilt">Install the signed binary</h2>
     <p>Tiyi is one signed binary — free and full-featured on a single node. The canonical install script is published at <code>https://www.tiyisec.com/install.sh</code>:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.5.0 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.5.1 linux/amd64</span></code></pre>
     <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. It tries GitHub first and falls back to the Gitee release mirror; force Gitee with <code>TIYI_MIRROR=gitee</code> when needed:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.5.0</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
+    <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.5.1</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
     <p>Public distribution repos: <a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> and <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>.</p>
     <p><code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets. Install the signed release from the public channel independently on every Controller, Agent, and dashboard host before configuring its role.</p>
 
@@ -220,7 +220,7 @@
     <h2 id="next">What to read next</h2>
     <ul>
       <li><a href="concepts.html">Domain model</a> — what sites, upstreams, certs, policies, and agents are.</li>
-      <li><a href="cli.html">CLI reference</a> — current v3.5.0 operator commands grouped by resource.</li>
+      <li><a href="cli.html">CLI reference</a> — current v3.5.1 operator commands grouped by resource.</li>
       <li><a href="deployment.html">Deployment</a> — production hardening, remote Agents, outage boundaries, and SIEM egress.</li>
     </ul>
 
@@ -231,7 +231,7 @@
       </a>
       <a class="next" href="upgrade-v3.5.html">
         <span class="label">Next →</span>
-        <span class="title">Upgrade to v3.5.0</span>
+        <span class="title">Upgrade to v3.5.1</span>
       </a>
     </div>
   </main>
@@ -246,7 +246,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.0 · 2026-08-03</span>
+      <span class="build">build v3.5.1 · 2026-08-06</span>
     </div>
   </div>
 </footer>

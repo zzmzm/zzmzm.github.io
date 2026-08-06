@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.5.0</span>
-    Executable client-IP topology + safer protection authoring
+    <span class="tag">v3.5.1</span>
+    Fail-closed client-IP topology + intent-based rule drafting
   </span>
 
   <h1>
@@ -248,7 +248,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a4 4 0 0 0 0-8 6 6 0 0 0-11.7-1.5A4.5 4.5 0 0 0 6.5 18z"/></svg>
         </div>
         <h3>CDN-aware client IP</h3>
-        <p>An executable node/edge/rule topology ends XFF parsing fragmentation. Auto-fetched CIDR snapshots for Cloudflare, Fastly, Akamai, CloudFront, Front Door, and GCLB; Sites-owned global defaults, per-site analysis, and path-conditioned multi-CDN headers.</p>
+        <p>An executable node/edge/rule topology ends XFF parsing fragmentation. Each Header chooses automatic verified-proxy skipping or fixed extraction; CDN/proxy ranges compile into one physical pool with fail-closed topology checks. Sites-owned global defaults, per-site analysis, and multi-CDN headers stay first-class.</p>
       </div>
 
       <div class="feature reveal">
@@ -275,7 +275,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
         </div>
         <h3>SecurityFacts + reviewed response</h3>
-        <p>Every blocked or suspicious request writes an immutable, partitioned <span class="mono">SecurityFact</span>. From Attack Logs, operators can draft exact/tree/method/IP/UA rules or narrow CRS target exclusions; global IP actions stay separate, and whole-path WAF bypass is never suggested. Nothing applies without review.</p>
+        <p>Every blocked or suspicious request writes an immutable, partitioned <span class="mono">SecurityFact</span>. From Attack Logs, operators draft by intent: block the exact method/path, tune a CRS false positive, or confirm a high-risk CRS-only skip that keeps Tiyi custom and IP controls active. Global IP actions stay separate. Nothing applies without review.</p>
       </div>
 
       <div class="feature reveal">
@@ -623,6 +623,19 @@
     </div>
 
     <div class="timeline reveal">
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.1</span>
+          <span class="tl-date">2026-08-06</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Fail-closed client-IP topology + intent-based rule drafting</div>
+        <div class="tl-body">
+          Client-IP Headers each choose automatic verified-proxy skipping or fixed extraction; CDN/proxy ranges compile into one physical pool with fail-closed topology checks. Attack Logs reorganize <span class="mono">Create rule from this event</span> by operator intent—block, tune CRS false positives, or confirm a CRS-only skip that keeps Tiyi custom and IP controls active—with explicit path/method scope and root-path guards.
+        </div>
+      </div>
 
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -997,6 +1010,19 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.5.1</span>
+          <span class="tl-date">2026-08-06</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Fail-closed client-IP topology + intent-based rule drafting</div>
+        <div class="tl-body">
+          Header-owned extraction, recursive pool compilation, and fail-closed topology verification harden client-IP resolution. Attack Logs draft by intent with CRS-only skip outcomes that preserve custom and IP controls; root path scopes are rejected for path-level drafts.
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.5.0</span>
           <span class="tl-date">2026-08-03</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -1173,7 +1199,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.0 · 2026-08-03</span>
+      <span class="build">build v3.5.1 · 2026-08-06</span>
     </div>
   </div>
 </footer>

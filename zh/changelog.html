@@ -55,6 +55,26 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.5.1</span>
+          <span class="tl-date">2026-08-06</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">失败关闭的客户端 IP 拓扑 + 意图化规则起草</div>
+        <div class="tl-body">
+          <p>v3.5.1 加固 v3.5 的可执行客户端 IP 拓扑，并把 Attack Log 规则起草改成按运维意图组织的流程：可以只跳过 CRS，而不关闭其余 WAF 控制。</p>
+          <ul>
+            <li><strong>Header 级提取。</strong>每个 Header 可独立选择自动跳过已验证代理，或按固定位置提取（单个 IP、最左、最右、从右数第 N 个）。CDN 与代理网段编译为单一物理查询池，同时保留节点标签与合法拓扑转移。</li>
+            <li><strong>失败关闭的拓扑校验。</strong>自动提取要求终端 <span class="mono">RemoteAddr</span> 落在直接连接太一的代理节点，再从右向左扫描。跨分支跳转、全可信链路、经 Preserve/Duplicate/Unknown 写入者的 XFF 路径，以及覆盖写入者之后仍声称的上游跳数，都会拒绝该规则并继续下一个 Header 或 <span class="mono">RemoteAddr</span> 回退。</li>
+            <li><strong>意图化 Attack Log 起草。</strong>「从此事件创建规则」按拦截请求、调优 CRS 误报、高风险 CRS 例外分组；每项都标明查询串/子路径/方法范围；根路径 <span class="mono">/</span> 不能创建路径级草案。</li>
+            <li><strong>仅跳过 CRS。</strong>可视化与种子规则可编译 <span class="mono">ctl:ruleRemoveByTag=OWASP_CRS</span>，跳过 OWASP CRS 的同时保留太一自定义规则、IP 控制与其他规则集。高风险动作需要额外确认。</li>
+            <li><strong>运维文档。</strong>QUICKSTART、PRD、信任/API 文档与网站中英文更新日志及构建戳已同步本补丁。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.5.0</span>
           <span class="tl-date">2026-08-03</span>
           <span class="tl-tag shipped">已发布</span>
@@ -812,7 +832,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.0 · 2026-08-03</span>
+      <span class="build">build v3.5.1 · 2026-08-06</span>
     </div>
   </div>
 </footer>
