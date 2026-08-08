@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Terms of Service — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Terms of Service and End User License Agreement for Tiyi." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="favicon.ico" />
+<link rel="canonical" href="https://www.tiyisec.com/terms.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+<body class="docs" data-assets-base="assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="index.html#features">Features</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="privacy.html">Privacy</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="zh/terms.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<main class="docs-content container" style="max-width: 720px; margin: 48px auto 96px; padding: 0 24px;" role="main">
+  <span class="docs-eyebrow">Legal</span>
+  <h1>Terms of Service</h1>
+  <p class="lede">Effective date: 9 August 2026. These Terms cover use of the Tiyi website, the Tiyi Software, and paid license entitlements. They also serve as the End User License Agreement for the Software.</p>
+
+  <p><strong>Licensor / publisher:</strong> the operator of <a href="https://www.tiyisec.com/">www.tiyisec.com</a> ("Licensor", "we", "us"), contactable at <a href="mailto:support@tiyisec.com">support@tiyisec.com</a>.<br />
+  <strong>Product:</strong> Tiyi, the single-binary WAF-enabled reverse proxy and management plane, including the <code>tiyi</code> executable, embedded web UI, and documentation (the "Software").</p>
+  <p>By downloading, installing, copying, purchasing, or using the Software or this website, you ("Licensee", "you") agree to these Terms. If you do not agree, do not install or use the Software.</p>
+
+  <h2 id="license">1. License grant</h2>
+  <p>Subject to your compliance with these Terms and payment of any applicable fees, Licensor grants you a non-exclusive, non-transferable, non-sublicensable, revocable license to install and run the Software, in object-code (binary) form only, for your internal business purposes, up to the capacity authorized by your license entitlement (for example, the number of remote nodes permitted by a signed license file). Absent a paid license, the Software runs in its free Community capacity as enforced by the Software.</p>
+
+  <h2 id="restrictions">2. Restrictions</h2>
+  <p>You shall not, and shall not permit any third party to:</p>
+  <ol>
+    <li>reverse engineer, decompile, disassemble, or otherwise attempt to derive the source code of the Software, except to the extent this restriction is prohibited by applicable law;</li>
+    <li>modify, adapt, or create derivative works of the Software;</li>
+    <li>redistribute, resell, sublicense, rent, lease, or provide the Software to any third party as a hosted or managed service, except as expressly authorized in writing by Licensor;</li>
+    <li>remove, alter, or obscure any proprietary notices, these Terms, the NOTICE file, or license-enforcement or signature-verification mechanisms;</li>
+    <li>circumvent, disable, or tamper with license enforcement, the scale gate, or release-signature verification; or</li>
+    <li>use the Software in violation of applicable law.</li>
+  </ol>
+  <p>Open-source components embedded in the Software remain governed by their own licenses as described in <code>NOTICE</code>.</p>
+
+  <h2 id="purchases">3. Paid plans and payments</h2>
+  <p>Paid plans (such as Pro) raise the licensed remote-node budget and may include support commitments described on the pricing page. Community remains free for single-node use with the full WAF feature set.</p>
+  <p>Online card checkout is provided by Creem as Merchant of Record. Prices shown for Creem checkout are in the currency presented at checkout (typically USD). Taxes may be collected by Creem. After payment we fulfill a signed <code>license.json</code> by email, normally within one business day. Import the file under System → About or via <code>TIYI_LICENSE_FILE</code> / <code>license.key_path</code>.</p>
+  <p>Subscriptions renew until cancelled through Creem's customer portal or the cancellation path we provide. Enterprise and custom deals may be fulfilled by invoice outside Creem.</p>
+
+  <h2 id="ownership">4. Ownership</h2>
+  <p>The Software is licensed, not sold. Licensor and its suppliers retain all right, title, and interest in and to the Software. No rights are granted other than those expressly set out here.</p>
+
+  <h2 id="updates">5. Updates and integrity</h2>
+  <p>The Software may check a vendor-designated release channel for updates and may download and verify signed release artifacts. You are responsible for keeping the Software reasonably current to receive security fixes.</p>
+
+  <h2 id="third-party">6. Third-party components</h2>
+  <p>Third-party open-source software listed in <code>NOTICE</code> is provided under its respective licenses.</p>
+
+  <h2 id="term">7. Term and termination</h2>
+  <p>These Terms are effective until terminated. They terminate automatically if you breach them. Upon termination you must stop using and delete all copies of the Software. Paid entitlements may also end when a subscription lapses; the Software then continues in Community capacity. Sections 2, 4, 8, 9, and 10 survive termination.</p>
+
+  <h2 id="warranty">8. Disclaimer of warranties</h2>
+  <p>THE SOFTWARE AND WEBSITE ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTY OF ANY KIND. TO THE MAXIMUM EXTENT PERMITTED BY LAW, LICENSOR DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. THE SOFTWARE IS A SECURITY TOOL AND IS NOT GUARANTEED TO DETECT OR PREVENT ALL ATTACKS.</p>
+
+  <h2 id="liability">9. Limitation of liability</h2>
+  <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR EXEMPLARY DAMAGES, OR FOR LOST PROFITS, REVENUE, OR DATA. LICENSOR'S TOTAL AGGREGATE LIABILITY WILL NOT EXCEED THE GREATER OF THE FEES YOU PAID FOR THE SOFTWARE IN THE TWELVE MONTHS PRECEDING THE CLAIM OR USD 100.</p>
+
+  <h2 id="website-use">10. Website use</h2>
+  <p>You may use this website to learn about Tiyi, download public materials, and contact support. Do not attempt to disrupt the site, scrape it abusively, or misrepresent your identity when requesting support or licenses.</p>
+
+  <h2 id="privacy">11. Privacy</h2>
+  <p>Our <a href="privacy.html">Privacy Policy</a> describes how we process personal information related to the website, support, and license purchases.</p>
+
+  <h2 id="general">12. General</h2>
+  <p>These Terms are governed by the laws of the People's Republic of China, excluding conflict-of-laws rules, except where mandatory consumer protections in your country of residence apply. If any provision is held unenforceable, the remainder remains in effect. These Terms are the entire agreement between the parties regarding the Software and this website and supersede prior understandings on the same subject.</p>
+
+  <h2 id="contact">Contact</h2>
+  <p><a href="mailto:support@tiyisec.com">support@tiyisec.com</a> · <a href="privacy.html">Privacy Policy</a></p>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> Tiyi · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="mailto:support@tiyisec.com">support@tiyisec.com</a></span>
+      <span class="build">build v3.5.1 · 2026-08-06</span>
+    </div>
+  </div>
+</footer>
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>

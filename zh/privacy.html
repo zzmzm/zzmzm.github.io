@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>隐私政策 — 太一</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="太一官网、产品分发与付费授权的隐私政策。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="canonical" href="https://www.tiyisec.com/zh/privacy.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="index.html#features">特性</a>
+      <a href="index.html#pricing">价格</a>
+      <a href="docs/index.html">文档</a>
+      <a href="terms.html">服务条款</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../privacy.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<main class="docs-content container" style="max-width: 720px; margin: 48px auto 96px; padding: 0 24px;" role="main">
+  <span class="docs-eyebrow">法律</span>
+  <h1>隐私政策</h1>
+  <p class="lede">生效日期：2026 年 8 月 9 日。本政策说明你在使用太一官网、下载软件或购买付费授权时，我们如何处理相关信息。</p>
+
+  <h2 id="who">我们是谁</h2>
+  <p>太一是发布于 <a href="https://www.tiyisec.com/zh/">www.tiyisec.com</a> 的可自托管 Web 应用防火墙产品。隐私相关问题请联系 <a href="mailto:support@tiyisec.com">support@tiyisec.com</a>。</p>
+
+  <h2 id="self-hosted">自托管软件</h2>
+  <p>当你在自有基础设施上安装并运行太一时，请求流量、WAF 判定、日志、证书与配置均保留在你运营的系统中。我们不会通过软件本身接收你的生产流量或你的客户个人数据。</p>
+  <p>你自行启用的可选功能（例如对公开发布渠道的更新检查、向第三方 CA 申请 ACME 证书，或你配置的 SIEM 外发）会按你的配置联系相应第三方，请另行查阅其政策。</p>
+
+  <h2 id="website">网站与支持</h2>
+  <p>访问 <a href="https://www.tiyisec.com/">www.tiyisec.com</a> 时，托管与 CDN 提供商可能处理为提供页面与防护所需的常规技术日志（IP、User-Agent、来源页、时间戳等）。</p>
+  <p>若你发信至 <a href="mailto:support@tiyisec.com">support@tiyisec.com</a>，我们会处理邮件内容与邮箱地址以便回复，并在处理完毕及合理业务留存期后删除或匿名化。</p>
+
+  <h2 id="purchases">付费授权与支付</h2>
+  <p>付费授权（例如 Pro）可能通过 Creem 销售；Creem 作为 Merchant of Record 处理支付并开具收据。我们会收到履约所需的订单信息（如购买者邮箱、方案与支付状态）。我们不存储完整银行卡号。</p>
+  <p>Creem 的支付处理见其隐私说明：<a href="https://www.creem.io/privacy" rel="noopener" target="_blank">creem.io/privacy</a>。</p>
+  <p>我们使用履约数据签发并邮件发送签名授权文件，以及提供相关支持。订阅续费与取消通过 Creem 结账与客户门户处理。</p>
+
+  <h2 id="downloads">下载与更新</h2>
+  <p>从 GitHub、Gitee 或本站下载发行包时，相关主机可能看到你的 IP 与 User-Agent。在启用产品内更新检查时，软件会联系所配置的发布渠道以判断是否存在更新，并仅传输完成该检查所需的最少信息。</p>
+
+  <h2 id="cookies">Cookie 与本地存储</h2>
+  <p>营销站点可能在浏览器 <code>localStorage</code> 中保存主题偏好（如浅色/深色）。我们不在营销站点使用广告 Cookie。</p>
+
+  <h2 id="sharing">共享</h2>
+  <p>我们不出售个人信息。仅在运营网站、发送邮件、处理支付（Creem）或依法要求时与必要的处理方共享数据。</p>
+
+  <h2 id="retention">保留</h2>
+  <p>支持与授权履约记录在商业关系存续期间及之后合理期限内保留，用于账务、防滥用与合规，不再需要时删除或匿名化。</p>
+
+  <h2 id="rights">你的选择</h2>
+  <p>你可通过 <a href="mailto:support@tiyisec.com">support@tiyisec.com</a> 请求查阅或删除我们持有的支持与购买相关个人数据。Creem 持有的支付记录请同时向 Creem 提出（如适用）。</p>
+
+  <h2 id="changes">变更</h2>
+  <p>我们可能通过在本页发布新版本并更新日期来更新本政策。重大变更将在适用于新处理之前反映于此。</p>
+
+  <h2 id="contact">联系</h2>
+  <p><a href="mailto:support@tiyisec.com">support@tiyisec.com</a> · <a href="terms.html">服务条款</a></p>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© <span data-year>2026</span> 太一 · <a href="privacy.html">隐私政策</a> · <a href="terms.html">服务条款</a> · <a href="mailto:support@tiyisec.com">support@tiyisec.com</a></span>
+      <span class="build">build v3.5.1 · 2026-08-06</span>
+    </div>
+  </div>
+</footer>
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>
