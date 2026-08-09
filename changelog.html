@@ -51,7 +51,28 @@
 
     <div class="timeline">
 
-      <div class="tl-item shipped">
+            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.2</span>
+          <span class="tl-date">2026-08-09</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Display timezone + clearer protection authoring</div>
+        <div class="tl-body">
+          <p>v3.5.2 hardens day-to-day operator UX on top of v3.5: one display-timezone chain, a clearer IP-list ownership model, safer RE2 custom-rule authoring, and a more readable audit ledger.</p>
+          <ul>
+            <li><strong>Display timezone.</strong> Header override → system-wide <span class="mono">app.timezone</span> → browser IANA. Tables, charts, relative presets, and custom ranges share the conversion path. API, SQLite, audit-chain, SIEM, and export timestamps remain UTC; process logs still follow the host timezone.</li>
+            <li><strong>IP Lists ownership.</strong> Protection → IP Lists owns shared list content with Create only / Create and apply. Policy IP access edits bindings only. The flow is Define a list → Apply to a scope → Query IP.</li>
+            <li><strong>RE2 workbench.</strong> Selecting the regex operator explains query-string inclusion, generates escaped exact/tree/prefix/suffix/case-insensitive patterns, warns on near-universal expressions, and rejects invalid RE2 (including PCRE lookaround/backreferences) before save.</li>
+            <li><strong>Audit Trail.</strong> Labeled filters, operator/resource names in the ledger, readable change summaries, cursor-based Load more, and permission-gated chain verification.</li>
+            <li><strong>CRS / limits polish.</strong> Shared PL1–PL4 discrete paranoia controls with blocking/log-only/inactive posture; Request limits separate parameter vs upload ceilings with explicit CRS-default vs override switches.</li>
+            <li><strong>Remediation receipts.</strong> Auto-remediation completion/failure notifications render concise action receipts instead of repeating the firing investigation snapshot.</li>
+          </ul>
+        </div>
+      </div>
+
+<div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.5.1</span>
@@ -831,7 +852,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.1 · 2026-08-06</span>
+      <span class="build">build v3.5.2 · 2026-08-09</span>
     </div>
   </div>
 </footer>

@@ -54,7 +54,7 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.5.1</span>
+    <span class="tag">v3.5.2</span>
     Fail-closed client-IP topology + intent-based rule drafting
   </span>
 
@@ -230,7 +230,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
         </div>
         <h3>Hash-chain audit trail</h3>
-        <p>Every mutation — including IP-list bindings, rate-limit endpoints, and trust-profile changes — appends a signed audit row. Daily anchor commitments and an in-UI <span class="mono">Verify chain</span> button make tamper-evidence operational.</p>
+        <p>Every mutation — including IP-list bindings, rate-limit endpoints, and trust-profile changes — appends a signed audit row. The ledger shows operator and resource names with readable summaries; daily anchors and an in-UI <span class="mono">Verify chain</span> button keep tamper-evidence operational. Display timezone follows browser override → <span class="mono">app.timezone</span> → browser IANA while storage stays UTC.</p>
       </div>
 
       <div class="feature reveal">
@@ -624,7 +624,20 @@
 
     <div class="timeline reveal">
 
-      <div class="tl-item shipped">
+            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.2</span>
+          <span class="tl-date">2026-08-09</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Display timezone + clearer protection authoring</div>
+        <div class="tl-body">
+          The Web UI resolves one display timezone (browser override → system <span class="mono">app.timezone</span> → browser IANA) for tables, charts, and range inputs while storage stays UTC. IP Lists teach Define → Apply → Verify; the custom-rule regex operator opens an RE2 workbench; Audit Trail surfaces readable summaries with cursor paging; CRS paranoia uses shared PL1–PL4 posture controls.
+        </div>
+      </div>
+
+<div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.5.1</span>
@@ -1007,7 +1020,20 @@
 
     <div class="timeline reveal">
 
-      <div class="tl-item shipped">
+            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.2</span>
+          <span class="tl-date">2026-08-09</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Display timezone + clearer protection authoring</div>
+        <div class="tl-body">
+          One display-timezone chain for tables/charts/ranges; IP Lists teach Define → Apply → Verify; regex custom rules open an RE2 workbench; Audit Trail is ledger-readable with cursor paging; CRS paranoia uses shared PL posture controls.
+        </div>
+      </div>
+
+<div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.5.1</span>
@@ -1201,7 +1227,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · proprietary · Apache-2.0 upstreams</span>
-      <span class="build">build v3.5.1 · 2026-08-06</span>
+      <span class="build">build v3.5.2 · 2026-08-09</span>
     </div>
   </div>
 </footer>

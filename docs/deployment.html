@@ -56,7 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
-        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.1</a></li>
+        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.2</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -173,9 +173,9 @@
     </ul>
 
     <h2 id="upgrades">Remote-Agent rolling upgrades</h2>
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>This rollout does not upgrade an old Controller to v3.5.1.</strong> A Controller on v3.4.0 or earlier needs a complete verified backup, destructive purge, clean v3.5.1 service installation, and Agent re-enrollment; follow the <a href="upgrade-v3.5.html">v3.5.1 upgrade guide</a>.</p></div></div>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>This rollout does not upgrade an old Controller to v3.5.2.</strong> A Controller on v3.4.0 or earlier needs a complete verified backup, destructive purge, clean v3.5.2 service installation, and Agent re-enrollment; follow the <a href="upgrade-v3.5.html">v3.5.2 upgrade guide</a>.</p></div></div>
     <p>For compatible enrolled Agents, once a binary release is imported, <code>tiyi release apply</code> fans an <code>APPLY_BINARY</code> command out to every Agent whose OS/arch matches. Each Agent downloads the replacement, verifies the SHA-256 and Ed25519 release signature, and exits so its supervisor restarts it into the new binary.</p>
-<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_3.5.1_linux_amd64.tar.gz
+<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_3.5.2_linux_amd64.tar.gz
 <span class="p">$</span> tiyi release list
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span>             <span class="c"># all matching agents</span>
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span>  <span class="c"># wave deployments</span>
@@ -234,7 +234,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.1 · 2026-08-06</span>
+      <span class="build">build v3.5.2 · 2026-08-09</span>
     </div>
   </div>
 </footer>

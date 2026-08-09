@@ -52,7 +52,28 @@
 
     <div class="timeline">
 
-      <div class="tl-item shipped">
+            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.2</span>
+          <span class="tl-date">2026-08-09</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">显示时区 + 更清晰的防护编写</div>
+        <div class="tl-body">
+          <p>v3.5.2 在 v3.5 之上加固日常运维体验：统一显示时区、更清晰的 IP 列表职责划分、更安全的 RE2 自定义规则编写，以及更易读的审计台账。</p>
+          <ul>
+            <li><strong>显示时区。</strong>头部覆盖 → 系统级 <span class="mono">app.timezone</span> → 浏览器 IANA。表格、图表、相对预设与自定义范围共用同一转换路径。API、SQLite、审计链、SIEM 与导出时间戳仍为 UTC；进程日志继续跟随主机时区。</li>
+            <li><strong>IP 列表职责。</strong>防护 → IP 列表拥有共享列表内容，并提供「仅创建 / 创建并应用」。策略的 IP 访问页只编辑绑定。流程为：定义列表 → 应用到范围 → 查询 IP。</li>
+            <li><strong>RE2 工作台。</strong>选择 regex 操作符后说明是否包含查询串，生成精确/路径树/前缀/后缀/忽略大小写表达式，警告近乎万能的模式，并在保存前拒绝非法 RE2（含 PCRE 环视/反向引用）。</li>
+            <li><strong>审计轨迹。</strong>带标签筛选、台账中显示运维者/资源名、可读变更摘要、游标式「加载更多」，以及需权限的链路校验。</li>
+            <li><strong>CRS / 限额打磨。</strong>共享 PL1–PL4 离散偏执控件与拦截/仅记录/未激活姿态；请求限额拆分参数与上传上限，并明确 CRS 默认与策略覆盖。</li>
+            <li><strong>自动处置回执。</strong>自动处置完成/失败通知渲染简洁动作回执，不再重复告警触发时的调查快照。</li>
+          </ul>
+        </div>
+      </div>
+
+<div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.5.1</span>
@@ -832,7 +853,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.1 · 2026-08-06</span>
+      <span class="build">build v3.5.2 · 2026-08-09</span>
     </div>
   </div>
 </footer>
