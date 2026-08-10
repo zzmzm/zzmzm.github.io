@@ -54,7 +54,7 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.5.2</span>
+    <span class="tag">v3.5.3</span>
     Fail-closed client-IP topology + intent-based rule drafting
   </span>
 
@@ -176,7 +176,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>OWASP CRS 4 out of the box</h3>
-        <p>Coraza compiles policies from a structured domain model into SecLang. Global, policy, and site-scoped IP controls; per-site overrides; paranoia levels; scoring thresholds; exclusion packages — without forking the ruleset.</p>
+        <p>Coraza compiles structured policies into SecLang while CIDR and <span class="mono">geo:CC</span> IP lists match in a compressed native handler ahead of the WAF. Per-site overrides, paranoia levels, scoring thresholds, and exclusion packages — without forking the ruleset.</p>
       </div>
 
       <div class="feature reveal">
@@ -622,7 +622,18 @@
       <p>Every entry maps back to a commit and a verification command. The full release history lives at <a href="changelog.html">/changelog</a>.</p>
     </div>
 
-    <div class="timeline reveal">
+    <div class="timeline reveal">            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.3</span>
+          <span class="tl-date">2026-08-10</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Native IP-list enforcement + incremental alert remediation</div>
+        <div class="tl-body">
+          Country and CIDR IP lists compile into a compressed native <span class="mono">tiyi_iplist</span> artifact ahead of Coraza, so large <span class="mono">geo:CC</span> blocks cannot truncate CRS. Auto-remediation keeps appending bounded attacker batches while an alert stays firing, with rule-owned deny lists and fail-closed rate-limit state budgets.
+        </div>
+      </div>
 
             <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -636,6 +647,7 @@
           The Web UI resolves one display timezone (browser override → system <span class="mono">app.timezone</span> → browser IANA) for tables, charts, and range inputs while storage stays UTC. IP Lists teach Define → Apply → Verify; the custom-rule regex operator opens an RE2 workbench; Audit Trail surfaces readable summaries with cursor paging; CRS paranoia uses shared PL1–PL4 posture controls.
         </div>
       </div>
+
 
 <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -1018,7 +1030,18 @@
       <p>Dates are targets, not promises. Items move with verification, not optimism.</p>
     </div>
 
-    <div class="timeline reveal">
+    <div class="timeline reveal">            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.3</span>
+          <span class="tl-date">2026-08-10</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Native IP-list enforcement + incremental alert remediation</div>
+        <div class="tl-body">
+          Compressed native prefix matching for IP/country lists, SecLang completeness guards, bundle v3, incremental firing-window auto-remediation, and bounded fail-closed rate-limit runtime state.
+        </div>
+      </div>
 
             <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -1032,6 +1055,7 @@
           One display-timezone chain for tables/charts/ranges; IP Lists teach Define → Apply → Verify; regex custom rules open an RE2 workbench; Audit Trail is ledger-readable with cursor paging; CRS paranoia uses shared PL posture controls.
         </div>
       </div>
+
 
 <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -1227,7 +1251,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · proprietary · Apache-2.0 upstreams</span>
-      <span class="build">build v3.5.2 · 2026-08-09</span>
+      <span class="build">build v3.5.3 · 2026-08-10</span>
     </div>
   </div>
 </footer>

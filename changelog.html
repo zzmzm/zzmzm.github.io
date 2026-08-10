@@ -49,7 +49,26 @@
       <p style="margin: 0;">Every entry maps back to a commit and a verification command. Items are <span class="tl-tag shipped" style="display:inline-block; vertical-align:middle;">Shipped</span> only after implementation, verification, and required docs are complete — otherwise <span class="tl-tag future" style="display:inline-block; vertical-align:middle;">Planned</span> or <span class="tl-tag current" style="display:inline-block; vertical-align:middle;">In progress</span>. Archived entries preserve the terminology and commands that existed at that time; use the newest entry and current documentation for supported operations.</p>
     </div>
 
-    <div class="timeline">
+    <div class="timeline">            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.3</span>
+          <span class="tl-date">2026-08-10</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Native IP-list enforcement + incremental alert remediation</div>
+        <div class="tl-body">
+          <p>v3.5.3 moves country and CIDR IP-list enforcement out of SecLang into a compressed native matcher, so large <span class="mono">geo:CC</span> blocks can no longer truncate CRS, and keeps auto-remediation appending while an alert stays firing.</p>
+          <ul>
+            <li><strong>Native <span class="mono">tiyi_iplist</span>.</strong> Minimized prefixes compile into a deterministic compressed artifact matched before rate limiting and Coraza. Country CIDRs never enter SecLang; oversized policies fail visibly and keep the last-good configuration.</li>
+            <li><strong>SecLang completeness guard.</strong> Apply rejects physical Coraza lines over 48&nbsp;KiB, broken Include graphs, or a missing terminal parse canary before local or Agent Caddy load.</li>
+            <li><strong>Bundle v3.</strong> Local/Agent config bundles carry the native IP-list artifact. This binary rejects retained v2 bundles; generate and apply a fresh revision.</li>
+            <li><strong>Incremental auto-remediation.</strong> While an occurrence remains firing, each evaluation may append the next five new qualifying attackers (≤50 unique IPs per occurrence) with per-IP reservation and fixed TTL batches; UI shows partial/progress receipts.</li>
+            <li><strong>Rule-owned deny lists.</strong> Auto-create reuses the managed list by alert-rule ID with locale-aware display names; deleting the rule releases the list as ordinary operator content.</li>
+            <li><strong>Rate-limit runtime bound.</strong> Per-policy token-bucket state is capped; unseen identities fail closed when the budget is full rather than granting an unbounded burst.</li>
+          </ul>
+        </div>
+      </div>
 
             <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -71,6 +90,7 @@
           </ul>
         </div>
       </div>
+
 
 <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -852,7 +872,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.2 · 2026-08-09</span>
+      <span class="build">build v3.5.3 · 2026-08-10</span>
     </div>
   </div>
 </footer>

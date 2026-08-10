@@ -54,7 +54,7 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.5.2</span>
+    <span class="tag">v3.5.3</span>
     失败关闭的客户端 IP 拓扑 + 意图化规则起草
   </span>
 
@@ -174,7 +174,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>OWASP CRS 4 开箱即用</h3>
-        <p>Coraza 把结构化的策略对象编译成 SecLang。全局、策略、站点级 IP 控制,按站点覆盖、偏执等级、评分阈值、排除包 —— 全部不需要 fork 规则集。</p>
+        <p>Coraza 把结构化策略编译成 SecLang，而 CIDR 与 <span class="mono">geo:CC</span> IP 列表由压缩原生处理器在 WAF 之前匹配。按站点覆盖、偏执等级、评分阈值与排除包 —— 全部不需要 fork 规则集。</p>
       </div>
 
       <div class="feature reveal">
@@ -609,7 +609,18 @@
       <p>每一项都对应一次提交与一次验证命令。完整历史在 <a href="changelog.html">/changelog</a>。</p>
     </div>
 
-    <div class="timeline reveal">
+    <div class="timeline reveal">            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.3</span>
+          <span class="tl-date">2026-08-10</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">原生 IP 列表执行 + 增量告警自动处置</div>
+        <div class="tl-body">
+          国家与 CIDR IP 列表编译为压缩原生 <span class="mono">tiyi_iplist</span> 产物并在 Coraza 之前匹配，大型 <span class="mono">geo:CC</span> 封禁不再截断 CRS。告警持续 firing 时自动处置按批次增量追加，规则归属拒绝列表，限速运行时状态失败关闭有界。
+        </div>
+      </div>
 
             <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -623,6 +634,7 @@
           Web UI 统一显示时区（浏览器覆盖 → 系统 <span class="mono">app.timezone</span> → 浏览器 IANA），表格、图表与时间范围输入一致，而存储仍为 UTC。IP 列表按「定义 → 应用到范围 → 查询 IP」组织；自定义规则的 regex 操作符提供 RE2 工作台；审计轨迹展示可读摘要并支持游标分页；CRS 偏执等级使用共享的 PL1–PL4 姿态控件。
         </div>
       </div>
+
 
 <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -1005,7 +1017,18 @@
       <p>日期是目标，不是承诺。条目随验证而推进，而非随乐观而推进。</p>
     </div>
 
-    <div class="timeline reveal">
+    <div class="timeline reveal">            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.3</span>
+          <span class="tl-date">2026-08-10</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">原生 IP 列表执行 + 增量告警自动处置</div>
+        <div class="tl-body">
+          IP/国家列表的压缩原生前缀匹配、SecLang 完整性护栏、bundle v3、firing 窗口内增量自动处置，以及有界失败关闭的限速运行时状态。
+        </div>
+      </div>
 
             <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -1019,6 +1042,7 @@
           表格/图表/时间范围统一显示时区；IP 列表按「定义 → 应用 → 查询」组织；regex 自定义规则提供 RE2 工作台；审计轨迹更易读并支持游标分页；CRS 偏执等级使用共享姿态控件。
         </div>
       </div>
+
 
 <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -1214,7 +1238,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · <a href="privacy.html">隐私政策</a> · <a href="terms.html">服务条款</a> · 商业分发 · Apache-2.0 上游</span>
-      <span class="build">build v3.5.2 · 2026-08-09</span>
+      <span class="build">build v3.5.3 · 2026-08-10</span>
     </div>
   </div>
 </footer>

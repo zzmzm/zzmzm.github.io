@@ -50,7 +50,26 @@
       <p style="margin: 0;">每一项都对应一次提交与一次验证命令。条目只在实现、验证、文档全部完成后才会标记为 <span class="tl-tag shipped" style="display:inline-block; vertical-align:middle;">已发布</span>，否则就是 <span class="tl-tag future" style="display:inline-block; vertical-align:middle;">规划中</span> 或 <span class="tl-tag current" style="display:inline-block; vertical-align:middle;">进行中</span>。历史条目保留当时的术语和命令；当前支持的操作请以最新条目和现行文档为准。</p>
     </div>
 
-    <div class="timeline">
+    <div class="timeline">            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.3</span>
+          <span class="tl-date">2026-08-10</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">原生 IP 列表执行 + 增量告警自动处置</div>
+        <div class="tl-body">
+          <p>v3.5.3 把国家与 CIDR IP 列表执行从 SecLang 移到压缩原生匹配器，使大型 <span class="mono">geo:CC</span> 封禁不再截断 CRS，并在告警持续 firing 时继续增量追加自动处置。</p>
+          <ul>
+            <li><strong>原生 <span class="mono">tiyi_iplist</span>。</strong>最小化前缀编译为确定性压缩产物，在限速与 Coraza 之前匹配。国家 CIDR 不再进入 SecLang；过大策略会显式失败并保留上一份可用配置。</li>
+            <li><strong>SecLang 完整性护栏。</strong>应用前拒绝超过 48&nbsp;KiB 的物理 Coraza 行、损坏的 Include 图，或缺失的终端解析金丝雀。</li>
+            <li><strong>Bundle v3。</strong>本机/Agent 配置包携带原生 IP 列表产物。此二进制拒绝保留的 v2 bundle；需生成并应用新 revision。</li>
+            <li><strong>增量自动处置。</strong>同一 occurrence 持续 firing 时，每次评估最多再追加 5 个新攻击者（每个 occurrence ≤50 个唯一 IP），带按 IP 预留与固定 TTL 批次；UI 展示部分成功/进度回执。</li>
+            <li><strong>规则归属拒绝列表。</strong>自动创建按告警规则 ID 复用托管列表，并使用本地化显示名；删除规则后列表降级为普通运维列表。</li>
+            <li><strong>限速运行时上限。</strong>按策略的 token-bucket 状态有界；预算耗尽时对新身份失败关闭，避免无界突发。</li>
+          </ul>
+        </div>
+      </div>
 
             <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -72,6 +91,7 @@
           </ul>
         </div>
       </div>
+
 
 <div class="tl-item shipped">
         <span class="tl-dot"></span>
@@ -853,7 +873,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.2 · 2026-08-09</span>
+      <span class="build">build v3.5.3 · 2026-08-10</span>
     </div>
   </div>
 </footer>

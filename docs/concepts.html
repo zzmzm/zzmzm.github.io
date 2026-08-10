@@ -56,7 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
-        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.2</a></li>
+        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.3</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -133,13 +133,13 @@
     <p>The dashboard exposes <code>certs_expiring_14d</code> / <code>certs_expiring_30d</code> / <code>acme_renewals_failed_24h</code> / <code>acme_orders_pending</code> as KPIs. Two default alerts are seeded on first boot: <em>Certificates Expiring Soon</em> and <em>ACME Renewal Failures</em>.</p>
 
     <h2 id="waf-policy">WAF policy</h2>
-    <p>A policy is a structured domain object that compiles to Coraza SecLang at apply time. The compiler is deterministic — same policy in, same SecLang out. The 12 tunable layers (in the order they apply):</p>
+    <p>A policy is a structured domain object. At apply time Tiyi compiles Coraza SecLang for CRS and custom rules, and a separate compressed native IP-list artifact for CIDR/<code>geo:CC</code> matching. Both compilers are deterministic. The 12 tunable layers (in the order they apply):</p>
     <ol>
       <li><strong>CRS Core</strong> — paranoia level, blocking and executing PL, inbound/outbound thresholds, sampling.</li>
       <li><strong>HTTP Policy</strong> — methods, versions, content types, charsets, restricted extensions/headers, method override.</li>
       <li><strong>Limits</strong> — six numeric fields: max request body, max response body, etc., with CRS-default placeholders.</li>
       <li><strong>Rule tuning</strong> — per-rule overrides: <code>DEFAULT</code>, <code>DISABLE</code>, <code>LOG_ONLY</code>, <code>SCORE_OVERRIDE</code>, optionally scoped to a single site.</li>
-      <li><strong>IP lists</strong> — allow / deny / monitor lists. Entries can be CIDR or <code>geo:CC</code> pseudo-entries (alpha-2/alpha-3 country codes plus <code>PRIVATE</code> / <code>LOOPBACK</code>); overlapping allow bindings are emitted before deny bindings.</li>
+      <li><strong>IP lists</strong> — allow / deny / monitor lists. Entries can be CIDR or <code>geo:CC</code> pseudo-entries (alpha-2/alpha-3 country codes plus <code>PRIVATE</code> / <code>LOOPBACK</code>). Country and CIDR expansions compile into the native <code>tiyi_iplist</code> handler ahead of Coraza; they are never expanded into SecLang. Overlapping allow bindings take precedence over deny.</li>
       <li><strong>Custom rules</strong> — operator-authored SecLang or visual-spec rules in the 8000000–8999999 ID range.</li>
       <li><strong>Plugins</strong> — CRS rule-exclusion packages (WordPress, Drupal, Nextcloud, phpBB, phpMyAdmin, XenForo, cPanel, DokuWiki). Offline archive upload supported.</li>
       <li><strong>Rate limits</strong> — per-endpoint and client-scope buckets with block or log actions.</li>
@@ -212,7 +212,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.2 · 2026-08-09</span>
+      <span class="build">build v3.5.3 · 2026-08-10</span>
     </div>
   </div>
 </footer>

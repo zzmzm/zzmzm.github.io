@@ -50,7 +50,7 @@
         <li><a href="installation.html">安装</a></li>
       </ul>
     </div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.2</a></li></ul></div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.3</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -61,16 +61,16 @@
     <h1>安装</h1>
     <p class="lede">太一以签名 Linux 二进制形式分发。从公开发行渠道安装，写一份小 YAML 配置，然后运行完整 Controller 或入网一个远程 Agent。</p>
 
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>用 v3.5.2 替换 v3.4.0 或更早版本时，必须执行破坏性完整卸载。</strong>停止旧服务，完成并验证完整备份，运行 <code>sudo tiyi uninstall --purge</code>，再安装全新的 v3.5.2 服务并重新注册全部 Agent。不要把旧数据库恢复进 v3.5；安装前先阅读<a href="upgrade-v3.5.html">专用升级指引</a>。</p></div></div>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>用 v3.5.3 替换 v3.4.0 或更早版本时，必须执行破坏性完整卸载。</strong>停止旧服务，完成并验证完整备份，运行 <code>sudo tiyi uninstall --purge</code>，再安装全新的 v3.5.3 服务并重新注册全部 Agent。不要把旧数据库恢复进 v3.5；安装前先阅读<a href="upgrade-v3.5.html">专用升级指引</a>。</p></div></div>
 
     <h2 id="prebuilt">安装签名二进制</h2>
     <p>太一是单一签名二进制 —— 在单节点上免费且功能完整。权威安装脚本发布在 <code>https://www.tiyisec.com/install.sh</code>：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.5.2 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.5.3 linux/amd64</span></code></pre>
     <p>脚本会下载与平台匹配的二进制，比对 SHA-256 manifest，并放到 <code>/usr/local/bin/tiyi</code>。默认先尝试 GitHub，失败或过慢时回退到 Gitee Release 镜像；必要时可用 <code>TIYI_MIRROR=gitee</code> 强制使用 Gitee：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.5.2</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
+    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.5.3</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
     <p>公开分发仓库：<a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> 与 <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>。</p>
     <p><code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。请在 Controller、远程 Agent 与独立 dashboard 主机上安装同一个签名版本。</p>
 
@@ -196,7 +196,7 @@
     <h2 id="next">下一步阅读</h2>
     <ul>
       <li><a href="concepts.html">领域模型</a> —— 站点、上游、证书、策略、节点各是什么。</li>
-      <li><a href="cli.html">CLI 参考</a> —— 按资源整理当前 v3.5.2 运维命令。</li>
+      <li><a href="cli.html">CLI 参考</a> —— 按资源整理当前 v3.5.3 运维命令。</li>
       <li><a href="deployment.html">部署</a> —— 生产加固、远程 Agent 连续运行、Controller 中断边界与 SIEM 转发。</li>
     </ul>
 
@@ -207,7 +207,7 @@
       </a>
       <a class="next" href="upgrade-v3.5.html">
         <span class="label">下一页 →</span>
-        <span class="title">升级到 v3.5.2</span>
+        <span class="title">升级到 v3.5.3</span>
       </a>
     </div>
   </main>
@@ -222,7 +222,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.2 · 2026-08-09</span>
+      <span class="build">build v3.5.3 · 2026-08-10</span>
     </div>
   </div>
 </footer>

@@ -43,7 +43,7 @@
 
   <aside class="docs-sidebar" aria-label="文档导航">
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.2</a></li></ul></div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.3</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -102,13 +102,13 @@
     <p>Dashboard 把 <code>certs_expiring_14d</code> / <code>certs_expiring_30d</code> / <code>acme_renewals_failed_24h</code> / <code>acme_orders_pending</code> 暴露为 KPI。首次启动种入两个默认告警：<em>证书即将到期</em> 与 <em>ACME 续期失败</em>。</p>
 
     <h2 id="waf-policy">WAF 策略</h2>
-    <p>策略是一个结构化的领域对象，apply 时编译成 Coraza SecLang。编译器是确定的 —— 同样的策略输入产生同样的 SecLang 输出。12 个可调层（按应用顺序）：</p>
+    <p>策略是一个结构化的领域对象。apply 时太一为 CRS 与自定义规则编译 Coraza SecLang，并为 CIDR/<code>geo:CC</code> 匹配单独编译压缩原生 IP 列表产物。两套编译都是确定的。12 个可调层（按应用顺序）：</p>
     <ol>
       <li><strong>CRS Core</strong> —— 偏执等级、阻断与执行 PL、入站/出站阈值、采样。</li>
       <li><strong>HTTP 策略</strong> —— 方法、版本、Content-Type、字符集、受限扩展名/Header、方法覆盖。</li>
       <li><strong>限制</strong> —— 6 个数值字段：最大请求体、最大响应体等，CRS 默认值作为 placeholder。</li>
       <li><strong>规则调优</strong> —— 按规则的覆盖：<code>DEFAULT</code>、<code>DISABLE</code>、<code>LOG_ONLY</code>、<code>SCORE_OVERRIDE</code>，可选限定到单个站点。</li>
-      <li><strong>IP 列表</strong> —— 允许 / 拒绝 / 监控列表。条目可以是 CIDR 或 <code>geo:CC</code> 伪条目（alpha-2/alpha-3 国家代码加 <code>PRIVATE</code> / <code>LOOPBACK</code>）；重叠名单编译时允许规则先于拒绝规则。</li>
+      <li><strong>IP 列表</strong> —— 允许 / 拒绝 / 监控列表。条目可以是 CIDR 或 <code>geo:CC</code> 伪条目（alpha-2/alpha-3 国家代码加 <code>PRIVATE</code> / <code>LOOPBACK</code>）。国家与 CIDR 展开编译进 Coraza 之前的原生 <code>tiyi_iplist</code> 处理器，绝不会膨胀进 SecLang；重叠名单中允许优先于拒绝。</li>
       <li><strong>自定义规则</strong> —— 运维写的 SecLang 或可视化规则，ID 在 8000000–8999999 区间。</li>
       <li><strong>插件</strong> —— CRS 排除包（WordPress、Drupal、Nextcloud、phpBB、phpMyAdmin、XenForo、cPanel、DokuWiki）。支持离线归档导入。</li>
       <li><strong>限速</strong> —— 按端点与按客户端范围的桶，动作可选阻断或仅记录。</li>
@@ -181,7 +181,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.2 · 2026-08-09</span>
+      <span class="build">build v3.5.3 · 2026-08-10</span>
     </div>
   </div>
 </footer>
