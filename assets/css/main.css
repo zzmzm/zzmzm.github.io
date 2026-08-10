@@ -395,12 +395,32 @@ section + section { padding-top: 0; }
   opacity: .5;
   pointer-events: none;
 }
-.frame img {
+.frame img,
+.frame video {
   display: block;
   border-radius: 15px;
   width: 100%;
   height: auto;
+  background: #0a0e1a;
 }
+.frame video {
+  border-radius: 0 0 15px 15px;
+}
+.hero-demo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  color: var(--fg-3);
+  font-size: 13px;
+}
+.hero-demo-meta a {
+  color: var(--brand-cyan);
+  text-decoration: none;
+}
+.hero-demo-meta a:hover { text-decoration: underline; }
 .frame-tabs {
   display: flex; gap: 6px; padding: 10px 14px;
   background: var(--frame-tab-bg);
