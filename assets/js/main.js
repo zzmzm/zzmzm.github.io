@@ -3,6 +3,7 @@
  *  - Theme toggle (dark / light) with localStorage persistence
  *  - Screenshot src swap based on (page locale, theme)
  *  - Copy-to-clipboard
+ *  - Product demo playback + chapter seeking
  *  - Reveal-on-scroll
  *  - Year stamp
  *  - Docs sidebar active link + auto-built TOC + scrollspy
@@ -100,6 +101,70 @@
     });
   });
 
+  // ---------- Guided product demo ----------
+  function bindProductDemo() {
+    var video = document.getElementById('tiyi-product-demo');
+    if (!video) return;
+
+    var stage = video.closest('.hero-video-stage');
+    var playButton = stage && stage.querySelector('[data-video-play]');
+    var chapters = Array.from(document.querySelectorAll('[data-video-seek]'));
+    var chapterStarts = chapters.map(function (button) {
+      return Number(button.getAttribute('data-video-seek')) || 0;
+    });
+
+    function setActiveChapter(time) {
+      var active = 0;
+      chapterStarts.forEach(function (start, index) {
+        if (time >= start) active = index;
+      });
+      chapters.forEach(function (button, index) {
+        if (index === active) button.setAttribute('aria-current', 'step');
+        else button.removeAttribute('aria-current');
+      });
+    }
+
+    function playFrom(seconds) {
+      if (typeof seconds === 'number' && video.readyState === 0) {
+        video.addEventListener('loadedmetadata', function () {
+          video.currentTime = Math.min(seconds, video.duration || seconds);
+          setActiveChapter(video.currentTime);
+        }, { once: true });
+        video.load();
+      } else if (typeof seconds === 'number') {
+        video.currentTime = Math.min(seconds, video.duration || seconds);
+        setActiveChapter(video.currentTime);
+      }
+
+      var promise = video.play();
+      if (promise && typeof promise.catch === 'function') promise.catch(function () {});
+    }
+
+    if (playButton) {
+      playButton.hidden = false;
+      playButton.addEventListener('click', function () { playFrom(); });
+    }
+
+    chapters.forEach(function (button) {
+      button.addEventListener('click', function () {
+        playFrom(Number(button.getAttribute('data-video-seek')) || 0);
+      });
+    });
+
+    video.addEventListener('play', function () {
+      if (stage) stage.classList.add('has-started');
+    });
+    video.addEventListener('ended', function () {
+      if (stage) stage.classList.remove('has-started');
+    });
+    video.addEventListener('timeupdate', function () {
+      setActiveChapter(video.currentTime);
+    });
+    video.addEventListener('error', function () {
+      if (playButton) playButton.hidden = true;
+    });
+  }
+
   // ---------- Reveal on scroll ----------
   var reveals = document.querySelectorAll('.reveal');
   if (reveals.length && 'IntersectionObserver' in window) {
@@ -181,5 +246,6 @@
 
   // ---------- Wire things up ----------
   bindThemeToggle();
+  bindProductDemo();
   swapScreenshots();
 })();

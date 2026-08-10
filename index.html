@@ -96,29 +96,56 @@
     <span><strong>linux/amd64</strong> · arm64</span>
   </div>
 
-  <!-- Hero demo: install → site → block SQLi → dashboard -->
-  <div class="hero-screenshot reveal">
+  <!-- Guided product run: install → upstream → site → block SQLi → dashboard -->
+  <div class="hero-screenshot reveal" aria-labelledby="demo-title">
+    <div class="hero-demo-intro">
+      <div class="hero-demo-copy">
+        <div class="hero-demo-kicker">
+          <span class="demo-status"><span aria-hidden="true"></span>Guided product run</span>
+          <span>01:16 · no audio</span>
+        </div>
+        <h2 id="demo-title">From install command to blocked SQL injection.</h2>
+        <p id="demo-summary">Watch the complete workflow in the real Tiyi admin, or jump straight to any step.</p>
+      </div>
+      <ol class="demo-chapters" aria-label="Video chapters">
+        <li><button type="button" data-video-seek="4" aria-controls="tiyi-product-demo" aria-current="step"><span class="chapter-step">01</span><span class="chapter-label">Install</span><span class="chapter-time">00:04</span></button></li>
+        <li><button type="button" data-video-seek="16" aria-controls="tiyi-product-demo"><span class="chapter-step">02</span><span class="chapter-label">Route upstream</span><span class="chapter-time">00:16</span></button></li>
+        <li><button type="button" data-video-seek="30" aria-controls="tiyi-product-demo"><span class="chapter-step">03</span><span class="chapter-label">Publish site</span><span class="chapter-time">00:30</span></button></li>
+        <li><button type="button" data-video-seek="48" aria-controls="tiyi-product-demo"><span class="chapter-step">04</span><span class="chapter-label">Block &amp; inspect</span><span class="chapter-time">00:48</span></button></li>
+        <li><button type="button" data-video-seek="64" aria-controls="tiyi-product-demo"><span class="chapter-step">05</span><span class="chapter-label">Review dashboard</span><span class="chapter-time">01:04</span></button></li>
+      </ol>
+    </div>
     <div class="frame">
       <div class="frame-tabs">
         <span class="dot r"></span>
         <span class="dot y"></span>
         <span class="dot g"></span>
-        <span class="url">demo · install → upstream → site → block SQLi</span>
+        <span class="url">tiyi-demo / operator walkthrough</span>
       </div>
-      <video
-        controls
-        playsinline
-        preload="metadata"
-        poster="assets/video/tiyi-demo-poster.jpg"
-        width="1920"
-        height="1080">
-        <source src="assets/video/tiyi-demo.mp4" type="video/mp4" />
-      </video>
+      <div class="hero-video-stage">
+        <video
+          id="tiyi-product-demo"
+          controls
+          playsinline
+          preload="none"
+          poster="assets/video/tiyi-demo-poster.jpg"
+          width="1920"
+          height="1080"
+          aria-label="Tiyi guided product demonstration"
+          aria-describedby="demo-summary">
+          <source src="assets/video/tiyi-demo.mp4" type="video/mp4" />
+          Your browser cannot play this video. <a href="assets/video/tiyi-demo-1440p.mp4">Download the 1440p MP4</a> instead.
+        </video>
+        <button class="demo-play" type="button" data-video-play aria-controls="tiyi-product-demo" hidden>
+          <span class="demo-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.8v12.4L18 12 8 5.8Z"/></svg></span>
+          <span><strong>Play product run</strong><small>1 min 16 sec · no audio</small></span>
+        </button>
+      </div>
     </div>
     <div class="hero-demo-meta">
-      <span>~76s · 1080p</span>
-      <a href="assets/video/tiyi-demo-1440p.mp4">Download 1440p</a>
-      <a href="assets/video/tiyi-demo.gif">GIF</a>
+      <span>Responsive 1080p stage</span>
+      <a href="assets/video/tiyi-demo-1440p.mp4" download>Download 1440p MP4</a>
+      <a href="assets/video/tiyi-demo.gif">Open GIF preview</a>
     </div>
   </div>
 </section>

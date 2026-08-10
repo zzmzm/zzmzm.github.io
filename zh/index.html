@@ -95,29 +95,56 @@
     <span><strong>linux/amd64</strong> · arm64</span>
   </div>
 
-  <!-- Hero demo: 安装 → 站点 → 拦 SQLi → Dashboard -->
-  <div class="hero-screenshot reveal">
+  <!-- 引导式产品演示：安装 → 上游 → 站点 → 拦 SQLi → 仪表盘 -->
+  <div class="hero-screenshot reveal" aria-labelledby="demo-title">
+    <div class="hero-demo-intro">
+      <div class="hero-demo-copy">
+        <div class="hero-demo-kicker">
+          <span class="demo-status"><span aria-hidden="true"></span>引导式产品演示</span>
+          <span>01:16 · 无音频</span>
+        </div>
+        <h2 id="demo-title">从安装命令，到拦截 SQL 注入。</h2>
+        <p id="demo-summary">在真实的太一管理后台中观看完整流程，或直接跳到任一步骤。</p>
+      </div>
+      <ol class="demo-chapters" aria-label="视频章节">
+        <li><button type="button" data-video-seek="4" aria-controls="tiyi-product-demo" aria-current="step"><span class="chapter-step">01</span><span class="chapter-label">安装</span><span class="chapter-time">00:04</span></button></li>
+        <li><button type="button" data-video-seek="16" aria-controls="tiyi-product-demo"><span class="chapter-step">02</span><span class="chapter-label">配置上游</span><span class="chapter-time">00:16</span></button></li>
+        <li><button type="button" data-video-seek="30" aria-controls="tiyi-product-demo"><span class="chapter-step">03</span><span class="chapter-label">发布站点</span><span class="chapter-time">00:30</span></button></li>
+        <li><button type="button" data-video-seek="48" aria-controls="tiyi-product-demo"><span class="chapter-step">04</span><span class="chapter-label">拦截并分析</span><span class="chapter-time">00:48</span></button></li>
+        <li><button type="button" data-video-seek="64" aria-controls="tiyi-product-demo"><span class="chapter-step">05</span><span class="chapter-label">查看仪表盘</span><span class="chapter-time">01:04</span></button></li>
+      </ol>
+    </div>
     <div class="frame">
       <div class="frame-tabs">
         <span class="dot r"></span>
         <span class="dot y"></span>
         <span class="dot g"></span>
-        <span class="url">演示 · 安装 → 上游 → 站点 → 拦截 SQLi</span>
+        <span class="url">tiyi-demo / 运维操作演示</span>
       </div>
-      <video
-        controls
-        playsinline
-        preload="metadata"
-        poster="../assets/video/tiyi-demo-poster.jpg"
-        width="1920"
-        height="1080">
-        <source src="../assets/video/tiyi-demo.mp4" type="video/mp4" />
-      </video>
+      <div class="hero-video-stage">
+        <video
+          id="tiyi-product-demo"
+          controls
+          playsinline
+          preload="none"
+          poster="../assets/video/tiyi-demo-poster.jpg"
+          width="1920"
+          height="1080"
+          aria-label="太一引导式产品演示"
+          aria-describedby="demo-summary">
+          <source src="../assets/video/tiyi-demo.mp4" type="video/mp4" />
+          当前浏览器无法播放此视频，请改为<a href="../assets/video/tiyi-demo-1440p.mp4">下载 1440p MP4</a>。
+        </video>
+        <button class="demo-play" type="button" data-video-play aria-controls="tiyi-product-demo" hidden>
+          <span class="demo-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.8v12.4L18 12 8 5.8Z"/></svg></span>
+          <span><strong>播放产品演示</strong><small>1 分 16 秒 · 无音频</small></span>
+        </button>
+      </div>
     </div>
     <div class="hero-demo-meta">
-      <span>约 76 秒 · 1080p</span>
-      <a href="../assets/video/tiyi-demo-1440p.mp4">下载 1440p</a>
-      <a href="../assets/video/tiyi-demo.gif">GIF</a>
+      <span>1080p 响应式画面</span>
+      <a href="../assets/video/tiyi-demo-1440p.mp4" download>下载 1440p MP4</a>
+      <a href="../assets/video/tiyi-demo.gif">打开 GIF 预览</a>
     </div>
   </div>
 </section>
