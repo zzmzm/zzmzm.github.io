@@ -43,7 +43,7 @@
 
   <aside class="docs-sidebar" aria-label="文档导航">
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.3</a></li></ul></div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.4</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -133,14 +133,13 @@
     </div>
 
     <h2 id="telemetry">遥测</h2>
-    <p>遥测作为一条并行管道运行，结束了每事件 SQL 写入。路径：</p>
+    <p>遥测是一条独立的精确计数平面；关闭留存日志或请求证据不会改变它的总数。路径：</p>
     <ol>
-      <li><strong>分片入流环</strong> —— 日志转发器事件按站点 key 散到分片环。</li>
-      <li><strong>10 秒开桶聚合</strong> —— 分片 worker 把计数器累加到 10 秒桶。</li>
-      <li><strong>Misra-Gries Top-K</strong> —— 高基数维度（客户端 IP、路径、UA、ASN、攻击标签）的有界摘要，带 <code>__other__</code> 桶让 SUM(*) 等于真实流量。</li>
-      <li><strong>每日 SQLite 分区</strong>位于 <code>logs/rollup_10s/YYYY-MM-DD.db</code>；降采样器把它们幂等地折叠成 <code>rollup_hour</code> → <code>rollup_day</code> → <code>rollup_month</code>。</li>
-      <li><strong>采样环</strong> —— 按 IP 的 LRU + 全局环，带启动时回放的循环文件 WAL。</li>
-      <li><strong>API 树</strong> —— 按站点的 URL 前缀树，节点数与深度均有上限；空闲叶子撤入 <code>api_tree_archive</code>。</li>
+      <li><strong>外层请求观察器</strong> —— 每个已完成请求先更新固定基数原子计数器，再进入可选的明细日志准入。</li>
+      <li><strong>10 秒代际</strong> —— 内存开桶轮转成精确指标批次；每日 SQLite 分区幂等维护 10 秒、分钟与派生小时层。</li>
+      <li><strong>有界 API 资产学习</strong> —— 首次出现的路径进入 4,096 键试用池；稳定身份再晋升到 10,000 键字典，并为成功及已确认 API 保留容量。</li>
+      <li><strong>显式聚合</strong> —— 试用期、原生 IP 列表阻断、限速、容量溢出与载荷压缩分别使用固定聚合行，既解释扫描流量，又不创建攻击者可控的 API 资产。</li>
+      <li><strong>已确认资产保护</strong> —— 已确认 API 在重启后从 SQLite 或签名 Agent 配置包恢复，不会被发现流量挤出。</li>
       <li><strong>读路径</strong> —— REST API 位于 <code>/api/v1/telemetry/*</code>，本地管理 socket 上的 Prometheus 导出器位于 <code>/metrics</code>。</li>
     </ol>
 
@@ -181,7 +180,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.3 · 2026-08-10</span>
+      <span class="build">build v3.5.4 · 2026-08-13</span>
     </div>
   </div>
 </footer>

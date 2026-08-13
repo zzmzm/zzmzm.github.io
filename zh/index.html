@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.5.3</span>
-    失败关闭的客户端 IP 拓扑 + 意图化规则起草
+    <span class="tag">v3.5.4</span>
+    可视化自定义规则 + 按事件定制告警内容
   </span>
 
   <h1>
@@ -212,7 +212,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>OWASP CRS 4 开箱即用</h3>
-        <p>Coraza 把结构化策略编译成 SecLang，而 CIDR 与 <span class="mono">geo:CC</span> IP 列表由压缩原生处理器在 WAF 之前匹配。按站点覆盖、偏执等级、评分阈值与排除包 —— 全部不需要 fork 规则集。</p>
+        <p>Coraza 把结构化策略编译成 SecLang，而 CIDR 与 <span class="mono">geo:CC</span> IP 列表由压缩原生处理器在 WAF 之前匹配。可视化自定义规则面向可识别的 HTTP 数据（含 JSON 字段路径），并提供五条经 Coraza 验证的食谱。按站点覆盖、偏执等级、评分阈值与排除包 —— 全部不需要 fork 规则集。</p>
       </div>
 
       <div class="feature reveal">
@@ -253,7 +253,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg>
         </div>
         <h3>内置可观测性</h3>
-        <p>精确请求与带宽计数、规范化 URL/UA Top、按站点 API Inventory、不可变 SecurityFact、本机/远程节点趋势，以及本地管理 socket 上的 Prometheus 导出器；无需外部时序数据库。</p>
+        <p>精确请求与带宽计数、规范化 URL/UA Top、按站点 API Inventory（带可见容量条）、不可变 SecurityFact、本机/远程节点趋势，以及本地管理 socket 上的 Prometheus 导出器；无需外部时序数据库。</p>
       </div>
 
       <div class="feature reveal">
@@ -293,7 +293,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
         </div>
         <h3>告警全生命周期，而非只触发一次</h3>
-        <p>规则按 <span class="mono">for</span> 时长去抖，随后驱动 <span class="mono">pending → firing → resolved</span> 生命周期：持久化通知 outbox、重复通知、分组、抑制与静默。Webhook、Slack、PagerDuty、飞书、企业微信 —— 通道密钥以 KEK 信封加密落库。</p>
+        <p>规则按 <span class="mono">for</span> 时长去抖，随后驱动 <span class="mono">pending → firing → resolved</span> 生命周期：持久化通知 outbox、重复通知、分组、抑制与静默。每个通道可按生命周期事件覆盖标题/正文并预览未保存输出。Webhook、Slack、PagerDuty、飞书、企业微信 —— 通道密钥以 KEK 信封加密落库。</p>
       </div>
 
       <div class="feature reveal">
@@ -648,6 +648,19 @@
     </div>
 
     <div class="timeline reveal">            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.4</span>
+          <span class="tl-date">2026-08-13</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">可视化自定义规则 HTTP 数据 + 按事件定制告警内容</div>
+        <div class="tl-body">
+          自定义规则面向可识别的 HTTP 数据（含 JSON 字段路径），并提供五条经 Coraza 验证的食谱。通知通道按生命周期事件覆盖标题/正文并可预览未保存输出。API Inventory 在可见容量条下保护已确认身份。
+        </div>
+      </div>
+
+            <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.5.3</span>
@@ -1058,6 +1071,19 @@
     <div class="timeline reveal">            <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.5.4</span>
+          <span class="tl-date">2026-08-13</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">可视化自定义规则 HTTP 数据 + 按事件定制告警内容</div>
+        <div class="tl-body">
+          JSON 字段匹配与五条经 Coraza 验证的虚拟补丁食谱、按事件的通知模板与服务端预览，以及带可见容量条的有界 API Inventory。
+        </div>
+      </div>
+
+            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.5.3</span>
           <span class="tl-date">2026-08-10</span>
           <span class="tl-tag shipped">已发布</span>
@@ -1276,7 +1302,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · <a href="privacy.html">隐私政策</a> · <a href="terms.html">服务条款</a> · 商业分发 · Apache-2.0 上游</span>
-      <span class="build">build v3.5.3 · 2026-08-10</span>
+      <span class="build">build v3.5.4 · 2026-08-13</span>
     </div>
   </div>
 </footer>

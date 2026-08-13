@@ -53,6 +53,25 @@
     <div class="timeline">            <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.5.4</span>
+          <span class="tl-date">2026-08-13</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">可视化自定义规则 HTTP 数据 + 按事件定制告警内容</div>
+        <div class="tl-body">
+          <p>v3.5.4 让运维用可识别的 HTTP 数据编写自定义规则，而不再依赖 Coraza 集合名；食谱启动项只保留可验证的虚拟补丁；通知通道按生命周期事件定制内容，firing 模板不会覆盖自动处置回执。</p>
+          <ul>
+            <li><strong>JSON 字段匹配。</strong>精确 JSON 路径以及任意嵌套深度的同名字段，经服务端 <span class="mono">JSON_FIELD</span> / <span class="mono">JSON_FIELD_NAME</span> 编译为 phase-2 的 <span class="mono">ARGS:json.*</span> 选择器。构建器展示 Content-Type → 处理器 → 选择器 → 阶段；原始请求体标明为非结构化，显式 JSON Content-Type 与原始请求体合取会被拒绝。</li>
+            <li><strong>五条经 Coraza 验证的食谱。</strong>临时路径前缀拦截、噪声 User-Agent 片段、路径下必填 Header、精确方法+端点禁用、路径下精确查询值。服务端默认值在 Web/API/CLI 间一致。Authorization 脱敏、Content-Length 可观测与外部 IP 启动项已下线，因为无法保证效果或已有一等控件。</li>
+            <li><strong>按事件定制通道模板。</strong>可覆盖 <span class="mono">firing</span>、<span class="mono">repeat</span>、自动处置成功/失败、自动恢复或运维关闭的标题/正文。未覆盖事件保留内置渲染。<span class="mono">PreviewAlertChannelContent</span> 用生产渲染器预览未保存的有效输出且不投递。顶层 <span class="mono">titleTemplate</span> / <span class="mono">messageTemplate</span> 会被拒绝。</li>
+            <li><strong>有界 API Inventory。</strong>发现使用 4,096 键试用层与 10,000 键晋升字典，并保留 2,000 键受保护配额。已确认身份可跨重启恢复。探索器容量条与 <span class="mono">tiyi_api_inventory_value</span> 仪表显式展示压力；原生拒绝、限速、试用、溢出与压缩保持为固定聚合行。</li>
+          </ul>
+        </div>
+      </div>
+
+            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.5.3</span>
           <span class="tl-date">2026-08-10</span>
           <span class="tl-tag shipped">已发布</span>
@@ -873,7 +892,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.3 · 2026-08-10</span>
+      <span class="build">build v3.5.4 · 2026-08-13</span>
     </div>
   </div>
 </footer>

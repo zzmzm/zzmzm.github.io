@@ -56,7 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
-        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.3</a></li>
+        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.4</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -166,14 +166,14 @@
 
     <h2 id="observability">Observability</h2>
     <ul>
-      <li><strong>Prometheus exporter</strong> at <code>/metrics</code> on the local admin socket. Scrape it from a sidecar; metrics are derived from the same telemetry pipeline that drives the dashboard.</li>
+      <li><strong>Prometheus exporter</strong> at <code>/metrics</code> on the local admin socket. Scrape it from a sidecar; <code>tiyi_api_inventory_value{site_id,field}</code> reports learned/protected/probation capacity and aggregate request counters without exporting raw scanner paths.</li>
       <li><strong><code>/healthz</code></strong> reports the Controller identity plus database, proxy, configuration, site, and remote-Agent facts. Use it for service health checks.</li>
       <li><strong><code>/debug/logsink/stats</code></strong> on the local admin socket exposes per-kind <code>attempted</code>/<code>written</code>/<code>dropped_full</code>/<code>panicked</code>/<code>queue_depth</code>/<code>last_error</code> counters. The <code>panicked</code> counter is the cross-layer canary for boundary <code>defer recover</code> handlers.</li>
-      <li><strong>Telemetry explorer UI</strong> at <code>/telemetry/explorer</code> for ad-hoc Top-K and sample browsing without leaving the dashboard.</li>
+      <li><strong>Telemetry explorer UI</strong> at <code>/telemetry/explorer</code> for Top-K and API-inventory browsing. The capacity rail and read-only aggregate rows distinguish real APIs from probation, native blocks, rate limits, overflow, and payload compaction.</li>
     </ul>
 
     <h2 id="upgrades">Remote-Agent rolling upgrades</h2>
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>This rollout does not upgrade an old Controller to v3.5.3.</strong> A Controller on v3.4.0 or earlier needs a complete verified backup, destructive purge, clean v3.5.3 service installation, and Agent re-enrollment; follow the <a href="upgrade-v3.5.html">v3.5.3 upgrade guide</a>.</p></div></div>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>This rollout does not upgrade an old Controller to v3.5.4.</strong> A Controller on v3.4.0 or earlier needs a complete verified backup, destructive purge, clean v3.5.4 service installation, and Agent re-enrollment; follow the <a href="upgrade-v3.5.html">v3.5.4 upgrade guide</a>.</p></div></div>
     <p>For compatible enrolled Agents, once a binary release is imported, <code>tiyi release apply</code> fans an <code>APPLY_BINARY</code> command out to every Agent whose OS/arch matches. Each Agent downloads the replacement, verifies the SHA-256 and Ed25519 release signature, and exits so its supervisor restarts it into the new binary.</p>
 <pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_3.5.2_linux_amd64.tar.gz
 <span class="p">$</span> tiyi release list
@@ -234,7 +234,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.3 · 2026-08-10</span>
+      <span class="build">build v3.5.4 · 2026-08-13</span>
     </div>
   </div>
 </footer>

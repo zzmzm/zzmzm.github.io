@@ -52,6 +52,25 @@
     <div class="timeline">            <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.5.4</span>
+          <span class="tl-date">2026-08-13</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Visual custom-rule HTTP data + event-scoped alert content</div>
+        <div class="tl-body">
+          <p>v3.5.4 lets operators write custom rules against recognizable HTTP data instead of Coraza collections, keeps recipe starters honest, and lets notification channels customize each lifecycle event without a firing template covering remediation receipts.</p>
+          <ul>
+            <li><strong>JSON field targeting.</strong> Exact JSON paths and the same field name at any nesting depth compile through server-owned <span class="mono">JSON_FIELD</span> / <span class="mono">JSON_FIELD_NAME</span> into phase-2 <span class="mono">ARGS:json.*</span> selectors. The builder shows Content-Type → processor → selector → phase; raw body is labelled unstructured, and an explicit JSON Content-Type + raw-body conjunction is rejected.</li>
+            <li><strong>Five Coraza-verified recipes.</strong> Temporary path-prefix block, noisy User-Agent fragment, required header below a path, exact method+endpoint disable, and exact query value below a path. Server-owned defaults apply across Web/API/CLI. Authorization redaction, Content-Length observability, and foreign-IP starters are retired because they cannot be guaranteed or already have first-class controls.</li>
+            <li><strong>Event-scoped channel templates.</strong> Override title/body per <span class="mono">firing</span>, <span class="mono">repeat</span>, remediation success/failure, automatic recovery, or operator closure. Missing events keep the built-in renderer. <span class="mono">PreviewAlertChannelContent</span> renders unsaved effective output without delivery. Top-level <span class="mono">titleTemplate</span> / <span class="mono">messageTemplate</span> are rejected.</li>
+            <li><strong>Bounded API inventory.</strong> Discovery uses a 4,096-key probation stage and a 10,000-key promoted dictionary with a 2,000-key protected reserve. Confirmed identities survive restart. The explorer capacity rail and <span class="mono">tiyi_api_inventory_value</span> gauges make pressure explicit; native deny, rate-limit, probation, overflow, and compaction stay as fixed aggregate rows.</li>
+          </ul>
+        </div>
+      </div>
+
+            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.5.3</span>
           <span class="tl-date">2026-08-10</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -872,7 +891,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.3 · 2026-08-10</span>
+      <span class="build">build v3.5.4 · 2026-08-13</span>
     </div>
   </div>
 </footer>

@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.5.3</span>
-    Fail-closed client-IP topology + intent-based rule drafting
+    <span class="tag">v3.5.4</span>
+    Visual custom rules + event-scoped alert content
   </span>
 
   <h1>
@@ -214,7 +214,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>OWASP CRS 4 out of the box</h3>
-        <p>Coraza compiles structured policies into SecLang while CIDR and <span class="mono">geo:CC</span> IP lists match in a compressed native handler ahead of the WAF. Per-site overrides, paranoia levels, scoring thresholds, and exclusion packages — without forking the ruleset.</p>
+        <p>Coraza compiles structured policies into SecLang while CIDR and <span class="mono">geo:CC</span> IP lists match in a compressed native handler ahead of the WAF. The visual custom-rule builder targets recognizable HTTP data — including JSON field paths — and five Coraza-verified recipes. Per-site overrides, paranoia levels, scoring thresholds, and exclusion packages — without forking the ruleset.</p>
       </div>
 
       <div class="feature reveal">
@@ -259,7 +259,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg>
         </div>
         <h3>Built-in observability</h3>
-        <p>Exact request and bandwidth counters, normalized URL/UA Top, per-site API Inventory, immutable SecurityFacts, local/remote node trends, and a Prometheus exporter on the local admin socket. No external time-series database required.</p>
+        <p>Exact request and bandwidth counters, normalized URL/UA Top, per-site API Inventory with a visible capacity rail, immutable SecurityFacts, local/remote node trends, and a Prometheus exporter on the local admin socket. No external time-series database required.</p>
       </div>
 
       <div class="feature reveal">
@@ -304,7 +304,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
         </div>
         <h3>Alert lifecycle, not fire-once</h3>
-        <p>Rules debounce over a <span class="mono">for</span> duration, then drive a <span class="mono">pending → firing → resolved</span> lifecycle with a durable notification outbox, re-notify, grouping, inhibition, and silences. Webhook, Slack, PagerDuty, Feishu, WeCom — channel secrets KEK-encrypted at rest.</p>
+        <p>Rules debounce over a <span class="mono">for</span> duration, then drive a <span class="mono">pending → firing → resolved</span> lifecycle with a durable notification outbox, re-notify, grouping, inhibition, and silences. Each channel can override title/body per lifecycle event and preview unsaved output. Webhook, Slack, PagerDuty, Feishu, WeCom — channel secrets KEK-encrypted at rest.</p>
       </div>
 
       <div class="feature reveal">
@@ -661,6 +661,19 @@
     </div>
 
     <div class="timeline reveal">            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.5.4</span>
+          <span class="tl-date">2026-08-13</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Visual custom-rule HTTP data + event-scoped alert content</div>
+        <div class="tl-body">
+          Custom rules target recognizable HTTP data, including JSON field paths, through five Coraza-verified recipes. Notification channels override title/body per lifecycle event and preview unsaved output. API Inventory keeps confirmed identities behind a visible capacity rail.
+        </div>
+      </div>
+
+            <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.5.3</span>
@@ -1071,6 +1084,19 @@
     <div class="timeline reveal">            <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.5.4</span>
+          <span class="tl-date">2026-08-13</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Visual custom-rule HTTP data + event-scoped alert content</div>
+        <div class="tl-body">
+          JSON field targeting and five Coraza-verified virtual-patch recipes, per-event notification templates with server preview, and capacity-bounded API Inventory with a visible explorer rail.
+        </div>
+      </div>
+
+            <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.5.3</span>
           <span class="tl-date">2026-08-10</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -1289,7 +1315,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · proprietary · Apache-2.0 upstreams</span>
-      <span class="build">build v3.5.3 · 2026-08-10</span>
+      <span class="build">build v3.5.4 · 2026-08-13</span>
     </div>
   </div>
 </footer>

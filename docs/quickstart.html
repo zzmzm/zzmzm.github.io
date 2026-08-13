@@ -56,7 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
-        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.3</a></li>
+        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.4</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -97,7 +97,7 @@
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version</code></pre>
     <p>See <a href="installation.html#prebuilt">Installation</a> for version pinning, install-prefix overrides, and the Gitee mirror.</p>
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>Existing v3.4.0 or earlier installation?</strong> Do not continue with the new-install flow or restart after a generic update. First make a complete verified backup, then follow the <a href="upgrade-v3.5.html">v3.5.3 full-uninstall upgrade</a>.</p></div></div>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>Existing v3.4.0 or earlier installation?</strong> Do not continue with the new-install flow or restart after a generic update. First make a complete verified backup, then follow the <a href="upgrade-v3.5.html">v3.5.4 full-uninstall upgrade</a>.</p></div></div>
 
     <h2 id="run">2. Run in complete runtime</h2>
     <p>Pick the option that matches your privileges. <strong>As root</strong> the defaults work — state lands in <code>/var/lib/tiyi</code> and the proxy binds ports 80/443:</p>
@@ -111,7 +111,7 @@
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 
     <p>Tiyi prints a banner with the API URL, the bootstrap admin password (printed once on first run), and the Caddy admin socket path:</p>
-<pre><code><span class="c">tiyi v3.5.3 run</span>
+<pre><code><span class="c">tiyi v3.5.4 run</span>
 <span class="c">  api      http://127.0.0.1:8080</span>
 <span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
 <span class="c">  state    /tmp/tiyi.db</span>
@@ -184,7 +184,7 @@
     <ul>
       <li><a href="installation.html">Installation</a> — signed binary installation, config files, Controller and Agent operation, and production-hardening fields you should set before going live.</li>
       <li><a href="concepts.html">Domain model</a> — what sites, upstreams, certificates, policies, agents, telemetry, and the audit chain actually are.</li>
-      <li><a href="cli.html">CLI reference</a> — current v3.5.3 operator commands grouped by resource; use built-in help for the complete flag surface.</li>
+      <li><a href="cli.html">CLI reference</a> — current v3.5.4 operator commands grouped by resource; use built-in help for the complete flag surface.</li>
     </ul>
 
     <div class="docs-pager">
@@ -209,7 +209,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.3 · 2026-08-10</span>
+      <span class="build">build v3.5.4 · 2026-08-13</span>
     </div>
   </div>
 </footer>
