@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>CLI 参考 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="按资源整理太一 v3.5.4 CLI 命令，包含本地管理 socket 鉴权、远程 API 鉴权、安全示例与退出码。" />
+<meta name="description" content="按资源整理当前太一 CLI 命令，包含本地管理 socket 鉴权、远程 API 鉴权、安全示例与退出码。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -43,7 +43,7 @@
 
   <aside class="docs-sidebar" aria-label="文档导航">
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.4</a></li></ul></div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-migration.html">升级与迁移</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -52,7 +52,7 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">参考</span>
     <h1>CLI 参考</h1>
-    <p class="lede"><code>tiyi</code> CLI 是驱动 UI 的同一个 ConnectRPC API 的瘦客户端。本页按资源整理当前 v3.5.4 运维命令；示例只列常用 flag。写入前请运行 <code>tiyi &lt;command&gt; --help</code>，并以已安装二进制为准。</p>
+    <p class="lede"><code>tiyi</code> CLI 是驱动 UI 的同一个 ConnectRPC API 的瘦客户端。本页按资源整理当前运维命令；示例只列常用 flag。写入前请运行 <code>tiyi &lt;command&gt; --help</code>，并以已安装二进制为准。</p>
 
     <h2 id="auth-modes">鉴权模式</h2>
     <p>CLI 用两种方式之一与太一通信。本地命令不需要 token；远程命令需要 API URL 与一个 JWT。</p>
@@ -89,10 +89,46 @@
 <span class="p">$</span> sudo tiyi doctor --fix-state-ownership</code></pre>
 
     <h2 id="apply">声明式 apply</h2>
-    <p>kubectl 风格入口。一份 YAML、一条命令、一行审计：</p>
-<pre><code><span class="p">$</span> tiyi apply -f site.yaml
-<span class="c"># 预览 apply、显示按资源 diff、提示确认、最后真正 apply</span></code></pre>
-    <p>与 UI 用同一个验证器和写入器。带 <code>--yes</code> 跳过提示。一个文件中的多个资源按依赖顺序 apply。</p>
+    <p>kubectl 风格入口。一份 YAML、一条命令、一行审计。apply 创建不存在的资源、更新发生漂移的资源；完全相同的重复 apply 报 <code>unchanged</code> 且不写库。apply 永不删除 - manifest 里缺失的资源不会被移除。</p>
+<pre><code><span class="p">$</span> tiyi apply -f site.yaml          <span class="c"># 计划 + 落库</span>
+<span class="p">$</span> tiyi apply -f site.yaml --dry-run  <span class="c"># 逐资源显示 create/update/unchanged，不写库</span>
+<span class="p">$</span> tiyi apply -f - &lt; site.yaml       <span class="c"># 从 stdin 读取 manifest</span>
+<span class="p">$</span> tiyi get site                       <span class="c"># 以 JSON 查看当前状态（upstream | site | policy | cert | iplist）</span>
+<span class="p">$</span> tiyi get upstream &lt;id&gt;              <span class="c"># 按 ID 查看单个资源</span></code></pre>
+    <p>交叉引用（<code>upstreamRef</code>、<code>certRef</code>、<code>policyRef</code>）在任何写入之前按<em>名字</em>解析；引用不存在则整体报 <code>unresolved_reference</code> 失败。<code>proxy apply failed</code> 是另一类错误：资源已落库但数据面拒绝了配置包（例如上游健康检查预探失败）- 修好后用同一份 manifest 重新 apply 即可收敛。</p>
+<pre><code>apiVersion: tiyi.io/v1
+kind: Upstream
+metadata:
+  name: app-pool
+spec:
+  backends:
+    - url: http://10.0.0.11:8080   <span class="c"># weight 默认 100；权重为相对值</span>
+    - url: http://10.0.0.12:8080
+  loadBalance: round_robin         <span class="c"># 目前唯一支持的策略</span>
+  healthCheck: { path: /healthz, intervalSeconds: 10 }
+---
+apiVersion: tiyi.io/v1
+kind: Site
+metadata:
+  name: example-com
+spec:
+  primaryHost: example.com
+  aliases: [www.example.com]
+  upstreamRef: app-pool            <span class="c"># 按名字引用；或 upstreamsInline: [{url: ...}]（二选一）</span>
+  tls: { mode: none }              <span class="c"># none | uploaded | managed_acme（另有 certRef、minVersion、httpBehavior）</span>
+  waf: { enabled: true, mode: blocking }  <span class="c"># policyRef 可选；缺省用内置 Standard</span>
+  status: active                   <span class="c"># active | disabled</span>
+---
+apiVersion: tiyi.io/v1
+kind: IpList
+metadata:
+  name: office-allowlist
+spec:
+  kind: ALLOW                      <span class="c"># ALLOW | DENY | MONITOR</span>
+  entries:
+    - { cidr: 203.0.113.0/24, description: office, expireAt: 2026-12-31T00:00:00Z }
+    - { cidr: geo:CN }</code></pre>
+    <p>支持的 kind：<code>Upstream</code>（<code>backends[]</code>、<code>loadBalance</code>、<code>healthCheck</code>、<code>status</code>）、<code>Site</code>（<code>primaryHost</code>、<code>aliases[]</code>、<code>upstreamRef</code>/<code>upstreamsInline[]</code>、<code>tls</code>、<code>waf</code>、<code>status</code>）、<code>Policy</code>（<code>engineState</code>、<code>blockingMode</code>、<code>crsRulesetRef</code>、<code>status</code>）、<code>IpList</code>（<code>kind</code>、<code>entries[]</code> 支持 <code>cidr</code>/<code>geo:CC</code>）。证书请用 <code>tiyi cert upload</code>/<code>cert issue</code> 管理，再在 Site 里按名字引用。资源按 <code>(kind, name)</code> 匹配；spec 严格校验，未知字段直接报错而不是被忽略。一个文件里的多个文档按顺序 apply，后面的文档可以按名字引用前面的文档。</p>
 
     <h2 id="sites">站点</h2>
 <pre><code>tiyi site list
@@ -214,7 +250,7 @@ tiyi log error   list [...过滤器]
 tiyi log tail-security                       <span class="c"># 实时流</span></code></pre>
 
     <h2 id="security-investigation">SecurityFact 调查</h2>
-    <p>v3.5.4 没有 <code>incident</code> 或 <code>campaign</code> CLI 资源。从 <code>tiyi alert list</code> 或 <code>tiyi log security list</code> 开始，再按 <code>--unique-id</code>、站点、规则、客户端 CIDR 与时间窗口筛选，并在 UI 中关联匹配的攻击、访问和运行时错误日志。</p>
+    <p>当前 CLI 没有 <code>incident</code> 或 <code>campaign</code> 资源。从 <code>tiyi alert list</code> 或 <code>tiyi log security list</code> 开始，再按 <code>--unique-id</code>、站点、规则、客户端 CIDR 与时间窗口筛选，并在 UI 中关联匹配的攻击、访问和运行时错误日志。</p>
 
     <h2 id="audit-cli">审计链</h2>
 <pre><code>tiyi audit list [--actor-id <span class="v">UUID</span>] [--action <span class="v">ACTION</span>] [--start <span class="v">T</span>] [--end <span class="v">T</span>]
@@ -227,8 +263,7 @@ tiyi system traffic --window 1h
 tiyi system attack-distribution --window 1h
 tiyi system top-attackers --window 1h
 tiyi system settings get
-tiyi system settings update --set siem.enabled=true
-tiyi system settings update --set siem.endpoint=tcp://siem.internal:514 --set siem.filter.include_audit=true</code></pre>
+tiyi system settings update --values-json '{"siem.destinations":[{"id":"soc-primary","name":"SOC primary","enabled":true,"endpoint":"tls://siem.internal:6514","transport":"tls","format":"RFC5424","framing":"octet_counted","sources":["tiyi_formatted","raw_security"],"include_security":true,"include_access":true,"include_error":true,"include_audit":true,"min_severity":"info","blocked_only":false,"timeout_millis":1000,"queue_events":1024,"queue_bytes":8388608,"tls_server_name":"siem.internal"}]}'</code></pre>
     <p>日志与证据策略是带 revision CAS 的 LogService 资源，请在<strong>系统管理 → 设置 → 日志与证据</strong>管理；旧 <code>telemetry.*</code>、<code>logsink.*</code>、<code>log_mode.*</code> 与 <code>log_retention</code> 设置会被拒绝。</p>
 
     <h2 id="release-mgmt">发布（滚动节点升级）</h2>
@@ -286,7 +321,7 @@ tiyi dashboard                   <span class="c"># 仅 UI 进程</span></code></
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.4 · 2026-08-13</span>
+      <span class="build">build v3.6.0 · 2026-08-16</span>
     </div>
   </div>
 </footer>

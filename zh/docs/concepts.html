@@ -43,7 +43,7 @@
 
   <aside class="docs-sidebar" aria-label="文档导航">
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.4</a></li></ul></div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-migration.html">升级与迁移</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -96,7 +96,7 @@
     <ul>
       <li><strong>上传</strong> —— 粘贴或上传 PEM 密钥对。开发用自签，生产用 CA 购买或企业签发。</li>
       <li><strong>ACME HTTP-01</strong> —— 多节点：每个节点都跑一个 loopback 响应器，并通过节点流广播 (token, key_authorization) 对，让任何节点都能应答挑战。</li>
-      <li><strong>ACME DNS-01</strong> —— 可插拔驱动注册表。Cloudflare 驱动已生产可用；Route53 与阿里云在 v3.0.4 中提供凭据校验桩。</li>
+      <li><strong>ACME DNS-01</strong> —— 可插拔驱动注册表。Cloudflare 驱动已生产可用；Route53 与阿里云在当前基线中仍是凭据校验桩。</li>
       <li><strong>通配符</strong> —— 在混合 order 中对 <code>*.example.com</code> 自动选择 DNS-01。</li>
     </ul>
     <p>Dashboard 把 <code>certs_expiring_14d</code> / <code>certs_expiring_30d</code> / <code>acme_renewals_failed_24h</code> / <code>acme_orders_pending</code> 暴露为 KPI。首次启动种入两个默认告警：<em>证书即将到期</em> 与 <em>ACME 续期失败</em>。</p>
@@ -132,6 +132,9 @@
       </div>
     </div>
 
+    <h2 id="log-evidence-policy">日志与证据策略</h2>
+    <p>全局策略为日常使用提供推荐、最小存储和完整取证三个方案，高级采样与字节控制仍可用但默认折叠。站点会动态继承每个字段，只覆盖操作者明确选择的字段。紧凑的健康轨道展示实际托管字节、文件系统余量和预计剩余天数，不把内部写入队列变成产品参数。</p>
+
     <h2 id="telemetry">遥测</h2>
     <p>遥测是一条独立的精确计数平面；关闭留存日志或请求证据不会改变它的总数。路径：</p>
     <ol>
@@ -152,7 +155,7 @@
       <li><strong>变更前/后 JSON</strong> —— 该行规范视图的扁平 diff。</li>
       <li><strong>哈希链</strong> —— 每一行哈希前一行加自身的规范 payload。每日锚点提交链头。</li>
     </ul>
-    <p>Vben Admin 上的<em>校验链</em>按钮会走完整条链并确认每一段。SIEM 转发可在 <code>siem.filter.include_audit</code> 下把每一行审计转发到 Splunk / Elastic / Sentinel 管道。</p>
+    <p>Vben Admin 上的<em>校验链</em>按钮会走完整条链并确认每一段。SIEM 目标设置 <code>include_audit: true</code> 后可把审计行转发到 Splunk / Elastic / Sentinel 管道。</p>
 
     <hr />
 
@@ -180,7 +183,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.4 · 2026-08-13</span>
+      <span class="build">build v3.6.0 · 2026-08-16</span>
     </div>
   </div>
 </footer>

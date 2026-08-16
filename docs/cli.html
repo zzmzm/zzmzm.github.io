@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>CLI reference — Tiyi docs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi v3.5.4 CLI commands grouped by resource, with local admin socket auth, remote API auth, safe examples, and exit codes." />
+<meta name="description" content="Current Tiyi CLI commands grouped by resource, with local admin socket auth, remote API auth, safe examples, and exit codes." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -56,7 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
-        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.4</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -83,7 +83,7 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">Reference</span>
     <h1>CLI reference</h1>
-    <p class="lede">The <code>tiyi</code> CLI is a thin client over the same ConnectRPC API that drives the UI. This page groups the current v3.5.4 operator commands by resource. Examples intentionally show only common flags; before a mutation, run <code>tiyi &lt;command&gt; --help</code> and treat the installed binary as authoritative.</p>
+    <p class="lede">The <code>tiyi</code> CLI is a thin client over the same ConnectRPC API that drives the UI. This page groups current operator commands by resource. Examples intentionally show only common flags; before a mutation, run <code>tiyi &lt;command&gt; --help</code> and treat the installed binary as authoritative.</p>
 
     <h2 id="auth-modes">Authentication modes</h2>
     <p>The CLI talks to Tiyi in one of two ways. Local commands need no token; remote commands need both an API URL and a JWT.</p>
@@ -120,10 +120,46 @@
 <span class="p">$</span> sudo tiyi doctor --fix-state-ownership</code></pre>
 
     <h2 id="apply">Declarative apply</h2>
-    <p>The kubectl-style entry point. One YAML file, one command, one audit row:</p>
-<pre><code><span class="p">$</span> tiyi apply -f site.yaml
-<span class="c"># preview-applies, shows a per-resource diff, prompts to confirm, then applies</span></code></pre>
-    <p>The same validator and mutator the UI uses. Skip the prompt with <code>--yes</code>. Multiple resources in one file are applied in dependency order.</p>
+    <p>The kubectl-style entry point. One YAML file, one command, one audit row. Apply creates resources that do not exist and updates the ones that drifted; an identical re-apply reports <code>unchanged</code> and writes nothing. Apply never deletes - resources missing from the manifest are left alone.</p>
+<pre><code><span class="p">$</span> tiyi apply -f site.yaml          <span class="c"># plan + apply</span>
+<span class="p">$</span> tiyi apply -f site.yaml --dry-run  <span class="c"># create/update/unchanged per resource, nothing written</span>
+<span class="p">$</span> tiyi apply -f - &lt; site.yaml       <span class="c"># read the manifest from stdin</span>
+<span class="p">$</span> tiyi get site                       <span class="c"># current state as JSON (upstream | site | policy | cert | iplist)</span>
+<span class="p">$</span> tiyi get upstream &lt;id&gt;              <span class="c"># one resource by ID</span></code></pre>
+    <p>Cross-references (<code>upstreamRef</code>, <code>certRef</code>, <code>policyRef</code>) are resolved by <em>name</em> before anything is written; a dangling reference fails the whole apply with <code>unresolved_reference</code>. A <code>proxy apply failed</code> error is different: resources were committed but the data plane rejected the bundle (for example the upstream health-check preflight cannot reach a backend) - fix the backend and re-apply the same manifest to reconcile.</p>
+<pre><code>apiVersion: tiyi.io/v1
+kind: Upstream
+metadata:
+  name: app-pool
+spec:
+  backends:
+    - url: http://10.0.0.11:8080   <span class="c"># weight defaults to 100; weights are relative</span>
+    - url: http://10.0.0.12:8080
+  loadBalance: round_robin         <span class="c"># the only supported policy</span>
+  healthCheck: { path: /healthz, intervalSeconds: 10 }
+---
+apiVersion: tiyi.io/v1
+kind: Site
+metadata:
+  name: example-com
+spec:
+  primaryHost: example.com
+  aliases: [www.example.com]
+  upstreamRef: app-pool            <span class="c"># by name; or upstreamsInline: [{url: ...}] (mutually exclusive)</span>
+  tls: { mode: none }              <span class="c"># none | uploaded | managed_acme (+ certRef, minVersion, httpBehavior)</span>
+  waf: { enabled: true, mode: blocking }  <span class="c"># policyRef optional; built-in Standard otherwise</span>
+  status: active                   <span class="c"># active | disabled</span>
+---
+apiVersion: tiyi.io/v1
+kind: IpList
+metadata:
+  name: office-allowlist
+spec:
+  kind: ALLOW                      <span class="c"># ALLOW | DENY | MONITOR</span>
+  entries:
+    - { cidr: 203.0.113.0/24, description: office, expireAt: 2026-12-31T00:00:00Z }
+    - { cidr: geo:CN }</code></pre>
+    <p>Supported kinds: <code>Upstream</code> (<code>backends[]</code>, <code>loadBalance</code>, <code>healthCheck</code>, <code>status</code>), <code>Site</code> (<code>primaryHost</code>, <code>aliases[]</code>, <code>upstreamRef</code>/<code>upstreamsInline[]</code>, <code>tls</code>, <code>waf</code>, <code>status</code>), <code>Policy</code> (<code>engineState</code>, <code>blockingMode</code>, <code>crsRulesetRef</code>, <code>status</code>), <code>IpList</code> (<code>kind</code>, <code>entries[]</code> with <code>cidr</code>/<code>geo:CC</code>). Certificates are managed with <code>tiyi cert upload</code>/<code>cert issue</code> and referenced from a Site by name. Resources are matched by <code>(kind, name)</code>; specs are validated strictly, so an unknown field fails the apply instead of being ignored. Multiple documents in one file are applied in order and later documents may reference earlier ones by name.</p>
 
     <h2 id="sites">Sites</h2>
 <pre><code>tiyi site list
@@ -245,7 +281,7 @@ tiyi log error   list [...filters]
 tiyi log tail-security                       <span class="c"># live stream</span></code></pre>
 
     <h2 id="security-investigation">SecurityFact investigation</h2>
-    <p>v3.5.4 has no <code>incident</code> or <code>campaign</code> CLI resource. Start from <code>tiyi alert list</code> or <code>tiyi log security list</code>, then pivot by <code>--unique-id</code>, site, rule, client CIDR, and time window. Correlate the matching Attack, Access, and Runtime Error rows in the UI.</p>
+    <p>The current CLI has no <code>incident</code> or <code>campaign</code> resource. Start from <code>tiyi alert list</code> or <code>tiyi log security list</code>, then pivot by <code>--unique-id</code>, site, rule, client CIDR, and time window. Correlate the matching Attack, Access, and Runtime Error rows in the UI.</p>
 
     <h2 id="audit-cli">Audit chain</h2>
 <pre><code>tiyi audit list [--actor-id <span class="v">UUID</span>] [--action <span class="v">ACTION</span>] [--start <span class="v">T</span>] [--end <span class="v">T</span>]
@@ -258,9 +294,8 @@ tiyi system traffic --window 1h
 tiyi system attack-distribution --window 1h
 tiyi system top-attackers --window 1h
 tiyi system settings get
-tiyi system settings update --set siem.enabled=true
-tiyi system settings update --set siem.endpoint=tcp://siem.internal:514 --set siem.filter.include_audit=true</code></pre>
-    <p>Logging and evidence policy is a revision-CAS LogService resource, managed under <strong>Administration → Settings → Logs &amp; evidence</strong>; legacy <code>telemetry.*</code>, <code>logsink.*</code>, <code>log_mode.*</code>, and <code>log_retention</code> settings are rejected.</p>
+tiyi system settings update --values-json '{"siem.destinations":[{"id":"soc-primary","name":"SOC primary","enabled":true,"endpoint":"tls://siem.internal:6514","transport":"tls","format":"RFC5424","framing":"octet_counted","sources":["tiyi_formatted","raw_security"],"include_security":true,"include_access":true,"include_error":true,"include_audit":true,"min_severity":"info","blocked_only":false,"timeout_millis":1000,"queue_events":1024,"queue_bytes":8388608,"tls_server_name":"siem.internal"}]}'</code></pre>
+    <p>Logging and evidence policy is a revision-CAS LogService resource, managed under <strong>Administration → Settings → Logs &amp; evidence</strong>; no parallel system-setting path exists.</p>
 
     <h2 id="release-mgmt">Releases (rolling agent upgrades)</h2>
 <pre><code>tiyi release import --tarball ./tiyi_3.5.2_linux_amd64.tar.gz
@@ -323,7 +358,7 @@ tiyi dashboard                   <span class="c"># UI-only process</span></code>
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.4 · 2026-08-13</span>
+      <span class="build">build v3.6.0 · 2026-08-16</span>
     </div>
   </div>
 </footer>

@@ -56,7 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
-        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.4</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -83,7 +83,7 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">Reference</span>
     <h1>API reference</h1>
-    <p class="lede">Tiyi exposes one ConnectRPC API. The same contract serves the embedded Admin UI (JSON over HTTP), the <code>tiyi</code> CLI (JSON over HTTP), and the agent stream (gRPC bidi) — so anything the UI can do, a script can do too. <strong>238 RPCs across 23 services</strong>, plus a small non-RPC HTTP surface.</p>
+    <p class="lede">Tiyi exposes one ConnectRPC API. The same contract serves the embedded Admin UI (JSON over HTTP), the <code>tiyi</code> CLI (JSON over HTTP), and the agent stream (gRPC bidi) — so anything the UI can do, a script can do too. <strong>255 RPCs across 23 services</strong>, plus a small non-RPC HTTP surface.</p>
 
     <h2 id="transport">Transport</h2>
     <p>Every procedure is a <code>POST</code> to <code>/{package}.{Service}/{Method}</code>, for example <code>POST /tiyi.v1.SiteService/ListSites</code>. Three wire protocols share the same routes:</p>
@@ -166,8 +166,8 @@
       <li><strong>Enums are prefixed strings</strong> — <code>"RESOURCE_STATUS_ACTIVE"</code>, <code>"WAF_MODE_BLOCKING"</code>. The zero value is always <code>*_UNSPECIFIED</code>.</li>
       <li><strong>Timestamps are RFC 3339 UTC</strong> — <code>"2026-07-26T13:15:08.217701748Z"</code>.</li>
       <li><strong>Mutations wrap their resource</strong>: <code>CreateSite</code> takes <code>{"site": {…}}</code>, not the fields at top level. Sending them bare returns <code>invalid_argument: site is required</code>.</li>
-      <li><strong>Field masks are comma-joined strings</strong>, not arrays: <code>"updateMask": "name,status"</code>. Without a mask the whole message is applied, so a client unaware of a newer field can blank it.</li>
-      <li><strong>Unknown fields are ignored, not rejected.</strong> A misspelled key silently does nothing — verify writes by reading the resource back.</li>
+      <li><strong>Field masks are comma-joined strings</strong>, not arrays: <code>"updateMask": "name,status"</code>. Without a mask the whole message is applied.</li>
+      <li><strong>Unknown request fields are rejected.</strong> Removed fields and misspelled keys fail instead of being silently discarded.</li>
       <li><strong>Every request is tenant-scoped</strong> from the token, never from a field in the request.</li>
     </ul>
 
@@ -241,8 +241,8 @@
     <p>Mutating RPCs are queued through a write-admission gate so a burst of writers cannot overwhelm the embedded SQLite store. When the queue is full the call returns <code>resource_exhausted</code> with a <code>Retry-After</code> header in seconds. Reads are never queued. Bulk importers should limit write concurrency and respect that header.</p>
 
     <h2 id="rbac">RBAC</h2>
-    <p>Each RPC declares the permission it needs — <code>site:read</code>, <code>policy:write</code>, <code>log:export</code>, <code>system:apply</code>, and so on across 57 permissions. The server checks the JWT subject's roles against the permission table; a role holding <code>tiyi:superadmin</code> passes every check. <code>Administrator</code> is the only built-in role and holds everything, so build least-privilege roles with <code>tiyi role</code> or the Roles page, and inspect the live catalog with <code>RoleService.ListPermissions</code> rather than trusting a frozen list.</p>
-    <p>Seven procedures are reachable without a session: <code>SystemService.Health</code>, <code>AuthService.Login</code> / <code>Refresh</code> / <code>Logout</code>, <code>AgentService.Enroll</code>, <code>AgentStreamService.Connect</code>, and <code>EvidenceUploadService.Upload</code>. The last three are gated by enrollment or stream tokens instead.</p>
+    <p>Each RPC declares the permission it needs — <code>site:read</code>, <code>policy:write</code>, <code>log:export</code>, <code>system:apply</code>, and so on across 56 permissions. The server checks the JWT subject's roles against the permission table; a role holding <code>tiyi:superadmin</code> passes every check. <code>Administrator</code> is the only built-in role and holds everything, so build least-privilege roles with <code>tiyi role</code> or the Roles page, and inspect the live catalog with <code>RoleService.ListPermissions</code> rather than trusting a frozen list.</p>
+    <p>Nine procedures are reachable without a session: <code>SystemService.Health</code>, <code>AuthService.GetLoginOptions</code> / <code>Login</code> / <code>CompleteAuthenticationChallenge</code> / <code>Refresh</code> / <code>Logout</code>, <code>AgentService.Enroll</code>, <code>AgentStreamService.Connect</code>, and <code>EvidenceUploadService.Upload</code>. Enrollment and stream procedures enforce dedicated tokens; challenge completion enforces signed state.</p>
 
     <h2 id="streaming">Streaming RPCs</h2>
     <p>Streaming works over gRPC or the Connect streaming protocol. For Connect, set <code>Content-Type: application/connect+json</code> and frame each message with a five-byte envelope: one flag byte, then a big-endian <code>uint32</code> length. <strong>A failed stream still returns HTTP 200</strong> — the status lives in the trailing frame (flag <code>0x02</code>), so a client that only checks the HTTP code will miss the error.</p>
@@ -273,7 +273,7 @@
 
     <h2 id="clients">Generating a client</h2>
     <p>Point your codegen at <code>proto/tiyi/v1</code> in the source tree. Known-good combinations are <code>connect-go</code> (what the CLI uses), <code>connect-es</code> / <code>@connectrpc/connect-web</code> (what the Admin UI uses), and any standard gRPC client for streaming-heavy work. Because unary Connect is plain JSON over HTTP, a small <code>fetch</code> or <code>requests</code> wrapper is also a perfectly good client.</p>
-    <p>The package is <code>tiyi.v1</code>; field numbers are never reused and removed fields stay <code>reserved</code>, so older clients keep parsing newer responses. New optional fields and new RPCs arrive in minor releases — treat unknown response fields as ignorable.</p>
+    <p>The package is <code>tiyi.v1</code>; removed field numbers and names stay <code>reserved</code> so they cannot acquire a different meaning. Clients and servers must use the current contract; this reservation is protocol safety, not an older-client support promise.</p>
 
     <h2 id="canonical-spec">API contract</h2>
     <p>These docs describe the operator-facing API and should agree with the installed binary — file an issue if they don't.</p>
@@ -300,7 +300,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.4 · 2026-08-13</span>
+      <span class="build">build v3.6.0 · 2026-08-16</span>
     </div>
   </div>
 </footer>

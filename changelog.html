@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Changelog — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi release notes from foundation work through v3.2.1." />
+<meta name="description" content="Tiyi release history, shipped features, fixes, and verification notes." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -49,7 +49,29 @@
       <p style="margin: 0;">Every entry maps back to a commit and a verification command. Items are <span class="tl-tag shipped" style="display:inline-block; vertical-align:middle;">Shipped</span> only after implementation, verification, and required docs are complete — otherwise <span class="tl-tag future" style="display:inline-block; vertical-align:middle;">Planned</span> or <span class="tl-tag current" style="display:inline-block; vertical-align:middle;">In progress</span>. Archived entries preserve the terminology and commands that existed at that time; use the newest entry and current documentation for supported operations.</p>
     </div>
 
-    <div class="timeline">            <div class="tl-item shipped">
+    <div class="timeline">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.6.0</span>
+          <span class="tl-date">2026-08-16</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Enforcement trace, browser challenge, and portable operations</div>
+        <div class="tl-body">
+          <p>v3.6.0 makes final request outcomes explainable, adds a rate-aware browser challenge, and turns authentication, site transfer, upstream delivery, alerts, and declarative administration into complete operator workflows.</p>
+          <ul>
+            <li><strong>Exact enforcement attribution.</strong> Logs → Enforcement joins compact request decisions to the layer and object that produced the final action, with server-side filters and pagination for practical investigation.</li>
+            <li><strong>Rate-aware browser challenge.</strong> Operators can observe or enforce a signed clearance flow for selected rate-limit paths, with bounded state, expiry, and explicit challenge outcomes.</li>
+            <li><strong>Portable sites.</strong> Export one site or all sites as a reviewed bundle, import with explicit conflict policy, and roll back safely when validation or apply fails.</li>
+            <li><strong>Federated authentication.</strong> OIDC, SAML, LDAP, and RADIUS join local accounts on one login surface, with TOTP enrollment and recovery, session controls, password hardening, and custom roles.</li>
+            <li><strong>Hardened upstream delivery.</strong> Pools support smooth weighted round robin, request-header transforms, active health checks, failure classification, bounded retries, and inspectable rollback behavior.</li>
+            <li><strong>Operational closure.</strong> Alerts expose outcome, evidence and observation time, and safe replay; declarative diff/apply uses the production validators and audit path; high-volume administration uses server pagination.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.5.4</span>
@@ -891,7 +913,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.4 · 2026-08-13</span>
+      <span class="build">build v3.6.0 · 2026-08-16</span>
     </div>
   </div>
 </footer>

@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>更新日志 — 太一</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="太一从基础工作到 v3.2.1 的完整更新记录。" />
+<meta name="description" content="太一已发布功能、修复与验证记录。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,7 +50,29 @@
       <p style="margin: 0;">每一项都对应一次提交与一次验证命令。条目只在实现、验证、文档全部完成后才会标记为 <span class="tl-tag shipped" style="display:inline-block; vertical-align:middle;">已发布</span>，否则就是 <span class="tl-tag future" style="display:inline-block; vertical-align:middle;">规划中</span> 或 <span class="tl-tag current" style="display:inline-block; vertical-align:middle;">进行中</span>。历史条目保留当时的术语和命令；当前支持的操作请以最新条目和现行文档为准。</p>
     </div>
 
-    <div class="timeline">            <div class="tl-item shipped">
+    <div class="timeline">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.6.0</span>
+          <span class="tl-date">2026-08-16</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">执行链追踪、浏览器挑战与可迁移运维</div>
+        <div class="tl-body">
+          <p>v3.6.0 让请求最终结果可解释，加入限速感知的浏览器挑战，并把认证、站点迁移、上游交付、告警和声明式管理补成完整的运维闭环。</p>
+          <ul>
+            <li><strong>精确执行归因。</strong>「日志 → 执行分析」把紧凑请求决策关联到产生最终动作的层与对象，并提供服务端筛选与分页，支持实际调查。</li>
+            <li><strong>限速感知浏览器挑战。</strong>运维可为选定限速路径启用观察或执行模式的签名 clearance 流程，状态有界、到期明确，并记录挑战结果。</li>
+            <li><strong>可迁移站点。</strong>把单个站点或全部站点导出为可审核 bundle，以显式冲突策略导入，并在校验或应用失败时安全回滚。</li>
+            <li><strong>联合认证。</strong>OIDC、SAML、LDAP 与 RADIUS 和本地账号共用一个登录面，并提供 TOTP 绑定与恢复、会话控制、密码加固和自定义角色。</li>
+            <li><strong>加固上游交付。</strong>上游池支持平滑加权轮询、请求头变换、主动健康检查、失败分类、有界重试和可检查的回滚行为。</li>
+            <li><strong>运维闭环。</strong>告警明确结果、证据与观察时间并支持安全重放；声明式 diff/apply 复用生产校验器和审计路径；高数据量管理界面使用服务端分页。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.5.4</span>
@@ -892,7 +914,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.4 · 2026-08-13</span>
+      <span class="build">build v3.6.0 · 2026-08-16</span>
     </div>
   </div>
 </footer>

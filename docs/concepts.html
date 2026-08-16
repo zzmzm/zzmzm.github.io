@@ -56,7 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
-        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.4</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -127,7 +127,7 @@
     <ul>
       <li><strong>Upload</strong> — paste or upload a PEM keypair. Self-signed for dev, CA-bought or enterprise-signed for prod.</li>
       <li><strong>ACME HTTP-01</strong> — multi-agent: every agent runs a loopback responder and the (token, key_authorization) pair broadcasts through the agent stream so any node can answer the challenge.</li>
-      <li><strong>ACME DNS-01</strong> — pluggable driver registry. Cloudflare driver is production-ready; Route53 and Aliyun ship as credential-validating stubs in v3.0.4.</li>
+      <li><strong>ACME DNS-01</strong> — pluggable driver registry. Cloudflare is production-ready; Route53 and Aliyun are credential-validating stubs in the current baseline.</li>
       <li><strong>Wildcard</strong> — automatically uses DNS-01 for <code>*.example.com</code> authorizations in mixed orders.</li>
     </ul>
     <p>The dashboard exposes <code>certs_expiring_14d</code> / <code>certs_expiring_30d</code> / <code>acme_renewals_failed_24h</code> / <code>acme_orders_pending</code> as KPIs. Two default alerts are seeded on first boot: <em>Certificates Expiring Soon</em> and <em>ACME Renewal Failures</em>.</p>
@@ -163,6 +163,9 @@
       </div>
     </div>
 
+    <h2 id="log-evidence-policy">Logs and evidence policy</h2>
+    <p>The global policy has three routine profiles: Recommended, Minimum storage, and Forensic coverage. Advanced sampling and byte controls stay available but collapsed. Sites inherit every field dynamically and override only fields explicitly selected by the operator. A compact health rail shows physical managed bytes, filesystem headroom, and an estimated remaining-day horizon without turning internal writer queues into product settings.</p>
+
     <h2 id="telemetry">Telemetry</h2>
     <p>Telemetry is an independent exact-counter plane; retained logs and evidence can be disabled without changing its totals. The path:</p>
     <ol>
@@ -183,7 +186,7 @@
       <li><strong>Before/after JSON</strong> — flat diff of the mutated row's canonical view.</li>
       <li><strong>Hash chain</strong> — each row hashes the previous row plus its own canonical payload. A daily anchor commits the chain head.</li>
     </ul>
-    <p>The Vben Admin <em>Verify chain</em> button walks the chain and confirms each link. SIEM egress with <code>siem.filter.include_audit</code> forwards every audit row to your Splunk / Elastic / Sentinel pipeline.</p>
+    <p>The Vben Admin <em>Verify chain</em> button walks the chain and confirms each link. A SIEM destination with <code>include_audit: true</code> forwards audit rows to your Splunk / Elastic / Sentinel pipeline.</p>
 
     <hr />
 
@@ -211,7 +214,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.4 · 2026-08-13</span>
+      <span class="build">build v3.6.0 · 2026-08-16</span>
     </div>
   </div>
 </footer>

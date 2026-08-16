@@ -56,7 +56,7 @@
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
-        <li><a href="upgrade-v3.5.html">Upgrade to v3.5.4</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -100,7 +100,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </div>
       <div class="callout-body">
-        <p><strong>Lose the KEK and you lose your secrets.</strong> Back it up alongside <code>state.db</code>. Rotating the KEK requires re-wrapping every encrypted blob — out of scope for v3.0.4.</p>
+        <p><strong>Lose the KEK and you lose your secrets.</strong> Back it up alongside <code>state.db</code>. The current baseline does not support KEK rotation because it would require re-wrapping every encrypted blob.</p>
         <p>Also: if you don't set <code>crypto.kek_file</code>, Tiyi falls back to <code>&lt;state-db-dir&gt;/kek.bin</code> auto-generated on first boot. This works for single-node dev but it's fragile in production where state directories may be ephemeral.</p>
       </div>
     </div>
@@ -156,12 +156,7 @@
 
     <h2 id="siem">SIEM egress</h2>
     <p>Tiyi forwards security, access, error, and (optionally) audit events over best-effort TCP, UDP, or unixgram in RFC 5424, CEF, or LEEF. Configure once via Settings → SIEM tab or the CLI:</p>
-<pre><code><span class="p">$</span> tiyi system settings update <span class="o">\</span>
-  --set siem.enabled=true <span class="o">\</span>
-  --set siem.endpoint=tcp://siem.internal:514 <span class="o">\</span>
-  --set siem.transport=tcp <span class="o">\</span>
-  --set siem.format=RFC5424 <span class="o">\</span>
-  --set siem.filter.include_audit=true</code></pre>
+<pre><code><span class="p">$</span> tiyi system settings update --values-json <span class="s">'{"siem.destinations":[{"id":"soc-primary","name":"SOC primary","enabled":true,"endpoint":"tls://siem.internal:6514","transport":"tls","format":"RFC5424","framing":"octet_counted","sources":["tiyi_formatted","raw_security"],"include_security":true,"include_access":true,"include_error":true,"include_audit":true,"min_severity":"info","blocked_only":false,"timeout_millis":1000,"queue_events":1024,"queue_bytes":8388608,"tls_server_name":"siem.internal"}]}'</span></code></pre>
     <p>SIEM forwarding is intentionally best-effort. Receiver health, durable delivery, and replay live in your SIEM pipeline, not in Tiyi. The dispatcher caches a single <code>net.Conn</code> per dispatcher with reconnect-on-error.</p>
 
     <h2 id="observability">Observability</h2>
@@ -170,26 +165,27 @@
       <li><strong><code>/healthz</code></strong> reports the Controller identity plus database, proxy, configuration, site, and remote-Agent facts. Use it for service health checks.</li>
       <li><strong><code>/debug/logsink/stats</code></strong> on the local admin socket exposes per-kind <code>attempted</code>/<code>written</code>/<code>dropped_full</code>/<code>panicked</code>/<code>queue_depth</code>/<code>last_error</code> counters. The <code>panicked</code> counter is the cross-layer canary for boundary <code>defer recover</code> handlers.</li>
       <li><strong>Telemetry explorer UI</strong> at <code>/telemetry/explorer</code> for Top-K and API-inventory browsing. The capacity rail and read-only aggregate rows distinguish real APIs from probation, native blocks, rate limits, overflow, and payload compaction.</li>
+      <li><strong>Managed log storage health</strong> in Settings → Logs &amp; evidence reports managed bytes, filesystem headroom, and an estimated remaining-day horizon. Routine operators choose Recommended, Minimum storage, or Forensic coverage; storage-intensive combinations require explicit confirmation.</li>
     </ul>
 
     <h2 id="upgrades">Remote-Agent rolling upgrades</h2>
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>This rollout does not upgrade an old Controller to v3.5.4.</strong> A Controller on v3.4.0 or earlier needs a complete verified backup, destructive purge, clean v3.5.4 service installation, and Agent re-enrollment; follow the <a href="upgrade-v3.5.html">v3.5.4 upgrade guide</a>.</p></div></div>
-    <p>For compatible enrolled Agents, once a binary release is imported, <code>tiyi release apply</code> fans an <code>APPLY_BINARY</code> command out to every Agent whose OS/arch matches. Each Agent downloads the replacement, verifies the SHA-256 and Ed25519 release signature, and exits so its supervisor restarts it into the new binary.</p>
-<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_3.5.2_linux_amd64.tar.gz
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>A signed artifact is not automatically protocol-compatible.</strong> Read its release notes and use <a href="upgrade-migration.html">upgrade and migration</a> when state or Agent identity must be reset.</p></div></div>
+    <p>After a release is imported, <code>tiyi release apply</code> fans an <code>APPLY_BINARY</code> command out to every Agent whose OS/arch matches. Import and apply validate metadata, SHA-256, and Ed25519 signatures without a hard-coded release floor. Each Agent atomically installs the replacement and exits so its supervisor restarts it.</p>
+<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_3.6.0_linux_amd64.tar.gz
 <span class="p">$</span> tiyi release list
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span>             <span class="c"># all matching agents</span>
 <span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span>  <span class="c"># wave deployments</span>
 <span class="p">$</span> tiyi release runs                          <span class="c"># active rollouts</span>
 <span class="p">$</span> tiyi release rollback                      <span class="c"># revert to previous binary</span></code></pre>
 
-    <h2 id="backup">Backup</h2>
-    <p>Three things to back up:</p>
+    <h2 id="backup">Backup and restore</h2>
+    <p>Keep one coupled recovery set:</p>
     <ul>
-      <li><strong><code>state.db</code></strong> — the SQLite control-plane database. WAL-mode; <code>sqlite3 state.db ".backup '/path/to/backup.db'"</code> works while Tiyi is running.</li>
-      <li><strong><code>kek.bin</code></strong> — the at-rest encryption key. Loss is unrecoverable. Back it up to the same vault you use for other long-lived secrets.</li>
-      <li><strong><code>jwt_secret</code></strong> — already in your config repo, but make sure that repo is backed up too.</li>
+      <li><strong>Complete state directory</strong> — <code>/var/lib/tiyi</code>, including <code>state.db</code>, any WAL files, KEK, logs/detail, evidence, CRS data, bundles, and identity.</li>
+      <li><strong>Configuration</strong> — <code>/etc/tiyi</code>, custom unit/drop-ins, and injected environment.</li>
+      <li><strong>External files</strong> — every referenced KEK, license, certificate source, JWT secret, and provider secret.</li>
     </ul>
-    <p>Use SQLite's online backup mechanism or stop the Controller for a consistent filesystem copy. Copying a live WAL database directory through a network filesystem is not a supported failover design. <code>logs/</code> partition files are operational data with their own retention loop.</p>
+    <p><code>sqlite3 state.db ".backup '/path/to/backup.db'"</code> is useful for an online database-only copy, but it is not a complete Controller restore. For host migration or disaster recovery, stop the Controller and copy the whole set; never copy a live WAL directory through a network filesystem. Follow <a href="upgrade-migration.html#host-migration">host migration</a> and test recovery on an isolated host.</p>
 
     <h2 id="checklist">Going-live checklist</h2>
     <div class="callout callout-tip">
@@ -205,8 +201,8 @@
           <li>Pick a SIEM destination and verify a test event lands</li>
           <li>Wire <code>/healthz</code> into the L4/L7 LB</li>
           <li>Scrape <code>/metrics</code> from your Prometheus instance</li>
-          <li>Add <code>state.db</code> + <code>kek.bin</code> to your backup pipeline</li>
-          <li>Test restore of <code>state.db</code> and <code>kek.bin</code> on an isolated host</li>
+          <li>Add the complete state/config/external-secret set to your backup pipeline</li>
+          <li>Test a same-version restore on an isolated host</li>
           <li>Verify the audit chain: <code>tiyi audit verify</code> exits 0</li>
         </ul>
       </div>
@@ -234,7 +230,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.5.4 · 2026-08-13</span>
+      <span class="build">build v3.6.0 · 2026-08-16</span>
     </div>
   </div>
 </footer>

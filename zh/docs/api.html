@@ -43,7 +43,7 @@
 
   <aside class="docs-sidebar" aria-label="文档导航">
     <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-v3.5.html">升级到 v3.5.4</a></li></ul></div>
+    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-migration.html">升级与迁移</a></li></ul></div>
     <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
     <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
     <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
@@ -52,7 +52,7 @@
   <main class="docs-content" role="main">
     <span class="docs-eyebrow">参考</span>
     <h1>API 参考</h1>
-    <p class="lede">太一只暴露一份 ConnectRPC API。同一份契约同时服务内置管理 UI（HTTP 上的 JSON）、<code>tiyi</code> CLI（HTTP 上的 JSON）与节点流（gRPC 双向）—— UI 能做的事，脚本同样能做。共 <strong>23 个服务、238 个 RPC</strong>，另有一小组非 RPC 的 HTTP 端点。</p>
+    <p class="lede">太一只暴露一份 ConnectRPC API。同一份契约同时服务内置管理 UI（HTTP 上的 JSON）、<code>tiyi</code> CLI（HTTP 上的 JSON）与节点流（gRPC 双向）—— UI 能做的事，脚本同样能做。共 <strong>23 个服务、255 个 RPC</strong>，另有一小组非 RPC 的 HTTP 端点。</p>
 
     <h2 id="transport">传输</h2>
     <p>每个过程都是对 <code>/{package}.{Service}/{Method}</code> 的 <code>POST</code>，例如 <code>POST /tiyi.v1.SiteService/ListSites</code>。同一批路由上支持三种线上协议：</p>
@@ -135,8 +135,8 @@
       <li><strong>枚举是带前缀的字符串</strong> —— <code>"RESOURCE_STATUS_ACTIVE"</code>、<code>"WAF_MODE_BLOCKING"</code>，零值恒为 <code>*_UNSPECIFIED</code>。</li>
       <li><strong>时间戳是 RFC 3339 UTC</strong> —— <code>"2026-07-26T13:15:08.217701748Z"</code>。</li>
       <li><strong>写操作要包一层资源字段</strong>：<code>CreateSite</code> 收的是 <code>{"site": {…}}</code>，不是把字段平铺在顶层。平铺会返回 <code>invalid_argument: site is required</code>。</li>
-      <li><strong>field mask 是逗号连接的字符串</strong>，不是数组：<code>"updateMask": "name,status"</code>。不传 mask 会整体覆盖，导致不认识新字段的旧客户端把它清空。</li>
-      <li><strong>未知字段会被忽略而不是报错。</strong>写错的 key 静默失效 —— 写完请回读确认。</li>
+      <li><strong>field mask 是逗号连接的字符串</strong>，不是数组：<code>"updateMask": "name,status"</code>。不传 mask 会整体覆盖。</li>
+      <li><strong>未知请求字段会被拒绝。</strong>已删除字段或拼错的 key 会直接失败，不会被静默丢弃。</li>
       <li><strong>每个请求都按调用方 token 的租户隔离</strong>，绝不取请求体里的租户字段。</li>
     </ul>
 
@@ -210,8 +210,8 @@
     <p>写类 RPC 会经过写入准入闸门排队，避免并发写入压垮内嵌 SQLite。队列满时返回 <code>resource_exhausted</code>，并带上以秒为单位的 <code>Retry-After</code> 头。读取从不排队。批量导入应限制写并发并遵守该响应头。</p>
 
     <h2 id="rbac">RBAC</h2>
-    <p>每个 RPC 声明所需权限 —— <code>site:read</code>、<code>policy:write</code>、<code>log:export</code>、<code>system:apply</code> 等，共 57 项。服务端将 JWT subject 的角色与权限表比对；持有 <code>tiyi:superadmin</code> 的角色通过所有检查。内置角色只有 <code>Administrator</code> 且拥有全部权限，因此请用 <code>tiyi role</code> 或角色页面创建最小权限角色，并用 <code>RoleService.ListPermissions</code> 查看实时目录，而不是依赖固定清单。</p>
-    <p>七个过程无需会话即可访问：<code>SystemService.Health</code>、<code>AuthService.Login</code> / <code>Refresh</code> / <code>Logout</code>、<code>AgentService.Enroll</code>、<code>AgentStreamService.Connect</code>、<code>EvidenceUploadService.Upload</code>。后三者改由入网 token 或流 token 把关。</p>
+    <p>每个 RPC 声明所需权限 —— <code>site:read</code>、<code>policy:write</code>、<code>log:export</code>、<code>system:apply</code> 等，共 56 项。服务端将 JWT subject 的角色与权限表比对；持有 <code>tiyi:superadmin</code> 的角色通过所有检查。内置角色只有 <code>Administrator</code> 且拥有全部权限，因此请用 <code>tiyi role</code> 或角色页面创建最小权限角色，并用 <code>RoleService.ListPermissions</code> 查看实时目录，而不是依赖固定清单。</p>
+    <p>九个过程无需会话即可访问：<code>SystemService.Health</code>、<code>AuthService.GetLoginOptions</code> / <code>Login</code> / <code>CompleteAuthenticationChallenge</code> / <code>Refresh</code> / <code>Logout</code>、<code>AgentService.Enroll</code>、<code>AgentStreamService.Connect</code>、<code>EvidenceUploadService.Upload</code>。入网与流过程校验专用 token；挑战完成过程校验签名状态。</p>
 
     <h2 id="streaming">流式 RPC</h2>
     <p>流式调用可走 gRPC，也可走 Connect 流式协议。使用 Connect 时设置 <code>Content-Type: application/connect+json</code>，并给每条消息加 5 字节信封：1 字节标志位 + 大端 <code>uint32</code> 长度。<strong>流失败时 HTTP 状态码仍是 200</strong> —— 真正的状态在结尾帧（标志位 <code>0x02</code>）里，只看 HTTP 码的客户端会漏掉错误。</p>
@@ -242,7 +242,7 @@
 
     <h2 id="clients">生成客户端</h2>
     <p>把代码生成器指向源码树中的 <code>proto/tiyi/v1</code>。已验证的组合：<code>connect-go</code>（CLI 使用）、<code>connect-es</code> / <code>@connectrpc/connect-web</code>（管理 UI 使用），以及任意标准 gRPC 客户端（适合流式为主的集成）。由于一元 Connect 就是 HTTP 上的普通 JSON，一个简单的 <code>fetch</code> 或 <code>requests</code> 封装同样够用。</p>
-    <p>包名是 <code>tiyi.v1</code>；字段号永不复用，删除的字段保留为 <code>reserved</code>，因此旧客户端可以继续解析新响应。新的可选字段与新 RPC 在小版本中引入 —— 请把未知响应字段当作可忽略。</p>
+    <p>包名是 <code>tiyi.v1</code>；删除的字段号和字段名保留为 <code>reserved</code>，防止它们被赋予另一种含义。客户端与服务端必须使用当前契约；保留编号是协议安全措施，不代表支持旧客户端。</p>
 
     <h2 id="canonical-spec">API 契约</h2>
     <p>本文档覆盖面向运维的 API 表面，并应与已安装二进制保持一致 —— 不一致请提 issue。</p>
@@ -263,7 +263,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.4 · 2026-08-13</span>
+      <span class="build">build v3.6.0 · 2026-08-16</span>
     </div>
   </div>
 </footer>

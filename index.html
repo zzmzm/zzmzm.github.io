@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.5.4</span>
-    Visual custom rules + event-scoped alert content
+    <span class="tag">v3.6.0</span>
+    Enforcement trace + browser challenge + portable sites
   </span>
 
   <h1>
@@ -205,7 +205,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="11" width="8" height="10" rx="2"/></svg>
         </div>
         <h3>Task-oriented admin plane</h3>
-        <p>Eight stable work areas organize Overview, application delivery, protection, fleet, events and logs, detection and response, monitoring, and administration. Responsive navigation, keyboard semantics, permission-aware groups, and consistent empty/diff/apply states keep complex workflows learnable.</p>
+        <p>Eight stable work areas organize Overview, application delivery, protection, fleet, events and logs, detection and response, monitoring, and administration. Responsive navigation, permission-aware groups, server-paged lists, and consistent empty/diff/apply states keep complex workflows learnable.</p>
       </div>
 
       <div class="feature reveal">
@@ -231,8 +231,8 @@
           <!-- route -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M6 16V9a4 4 0 0 1 4-4h5"/><path d="m14 2 3 3-3 3"/></svg>
         </div>
-        <h3>Path-based routing</h3>
-        <p>One host, one cert, many upstream pools by path prefix — API-gateway-style fan-out. Each route gets its own post-apply health probe; unmatched paths fall through to the site default or a strict <span class="mono">404</span>. Every access-log row carries the <span class="mono">route_id</span> and <span class="mono">upstream_id</span> that served it, and path scope is canonicalized identically across the WAF, IP lists, and the rate limiter.</p>
+        <h3>Routing + portable site bundles</h3>
+        <p>One host and certificate can fan out by path to upstream pools with request-header transforms, smooth weighted balancing, active health checks, and bounded retries. Export one site or the complete site set, inspect the portable bundle, then import with explicit conflict handling and rollback.</p>
       </div>
 
       <div class="feature reveal">
@@ -259,7 +259,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg>
         </div>
         <h3>Built-in observability</h3>
-        <p>Exact request and bandwidth counters, normalized URL/UA Top, per-site API Inventory with a visible capacity rail, immutable SecurityFacts, local/remote node trends, and a Prometheus exporter on the local admin socket. No external time-series database required.</p>
+        <p>Exact counters, immutable SecurityFacts, retained logs, and the Enforcement view join each request to its final action and responsible layer. API Inventory, node trends, pipeline diagnostics, and a Prometheus exporter stay available on the protected local admin socket.</p>
       </div>
 
       <div class="feature reveal">
@@ -304,7 +304,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
         </div>
         <h3>Alert lifecycle, not fire-once</h3>
-        <p>Rules debounce over a <span class="mono">for</span> duration, then drive a <span class="mono">pending → firing → resolved</span> lifecycle with a durable notification outbox, re-notify, grouping, inhibition, and silences. Each channel can override title/body per lifecycle event and preview unsaved output. Webhook, Slack, PagerDuty, Feishu, WeCom — channel secrets KEK-encrypted at rest.</p>
+        <p>Rules debounce into a durable <span class="mono">pending → firing → resolved</span> lifecycle with explicit outcome, evidence time, observation time, grouping, silences, and per-event channel content. Operators can replay a retained occurrence through the production evaluator without sending notifications.</p>
       </div>
 
       <div class="feature reveal">
@@ -330,8 +330,8 @@
           <!-- lock -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
         </div>
-        <h3>RBAC + OIDC</h3>
-        <p>JWT with refresh, Argon2id local accounts, OIDC SSO on the same login surface, and fine-grained permissions wired through every API and CLI command.</p>
+        <h3>Federated auth + account security</h3>
+        <p>Argon2id local accounts, OIDC, SAML, LDAP, and RADIUS share one login surface. TOTP enrollment and recovery, password/session controls, custom roles, and generated fail-closed authorization protect every API, UI, and CLI path.</p>
       </div>
 
       <div class="feature reveal">
@@ -660,7 +660,21 @@
       <p>Every entry maps back to a commit and a verification command. The full release history lives at <a href="changelog.html">/changelog</a>.</p>
     </div>
 
-    <div class="timeline reveal">            <div class="tl-item shipped">
+    <div class="timeline reveal">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.6.0</span>
+          <span class="tl-date">2026-08-16</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Enforcement trace, browser challenge, and portable operations</div>
+        <div class="tl-body">
+          Follow a request to its exact final action in Logs → Enforcement, protect rate-limited clients with an observe-or-enforce browser challenge, move reviewed site bundles safely between installations, and operate federated authentication and hardened upstream pools from one admin plane.
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.5.4</span>
@@ -1081,7 +1095,21 @@
       <p>Dates are targets, not promises. Items move with verification, not optimism.</p>
     </div>
 
-    <div class="timeline reveal">            <div class="tl-item shipped">
+    <div class="timeline reveal">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.6.0</span>
+          <span class="tl-date">2026-08-16</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Enforcement visibility + portable operations</div>
+        <div class="tl-body">
+          Exact enforcement attribution, rate-aware browser challenge, portable site bundles, federated authentication with TOTP, hardened weighted upstreams, alert replay, declarative apply, and server-paged administration.
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.5.4</span>
@@ -1213,7 +1241,7 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">Post-v3.5</span>
+          <span class="tl-version">Future</span>
           <span class="tl-date">Future · target</span>
           <span class="tl-tag future">Planned</span>
         </div>
@@ -1226,7 +1254,7 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.6</span>
+          <span class="tl-version">Future</span>
           <span class="tl-date">Q2 2027 · target</span>
           <span class="tl-tag future">Planned</span>
         </div>
@@ -1315,7 +1343,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · proprietary · Apache-2.0 upstreams</span>
-      <span class="build">build v3.5.4 · 2026-08-13</span>
+      <span class="build">build v3.6.0 · 2026-08-16</span>
     </div>
   </div>
 </footer>

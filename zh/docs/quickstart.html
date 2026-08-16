@@ -55,7 +55,7 @@
       <ul>
         <li><a href="operations.html">日常运维</a></li>
         <li><a href="troubleshooting.html">排障</a></li>
-        <li><a href="upgrade-v3.5.html">升级到 v3.5.4</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -92,10 +92,12 @@
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version</code></pre>
     <p>版本固定、安装目录覆盖与 Gitee 镜像用法见<a href="installation.html#prebuilt">安装</a>。</p>
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>已有 v3.4.0 或更早安装？</strong>不要继续执行新安装流程，也不要在通用 update 后直接重启。必须先完成并验证完整备份，再按 <a href="upgrade-v3.5.html">v3.5.4 完整卸载升级指引</a>操作。</p></div></div>
+    <div class="callout callout-info"><div class="callout-body"><p><strong>已有安装？</strong>公开安装器用于干净主机，请先阅读<a href="upgrade-migration.html">升级与迁移</a>；用 v3.6.0 替换更早版本时，旧状态需要按文档执行 purge 流程。</p></div></div>
 
     <h2 id="run">2. 运行太一</h2>
-    <p>按你的权限选择一种方式。<strong>以 root 运行</strong>时默认值即可 —— 状态写入 <code>/var/lib/tiyi</code>，代理绑定 80/443 端口：</p>
+    <p>推荐路径是一条命令：<code>tiyi install --now</code> 会把太一安装为加固的 systemd 服务、设置开机自启并立即启动。服务单元以非特权用户运行（通过 <code>CAP_NET_BIND_SERVICE</code> 绑定 80/443 端口），首次安装时安装器会先创建管理员，并直接在当前终端打印一次性登录信息 - URL、用户名、密码：</p>
+<pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
+    <p>想先以前台方式评估？<strong>以 root 运行</strong>时默认值即可 -- 状态写入 <code>/var/lib/tiyi</code>，代理绑定 80/443 端口：</p>
 <pre><code><span class="p">$</span> sudo tiyi run</code></pre>
     <p><strong>以普通用户运行</strong>（不用 sudo）时，把太一指向可写路径并使用高端口：</p>
 <pre><code><span class="p">$</span> tiyi run <span class="o">\</span>
@@ -105,12 +107,12 @@
     --proxy-http-addr 127.0.0.1:18080 <span class="o">\</span>
     --proxy-https-addr 127.0.0.1:18443</code></pre>
 
-    <p>太一会打印一行包含 API 地址、引导管理员密码（仅首次启动显示一次）与 Caddy 管理 socket 路径的 banner：</p>
-<pre><code><span class="c">tiyi v3.5.4 run</span>
-<span class="c">  api      http://127.0.0.1:8080</span>
-<span class="c">  proxy    http://127.0.0.1:18080  https://127.0.0.1:18443</span>
-<span class="c">  state    /tmp/tiyi.db</span>
-<span class="c">  bootstrap admin password: <span class="v">&lt;random-shown-once&gt;</span></span></code></pre>
+    <p>首次启动且没有用户、也未提供引导凭据时，Tiyi 会把生成的管理员密码打印一次：</p>
+<pre><code><span class="c">============================================================</span>
+<span class="c">  Tiyi — first-run administrator created</span>
+<span class="c">============================================================</span>
+<span class="c">    username:  admin</span>
+<span class="c">    password:  <span class="v">&lt;43-random-characters-shown-once&gt;</span></span></code></pre>
 
     <p>浏览器打开 <code>http://127.0.0.1:8080/</code>，用 <code>admin</code> 与上面的密码登录。控制台会进入<strong>总览</strong>。稳定任务区为总览、应用交付、防护策略、节点、事件与日志、检测与响应、监控、系统管理；权限过滤会隐藏空分组，但不会改变深链地址。</p>
 
@@ -124,7 +126,7 @@
     </div>
 
     <h3 id="own-admin-password">自定义管理员密码（可选）</h3>
-    <p>用于自动化、容器镜像或 CI 时，跳过自动生成的密码：在首次启动前设置 <code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code>，太一会原样采用且不打印任何 banner。用户名默认 <code>admin</code>；仅当尚不存在任何用户时才会自动生成密码，因此重启都是空操作。</p>
+    <p>用于自动化、容器镜像或 CI 时，可在首次启动前设置 <code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code> 来跳过自动生成密码。密码必须至少包含 8 个 Unicode 字符；校验通过后不打印随机密码 banner。用户名默认 <code>admin</code>；仅当尚不存在任何用户时才会自动生成密码，因此重启都是空操作。</p>
 <pre><code><span class="p">$</span> mkdir -p /tmp/waf
 <span class="p">$</span> TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
     tiyi run <span class="o">\</span>
@@ -179,7 +181,7 @@
     <ul>
       <li><a href="installation.html">安装</a> —— 签名二进制安装、配置文件、运行模式，以及上线前需要显式设定的加固字段。</li>
       <li><a href="concepts.html">领域模型</a> —— 站点、上游、证书、策略、节点、遥测、审计链各是什么。</li>
-      <li><a href="cli.html">CLI 参考</a> —— 按资源整理当前 v3.5.4 运维命令，完整 flag 以内置 help 为准。</li>
+      <li><a href="cli.html">CLI 参考</a> —— 按资源整理当前运维命令，完整 flag 以内置 help 为准。</li>
     </ul>
 
     <div class="docs-pager">
@@ -204,7 +206,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.5.4 · 2026-08-13</span>
+      <span class="build">build v3.6.0 · 2026-08-16</span>
     </div>
   </div>
 </footer>

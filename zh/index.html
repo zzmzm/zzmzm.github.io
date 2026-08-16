@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.5.4</span>
-    可视化自定义规则 + 按事件定制告警内容
+    <span class="tag">v3.6.0</span>
+    执行链追踪 + 浏览器挑战 + 可迁移站点
   </span>
 
   <h1>
@@ -204,7 +204,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="11" width="8" height="10" rx="2"/></svg>
         </div>
         <h3>任务导向管理平面</h3>
-        <p>八个稳定工作域分别是总览、应用交付、防护策略、节点、事件与日志、检测与响应、监控和系统管理。响应式导航、键盘语义、权限感知分组和一致的空状态/差异/应用反馈，让复杂工作流更易理解。</p>
+        <p>八个稳定工作域分别是总览、应用交付、防护策略、节点、事件与日志、检测与响应、监控和系统管理。响应式导航、权限感知分组、服务端分页和一致的空状态/差异/应用反馈，让复杂工作流更易理解。</p>
       </div>
 
       <div class="feature reveal">
@@ -228,8 +228,8 @@
           <!-- route -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><circle cx="18" cy="5" r="3"/><path d="M6 16V9a4 4 0 0 1 4-4h5"/><path d="m14 2 3 3-3 3"/></svg>
         </div>
-        <h3>基于路径的路由</h3>
-        <p>一个主机、一张证书、按路径前缀分流到多个上游池 —— API 网关式分发。每条路由都有各自的应用后健康探测；未命中的路径回退到站点默认上游或严格 <span class="mono">404</span>。每条访问日志都记录服务它的 <span class="mono">route_id</span> 与 <span class="mono">upstream_id</span>，且路径范围在 WAF、IP 列表与限速器之间以同一方式规范化。</p>
+        <h3>路径路由 + 可迁移站点包</h3>
+        <p>一个主机和证书可按路径分流到多个上游池，支持请求头变换、平滑加权轮询、主动健康检查与有界重试。可导出单个站点或全部站点，检查可移植 bundle 后，以显式冲突策略导入并在失败时回滚。</p>
       </div>
 
       <div class="feature reveal">
@@ -253,7 +253,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg>
         </div>
         <h3>内置可观测性</h3>
-        <p>精确请求与带宽计数、规范化 URL/UA Top、按站点 API Inventory（带可见容量条）、不可变 SecurityFact、本机/远程节点趋势，以及本地管理 socket 上的 Prometheus 导出器；无需外部时序数据库。</p>
+        <p>精确计数、不可变 SecurityFact、保留日志与「执行分析」把每个请求关联到最终动作及负责层。API Inventory、节点趋势、管道诊断和 Prometheus 导出器都保留在受保护的本地管理 socket 上。</p>
       </div>
 
       <div class="feature reveal">
@@ -293,7 +293,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
         </div>
         <h3>告警全生命周期，而非只触发一次</h3>
-        <p>规则按 <span class="mono">for</span> 时长去抖，随后驱动 <span class="mono">pending → firing → resolved</span> 生命周期：持久化通知 outbox、重复通知、分组、抑制与静默。每个通道可按生命周期事件覆盖标题/正文并预览未保存输出。Webhook、Slack、PagerDuty、飞书、企业微信 —— 通道密钥以 KEK 信封加密落库。</p>
+        <p>规则去抖后进入持久化 <span class="mono">pending → firing → resolved</span> 生命周期，并明确记录结果、证据时间、观察时间、分组、静默与按事件定制的通知内容。运维可把保留 occurrence 安全重放到生产求值器，且不会发送通知。</p>
       </div>
 
       <div class="feature reveal">
@@ -318,8 +318,8 @@
         <div class="feature-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
         </div>
-        <h3>RBAC + OIDC</h3>
-        <p>JWT 带刷新、本地账号 Argon2id、OIDC 单点登录共用同一登录界面，细粒度权限贯穿每一个 API 与 CLI 命令。</p>
+        <h3>联合认证 + 账号安全</h3>
+        <p>Argon2id 本地账号、OIDC、SAML、LDAP 与 RADIUS 共用一个登录界面。TOTP 绑定和恢复、密码/会话控制、自定义角色与生成式失败关闭授权保护每一条 API、UI 与 CLI 路径。</p>
       </div>
 
       <div class="feature reveal">
@@ -647,7 +647,21 @@
       <p>每一项都对应一次提交与一次验证命令。完整历史在 <a href="changelog.html">/changelog</a>。</p>
     </div>
 
-    <div class="timeline reveal">            <div class="tl-item shipped">
+    <div class="timeline reveal">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.6.0</span>
+          <span class="tl-date">2026-08-16</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">执行链追踪、浏览器挑战与可迁移运维</div>
+        <div class="tl-body">
+          在「日志 → 执行分析」中追到请求的最终动作；用观察或执行模式的浏览器挑战保护触发限速的客户端；在安装间安全迁移经审核的站点包；并从统一管理平面操作联合认证与加固后的上游池。
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.5.4</span>
@@ -1068,7 +1082,21 @@
       <p>日期是目标，不是承诺。条目随验证而推进，而非随乐观而推进。</p>
     </div>
 
-    <div class="timeline reveal">            <div class="tl-item shipped">
+    <div class="timeline reveal">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.6.0</span>
+          <span class="tl-date">2026-08-16</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">执行可见性 + 可迁移运维</div>
+        <div class="tl-body">
+          精确执行归因、限速感知浏览器挑战、可迁移站点包、带 TOTP 的联合认证、加固的加权上游、告警重放、声明式 apply 与服务端分页管理。
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
           <span class="tl-version">v3.5.4</span>
@@ -1200,7 +1228,7 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.5 之后</span>
+          <span class="tl-version">未来</span>
           <span class="tl-date">未来 · 目标</span>
           <span class="tl-tag future">规划中</span>
         </div>
@@ -1213,7 +1241,7 @@
       <div class="tl-item future">
         <span class="tl-dot"></span>
         <div class="tl-head">
-          <span class="tl-version">v3.6</span>
+          <span class="tl-version">未来</span>
           <span class="tl-date">2027 Q2 · 目标</span>
           <span class="tl-tag future">规划中</span>
         </div>
@@ -1302,7 +1330,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · <a href="privacy.html">隐私政策</a> · <a href="terms.html">服务条款</a> · 商业分发 · Apache-2.0 上游</span>
-      <span class="build">build v3.5.4 · 2026-08-13</span>
+      <span class="build">build v3.6.0 · 2026-08-16</span>
     </div>
   </div>
 </footer>

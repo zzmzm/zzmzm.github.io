@@ -26,7 +26,7 @@
 <div class="docs-layout">
   <aside class="docs-sidebar" aria-label="Docs navigation">
     <div class="docs-nav-group"><h4>Get started</h4><ul><li><a href="index.html">Overview</a></li><li><a href="quickstart.html">Quickstart</a></li><li><a href="installation.html">Installation</a></li></ul></div>
-    <div class="docs-nav-group"><h4>Operate</h4><ul><li><a href="operations.html">Operations guide</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="upgrade-v3.5.html">Upgrade to v3.5.4</a></li></ul></div>
+    <div class="docs-nav-group"><h4>Operate</h4><ul><li><a href="operations.html">Operations guide</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="upgrade-migration.html">Upgrade and migration</a></li></ul></div>
     <div class="docs-nav-group"><h4>Concepts</h4><ul><li><a href="concepts.html">Domain model</a></li></ul></div>
     <div class="docs-nav-group"><h4>Reference</h4><ul><li><a href="cli.html">CLI reference</a></li><li><a href="api.html">API reference</a></li></ul></div>
     <div class="docs-nav-group"><h4>Run in production</h4><ul><li><a href="deployment.html">Deployment</a></li></ul></div>
@@ -61,7 +61,7 @@ curl -i -H <span class="s">'Host: shop.example.com'</span> http://127.0.0.1/</co
       <tr><td>Direct SIEM</td><td>Which native or formatted events should leave each node?</td><td>Independent per-destination queues; cannot block proxy traffic.</td></tr>
     </tbody></table>
     <h3 id="evidence-siem">Request Evidence and direct SIEM</h3>
-    <p>Fresh installations default Request Evidence to the recommended <code>security_only</code> scope; upgrades preserve the operator's explicitly stored scope. Configure it under <strong>System Administration → Settings → Global logging &amp; evidence policy</strong>, then optionally override a site from its <strong>Logging &amp; evidence</strong> drawer. <code>security_only</code> retains evidence only for requests that produced a SecurityFact; <code>retained_logs</code> attaches evidence to retained Attack/Access rows. Captured Cookie, Authorization, API keys, personal data, and request bodies are intentionally unredacted, so restrict log-read access and keep retention short. Open an Attack or Access log, expand <strong>Request evidence</strong>, and load the bounded preview only when needed.</p>
+    <p>Request Evidence defaults to the recommended <code>security_only</code> scope. Configure it under <strong>System Administration → Settings → Global logging &amp; evidence policy</strong>, then optionally override a site from its <strong>Logging &amp; evidence</strong> drawer. <code>security_only</code> retains evidence only for requests that produced a SecurityFact; <code>retained_logs</code> attaches evidence to retained Attack/Access rows. Captured Cookie, Authorization, API keys, personal data, and request bodies are intentionally unredacted, so restrict log-read access and keep retention short. Open an Attack or Access log, expand <strong>Request evidence</strong>, and load the bounded preview only when needed.</p>
     <p>Configure producer-side targets under <strong>System Administration → Settings → SIEM</strong>. Each destination independently selects native Caddy access JSON, native Coraza audit JSON, or Tiyi-formatted security/access/error/audit events and uses its own UDP/TCP/TLS queue, byte budget, framing, and timeout. A queue-full or network failure drops that destination's event and increments its Log Pipeline lane; it never delays a WAF response.</p>
 
     <h2 id="investigate">3. Investigate an alert</h2>
@@ -89,13 +89,48 @@ tiyi agents list</code></pre>
       <div class="docs-card"><div class="docs-card-title">Daily</div><p>Health, disk, certificate expiry, agents, evidence/pipeline backlog, firing alerts, SecurityFact trends, API Inventory, failed SIEM/channel delivery, and audit chain.</p></div>
       <div class="docs-card"><div class="docs-card-title">Every change</div><p><code>tiyi doctor</code> → <code>tiyi diff</code> → apply → health → functional request → <code>tiyi audit verify</code>.</p></div>
     </div>
-    <p>Back up <code>state.db</code>, the KEK, uploaded certificate sources, license, and declarative manifests. Test restoration, not just backup creation.</p>
+    <p>Back up the complete state directory, configuration, external KEK, uploaded certificate sources, license, and declarative manifests. Test restoration, not just backup creation; see <a href="upgrade-migration.html#host-migration">host migration</a>.</p>
 
-    <div class="docs-pager"><a href="upgrade-v3.5.html"><span class="label">← Previous</span><span class="title">Upgrade to v3.5.4</span></a><a class="next" href="troubleshooting.html"><span class="label">Next →</span><span class="title">Troubleshooting</span></a></div>
+    <h2 id="prometheus">7. Connect Prometheus</h2>
+    <p>Tiyi exposes OpenMetrics only on the permission-protected local admin socket. Verify it locally:</p>
+<pre><code>sudo curl -fsS --unix-socket /run/tiyi/admin.sock \
+  http://localhost/metrics | grep '^tiyi_' | head</code></pre>
+    <div class="callout callout-warn"><div class="callout-body"><p><strong>Do not publish the admin socket through a generic TCP proxy.</strong> It also carries passwordless local-administration endpoints.</p></div></div>
+    <p>A safe bridge is node_exporter's textfile collector. Configure node_exporter with <code>--collector.textfile.directory=/var/lib/node_exporter/textfile_collector</code>, then create:</p>
+<pre><code># /etc/systemd/system/tiyi-metrics-textfile.service
+[Unit]
+Description=Export Tiyi OpenMetrics to node_exporter
+After=tiyi.service
+
+[Service]
+Type=oneshot
+User=root
+NoNewPrivileges=true
+ExecStart=/bin/sh -ec '/usr/bin/curl -fsS --unix-socket /run/tiyi/admin.sock http://localhost/metrics -o /var/lib/node_exporter/textfile_collector/tiyi.prom.tmp; /usr/bin/chmod 0644 /var/lib/node_exporter/textfile_collector/tiyi.prom.tmp; /usr/bin/mv -f /var/lib/node_exporter/textfile_collector/tiyi.prom.tmp /var/lib/node_exporter/textfile_collector/tiyi.prom'
+
+# /etc/systemd/system/tiyi-metrics-textfile.timer
+[Unit]
+Description=Refresh Tiyi OpenMetrics for node_exporter
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=30s
+Unit=tiyi-metrics-textfile.service
+
+[Install]
+WantedBy=timers.target</code></pre>
+<pre><code>sudo install -d -m 0755 /var/lib/node_exporter/textfile_collector
+sudo systemctl daemon-reload
+sudo systemctl enable --now tiyi-metrics-textfile.timer
+sudo systemctl start tiyi-metrics-textfile.service
+curl -fsS http://127.0.0.1:9100/metrics | grep '^tiyi_' | head</code></pre>
+    <p>Prometheus scrapes the existing node_exporter target. Watch <code>tiyi_observation_lane_value</code>, <code>tiyi_observation_pipeline_value</code>, and <code>tiyi_api_inventory_value</code>, and alert on timer/oneshot failures plus queue, drop, and panic fields.</p>
+
+    <div class="docs-pager"><a href="upgrade-migration.html"><span class="label">← Previous</span><span class="title">Upgrade and migration</span></a><a class="next" href="troubleshooting.html"><span class="label">Next →</span><span class="title">Troubleshooting</span></a></div>
   </main>
   <aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4></aside>
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.5.4 · 2026-08-13</span></div></div></footer>
+<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.6.0 · 2026-08-16</span></div></div></footer>
 <script src="../assets/js/main.js" defer></script>
 </body>
 </html>
