@@ -86,14 +86,15 @@
     <p class="lede">Moving a Tiyi Controller into production takes four decisions: where secrets live, which remote data planes you need, where logs go, and how you recover and upgrade.</p>
 
     <h2 id="hardening">Production hardening</h2>
-    <p>Two config fields have dev-friendly fallbacks that explicitly do not survive a restart. Set them before going live.</p>
+    <p>The JWT fallback is ephemeral; the KEK fallback is persistent beside <code>state.db</code>. Before going live, set a stable JWT secret and make the state database plus its KEK one tested backup unit. An external KEK path is optional.</p>
 
     <h3 id="kek">KEK — at-rest encryption key</h3>
 <pre><code><span class="k">crypto</span>:
   <span class="k">kek_file</span>: <span class="s">"/etc/tiyi/kek.bin"</span>     <span class="c"># 32-byte at-rest Key Encryption Key</span></code></pre>
     <p>All envelope-encrypted blobs (TLS private keys, ACME account keys, ACME DNS provider credentials, the bundle signing key) decrypt with this KEK. Generate it once and back it up next to the state database:</p>
-<pre><code><span class="p">$</span> install -m 0600 /dev/null /etc/tiyi/kek.bin
-<span class="p">$</span> head -c 32 /dev/urandom &gt; /etc/tiyi/kek.bin</code></pre>
+<pre><code><span class="p">$</span> openssl rand 32 | sudo tee /etc/tiyi/kek.bin &gt;/dev/null
+<span class="p">$</span> sudo chown tiyi:tiyi /etc/tiyi/kek.bin
+<span class="p">$</span> sudo chmod 0600 /etc/tiyi/kek.bin</code></pre>
 
     <div class="callout callout-danger">
       <div class="callout-icon">
@@ -101,7 +102,7 @@
       </div>
       <div class="callout-body">
         <p><strong>Lose the KEK and you lose your secrets.</strong> Back it up alongside <code>state.db</code>. The current baseline does not support KEK rotation because it would require re-wrapping every encrypted blob.</p>
-        <p>Also: if you don't set <code>crypto.kek_file</code>, Tiyi falls back to <code>&lt;state-db-dir&gt;/kek.bin</code> auto-generated on first boot. This works for single-node dev but it's fragile in production where state directories may be ephemeral.</p>
+        <p>If you do not set <code>crypto.kek_file</code>, Tiyi auto-generates and reuses <code>&lt;state-db-dir&gt;/kek.bin</code>. That is a valid single-node layout when the complete state directory is persistent and backed up. Set an external path only when your secret-storage or backup design requires it.</p>
       </div>
     </div>
 
@@ -230,7 +231,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

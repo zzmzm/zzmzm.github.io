@@ -1,0 +1,66 @@
+# Tiyi process configuration template
+# Save as /etc/tiyi/tiyi.yaml. This controls process startup; sites, upstreams,
+# WAF policies, and IP-list bindings are durable resources managed separately.
+
+server:
+  addr: "0.0.0.0:8080"
+
+store:
+  state_db: "/var/lib/tiyi/state.db"
+
+log:
+  level: "info" # debug | info | warn | error
+
+proxy:
+  caddy_admin_socket: "/var/lib/tiyi/caddy-admin.sock"
+  http_addr: ":80"
+  https_addr: ":443"
+
+crypto:
+  # Empty uses persistent <state-db-dir>/kek.bin. Back it up with state.db.
+  # For an external path, first create a service-readable 32-byte file.
+  kek_file: ""
+
+auth:
+  # Production: replace with a private random value of at least 32 bytes.
+  # Empty invalidates existing sessions on every restart.
+  jwt_secret: ""
+  access_token_ttl: "8h"
+  refresh_token_ttl: "168h"
+  refresh_cookie_secure: false # set true for an HTTPS console
+
+  # First user only. Leave empty for admin + one-time random password.
+  bootstrap_admin_username: ""
+  bootstrap_admin_password: ""
+  bootstrap_admin_email: ""
+  bootstrap_admin_name: ""
+
+  provider: "local" # local | ldap | radius
+  ldap:
+    server: ""
+    bind_dn: ""
+    bind_password: ""
+    base_dn: ""
+    user_filter: "(uid={username})"
+    email_attr: "mail"
+    display_name_attr: "cn"
+    group_attr: "memberOf"
+    start_tls: false
+    skip_tls_verify: false
+  radius:
+    server: ""
+    secret: ""
+    nas_identifier: "tiyi"
+
+license:
+  key_path: "" # empty keeps Community single-node behavior
+
+update:
+  repo: "zzmzm/tiyi"
+  channel: "stable" # stable | prerelease
+  mirror: "auto"    # auto | github | gitee
+  api_base_url: "https://api.github.com"
+
+geo:
+  auto_update: true # disable for air-gapped operation
+  update_interval: "24h" # Go duration, minimum 1h

@@ -36,7 +36,7 @@ sudo journalctl -u tiyi -b -n 200 --no-pager</code></pre>
     <p><code>update</code> 原子替换已验证的二进制，但不会重启正在运行的进程。</p>
 
     <h2 id="incompatible-update">状态不兼容的更新</h2>
-    <p>v3.6.0 无法读取更早版本创建的状态。完成这一次过渡时，先保留离线回滚归档，purge 旧状态/配置，再更新保留的二进制并安装新服务；不要导入旧归档。</p>
+    <p>v3.7.0 无法读取 v3.6.0 或更早版本创建的状态。先保留离线回滚归档，purge 旧状态/配置，再更新保留的二进制、安装新服务并重新注册每一个远程 Agent；不要导入旧数据库、身份、spool 或 bundle 缓存。</p>
 <pre><code>sudo systemctl stop tiyi
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 sudo install -d -m 0700 /var/backups/tiyi
@@ -94,5 +94,5 @@ ss -ltnp</code></pre>
     <div class="docs-pager"><a href="installation.html"><span class="label">← 上一页</span><span class="title">安装</span></a><a class="next" href="operations.html"><span class="label">下一页 →</span><span class="title">日常运维</span></a></div>
   </main><aside class="docs-toc" id="docs-toc" aria-label="本页大纲"><h4>本页大纲</h4></aside>
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span><span class="build">build v3.6.0 · 2026-08-16</span></div></div></footer><script src="../../assets/js/main.js" defer></script>
+<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span><span class="build">build v3.7.0 · 2026-08-31</span></div></div></footer><script src="../../assets/js/main.js" defer></script>
 </body></html>

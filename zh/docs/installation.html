@@ -61,21 +61,21 @@
     <h1>安装</h1>
     <p class="lede">太一以签名 Linux 二进制形式分发。从公开发行渠道安装，写一份小 YAML 配置，然后运行完整 Controller 或入网一个远程 Agent。</p>
 
-    <div class="callout callout-info"><div class="callout-body"><p><strong>安装器用于干净主机。</strong>已有二进制、状态、配置或 unit 时，请按<a href="upgrade-migration.html">升级与迁移</a>操作。v3.6.0 与更早版本创建的状态不兼容，需要执行文档中的 purge 流程。</p></div></div>
+    <div class="callout callout-info"><div class="callout-body"><p><strong>安装器用于干净主机。</strong>已有二进制、状态、配置或 unit 时，请按<a href="upgrade-migration.html">升级与迁移</a>操作。v3.7.0 无法读取 v3.6.0 或更早版本创建的状态，需要 purge 并重新注册远程 Agent。</p></div></div>
 
     <h2 id="prebuilt">安装签名二进制</h2>
     <p>太一是单一签名二进制 —— 在单节点上免费且功能完整。权威安装脚本发布在 <code>https://www.tiyisec.com/install.sh</code>：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.6.0 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.7.0 linux/amd64</span></code></pre>
     <p>脚本会下载与平台匹配的二进制，比对 SHA-256 manifest，并放到 <code>/usr/local/bin/tiyi</code>。默认先尝试 GitHub，失败或过慢时回退到 Gitee Release 镜像；必要时可用 <code>TIYI_MIRROR=gitee</code> 强制使用 Gitee：</p>
 <pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.6.0</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
+    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.7.0</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
     <p>公开分发仓库：<a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> 与 <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>。</p>
     <p><code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。请在 Controller、远程 Agent 与独立 dashboard 主机上安装同一个签名版本。</p>
 
     <h2 id="config-file">配置文件</h2>
-    <p>太一读取一份 Koanf 风格的 YAML 配置。从下面这份最小配置起步，其余靠默认：</p>
+    <p><code>tiyi.yaml</code> 控制进程启动，包括监听、状态路径、认证、更新与 Geo 设置；它不创建站点或策略。可从下面的最小配置起步，也可以<a href="templates/tiyi.yaml" download>下载包含全部进程配置键的完整注释模板</a>。</p>
 <pre><code><span class="c"># /etc/tiyi/tiyi.yaml</span>
 <span class="k">server</span>:
   <span class="k">addr</span>: <span class="s">"0.0.0.0:8080"</span>
@@ -84,10 +84,10 @@
   <span class="k">state_db</span>: <span class="s">"/var/lib/tiyi/state.db"</span>
 
 <span class="k">crypto</span>:
-  <span class="k">kek_file</span>: <span class="s">"/etc/tiyi/kek.bin"</span>      <span class="c"># 32 字节静态加密密钥</span>
+  <span class="k">kek_file</span>: <span class="s">""</span>                       <span class="c"># 使用持久化的 /var/lib/tiyi/kek.bin</span>
 
 <span class="k">auth</span>:
-  <span class="k">jwt_secret</span>: <span class="s">"<span class="v">&lt;32+ 字节随机&gt;</span>"</span>      <span class="c"># HS256 签名密钥</span>
+  <span class="k">jwt_secret</span>: <span class="s">""</span>                       <span class="c"># 生产环境设置私密的 32+ 字节值</span>
 
 <span class="k">proxy</span>:
   <span class="k">http_addr</span>:  <span class="s">":80"</span>
@@ -95,6 +95,7 @@
   <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
     <p>用 <code>--config</code> 传入。这份配置使用 <code>/var/lib/tiyi</code> 与 80/443 端口，因此请以 root 运行（或用下面的 systemd unit）：</p>
 <pre><code><span class="p">$</span> sudo tiyi run --config /etc/tiyi/tiyi.yaml || sudo /usr/local/bin/tiyi run --config /etc/tiyi/tiyi.yaml</code></pre>
+    <p>启动前先执行只读配置/启动检查：<code>sudo tiyi --config /etc/tiyi/tiyi.yaml doctor --mode run</code>。需要把站点变更纳入版本控制时，请使用另一份<a href="templates/apply.yaml" download>四类资源声明式清单模板</a>，先用 <code>tiyi diff -f</code> 预览，再用 <code>tiyi apply -f</code> 应用。</p>
     <p>若想以普通用户、不用 <code>sudo</code> 试用，可以不走配置文件，而是在命令行上传入可写路径与高端口 —— 见<a href="quickstart.html#run">快速开始</a>。</p>
 
     <div class="callout callout-warn">
@@ -102,7 +103,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </div>
       <div class="callout-body">
-        <p><strong>上线前两个字段必须显式设置。</strong><code>crypto.kek_file</code> 与 <code>auth.jwt_secret</code> 都有不能跨重启幸存的开发友好回退。详见<a href="deployment.html#hardening">部署 → 生产加固</a>。</p>
+        <p><strong>上线前设置稳定 JWT secret，并保护好 KEK。</strong><code>auth.jwt_secret</code> 留空时是临时值，重启会使会话失效；<code>crypto.kek_file</code> 留空的行为不同：太一会创建并复用 <code>&lt;state-db 所在目录&gt;/kek.bin</code>，必须与 <code>state.db</code> 一起备份，外部 KEK 路径并非必填。详见<a href="deployment.html#hardening">部署 → 生产加固</a>。</p>
       </div>
     </div>
 
@@ -222,7 +223,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

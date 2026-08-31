@@ -136,7 +136,7 @@
     <p>Three architectural decisions shape every page that follows:</p>
     <ul>
       <li><strong>One binary, zero runtime deps.</strong> No Docker daemon, no Nginx, no Postgres, no Redis. The binary embeds Caddy, Coraza, SQLite, and the Vben Admin UI. A reasonable sysadmin should bring up a usable instance in under five minutes.</li>
-      <li><strong>API-first with declarative YAML.</strong> One ConnectRPC API owns every mutation. The UI and CLI are thin clients. <code>tiyi apply -f site.yaml</code> produces the same effect as clicking <em>Save</em> — same validator, same mutator, same audit row.</li>
+      <li><strong>API-first with declarative YAML.</strong> ConnectRPC owns authenticated mutations while the UI and CLI remain clients. <code>tiyi apply -f site.yaml</code> adds a strict, transactional desired-state path for its supported resource fields, with the same durable store and audit chain.</li>
       <li><strong>Local first, remote when needed.</strong> The built-in local data plane applies in-process. Remote Agents hold one long-lived ConnectRPC stream to the Controller, verify signed bundles, reconcile after reconnect, and continue serving the last accepted bundle during a Controller outage.</li>
     </ul>
 
@@ -174,7 +174,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

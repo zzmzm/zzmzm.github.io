@@ -85,21 +85,21 @@
     <h1>Installation</h1>
     <p class="lede">Tiyi is distributed as a signed Linux binary. Install it from the public release channel, write a small YAML config, and start the complete Controller runtime or enroll a remote Agent.</p>
 
-    <div class="callout callout-info"><div class="callout-body"><p><strong>This installer is for a clean host.</strong> For an existing binary, state, configuration, or unit, use <a href="upgrade-migration.html">upgrade and migration</a>. State created before v3.6.0 is incompatible with v3.6.0 and requires the documented purge flow.</p></div></div>
+    <div class="callout callout-info"><div class="callout-body"><p><strong>This installer is for a clean host.</strong> For an existing binary, state, configuration, or unit, use <a href="upgrade-migration.html">upgrade and migration</a>. v3.7.0 cannot open state created by v3.6.0 or earlier releases and requires the documented purge and Agent re-enrollment flow.</p></div></div>
 
     <h2 id="prebuilt">Install the signed binary</h2>
     <p>Tiyi is one signed binary — free and full-featured on a single node. The canonical install script is published at <code>https://www.tiyisec.com/install.sh</code>:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.6.0 linux/amd64</span></code></pre>
+<span class="c">tiyi v3.7.0 linux/amd64</span></code></pre>
     <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. It tries GitHub first and falls back to the Gitee release mirror; force Gitee with <code>TIYI_MIRROR=gitee</code> when needed:</p>
 <pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.6.0</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
+    <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.7.0</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
     <p>Public distribution repos: <a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> and <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>.</p>
     <p><code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets. Install the signed release from the public channel independently on every Controller, Agent, and dashboard host before configuring its role.</p>
 
     <h2 id="config-file">Config file</h2>
-    <p>Tiyi reads a Koanf-based YAML config. Start from this minimal config and let the defaults handle the rest:</p>
+    <p><code>tiyi.yaml</code> controls process startup: listeners, state path, authentication, update, and Geo settings. It does not create sites or policies. Start from this minimal config and let the defaults handle the rest, or <a href="templates/tiyi.yaml" download>download the complete annotated template</a> containing every supported process key.</p>
 <pre><code><span class="c"># /etc/tiyi/tiyi.yaml</span>
 <span class="k">server</span>:
   <span class="k">addr</span>: <span class="s">"0.0.0.0:8080"</span>
@@ -108,10 +108,10 @@
   <span class="k">state_db</span>: <span class="s">"/var/lib/tiyi/state.db"</span>
 
 <span class="k">crypto</span>:
-  <span class="k">kek_file</span>: <span class="s">"/etc/tiyi/kek.bin"</span>      <span class="c"># 32-byte at-rest encryption key</span>
+  <span class="k">kek_file</span>: <span class="s">""</span>                       <span class="c"># uses persistent /var/lib/tiyi/kek.bin</span>
 
 <span class="k">auth</span>:
-  <span class="k">jwt_secret</span>: <span class="s">"<span class="v">&lt;32+ random bytes&gt;</span>"</span>      <span class="c"># HS256 signing secret</span>
+  <span class="k">jwt_secret</span>: <span class="s">""</span>                       <span class="c"># set a private 32+ byte value for production</span>
 
 <span class="k">proxy</span>:
   <span class="k">http_addr</span>:  <span class="s">":80"</span>
@@ -119,6 +119,7 @@
   <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
     <p>Pass it with <code>--config</code>. This config uses <code>/var/lib/tiyi</code> and ports 80/443, so run it as root (or under the systemd unit below):</p>
 <pre><code><span class="p">$</span> sudo tiyi run --config /etc/tiyi/tiyi.yaml || sudo /usr/local/bin/tiyi run --config /etc/tiyi/tiyi.yaml</code></pre>
+    <p>Before starting, run the read-only config/startup check: <code>sudo tiyi --config /etc/tiyi/tiyi.yaml doctor --mode run</code>. For a version-controlled site rollout, use the separate <a href="templates/apply.yaml" download>four-kind declarative manifest template</a>, preview it with <code>tiyi diff -f</code>, then apply it with <code>tiyi apply -f</code>.</p>
     <p>To try Tiyi as a normal user without <code>sudo</code>, skip the config file and pass writable paths and high ports on the command line instead — see the <a href="quickstart.html#run">Quickstart</a>.</p>
 
     <div class="callout callout-warn">
@@ -126,7 +127,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </div>
       <div class="callout-body">
-        <p><strong>Two fields are mandatory before going live.</strong> <code>crypto.kek_file</code> and <code>auth.jwt_secret</code> have dev-friendly fallbacks that explicitly do not survive a restart. See <a href="deployment.html#hardening">Deployment → Production hardening</a> for the contract.</p>
+        <p><strong>Set a stable JWT secret and protect the KEK before going live.</strong> An empty <code>auth.jwt_secret</code> is ephemeral and invalidates sessions at restart. An empty <code>crypto.kek_file</code> is different: Tiyi creates and reuses <code>&lt;state-db-dir&gt;/kek.bin</code>, which must be backed up with <code>state.db</code>; an external KEK path is optional. See <a href="deployment.html#hardening">Deployment → Production hardening</a>.</p>
       </div>
     </div>
 
@@ -246,7 +247,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

@@ -1,0 +1,65 @@
+# 太一进程配置模板
+# 保存为 /etc/tiyi/tiyi.yaml。此文件只控制进程启动；站点、上游、WAF 策略和
+# IP 列表绑定是另外管理的持久资源。
+
+server:
+  addr: "0.0.0.0:8080"
+
+store:
+  state_db: "/var/lib/tiyi/state.db"
+
+log:
+  level: "info" # debug | info | warn | error
+
+proxy:
+  caddy_admin_socket: "/var/lib/tiyi/caddy-admin.sock"
+  http_addr: ":80"
+  https_addr: ":443"
+
+crypto:
+  # 留空时使用持久化的 <state-db 所在目录>/kek.bin，必须与 state.db 一起备份。
+  # 若改用外部路径，先创建服务用户可读的 32 字节文件。
+  kek_file: ""
+
+auth:
+  # 生产环境替换为至少 32 字节的私密随机值；留空会使已有会话在每次重启后失效。
+  jwt_secret: ""
+  access_token_ttl: "8h"
+  refresh_token_ttl: "168h"
+  refresh_cookie_secure: false # HTTPS 控制台应设为 true
+
+  # 只用于首个用户；全留空时创建 admin 并打印一次性随机密码。
+  bootstrap_admin_username: ""
+  bootstrap_admin_password: ""
+  bootstrap_admin_email: ""
+  bootstrap_admin_name: ""
+
+  provider: "local" # local | ldap | radius
+  ldap:
+    server: ""
+    bind_dn: ""
+    bind_password: ""
+    base_dn: ""
+    user_filter: "(uid={username})"
+    email_attr: "mail"
+    display_name_attr: "cn"
+    group_attr: "memberOf"
+    start_tls: false
+    skip_tls_verify: false
+  radius:
+    server: ""
+    secret: ""
+    nas_identifier: "tiyi"
+
+license:
+  key_path: "" # 留空保持 Community 单节点行为
+
+update:
+  repo: "zzmzm/tiyi"
+  channel: "stable" # stable | prerelease
+  mirror: "auto"    # auto | github | gitee
+  api_base_url: "https://api.github.com"
+
+geo:
+  auto_update: true # 离线环境设为 false
+  update_interval: "24h" # Go duration，最小 1h

@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.6.0</span>
-    执行链追踪 + 浏览器挑战 + 可迁移站点
+    <span class="tag">v3.7.0</span>
+    Bot 防护 + 因果 WAF 过载 + IP Lists v2
   </span>
 
   <h1>
@@ -212,7 +212,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>OWASP CRS 4 开箱即用</h3>
-        <p>Coraza 把结构化策略编译成 SecLang，而 CIDR 与 <span class="mono">geo:CC</span> IP 列表由压缩原生处理器在 WAF 之前匹配。可视化自定义规则面向可识别的 HTTP 数据（含 JSON 字段路径），并提供五条经 Coraza 验证的食谱。按站点覆盖、偏执等级、评分阈值与排除包 —— 全部不需要 fork 规则集。</p>
+        <p>Coraza 把结构化策略编译成 SecLang；真实 IP/CIDR 列表和由 MMDB 支撑的 Country Access 在 WAF 之前由原生处理器执行。完整内嵌文件清单保护 CRS 完整性，因果 CPU 压力策略可继续完整检查、拒绝请求或只绕过 CRS。站点覆盖、可视化规则、偏执等级、阈值与排除都无需 fork 规则集。</p>
       </div>
 
       <div class="feature reveal">
@@ -250,10 +250,18 @@
 
       <div class="feature reveal">
         <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5 5 0 0 0-5 5v2H5a2 2 0 0 0-2 2v7h18v-7a2 2 0 0 0-2-2h-2V8a5 5 0 0 0-5-5Z"/><path d="M9 10V8a3 3 0 0 1 6 0v2M8 15h.01M16 15h.01M12 14v2"/></svg>
+        </div>
+        <h3>自适应 Bot 与滥用控制</h3>
+        <p>仅 HTTPS 站点可要求静默浏览器工作量证明或私密 WebAuthn 确认。滚动窗口限速增加站点/全局临时封禁与独立挑战响应；provider IP 订阅以原子 last-good 快照发布，绝不会被隐式信任。</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg>
         </div>
         <h3>内置可观测性</h3>
-        <p>精确计数、不可变 SecurityFact、保留日志与「执行分析」把每个请求关联到最终动作及负责层。API Inventory、节点趋势、管道诊断和 Prometheus 导出器都保留在受保护的本地管理 socket 上。</p>
+        <p>精确计数、客户端公平的有界 SecurityFact 样本、保留日志与「执行分析」把每个请求关联到最终动作及负责层。API Inventory、WAF 压力与覆盖信号、管道诊断和 Prometheus 导出器都保留在受保护的本地管理 socket 上。</p>
       </div>
 
       <div class="feature reveal">
@@ -276,8 +284,8 @@
         <div class="feature-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a4 4 0 0 0 0-8 6 6 0 0 0-11.7-1.5A4.5 4.5 0 0 0 6.5 18z"/></svg>
         </div>
-        <h3>CDN 感知客户端 IP</h3>
-        <p>可执行的节点/边/规则拓扑终结了零散的 XFF 解析。每个 Header 可选择自动跳过已验证代理，或按固定位置提取；CDN/代理网段编译为单一物理池，并做失败关闭的拓扑校验。站点页持有全局默认，支持按站点分析与多 CDN Header。</p>
+        <h3>通用代理客户端 IP 信任</h3>
+        <p>可执行的节点/边/规则拓扑终结零散 XFF 解析。命名代理使用普通手动或订阅 IP 列表，每个 Header 选择已验证代理剥离或固定位置提取；失败关闭分析生成待审核草案，不会静默信任 provider feed。</p>
       </div>
 
       <div class="feature reveal">
@@ -648,6 +656,19 @@
     </div>
 
     <div class="timeline reveal">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.7.0</span>
+          <span class="tl-date">2026-08-31</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">自适应防护、provider IP 控制与因果过载安全</div>
+        <div class="tl-body">
+          用浏览器证明或私密 WebAuthn 确认保护 HTTPS 站点；把手动与订阅 IP 列表发布为受保护原子快照；操作一等 Country Access；并在实测 Coraza 需求导致 CPU 压力时明确选择完整检查、带标记 503 或只绕过 CRS。
+        </div>
+      </div>
+
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -1086,6 +1107,19 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.7.0</span>
+          <span class="tl-date">2026-08-31</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">自适应防护 + 信任拓扑控制</div>
+        <div class="tl-body">
+          站点级 Bot gate、因果 WAF 过载策略、IP Lists v2 订阅与 Country Access、滚动窗口封禁、独立拦截响应、通用代理信任图、公平有界观测与完整 CRS 文件完整性。
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.6.0</span>
           <span class="tl-date">2026-08-16</span>
           <span class="tl-tag shipped">已发布</span>
@@ -1330,7 +1364,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · <a href="privacy.html">隐私政策</a> · <a href="terms.html">服务条款</a> · 商业分发 · Apache-2.0 上游</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

@@ -97,7 +97,7 @@
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version</code></pre>
     <p>See <a href="installation.html#prebuilt">Installation</a> for version pinning, install-prefix overrides, and the Gitee mirror.</p>
-    <div class="callout callout-info"><div class="callout-body"><p><strong>Existing installation?</strong> The public installer is for a clean host. Use <a href="upgrade-migration.html">upgrade and migration</a>; state created before v3.6.0 needs the documented purge flow when moving to v3.6.0.</p></div></div>
+    <div class="callout callout-info"><div class="callout-body"><p><strong>Existing installation?</strong> The public installer is for a clean host. Use <a href="upgrade-migration.html">upgrade and migration</a>; v3.7.0 cannot open v3.6.0 or earlier state and requires purge plus remote-Agent re-enrollment.</p></div></div>
 
     <h2 id="run">2. Run in complete runtime</h2>
     <p>The recommended path is one command: <code>tiyi install --now</code> installs Tiyi as a hardened systemd service, enables it for boot, and starts it now. The unit runs unprivileged (ports 80/443 via <code>CAP_NET_BIND_SERVICE</code>), and on a first install the installer pre-creates the administrator and prints the one-time login - URL, username, password - right in your terminal:</p>
@@ -211,7 +211,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

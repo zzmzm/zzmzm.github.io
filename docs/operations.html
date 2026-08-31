@@ -38,7 +38,7 @@
 
     <div class="request-path" role="img" aria-label="Client request passes through listener and TLS, site and path routing, WAF policy, then upstream; independent observation planes produce exact counters, SecurityFacts, optional evidence, alerts, and SIEM output.">
       <span>Client</span><b>→</b><span>Listener + TLS</span><b>→</b><span>Site + path</span><b>→</b><span>WAF policy</span><b>→</b><span>Upstream</span>
-      <small>exact counters · immutable SecurityFacts · optional detail/evidence · alerts/direct SIEM</small>
+      <small>exact counters · bounded SecurityFact samples · optional detail/evidence · alerts/direct SIEM</small>
     </div>
 
     <h2 id="publish">1. Publish an application</h2>
@@ -130,7 +130,7 @@ curl -fsS http://127.0.0.1:9100/metrics | grep '^tiyi_' | head</code></pre>
   </main>
   <aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4></aside>
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.6.0 · 2026-08-16</span></div></div></footer>
+<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.7.0 · 2026-08-31</span></div></div></footer>
 <script src="../assets/js/main.js" defer></script>
 </body>
 </html>

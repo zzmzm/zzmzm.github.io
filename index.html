@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.6.0</span>
-    Enforcement trace + browser challenge + portable sites
+    <span class="tag">v3.7.0</span>
+    Bot protection + causal WAF overload + IP Lists v2
   </span>
 
   <h1>
@@ -214,7 +214,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>OWASP CRS 4 out of the box</h3>
-        <p>Coraza compiles structured policies into SecLang while CIDR and <span class="mono">geo:CC</span> IP lists match in a compressed native handler ahead of the WAF. The visual custom-rule builder targets recognizable HTTP data — including JSON field paths — and five Coraza-verified recipes. Per-site overrides, paranoia levels, scoring thresholds, and exclusion packages — without forking the ruleset.</p>
+        <p>Coraza compiles structured policies into SecLang while literal IP/CIDR lists and MMDB-backed Country Access run in native handlers ahead of the WAF. A complete embedded-file manifest guards CRS integrity, and causal CPU-pressure policy can keep full inspection, reject, or bypass only CRS. Per-site overrides, visual rules, paranoia levels, thresholds, and exclusions require no ruleset fork.</p>
       </div>
 
       <div class="feature reveal">
@@ -255,11 +255,19 @@
 
       <div class="feature reveal">
         <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a5 5 0 0 0-5 5v2H5a2 2 0 0 0-2 2v7h18v-7a2 2 0 0 0-2-2h-2V8a5 5 0 0 0-5-5Z"/><path d="M9 10V8a3 3 0 0 1 6 0v2M8 15h.01M16 15h.01M12 14v2"/></svg>
+        </div>
+        <h3>Adaptive bot and abuse controls</h3>
+        <p>HTTPS sites can require silent browser proof-of-work or private WebAuthn confirmation. Rolling-window limits add temporary site/global bans and independent challenge responses; subscribed provider IP feeds publish atomic last-good snapshots and never become trusted implicitly.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-icon">
           <!-- chart -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg>
         </div>
         <h3>Built-in observability</h3>
-        <p>Exact counters, immutable SecurityFacts, retained logs, and the Enforcement view join each request to its final action and responsible layer. API Inventory, node trends, pipeline diagnostics, and a Prometheus exporter stay available on the protected local admin socket.</p>
+        <p>Exact counters, client-fair bounded SecurityFact samples, retained logs, and the Enforcement view join each request to its final action and responsible layer. API Inventory, WAF-pressure and coverage signals, pipeline diagnostics, and a Prometheus exporter stay available on the protected local admin socket.</p>
       </div>
 
       <div class="feature reveal">
@@ -285,8 +293,8 @@
           <!-- cloud-cdn -->
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a4 4 0 0 0 0-8 6 6 0 0 0-11.7-1.5A4.5 4.5 0 0 0 6.5 18z"/></svg>
         </div>
-        <h3>CDN-aware client IP</h3>
-        <p>An executable node/edge/rule topology ends XFF parsing fragmentation. Each Header chooses automatic verified-proxy skipping or fixed extraction; CDN/proxy ranges compile into one physical pool with fail-closed topology checks. Sites-owned global defaults, per-site analysis, and multi-CDN headers stay first-class.</p>
+        <h3>Generic proxy client-IP trust</h3>
+        <p>An executable node/edge/rule graph replaces scattered XFF parsing. Named proxies consume ordinary manual or subscribed IP lists, each Header selects verified-proxy peeling or fixed-position extraction, and fail-closed analysis produces reviewed drafts without silently trusting a provider feed.</p>
       </div>
 
       <div class="feature reveal">
@@ -661,6 +669,19 @@
     </div>
 
     <div class="timeline reveal">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.7.0</span>
+          <span class="tl-date">2026-08-31</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Adaptive protection, provider-fed IP controls, and causal overload safety</div>
+        <div class="tl-body">
+          Gate HTTPS sites with browser proof or private WebAuthn confirmation; publish manual and subscribed IP lists as protected atomic snapshots; operate first-class Country Access; and choose an explicit full-inspect, marked-503, or CRS-only bypass policy when measured Coraza demand causes CPU pressure.
+        </div>
+      </div>
+
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -1099,6 +1120,19 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.7.0</span>
+          <span class="tl-date">2026-08-31</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Adaptive protection + trust-topology controls</div>
+        <div class="tl-body">
+          Site-wide bot gates, causal WAF overload policy, IP Lists v2 subscriptions and Country Access, rolling-window bans, separate interception responses, generic proxy trust graphs, fair bounded observation, and complete CRS file integrity.
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.6.0</span>
           <span class="tl-date">2026-08-16</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -1343,7 +1377,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · proprietary · Apache-2.0 upstreams</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

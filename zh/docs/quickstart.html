@@ -92,7 +92,7 @@
 <pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
 <span class="p">$</span> tiyi --version</code></pre>
     <p>版本固定、安装目录覆盖与 Gitee 镜像用法见<a href="installation.html#prebuilt">安装</a>。</p>
-    <div class="callout callout-info"><div class="callout-body"><p><strong>已有安装？</strong>公开安装器用于干净主机，请先阅读<a href="upgrade-migration.html">升级与迁移</a>；用 v3.6.0 替换更早版本时，旧状态需要按文档执行 purge 流程。</p></div></div>
+    <div class="callout callout-info"><div class="callout-body"><p><strong>已有安装？</strong>公开安装器用于干净主机，请先阅读<a href="upgrade-migration.html">升级与迁移</a>；v3.7.0 无法读取 v3.6.0 或更早状态，需要 purge 并重新注册远程 Agent。</p></div></div>
 
     <h2 id="run">2. 运行太一</h2>
     <p>推荐路径是一条命令：<code>tiyi install --now</code> 会把太一安装为加固的 systemd 服务、设置开机自启并立即启动。服务单元以非特权用户运行（通过 <code>CAP_NET_BIND_SERVICE</code> 绑定 80/443 端口），首次安装时安装器会先创建管理员，并直接在当前终端打印一次性登录信息 - URL、用户名、密码：</p>
@@ -206,7 +206,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

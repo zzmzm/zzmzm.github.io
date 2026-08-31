@@ -50,7 +50,7 @@ tiyi upstream list</code></pre>
 
     <h2 id="incompatible-state">Installer refuses the host or startup rejects state</h2>
     <p>The public installer is for a clean host and refuses an existing binary, state database, configuration, or systemd unit. Runtime rejects a schema or migration ledger that is incompatible with the running binary.</p>
-    <p>Do not bypass the guard or edit migration metadata. Use <a href="upgrade-migration.html">upgrade and migration</a> to pair a compatible binary and state, move a complete installation, or run the documented purge flow. State created before v3.6.0 requires purge when moving to v3.6.0.</p>
+    <p>Do not bypass the guard or edit migration metadata. Use <a href="upgrade-migration.html">upgrade and migration</a> to pair a compatible binary and state, move a complete installation, or run the documented purge flow. v3.7.0 cannot open state created by v3.6.0 or earlier releases; purge and re-enroll every remote Agent.</p>
 
     <h2 id="pipeline">Counters exist but evidence or SIEM is late</h2>
     <p>Open <strong>Monitoring → Log Pipeline</strong> and inspect queue depth, drops, retries, and panic counters. Exact counters, retained evidence, and detail/SIEM delivery are independent. Test the destination from the Tiyi host and fix the consumer without restarting a healthy data plane unless diagnostics require it.</p>
@@ -61,5 +61,5 @@ tiyi upstream list</code></pre>
     <div class="docs-pager"><a href="operations.html"><span class="label">← Previous</span><span class="title">Operations guide</span></a><a class="next" href="concepts.html"><span class="label">Next →</span><span class="title">Domain model</span></a></div>
   </main><aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4></aside>
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.6.0 · 2026-08-16</span></div></div></footer><script src="../assets/js/main.js" defer></script>
+<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.7.0 · 2026-08-31</span></div></div></footer><script src="../assets/js/main.js" defer></script>
 </body></html>

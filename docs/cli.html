@@ -120,13 +120,13 @@
 <span class="p">$</span> sudo tiyi doctor --fix-state-ownership</code></pre>
 
     <h2 id="apply">Declarative apply</h2>
-    <p>The kubectl-style entry point. One YAML file, one command, one audit row. Apply creates resources that do not exist and updates the ones that drifted; an identical re-apply reports <code>unchanged</code> and writes nothing. Apply never deletes - resources missing from the manifest are left alone.</p>
+    <p>The kubectl-style entry point. One YAML file becomes one SQLite transaction with an audit receipt for each changed resource. Apply creates resources that do not exist and updates the ones that drifted; an identical re-apply reports <code>unchanged</code> and writes nothing. Apply never deletes resources missing from the manifest. A supplied <code>spec</code> fully replaces that kind's apply-managed fields—it is not a merge patch.</p>
 <pre><code><span class="p">$</span> tiyi apply -f site.yaml          <span class="c"># plan + apply</span>
 <span class="p">$</span> tiyi apply -f site.yaml --dry-run  <span class="c"># create/update/unchanged per resource, nothing written</span>
 <span class="p">$</span> tiyi apply -f - &lt; site.yaml       <span class="c"># read the manifest from stdin</span>
 <span class="p">$</span> tiyi get site                       <span class="c"># current state as JSON (upstream | site | policy | cert | iplist)</span>
 <span class="p">$</span> tiyi get upstream &lt;id&gt;              <span class="c"># one resource by ID</span></code></pre>
-    <p>Cross-references (<code>upstreamRef</code>, <code>certRef</code>, <code>policyRef</code>) are resolved by <em>name</em> before anything is written; a dangling reference fails the whole apply with <code>unresolved_reference</code>. A <code>proxy apply failed</code> error is different: resources were committed but the data plane rejected the bundle (for example the upstream health-check preflight cannot reach a backend) - fix the backend and re-apply the same manifest to reconcile.</p>
+    <p><a href="templates/apply.yaml" download>Download the complete Policy + Upstream + Site + IpList template</a>. Cross-references (<code>upstreamRef</code>, <code>certRef</code>, <code>policyRef</code>, <code>crsRulesetRef</code>) are resolved before writes, so forward references work and a dangling reference rolls back the whole resource transaction. A <code>proxy apply failed</code> error is different: the resource transaction committed, but the data plane rejected the candidate and retained its last-good runtime config. Fix the cause and re-apply the same manifest.</p>
 <pre><code>apiVersion: tiyi.io/v1
 kind: Upstream
 metadata:
@@ -155,11 +155,10 @@ kind: IpList
 metadata:
   name: office-allowlist
 spec:
-  kind: ALLOW                      <span class="c"># ALLOW | DENY | MONITOR</span>
+  description: Office egress addresses
   entries:
-    - { cidr: 203.0.113.0/24, description: office, expireAt: 2026-12-31T00:00:00Z }
-    - { cidr: geo:CN }</code></pre>
-    <p>Supported kinds: <code>Upstream</code> (<code>backends[]</code>, <code>loadBalance</code>, <code>healthCheck</code>, <code>status</code>), <code>Site</code> (<code>primaryHost</code>, <code>aliases[]</code>, <code>upstreamRef</code>/<code>upstreamsInline[]</code>, <code>tls</code>, <code>waf</code>, <code>status</code>), <code>Policy</code> (<code>engineState</code>, <code>blockingMode</code>, <code>crsRulesetRef</code>, <code>status</code>), <code>IpList</code> (<code>kind</code>, <code>entries[]</code> with <code>cidr</code>/<code>geo:CC</code>). Certificates are managed with <code>tiyi cert upload</code>/<code>cert issue</code> and referenced from a Site by name. Resources are matched by <code>(kind, name)</code>; specs are validated strictly, so an unknown field fails the apply instead of being ignored. Multiple documents in one file are applied in order and later documents may reference earlier ones by name.</p>
+    - { cidr: 203.0.113.0/24, description: office, expireAt: 2026-12-31T00:00:00Z }</code></pre>
+    <p>Supported kinds: <code>Upstream</code> (<code>backends[]</code>, <code>loadBalance</code>, <code>healthCheck</code>, <code>status</code>), <code>Site</code> (<code>primaryHost</code>, <code>aliases[]</code>, <code>upstreamRef</code>/<code>upstreamsInline[]</code>, <code>tls</code>, <code>waf</code>, <code>status</code>), <code>Policy</code> (<code>engineState</code>: <code>on</code>/<code>detection_only</code>/<code>off</code>, <code>blockingMode</code>: <code>anomaly</code>/<code>self_contained</code>, <code>crsRulesetRef</code>, <code>status</code>), and <code>IpList</code> (<code>description</code>, literal IP/CIDR <code>entries[]</code>). An IpList has no action until a separate binding is created; <code>geo:*</code> is rejected—use Country Access. Certificates are managed with <code>tiyi cert upload</code>/<code>cert issue</code> and referenced from a Site by name. Resources match case-insensitively by <code>(kind, name)</code>; unknown fields fail validation. References may point forward or backward within the same file.</p>
 
     <h2 id="sites">Sites</h2>
 <pre><code>tiyi site list
@@ -211,7 +210,9 @@ tiyi policy get <span class="v">&lt;id&gt;</span>
 tiyi policy templates
 tiyi policy create-from-template --name <span class="v">N</span> --template-id <span class="v">TEMPLATE_ID</span>
 tiyi policy create --name <span class="v">N</span> [--engine-state on|detection-only|off]
-tiyi policy update <span class="v">&lt;id&gt;</span> [...layer flags]
+tiyi policy update <span class="v">&lt;id&gt;</span> [--name <span class="v">N</span>] [--engine-state on|detection-only|off]
+tiyi policy layer replace <span class="v">&lt;id&gt;</span> http-policy --json '{"allowedMethods":["GET","HEAD"]}'
+tiyi policy layer replace <span class="v">&lt;id&gt;</span> arg-limits --file <span class="v">FILE.json</span> <span class="c"># complete replacement, not a merge patch</span>
 tiyi policy delete <span class="v">&lt;id&gt;</span>
 tiyi policy preview-seclang <span class="v">&lt;id&gt;</span>              <span class="c"># compiled SecLang</span>
 tiyi policy preview-impact <span class="v">&lt;id&gt;</span> [--crs-ruleset-id <span class="v">R</span>]
@@ -223,7 +224,8 @@ tiyi policy rollback <span class="v">&lt;id&gt;</span> --version-id <span class=
     <h3 id="rule-tuning">Rule overrides, custom rules, IP lists</h3>
 <pre><code>tiyi rule override upsert <span class="v">&lt;policy-id&gt;</span> --crs-rule-id <span class="v">N</span> --action default|disable|log_only|score_override [--site-id <span class="v">S</span>] [--scope /api]
 tiyi rule override delete <span class="v">&lt;override-id&gt;</span>
-tiyi rule custom create <span class="v">&lt;policy-id&gt;</span> --name <span class="v">N</span> --rule-id <span class="v">8000001</span> --seclang-file <span class="v">FILE</span>
+tiyi rule custom create <span class="v">&lt;policy-id&gt;</span> [--site-id <span class="v">S</span>] --name <span class="v">N</span> --rule-id <span class="v">8000001</span> --seclang-file <span class="v">FILE</span>
+tiyi rule custom update <span class="v">&lt;custom-rule-id&gt;</span> --site-id '' <span class="c"># return to policy-wide scope</span>
 tiyi rule custom delete <span class="v">&lt;custom-rule-id&gt;</span>
 tiyi rule ip-list create --kind allow|deny|monitor --name <span class="v">N</span> --entry 203.0.113.0/24
 tiyi rule ip-list add-entry <span class="v">&lt;id&gt;</span> --entry 198.51.100.0/24
@@ -358,7 +360,7 @@ tiyi dashboard                   <span class="c"># UI-only process</span></code>
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

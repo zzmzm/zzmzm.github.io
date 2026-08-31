@@ -36,7 +36,7 @@ sudo journalctl -u tiyi -b -n 200 --no-pager</code></pre>
     <p><code>update</code> atomically replaces the verified executable but does not restart the running process.</p>
 
     <h2 id="incompatible-update">Incompatible-state update</h2>
-    <p>v3.6.0 cannot open state created by earlier releases. For that transition, preserve an offline rollback archive, purge the old state/config, update the retained binary, then install a new service. The old archive is not imported.</p>
+    <p>v3.7.0 cannot open state created by v3.6.0 or earlier releases. Preserve an offline rollback archive, purge the old state/config, update the retained binary, then install a new service and re-enroll every remote Agent. Do not import the old database, identity, spool, or bundle cache.</p>
 <pre><code>sudo systemctl stop tiyi
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 sudo install -d -m 0700 /var/backups/tiyi
@@ -94,5 +94,5 @@ ss -ltnp</code></pre>
     <div class="docs-pager"><a href="installation.html"><span class="label">← Previous</span><span class="title">Installation</span></a><a class="next" href="operations.html"><span class="label">Next →</span><span class="title">Operations guide</span></a></div>
   </main><aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4></aside>
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.6.0 · 2026-08-16</span></div></div></footer><script src="../assets/js/main.js" defer></script>
+<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.7.0 · 2026-08-31</span></div></div></footer><script src="../assets/js/main.js" defer></script>
 </body></html>

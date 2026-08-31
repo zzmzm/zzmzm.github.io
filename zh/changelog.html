@@ -54,6 +54,28 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.7.0</span>
+          <span class="tl-date">2026-08-31</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">自适应防护、信任拓扑与压力安全执行</div>
+        <div class="tl-body">
+          <p>v3.7.0 加入站点级 Bot 准入、受保护 provider IP 控制、因果 WAF 过载策略、滚动窗口滥用响应与有界观测，同时让每一次降级或拦截都可解释。</p>
+          <ul>
+            <li><strong>Bot 准入。</strong>仅 HTTPS 站点可运行静默浏览器工作量证明，或要求私密 WebAuthn 确认，并具备有界 clearance、窄范围豁免、可信列表引用与准确执行结果。</li>
+            <li><strong>因果 WAF 过载。</strong>节点 CPU 与 Coraza 需求共同建立因果后，才进入明确的继续、带标记 503 拒绝或只绕过 CRS 模式；原生 IP、国家、限速与 body 控制继续有效。</li>
+            <li><strong>IP Lists v2 + Country Access。</strong>手动/文件/provider 订阅支持解析预览、JSONPath、原子快照、删除 hold、last-good 编译与按需分页。国家策略是由 active Country MMDB 支撑的独立持久资源。</li>
+            <li><strong>滚动窗口滥用响应。</strong>规范限速增加站点/全局临时封禁、独立挑战 profile，以及彼此分离的 WAF/限速拦截模板。</li>
+            <li><strong>通用信任图。</strong>命名代理使用普通手动或订阅 IP 列表并表达 Header-first 信任边；分析草案始终由运维审核，绝不静默启用 feed。</li>
+            <li><strong>有界真相面。</strong>客户端公平 SecurityFact 采样、分离的覆盖/过载信号、完整内嵌 CRS 文件完整性、持久 Country 激活与 panic 隔离日志共同保护数据面。</li>
+          </ul>
+          <p><strong>升级边界：</strong>v3.7.0 需要先备份并 purge，用全新 Controller 状态按审核结果重建资源并重新注册远程 Agent；无法读取 v3.6.0 或更早状态。</p>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.6.0</span>
           <span class="tl-date">2026-08-16</span>
           <span class="tl-tag shipped">已发布</span>
@@ -914,7 +936,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

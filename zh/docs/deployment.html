@@ -55,14 +55,15 @@
     <p class="lede">把太一 Controller 投入生产，需要决定密钥放在哪、需要哪些远程数据平面、日志去哪，以及如何备份恢复和升级。</p>
 
     <h2 id="hardening">生产加固</h2>
-    <p>有两个配置字段带不能跨重启幸存的开发友好回退。上线前显式设定它们。</p>
+    <p>JWT 的回退是临时值；KEK 的回退会持久化在 <code>state.db</code> 旁边。上线前应设置稳定 JWT secret，并把状态数据库与 KEK 作为一个整体做经过恢复验证的备份；外部 KEK 路径是可选项。</p>
 
     <h3 id="kek">KEK —— 静态加密密钥</h3>
 <pre><code><span class="k">crypto</span>:
   <span class="k">kek_file</span>: <span class="s">"/etc/tiyi/kek.bin"</span>     <span class="c"># 32 字节静态密钥</span></code></pre>
     <p>所有信封加密的 blob（TLS 私钥、ACME 账户密钥、ACME DNS provider 凭据、bundle 签名密钥）用这个 KEK 解密。生成一次并备份到 state 数据库旁边：</p>
-<pre><code><span class="p">$</span> install -m 0600 /dev/null /etc/tiyi/kek.bin
-<span class="p">$</span> head -c 32 /dev/urandom &gt; /etc/tiyi/kek.bin</code></pre>
+<pre><code><span class="p">$</span> openssl rand 32 | sudo tee /etc/tiyi/kek.bin &gt;/dev/null
+<span class="p">$</span> sudo chown tiyi:tiyi /etc/tiyi/kek.bin
+<span class="p">$</span> sudo chmod 0600 /etc/tiyi/kek.bin</code></pre>
 
     <div class="callout callout-danger">
       <div class="callout-icon">
@@ -70,7 +71,7 @@
       </div>
       <div class="callout-body">
         <p><strong>丢失 KEK 等于丢失所有加密 blob。</strong>把它与 <code>state.db</code> 一起备份。当前基线不支持 KEK 轮换，因为这需要重包所有加密 blob。</p>
-        <p>另:如果不显式配置 <code>crypto.kek_file</code>,太一在首次启动时会在 <code>&lt;state-db-dir&gt;/kek.bin</code> 自动生成。这对单机开发足够,但在 state 目录可能短暂的生产环境很脆弱。</p>
+        <p>不设置 <code>crypto.kek_file</code> 时，太一会自动生成并持续复用 <code>&lt;state-db 所在目录&gt;/kek.bin</code>。只要完整状态目录是持久的并纳入备份，这就是有效的单节点布局；仅当密钥存储或备份设计需要时才设置外部路径。</p>
       </div>
     </div>
 
@@ -193,7 +194,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

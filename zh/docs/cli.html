@@ -89,13 +89,13 @@
 <span class="p">$</span> sudo tiyi doctor --fix-state-ownership</code></pre>
 
     <h2 id="apply">声明式 apply</h2>
-    <p>kubectl 风格入口。一份 YAML、一条命令、一行审计。apply 创建不存在的资源、更新发生漂移的资源；完全相同的重复 apply 报 <code>unchanged</code> 且不写库。apply 永不删除 - manifest 里缺失的资源不会被移除。</p>
+    <p>kubectl 风格入口。一份 YAML 对应一个 SQLite 事务，每个发生变更的资源都有审计回执。apply 创建不存在的资源、更新发生漂移的资源；完全相同的重复 apply 报 <code>unchanged</code> 且不写库，也不会删除 manifest 中缺失的资源。提交的 <code>spec</code> 会完整替换该 kind 由 apply 管理的字段，并不是 merge patch。</p>
 <pre><code><span class="p">$</span> tiyi apply -f site.yaml          <span class="c"># 计划 + 落库</span>
 <span class="p">$</span> tiyi apply -f site.yaml --dry-run  <span class="c"># 逐资源显示 create/update/unchanged，不写库</span>
 <span class="p">$</span> tiyi apply -f - &lt; site.yaml       <span class="c"># 从 stdin 读取 manifest</span>
 <span class="p">$</span> tiyi get site                       <span class="c"># 以 JSON 查看当前状态（upstream | site | policy | cert | iplist）</span>
 <span class="p">$</span> tiyi get upstream &lt;id&gt;              <span class="c"># 按 ID 查看单个资源</span></code></pre>
-    <p>交叉引用（<code>upstreamRef</code>、<code>certRef</code>、<code>policyRef</code>）在任何写入之前按<em>名字</em>解析；引用不存在则整体报 <code>unresolved_reference</code> 失败。<code>proxy apply failed</code> 是另一类错误：资源已落库但数据面拒绝了配置包（例如上游健康检查预探失败）- 修好后用同一份 manifest 重新 apply 即可收敛。</p>
+    <p><a href="templates/apply.yaml" download>下载包含 Policy + Upstream + Site + IpList 的完整模板</a>。交叉引用（<code>upstreamRef</code>、<code>certRef</code>、<code>policyRef</code>、<code>crsRulesetRef</code>）在写入前解析，因此支持向前引用；悬空引用会回滚整个资源事务。<code>proxy apply failed</code> 是另一类错误：资源事务已经提交，但数据面拒绝候选配置并保留 last-good 运行配置。修复原因后用同一 manifest 重试。</p>
 <pre><code>apiVersion: tiyi.io/v1
 kind: Upstream
 metadata:
@@ -124,11 +124,10 @@ kind: IpList
 metadata:
   name: office-allowlist
 spec:
-  kind: ALLOW                      <span class="c"># ALLOW | DENY | MONITOR</span>
+  description: 办公出口地址
   entries:
-    - { cidr: 203.0.113.0/24, description: office, expireAt: 2026-12-31T00:00:00Z }
-    - { cidr: geo:CN }</code></pre>
-    <p>支持的 kind：<code>Upstream</code>（<code>backends[]</code>、<code>loadBalance</code>、<code>healthCheck</code>、<code>status</code>）、<code>Site</code>（<code>primaryHost</code>、<code>aliases[]</code>、<code>upstreamRef</code>/<code>upstreamsInline[]</code>、<code>tls</code>、<code>waf</code>、<code>status</code>）、<code>Policy</code>（<code>engineState</code>、<code>blockingMode</code>、<code>crsRulesetRef</code>、<code>status</code>）、<code>IpList</code>（<code>kind</code>、<code>entries[]</code> 支持 <code>cidr</code>/<code>geo:CC</code>）。证书请用 <code>tiyi cert upload</code>/<code>cert issue</code> 管理，再在 Site 里按名字引用。资源按 <code>(kind, name)</code> 匹配；spec 严格校验，未知字段直接报错而不是被忽略。一个文件里的多个文档按顺序 apply，后面的文档可以按名字引用前面的文档。</p>
+    - { cidr: 203.0.113.0/24, description: office, expireAt: 2026-12-31T00:00:00Z }</code></pre>
+    <p>支持的 kind：<code>Upstream</code>（<code>backends[]</code>、<code>loadBalance</code>、<code>healthCheck</code>、<code>status</code>）、<code>Site</code>（<code>primaryHost</code>、<code>aliases[]</code>、<code>upstreamRef</code>/<code>upstreamsInline[]</code>、<code>tls</code>、<code>waf</code>、<code>status</code>）、<code>Policy</code>（<code>engineState</code>：<code>on</code>/<code>detection_only</code>/<code>off</code>，<code>blockingMode</code>：<code>anomaly</code>/<code>self_contained</code>，以及 <code>crsRulesetRef</code>、<code>status</code>）、<code>IpList</code>（<code>description</code> 与只接受真实 IP/CIDR 的 <code>entries[]</code>）。IpList 在单独创建绑定前没有动作；<code>geo:*</code> 会被拒绝，请使用 Country Access。证书请用 <code>tiyi cert upload</code>/<code>cert issue</code> 管理，再在 Site 中按名称引用。资源按大小写不敏感的 <code>(kind, name)</code> 匹配；未知字段校验失败；同一文件可向前或向后引用。</p>
 
     <h2 id="sites">站点</h2>
 <pre><code>tiyi site list
@@ -180,7 +179,9 @@ tiyi policy get <span class="v">&lt;id&gt;</span>
 tiyi policy templates
 tiyi policy create-from-template --name <span class="v">N</span> --template-id <span class="v">TEMPLATE_ID</span>
 tiyi policy create --name <span class="v">N</span> [--engine-state on|detection-only|off]
-tiyi policy update <span class="v">&lt;id&gt;</span> [...layer flag]
+tiyi policy update <span class="v">&lt;id&gt;</span> [--name <span class="v">N</span>] [--engine-state on|detection-only|off]
+tiyi policy layer replace <span class="v">&lt;id&gt;</span> http-policy --json '{"allowedMethods":["GET","HEAD"]}'
+tiyi policy layer replace <span class="v">&lt;id&gt;</span> arg-limits --file <span class="v">FILE.json</span> <span class="c"># 整层替换，不是合并补丁</span>
 tiyi policy delete <span class="v">&lt;id&gt;</span>
 tiyi policy preview-seclang <span class="v">&lt;id&gt;</span>              <span class="c"># 编译后的 SecLang</span>
 tiyi policy preview-impact <span class="v">&lt;id&gt;</span> [--crs-ruleset-id <span class="v">R</span>]
@@ -192,7 +193,8 @@ tiyi policy rollback <span class="v">&lt;id&gt;</span> --version-id <span class=
     <h3 id="rule-tuning">规则覆盖、自定义规则、IP 列表</h3>
 <pre><code>tiyi rule override upsert <span class="v">&lt;policy-id&gt;</span> --crs-rule-id <span class="v">N</span> --action default|disable|log_only|score_override [--site-id <span class="v">S</span>] [--scope /api]
 tiyi rule override delete <span class="v">&lt;override-id&gt;</span>
-tiyi rule custom create <span class="v">&lt;policy-id&gt;</span> --name <span class="v">N</span> --rule-id <span class="v">8000001</span> --seclang-file <span class="v">FILE</span>
+tiyi rule custom create <span class="v">&lt;policy-id&gt;</span> [--site-id <span class="v">S</span>] --name <span class="v">N</span> --rule-id <span class="v">8000001</span> --seclang-file <span class="v">FILE</span>
+tiyi rule custom update <span class="v">&lt;custom-rule-id&gt;</span> --site-id '' <span class="c"># 恢复为策略级作用域</span>
 tiyi rule custom delete <span class="v">&lt;custom-rule-id&gt;</span>
 tiyi rule ip-list create --kind allow|deny|monitor --name <span class="v">N</span> --entry 203.0.113.0/24
 tiyi rule ip-list add-entry <span class="v">&lt;id&gt;</span> --entry 198.51.100.0/24
@@ -321,7 +323,7 @@ tiyi dashboard                   <span class="c"># 仅 UI 进程</span></code></
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

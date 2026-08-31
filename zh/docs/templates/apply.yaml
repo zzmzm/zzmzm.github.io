@@ -1,0 +1,69 @@
+# 太一声明式资源模板
+# 替换示例值，用 `tiyi crs list` 核对 crsRulesetRef，然后执行：
+#   tiyi diff -f apply.yaml
+#   tiyi apply -f apply.yaml
+# spec 会替换全部 apply 管理字段，并不是 merge patch。
+
+apiVersion: tiyi.io/v1
+kind: Policy
+metadata:
+  name: app-baseline
+spec:
+  engineState: on          # on | detection_only | off
+  blockingMode: anomaly    # anomaly | self_contained
+  crsRulesetRef: "4.25.1" # 已存在的 CRS ID 或版本
+  status: active           # draft | active | archived
+---
+apiVersion: tiyi.io/v1
+kind: Upstream
+metadata:
+  name: app-pool
+spec:
+  backends:
+    - url: http://127.0.0.1:9000
+      weight: 100
+  loadBalance: round_robin
+  healthCheck:
+    path: "" # 留空时关闭主动探测
+    method: GET
+    expectedStatus: 200
+    intervalSeconds: 30
+    timeoutSeconds: 5
+    unhealthyThreshold: 3
+    healthyThreshold: 2
+    followRedirects: false
+    expectedBody: ""
+    host: ""
+  status: active
+---
+apiVersion: tiyi.io/v1
+kind: Site
+metadata:
+  name: app-example
+spec:
+  primaryHost: app.example.com
+  aliases: [www.app.example.com]
+  upstreamRef: app-pool # 或 upstreamsInline；不能同时填写
+  tls:
+    mode: none # none | uploaded | managed_acme
+  waf:
+    enabled: true
+    policyRef: app-baseline
+    mode: blocking
+  status: active
+---
+apiVersion: tiyi.io/v1
+kind: IpList
+metadata:
+  name: office-addresses
+spec:
+  description: 办公出口地址
+  entries:
+    - cidr: 203.0.113.0/24
+      description: 主办公区
+    - cidr: 2001:db8:100::/48
+      description: 主办公区 IPv6
+      expireAt: 2026-12-31T00:00:00Z
+
+# apply IpList 后还需另建绑定才会产生防护行为；geo:* 会被拒绝，国家/地区防护请用
+# 防护策略 > Country Access。

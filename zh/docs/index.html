@@ -134,7 +134,7 @@
     <p>三个架构决策塑造了后续所有页面：</p>
     <ul>
       <li><strong>一个二进制，零运行时依赖。</strong>无 Docker daemon、无 Nginx、无 Postgres、无 Redis。二进制内置 Caddy、Coraza、SQLite 与 Vben Admin UI。一个合格的运维应该能在五分钟内拉起一个可用实例。</li>
-      <li><strong>API 优先 + 声明式 YAML。</strong>每一个写入路径都由一个 ConnectRPC API 拥有。UI 与 CLI 都是它的瘦客户端。<code>tiyi apply -f site.yaml</code> 与点击<em>保存</em>效果完全相同 —— 同一个验证器、同一个写入器、同一行审计。</li>
+      <li><strong>API 优先 + 声明式 YAML。</strong>ConnectRPC 负责经过认证的变更，UI 与 CLI 都是客户端。<code>tiyi apply -f site.yaml</code> 为受支持的资源字段提供严格、事务化的期望状态入口，并写入同一持久存储与审计链。</li>
       <li><strong>本地优先，按需远程。</strong>内置本地数据平面在进程内应用配置。远程 Agent 与 Controller 保持 ConnectRPC 长连接、校验签名 bundle、断线重连后继续协调，并在 Controller 中断时继续使用最后接受的 bundle 提供服务。</li>
     </ul>
 
@@ -172,7 +172,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

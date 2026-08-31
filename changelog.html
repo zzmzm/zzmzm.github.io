@@ -53,6 +53,28 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.7.0</span>
+          <span class="tl-date">2026-08-31</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Adaptive protection, trust topology, and pressure-safe enforcement</div>
+        <div class="tl-body">
+          <p>v3.7.0 adds site-wide bot admission, protected provider-fed IP controls, causal WAF overload policy, rolling-window abuse response, and bounded observability while keeping every degraded or blocked request explainable.</p>
+          <ul>
+            <li><strong>Bot admission.</strong> HTTPS-only sites can run silent browser proof-of-work or require private WebAuthn confirmation, with bounded clearance, narrow exemptions, trusted-list references, and exact Enforcement outcomes.</li>
+            <li><strong>Causal WAF overload.</strong> Per-node CPU and Coraza demand establish cause before entering an explicit continue, marked-503 reject, or CRS-only bypass mode; native IP, country, rate, and body controls remain active.</li>
+            <li><strong>IP Lists v2 + Country Access.</strong> Manual/file/provider subscriptions use parser previews, JSONPath, atomic snapshots, deletion holds, last-good compilation, and on-demand paging. Country policy is a separate durable resource backed by the active Country MMDB.</li>
+            <li><strong>Rolling-window abuse response.</strong> Canonical limits add site/global temporary bans, independent challenge profiles, and separate WAF/rate-limit interception templates.</li>
+            <li><strong>Generic trust graphs.</strong> Named proxies consume ordinary manual or subscribed IP lists and express Header-first trust edges; analysis drafts remain operator-reviewed and never silently enable a feed.</li>
+            <li><strong>Bounded truth surfaces.</strong> Client-fair SecurityFact sampling, separate coverage/overload signals, complete embedded CRS file integrity, durable country activation, and panic-isolated logging preserve data-plane safety.</li>
+          </ul>
+          <p><strong>Upgrade boundary:</strong> v3.7.0 requires a backup, purge, fresh Controller state, reviewed resource rebuild, and remote-Agent re-enrollment; it cannot open v3.6.0 or earlier state.</p>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.6.0</span>
           <span class="tl-date">2026-08-16</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -913,7 +935,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>

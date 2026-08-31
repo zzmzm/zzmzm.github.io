@@ -92,7 +92,7 @@
     <p>无论访问日志模式如何，安全事件（Coraza 规则命中）都会被写入。</p>
 
     <h2 id="certificates">证书</h2>
-    <p>TLS 材料是一等资源 —— 永远不内联到站点上。太一支持四种签发路径，全部用从 <code>crypto.kek_file</code> 加载的 32 字节 KEK 在静态时信封加密：</p>
+    <p>TLS 材料是一等资源 —— 永远不内联到站点上。太一支持四种签发路径，全部使用 32 字节 KEK 做静态信封加密；KEK 来自显式 <code>crypto.kek_file</code>，或持久化默认路径 <code>&lt;state-db 所在目录&gt;/kek.bin</code>：</p>
     <ul>
       <li><strong>上传</strong> —— 粘贴或上传 PEM 密钥对。开发用自签，生产用 CA 购买或企业签发。</li>
       <li><strong>ACME HTTP-01</strong> —— 多节点：每个节点都跑一个 loopback 响应器，并通过节点流广播 (token, key_authorization) 对，让任何节点都能应答挑战。</li>
@@ -102,13 +102,13 @@
     <p>Dashboard 把 <code>certs_expiring_14d</code> / <code>certs_expiring_30d</code> / <code>acme_renewals_failed_24h</code> / <code>acme_orders_pending</code> 暴露为 KPI。首次启动种入两个默认告警：<em>证书即将到期</em> 与 <em>ACME 续期失败</em>。</p>
 
     <h2 id="waf-policy">WAF 策略</h2>
-    <p>策略是一个结构化的领域对象。apply 时太一为 CRS 与自定义规则编译 Coraza SecLang，并为 CIDR/<code>geo:CC</code> 匹配单独编译压缩原生 IP 列表产物。两套编译都是确定的。12 个可调层（按应用顺序）：</p>
+    <p>策略是一个结构化的领域对象。apply 时太一为 CRS/自定义规则编译 Coraza SecLang，并为真实 IP/CIDR 列表绑定与结构化 Country Access 规则编译独立原生防护产物；编译过程是确定的。12 个可调层（按应用顺序）：</p>
     <ol>
       <li><strong>CRS Core</strong> —— 偏执等级、阻断与执行 PL、入站/出站阈值、采样。</li>
       <li><strong>HTTP 策略</strong> —— 方法、版本、Content-Type、字符集、受限扩展名/Header、方法覆盖。</li>
       <li><strong>限制</strong> —— 6 个数值字段：最大请求体、最大响应体等，CRS 默认值作为 placeholder。</li>
       <li><strong>规则调优</strong> —— 按规则的覆盖：<code>DEFAULT</code>、<code>DISABLE</code>、<code>LOG_ONLY</code>、<code>SCORE_OVERRIDE</code>，可选限定到单个站点。</li>
-      <li><strong>IP 列表</strong> —— 允许 / 拒绝 / 监控列表。条目可以是 CIDR 或 <code>geo:CC</code> 伪条目（alpha-2/alpha-3 国家代码加 <code>PRIVATE</code> / <code>LOOPBACK</code>）。国家与 CIDR 展开编译进 Coraza 之前的原生 <code>tiyi_iplist</code> 处理器，绝不会膨胀进 SecLang；重叠名单中允许优先于拒绝。</li>
+      <li><strong>IP 列表与 Country Access</strong> —— IP 列表条目只能是真实 IPv4/IPv6 地址或 CIDR，并通过独立绑定获得允许 / 拒绝 / 监控语义；国家代码使用由 active Country MMDB 支撑的结构化 Country Access 规则，拒绝 <code>geo:*</code> 伪条目。两条路径都在 Coraza 之前的原生处理器执行，不会膨胀进 SecLang；重叠名单中允许优先于拒绝。</li>
       <li><strong>自定义规则</strong> —— 运维写的 SecLang 或可视化规则，ID 在 8000000–8999999 区间。</li>
       <li><strong>插件</strong> —— CRS 排除包（WordPress、Drupal、Nextcloud、phpBB、phpMyAdmin、XenForo、cPanel、DokuWiki）。支持离线归档导入。</li>
       <li><strong>限速</strong> —— 按端点与按客户端范围的桶，动作可选阻断或仅记录。</li>
@@ -183,7 +183,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.6.0 · 2026-08-16</span>
+      <span class="build">build v3.7.0 · 2026-08-31</span>
     </div>
   </div>
 </footer>
