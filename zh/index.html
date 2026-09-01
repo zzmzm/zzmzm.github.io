@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.7.0</span>
-    Bot 防护 + 因果 WAF 过载 + IP Lists v2
+    <span class="tag">v3.7.1</span>
+    Light 默认策略 + 可见的 IP 列表应用关系
   </span>
 
   <h1>
@@ -212,7 +212,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>OWASP CRS 4 开箱即用</h3>
-        <p>Coraza 把结构化策略编译成 SecLang；真实 IP/CIDR 列表和由 MMDB 支撑的 Country Access 在 WAF 之前由原生处理器执行。完整内嵌文件清单保护 CRS 完整性，因果 CPU 压力策略可继续完整检查、拒绝请求或只绕过 CRS。站点覆盖、可视化规则、偏执等级、阈值与排除都无需 fork 规则集。</p>
+        <p>Coraza 把结构化策略编译成 SecLang；真实 IP/CIDR 列表和由 MMDB 支撑的 Country Access 在 WAF 之前由原生处理器执行。新站点默认使用 Light：攻击评分与资源护栏继续执行，常见 MIME/解析器兼容问题只观察而不中断。Standard 保留严格协议执行；站点覆盖、可视化规则、偏执等级、阈值与排除都无需 fork 规则集。</p>
       </div>
 
       <div class="feature reveal">
@@ -420,6 +420,7 @@
         <h3>调优 CRS 而不必 fork。</h3>
         <p>聚焦式调优工作区明确展示每一层防护，并在保存时把结构化策略编译为确定性的 SecLang。</p>
         <ul>
+          <li>内置 Light 是新站点默认策略；显式绑定 Standard 的站点继续使用严格 CRS MIME/解析器执行</li>
           <li>12 个聚焦标签页：概览 · CRS 防护 · HTTP 防护 · 请求限制 · 规则例外 · IP 访问 · 自定义规则 · 插件 · 限速 · 误报豁免包 · 预览与测试 · 版本</li>
           <li>聚焦的自定义规则草案与行内端点限速通过明确丢弃确认保护未保存内容</li>
           <li>范围内唯一路径与明确创建/更新语义，按站点限速、继承策略限速、CRS 的顺序编译</li>
@@ -656,6 +657,19 @@
     </div>
 
     <div class="timeline reveal">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.7.1</span>
+          <span class="tl-date">2026-09-01</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">兼容优先的 Light 默认策略与可运维 IP 列表关系</div>
+        <div class="tl-body">
+          新站点选择 Built-in Light：CRS 攻击评分和硬资源限制继续执行，常见 MIME/解析器不匹配改为观察。IP 列表现在显示主要动作与目标，可管理完整应用关系，并提供一个可编辑、未绑定的私网示例。客户端公平采样不再触发全局压力告警。
+        </div>
+      </div>
+
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -1107,6 +1121,19 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.7.1</span>
+          <span class="tl-date">2026-09-01</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">Light 默认策略 + IP 列表关系运维</div>
+        <div class="tl-body">
+          为新站点提供兼容优先的 Light 防护，保留现有 Standard 绑定；IP 列表增加有界动作/目标摘要与完整关系管理，提供可编辑且未绑定的私网示例，并让全局采样压力告警只反映真实全局压力。
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.7.0</span>
           <span class="tl-date">2026-08-31</span>
           <span class="tl-tag shipped">已发布</span>
@@ -1364,7 +1391,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · <a href="privacy.html">隐私政策</a> · <a href="terms.html">服务条款</a> · 商业分发 · Apache-2.0 上游</span>
-      <span class="build">build v3.7.0 · 2026-08-31</span>
+      <span class="build">build v3.7.1 · 2026-09-01</span>
     </div>
   </div>
 </footer>

@@ -152,7 +152,7 @@
 
 <span class="c"># 创建后站点立即生效。</span></code></pre>
 
-    <p>一步式路径会创建上游池、使用内置 Standard 策略、把站点翻译成 Caddy JSON，并通过管理 socket 热重载 Caddy。任何失败都会保留旧配置并恢复站点行。</p>
+    <p>一步式路径会创建上游池、使用内置 Light 策略、把站点翻译成 Caddy JSON，并通过管理 socket 热重载 Caddy。Light 保持攻击与资源限制拦截，只把常见 MIME/解析器不匹配作为兼容性观察。任何失败都会保留旧配置并恢复站点行。</p>
 
     <h2 id="verify">5. 验证 WAF 拦截攻击</h2>
     <p>在第三个终端，向代理端口发出一次基线请求与三个经典攻击：</p>
@@ -206,7 +206,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.7.0 · 2026-08-31</span>
+      <span class="build">build v3.7.1 · 2026-09-01</span>
     </div>
   </div>
 </footer>

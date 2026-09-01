@@ -147,7 +147,7 @@ spec:
   aliases: [www.example.com]
   upstreamRef: app-pool            <span class="c"># by name; or upstreamsInline: [{url: ...}] (mutually exclusive)</span>
   tls: { mode: none }              <span class="c"># none | uploaded | managed_acme (+ certRef, minVersion, httpBehavior)</span>
-  waf: { enabled: true, mode: blocking }  <span class="c"># policyRef optional; built-in Standard otherwise</span>
+  waf: { enabled: true, mode: blocking }  <span class="c"># policyRef optional; built-in Light otherwise</span>
   status: active                   <span class="c"># active | disabled</span>
 ---
 apiVersion: tiyi.io/v1
@@ -360,7 +360,7 @@ tiyi dashboard                   <span class="c"># UI-only process</span></code>
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.7.0 · 2026-08-31</span>
+      <span class="build">build v3.7.1 · 2026-09-01</span>
     </div>
   </div>
 </footer>

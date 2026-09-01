@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.7.0</span>
-    Bot protection + causal WAF overload + IP Lists v2
+    <span class="tag">v3.7.1</span>
+    Light policy defaults + visible IP-list applications
   </span>
 
   <h1>
@@ -214,7 +214,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>OWASP CRS 4 out of the box</h3>
-        <p>Coraza compiles structured policies into SecLang while literal IP/CIDR lists and MMDB-backed Country Access run in native handlers ahead of the WAF. A complete embedded-file manifest guards CRS integrity, and causal CPU-pressure policy can keep full inspection, reject, or bypass only CRS. Per-site overrides, visual rules, paranoia levels, thresholds, and exclusions require no ruleset fork.</p>
+        <p>Coraza compiles structured policies into SecLang while literal IP/CIDR lists and MMDB-backed Country Access run in native handlers ahead of the WAF. New sites start on Light: attack scoring and resource guards stay enforcing while common MIME/parser compatibility mismatches remain observable instead of disruptive. Standard keeps strict protocol enforcement, and per-site overrides, visual rules, paranoia levels, thresholds, and exclusions require no ruleset fork.</p>
       </div>
 
       <div class="feature reveal">
@@ -433,6 +433,7 @@
         <h3>Tune CRS without forking it.</h3>
         <p>The focused tuning workspace makes each protection layer explicit, then compiles the structured policy into deterministic SecLang on save.</p>
         <ul>
+          <li>Built-in Light is the new-site default; Standard retains strict CRS MIME/parser enforcement for explicitly bound sites</li>
           <li>12 focused tabs: Overview · CRS Protection · HTTP Protection · Request Limits · Rule Exceptions · IP Access · Custom Rules · Plugins · Rate Limits · Exclusions · Preview &amp; Test · Versions</li>
           <li>Focused custom-rule drafts and inline endpoint-limit rows protect unsaved work with explicit discard</li>
           <li>Unique per-scope paths and explicit create/update semantics compile site limits before inherited policy limits and CRS</li>
@@ -669,6 +670,19 @@
     </div>
 
     <div class="timeline reveal">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.7.1</span>
+          <span class="tl-date">2026-09-01</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Compatibility-first Light defaults and operable IP-list relationships</div>
+        <div class="tl-body">
+          New sites select Built-in Light, which keeps CRS attack scoring and hard resource limits while observing common MIME/parser mismatches. IP Lists now show their leading actions and targets, expose complete application management, and seed an editable, unbound private-network example. Client-fair sampling no longer triggers the global-pressure alert.
+        </div>
+      </div>
+
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -1120,6 +1134,19 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.7.1</span>
+          <span class="tl-date">2026-09-01</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Light policy defaults + IP-list relationship operations</div>
+        <div class="tl-body">
+          Compatibility-first Light protection for new sites, explicit Standard preservation for existing bindings, bounded IP-list action/target summaries with complete relationship management, an editable unbound private-network example, and accurate global sampling-pressure alerts.
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.7.0</span>
           <span class="tl-date">2026-08-31</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -1377,7 +1404,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · proprietary · Apache-2.0 upstreams</span>
-      <span class="build">build v3.7.0 · 2026-08-31</span>
+      <span class="build">build v3.7.1 · 2026-09-01</span>
     </div>
   </div>
 </footer>

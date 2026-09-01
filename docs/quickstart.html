@@ -157,7 +157,7 @@
 
 <span class="c"># The site is active immediately after create.</span></code></pre>
 
-    <p>The one-step path creates an upstream pool, uses the built-in Standard policy, translates the site into Caddy JSON, and hot-reloads Caddy through its admin socket. If anything fails, the previous config stays active and the site row is restored.</p>
+    <p>The one-step path creates an upstream pool, uses the built-in Light policy, translates the site into Caddy JSON, and hot-reloads Caddy through its admin socket. Light keeps attack and resource-limit blocking enabled while treating common MIME/parser mismatches as compatibility observations. If anything fails, the previous config stays active and the site row is restored.</p>
 
     <h2 id="verify">5. Verify the WAF blocks attacks</h2>
     <p>From a third terminal, send a baseline request and three classic attacks against the proxy port:</p>
@@ -211,7 +211,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.7.0 · 2026-08-31</span>
+      <span class="build">build v3.7.1 · 2026-09-01</span>
     </div>
   </div>
 </footer>

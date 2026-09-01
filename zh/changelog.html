@@ -54,6 +54,27 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.7.1</span>
+          <span class="tl-date">2026-09-01</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">Light 默认策略、IP 列表关系运维与采样告警准确性</div>
+        <div class="tl-body">
+          <p>v3.7.1 是沿用 v3.7 状态契约的兼容加固版本：让零配置 WAF 更适合普通应用，把 IP 列表用途变成可运维的关系视图，并消除一类错误的全局压力信号。</p>
+          <ul>
+            <li><strong>Built-in Light。</strong>新建站点默认使用 Light：CRS 攻击评分、multipart 校验、请求体上限和参数/上传护栏继续执行；未列出的 MIME 与 JSON/XML 解析失败改为不拦截的兼容性观察。Connect RPC 帧按原始数据处理。</li>
+            <li><strong>保留现有行为。</strong>绝不迁移已有站点与策略的绑定；Standard 对 MIME/解析器的严格拦截行为逐字节保持原样。</li>
+            <li><strong>IP 列表应用关系。</strong>手动列表和订阅行展示有界的动作/目标摘要；“管理应用”加载完整关系，可停止普通访问绑定而不删除共享内容，并把规则/信任消费者深链到归属配置。</li>
+            <li><strong>安全的引导示例。</strong>新安装包含一个普通、可编辑的私网列表，预置 RFC 1918 IPv4 与 IPv6 ULA。它没有绑定、不会自动成为可信来源，并可正常编辑或删除。</li>
+            <li><strong>告警准确性。</strong>单客户端公平采样仍在管道诊断中可见，但不再触发全局“观测采样压力”告警；真实全局预算或队列压力仍会触发。</li>
+          </ul>
+          <p><strong>升级：</strong>v3.7.0 安装可使用常规签名更新并重启。若从 v3.6.0 或更早状态进入 v3.7 系列，先前的干净状态边界仍然适用。</p>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.7.0</span>
           <span class="tl-date">2026-08-31</span>
           <span class="tl-tag shipped">已发布</span>
@@ -936,7 +957,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> 太一 · 商业分发 · 上游保留 Apache-2.0</span>
-      <span class="build">build v3.7.0 · 2026-08-31</span>
+      <span class="build">build v3.7.1 · 2026-09-01</span>
     </div>
   </div>
 </footer>
