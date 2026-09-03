@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.7.1</span>
-    Light 默认策略 + 可见的 IP 列表应用关系
+    <span class="tag">v3.7.2</span>
+    防护链路 + Bot 分析
   </span>
 
   <h1>
@@ -261,7 +261,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg>
         </div>
         <h3>内置可观测性</h3>
-        <p>精确计数、客户端公平的有界 SecurityFact 样本、保留日志与「执行分析」把每个请求关联到最终动作及负责层。API Inventory、WAF 压力与覆盖信号、管道诊断和 Prometheus 导出器都保留在受保护的本地管理 socket 上。</p>
+        <p>总览的防护链路在流量图之前回答每一阶段是否真正生效。精确计数、客户端公平的有界 SecurityFact 样本、保留日志、执行分析与「日志 → Bot 分析」把准入和终态动作关联到负责层。API Inventory、WAF 压力与覆盖信号、管道诊断和 Prometheus 导出器都保留在受保护的本地管理 socket 上。</p>
       </div>
 
       <div class="feature reveal">
@@ -277,7 +277,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l8 6 8-6"/><path d="M4 17l8-6 8 6"/></svg>
         </div>
         <h3>请求证据 + 直达 SIEM</h3>
-        <p>新安装默认为安全事件保留有界请求头/请求体证据；运维人员可关闭，或把它附着到保留的攻击与访问日志。生产节点使用独立 SIEM 队列，通过 UDP、TCP 或 TLS 发送源生 Caddy/Coraza 或格式化事件，绝不进入请求路径。</p>
+        <p>新安装默认为安全事件保留有界请求头/请求体证据；控制台预览现在以 HTTP 请求行开头。运维人员可关闭，或把它附着到保留的攻击与访问日志。生产节点使用独立 SIEM 队列，通过 UDP、TCP 或 TLS 发送源生 Caddy/Coraza 或格式化事件，绝不进入请求路径。</p>
       </div>
 
       <div class="feature reveal">
@@ -657,6 +657,19 @@
     </div>
 
     <div class="timeline reveal">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.7.2</span>
+          <span class="tl-date">2026-09-03</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">防护链路运维、Bot 分析与可读的请求证据</div>
+        <div class="tl-body">
+          总览现在先回答防护是否在工作，再展示流量：五个请求阶段、精确的终止计数，以及下钻到执行分析或 Bot 分析。日志 → Bot 分析记录固定的准入结果，不声称识别了 Bot。请求证据以 HTTP 请求行呈现，客户端 IP 可显示参考性网络区域标签。
+        </div>
+      </div>
+
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -1121,6 +1134,19 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.7.2</span>
+          <span class="tl-date">2026-09-03</span>
+          <span class="tl-tag shipped">已发布</span>
+        </div>
+        <div class="tl-title">防护链路 + Bot 分析 + 可读证据</div>
+        <div class="tl-body">
+          总览防护链路、日志 → Bot 分析的精确准入结果、HTTP 风格请求证据、客户端 IP 的参考性网络区域标签，以及让路径范围排除和可视化规则正则原样到达 Coraza 的 SecLang 引号修复。
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.7.1</span>
           <span class="tl-date">2026-09-01</span>
           <span class="tl-tag shipped">已发布</span>
@@ -1391,7 +1417,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> 太一 · <a href="privacy.html">隐私政策</a> · <a href="terms.html">服务条款</a> · 商业分发 · Apache-2.0 上游</span>
-      <span class="build">build v3.7.1 · 2026-09-01</span>
+      <span class="build">build v3.7.2 · 2026-09-03</span>
     </div>
   </div>
 </footer>

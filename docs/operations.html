@@ -53,7 +53,7 @@ curl -i -H <span class="s">'Host: shop.example.com'</span> http://127.0.0.1/</co
     <p>Use <strong>Application Delivery → Sites</strong> for TLS, path routes, health state, and site-level security overrides. For one hostname with several apps, use longest-prefix routes such as <code>/api/</code> and <code>/static/</code>, keep a fallback, and probe every route after saving.</p>
 
     <h2 id="baseline">2. Establish a baseline</h2>
-    <p>In <strong>Overview</strong>, select a site and time range, then inspect request rate, blocked rate, status classes, top attackers, normalized URL Top, and fixed-class UA Top. Use <strong>Security &amp; Traffic → API Inventory</strong> for discovered assets; use <strong>System Monitoring → Log Pipeline</strong> for consumer health.</p>
+    <p>In <strong>Overview</strong>, select a site and time range. Read the protection chain first — Bot gate → rate/challenge → IP/country → resource guards → WAF/CRS → origin — then inspect request rate, terminated totals, status classes, top attackers, normalized URL Top, and fixed-class UA Top. The Bot stage opens <strong>Logs → Bot Analytics</strong>; other stages open <strong>Logs → Enforcement</strong> already filtered. Use <strong>Security &amp; Traffic → API Inventory</strong> for discovered assets; use <strong>System Monitoring → Log Pipeline</strong> for consumer health.</p>
     <table><thead><tr><th>Truth plane</th><th>Answers</th><th>Failure isolation</th></tr></thead><tbody>
       <tr><td>Exact counters</td><td>How much traffic passed or was blocked?</td><td>Never sampled by detail policy.</td></tr>
       <tr><td>SecurityFacts</td><td>Which security matches occurred?</td><td>Immutable compact investigation truth.</td></tr>
@@ -61,7 +61,7 @@ curl -i -H <span class="s">'Host: shop.example.com'</span> http://127.0.0.1/</co
       <tr><td>Direct SIEM</td><td>Which native or formatted events should leave each node?</td><td>Independent per-destination queues; cannot block proxy traffic.</td></tr>
     </tbody></table>
     <h3 id="evidence-siem">Request Evidence and direct SIEM</h3>
-    <p>Request Evidence defaults to the recommended <code>security_only</code> scope. Configure it under <strong>System Administration → Settings → Global logging &amp; evidence policy</strong>, then optionally override a site from its <strong>Logging &amp; evidence</strong> drawer. <code>security_only</code> retains evidence only for requests that produced a SecurityFact; <code>retained_logs</code> attaches evidence to retained Attack/Access rows. Captured Cookie, Authorization, API keys, personal data, and request bodies are intentionally unredacted, so restrict log-read access and keep retention short. Open an Attack or Access log, expand <strong>Request evidence</strong>, and load the bounded preview only when needed.</p>
+    <p>Request Evidence defaults to the recommended <code>security_only</code> scope. Configure it under <strong>System Administration → Settings → Global logging &amp; evidence policy</strong>, then optionally override a site from its <strong>Logging &amp; evidence</strong> drawer. <code>security_only</code> retains evidence only for requests that produced a SecurityFact; <code>retained_logs</code> attaches evidence to retained Attack/Access rows. Captured Cookie, Authorization, API keys, personal data, and request bodies are intentionally unredacted, so restrict log-read access and keep retention short. Open an Attack or Access log, expand <strong>Request evidence</strong>, and load the bounded preview only when needed. The preview starts with an HTTP-style request line (method, exact target, client HTTP version), then Host and captured headers.</p>
     <p>Configure producer-side targets under <strong>System Administration → Settings → SIEM</strong>. Each destination independently selects native Caddy access JSON, native Coraza audit JSON, or Tiyi-formatted security/access/error/audit events and uses its own UDP/TCP/TLS queue, byte budget, framing, and timeout. A queue-full or network failure drops that destination's event and increments its Log Pipeline lane; it never delays a WAF response.</p>
 
     <h2 id="investigate">3. Investigate an alert</h2>
@@ -130,7 +130,7 @@ curl -fsS http://127.0.0.1:9100/metrics | grep '^tiyi_' | head</code></pre>
   </main>
   <aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4></aside>
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.7.1 · 2026-09-01</span></div></div></footer>
+<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.7.2 · 2026-09-03</span></div></div></footer>
 <script src="../assets/js/main.js" defer></script>
 </body>
 </html>

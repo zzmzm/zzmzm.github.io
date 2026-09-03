@@ -53,6 +53,26 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.7.2</span>
+          <span class="tl-date">2026-09-03</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Protection-chain operations, Bot Analytics, and readable request evidence</div>
+        <div class="tl-body">
+          <p>v3.7.2 is a compatible operations patch on the v3.7 state contract. It turns Overview into a protection-operations landing page, adds exact Bot admission analytics, and makes retained request evidence readable as HTTP.</p>
+          <ul>
+            <li><strong>Protection chain.</strong> Overview folds all eight enforcement sources into the five stages a request actually traverses — Bot gate → rate/challenge → IP/country → resource guards → WAF/CRS → origin — with configuration posture, fault-first reasons, action split, and exact drill-down. KPI totals use the proven contract <span class="mono">terminated = blocked/rejected/banned + challenged</span>.</li>
+            <li><strong>Bot Analytics.</strong> Logs → Bot Analytics records fixed-cardinality admission outcomes (path/trusted-IP exemptions, Clearance hits, challenge issue/pass/fail, unsupported clients, internal failures) from the Observation V2 counter plane. Successful admission is not an Enforcement decision, and the page does not claim identified bots or a visitor pass rate.</li>
+            <li><strong>Readable evidence.</strong> Request Evidence preview now starts with method, exact request target, and client HTTP version, then Host and captured headers. Client IPs can show an advisory network-region tag when GeoIP data is installed.</li>
+            <li><strong>SecLang quoting.</strong> Path-scoped CRS exclusions, rule-target updates, and visual-rule regex now reach Coraza unchanged, so authored <span class="mono">\.</span> / <span class="mono">\d</span> escapes are no longer double-escaped.</li>
+          </ul>
+          <p><strong>Upgrade:</strong> v3.7.1 and v3.7.0 installations can use the routine signed update and restart flow. The earlier clean-state boundary still applies when moving from v3.6.0 or older state into the v3.7 line.</p>
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.7.1</span>
           <span class="tl-date">2026-09-01</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -956,7 +976,7 @@
   <div class="container">
     <div class="footer-bottom" style="padding-top: 0; border: 0;">
       <span>© <span data-year>2026</span> Tiyi · proprietary distribution · Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.7.1 · 2026-09-01</span>
+      <span class="build">build v3.7.2 · 2026-09-03</span>
     </div>
   </div>
 </footer>

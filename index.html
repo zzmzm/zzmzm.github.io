@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.7.1</span>
-    Light policy defaults + visible IP-list applications
+    <span class="tag">v3.7.2</span>
+    Protection chain + Bot Analytics
   </span>
 
   <h1>
@@ -267,7 +267,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg>
         </div>
         <h3>Built-in observability</h3>
-        <p>Exact counters, client-fair bounded SecurityFact samples, retained logs, and the Enforcement view join each request to its final action and responsible layer. API Inventory, WAF-pressure and coverage signals, pipeline diagnostics, and a Prometheus exporter stay available on the protected local admin socket.</p>
+        <p>Overview's protection chain shows whether each request stage acted before any traffic chart. Exact counters, client-fair bounded SecurityFact samples, retained logs, Enforcement, and Logs → Bot Analytics join admission and terminal actions to the responsible layer. API Inventory, WAF-pressure and coverage signals, pipeline diagnostics, and a Prometheus exporter stay available on the protected local admin socket.</p>
       </div>
 
       <div class="feature reveal">
@@ -285,7 +285,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l8 6 8-6"/><path d="M4 17l8-6 8 6"/></svg>
         </div>
         <h3>Request evidence + direct SIEM</h3>
-        <p>Fresh installs retain bounded request headers/body evidence for security events; operators can turn it off or attach it to retained Attack and Access logs. Independent producer-side SIEM queues send native Caddy/Coraza or formatted events over UDP, TCP, or TLS without entering the request path.</p>
+        <p>Fresh installs retain bounded request headers/body evidence for security events; the in-console preview now starts with an HTTP-style request line. Operators can turn it off or attach it to retained Attack and Access logs. Independent producer-side SIEM queues send native Caddy/Coraza or formatted events over UDP, TCP, or TLS without entering the request path.</p>
       </div>
 
       <div class="feature reveal">
@@ -670,6 +670,19 @@
     </div>
 
     <div class="timeline reveal">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
+          <span class="tl-version">v3.7.2</span>
+          <span class="tl-date">2026-09-03</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Protection-chain operations, Bot Analytics, and readable request evidence</div>
+        <div class="tl-body">
+          Overview now answers whether protection is working before showing traffic: five request stages, exact terminated totals, and drill-down into Enforcement or Bot Analytics. Logs → Bot Analytics records fixed admission outcomes without claiming identified bots. Request Evidence renders an HTTP-style request line, and client IPs can show advisory network-region tags.
+        </div>
+      </div>
+
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -1134,6 +1147,19 @@
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
+          <span class="tl-version">v3.7.2</span>
+          <span class="tl-date">2026-09-03</span>
+          <span class="tl-tag shipped">Shipped</span>
+        </div>
+        <div class="tl-title">Protection chain + Bot Analytics + readable evidence</div>
+        <div class="tl-body">
+          Protection chain on Overview, Logs → Bot Analytics for exact admission outcomes, HTTP-style Request Evidence, advisory network-region tags on client IPs, and SecLang quoting that keeps path-scoped exclusions and visual-rule regex intact.
+        </div>
+      </div>
+
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head">
           <span class="tl-version">v3.7.1</span>
           <span class="tl-date">2026-09-01</span>
           <span class="tl-tag shipped">Shipped</span>
@@ -1404,7 +1430,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · proprietary · Apache-2.0 upstreams</span>
-      <span class="build">build v3.7.1 · 2026-09-01</span>
+      <span class="build">build v3.7.2 · 2026-09-03</span>
     </div>
   </div>
 </footer>
