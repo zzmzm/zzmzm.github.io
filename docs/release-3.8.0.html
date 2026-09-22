@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Tiyi v3.8.0 release notes — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Tiyi v3.8.0 release notes Documentation for v3.8.0. Check the release page for the final publication date and artifacts. Upgrade boundary: v3.8.0 requires " />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/release-3.8.0.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html" aria-current="page">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="tiyi-v380-release-notes">Tiyi v3.8.0 release notes</h1>
+<p class="lede">Released on 2026-09-22. Signed Linux amd64 and arm64 packages are available from GitHub and Gitee Releases.</p>
+<p><strong>Upgrade boundary: v3.8.0 requires fresh state. State created by v3.7.2 or
+earlier releases cannot be reused.</strong> Archive the complete installation before
+the documented purge/rebuild workflow, then re-enroll every remote Agent with
+the same v3.8.0 build. Old databases, metrics, identities, spools and cached
+bundles are not converted or deleted automatically. Earlier development snapshots are also unsupported upgrade sources. Do not use only a binary
+update and restart for this transition. See <a href="upgrade-migration.html">Upgrade and migration</a>.</p>
+<h2 id="highlights">Highlights</h2>
+<ul>
+<li><strong>Exact security statistics:</strong> Overview, Enforcement and threshold alerts use counts collected before log sampling. Event Analysis continues to show sampled relationships. Rankings expose coverage loss; a missing sample is not a zero count. Automatic IP remediation respects the rule's site/time/type/severity scope.</li>
+<li><strong>Console and runtime recovery:</strong> transient session failures offer retry without silently logging out. Bounded diagnostic output and health probes keep slow consumers from stalling request handling; local diagnostics expose pressure and management latency.</li>
+<li>
+<p><strong>Reliable operations:</strong> DNS retries and renewal recovery, current upstream health, node-install receipts, safe user/role edits, saved settings drafts, audit verification and alert editing distinguish current results from stale, failed or pending work.</p>
+</li>
+<li>
+<p><strong>Shared protection responses:</strong> configure public status, title, and message for six protection scenarios with common HTML/JSON templates. Give browser and API clients a clear explanation and request ID; see the <a href="responses.html">complete starter</a>.</p>
+</li>
+<li>
+<p><strong>Clearer operational status:</strong> distinguish process liveness, component readiness, and node application results. Enrollment commands support expiry and node limits; site editing states the publication scope.</p>
+</li>
+<li>
+<p><strong>API Assets:</strong> one site-scoped workspace combines discovered endpoints,
+  explicit API catalog membership, request counts, latency, status codes and
+  document management. Add/Remove catalog actions are independent of hiding
+  rows or learning traffic. Publication status comes from matching serving-node
+  receipts; failed or unknown state is never presented as applied.</p>
+</li>
+<li><strong>API documents and request validation:</strong> import OpenAPI 3.0/3.1/3.2 or
+  Swagger 2.0, review address mappings, edit request definitions and examples,
+  and apply or restore a reviewed revision. Each endpoint can turn validation
+  off, observe, or enforce supported request structure/type checks. Unsupported
+  constraints are explained. Requests outside the catalog have a separate
+  allow/observe/block action within the published document's scope.</li>
+<li><strong>Automatic JSON learning:</strong> eligible discovered or declared POST/PUT/PATCH
+  endpoints learn bounded successful JSON request structures without retaining
+  field values. Review saved versions and export an OpenAPI draft or establish
+  an editable specification. Learning never silently changes authored rules
+  or enables blocking; learning samples and retained access evidence are separate.</li>
+<li><strong>Request inspection and uploads:</strong> site policy owns ordinary body, file,
+  total-upload, argument and structure capacities. API definitions own validation
+  and extra file-field requirements. Use these controls to bound uploads while retaining normal application request handling, including Light-policy sites.</li>
+<li><strong>Operational clarity and efficiency:</strong> exact Schema statistics, default-off
+  violation samples, preserved editing state, clearer publication history and
+  WAF/API reason totals make diagnosis more direct. Improved request inspection and editing feedback help operators identify the next action.</li>
+</ul>
+<h2 id="upgrade-and-verification">Upgrade and verification</h2>
+<p>Follow the backup, purge, retained-binary update, fresh service installation,
+resource rebuild and Agent re-enrollment steps in
+<a href="upgrade-migration.html#incompatible-state-update">Upgrade and migration</a>.
+Keep the old binary and its complete state/config archive together for rollback;
+never restore that state into v3.8.0 live paths. Use the same v3.8.0 build for the Controller and all remote Agents; mixed old/new state and node protocols are unsupported.</p>
+<p>After rebuilding, check <code>tiyi --version</code>, <code>sudo tiyi system health</code>, site routing,
+TLS, WAF responses and the current configuration result on every serving node.
+The admin UI requires a browser with ES2020 and native BigInt support.</p>
+<p>After publication, signed Linux amd64/arm64 downloads, <code>SHA256SUMS</code>, <code>SHA256SUMS.sig</code> and
+<code>release-manifest.json</code> will be on the
+<a href="https://github.com/zzmzm/tiyi/releases/tag/v3.8.0">GitHub release</a> and
+<a href="https://gitee.com/tiyisec/tiyi/releases/tag/v3.8.0">Gitee mirror</a>.</p>
+<h2 id="start-using-the-features">Start using the features</h2>
+<p><a href="quickstart.html">First protected site</a> · <a href="configuration.html">copyable configuration</a> · <a href="site-import.html">site import JSON</a> · <a href="api-protection.html">OpenAPI walkthrough</a> · <a href="cli.html">CLI</a> · <a href="api.html">API authentication and full reference</a>.</p>
+<div class="docs-pager"><a href="deployment.html"><span class="label">← Previous</span><span class="title">Production deployment</span></a><a class="next" href="release-3.8.0.html"><span class="label">Next →</span><span class="title">v3.8.0 notes</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

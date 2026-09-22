@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>CLI reference — Tiyi docs</title>
+<title>CLI task reference — Tiyi Docs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Current Tiyi CLI commands grouped by resource, with local admin socket auth, remote API auth, safe examples, and exit codes." />
+<meta name="description" content="CLI task reference For v3.8.0 . On the Tiyi host, the system service uses a protected local socket: usually add sudo , with no login required. For remote C" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -49,6 +49,8 @@
         <li><a href="index.html">Overview</a></li>
         <li><a href="quickstart.html">Quickstart</a></li>
         <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -57,19 +59,27 @@
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
         <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
       <h4>Concepts</h4>
       <ul>
-        <li><a href="concepts.html">Domain model</a></li>
+        <li><a href="concepts.html">How it works</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
       <h4>Reference</h4>
       <ul>
-        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="cli.html" aria-current="page">CLI reference</a></li>
         <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -81,274 +91,126 @@
   </aside>
 
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">Reference</span>
-    <h1>CLI reference</h1>
-    <p class="lede">The <code>tiyi</code> CLI is a thin client over the same ConnectRPC API that drives the UI. This page groups current operator commands by resource. Examples intentionally show only common flags; before a mutation, run <code>tiyi &lt;command&gt; --help</code> and treat the installed binary as authoritative.</p>
-
-    <h2 id="auth-modes">Authentication modes</h2>
-    <p>The CLI talks to Tiyi in one of two ways. Local commands need no token; remote commands need both an API URL and a JWT.</p>
-
-    <table>
-      <thead>
-        <tr><th>Mode</th><th>Flags</th><th>Auth</th><th>Use case</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Local admin socket</strong></td>
-          <td><em>(default)</em></td>
-          <td>OS file permissions on the Unix socket</td>
-          <td>Running on the same host as <code>tiyi run</code>.</td>
-        </tr>
-        <tr>
-          <td><strong>Remote</strong></td>
-          <td><code>--api URL --token JWT</code></td>
-          <td>HS256 JWT in the <code>Authorization: Bearer</code> header</td>
-          <td>Operating from a workstation or CI runner.</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p>Get a JWT from a username/password:</p>
-<pre><code><span class="p">$</span> tiyi auth login --api http://controller:8080 --username admin
-<span class="c"># prompts for password, prints the JWT, optionally writes ~/.config/tiyi/credentials</span></code></pre>
-
-    <h2 id="diagnostics">Diagnostics</h2>
-    <p>Use <code>tiyi doctor</code> on the host before or after install to check the local environment without changing anything. It highlights config load errors, systemd availability, sudo PATH issues, installed-service state ownership problems, and listeners on the API/dashboard and proxy ports. If no systemd unit is installed, state ownership is skipped unless you pass <code>--service-user</code>/<code>--service-group</code> or request repair. State repair is explicit and root-only: <code>sudo tiyi doctor --fix-state-ownership</code>.</p>
-<pre><code><span class="p">$</span> tiyi doctor
-<span class="p">$</span> tiyi doctor --mode agent
-<span class="p">$</span> tiyi doctor --proxy-http-addr :8180 --proxy-https-addr :18443
-<span class="p">$</span> sudo tiyi doctor --fix-state-ownership</code></pre>
-
-    <h2 id="apply">Declarative apply</h2>
-    <p>The kubectl-style entry point. One YAML file becomes one SQLite transaction with an audit receipt for each changed resource. Apply creates resources that do not exist and updates the ones that drifted; an identical re-apply reports <code>unchanged</code> and writes nothing. Apply never deletes resources missing from the manifest. A supplied <code>spec</code> fully replaces that kind's apply-managed fields—it is not a merge patch.</p>
-<pre><code><span class="p">$</span> tiyi apply -f site.yaml          <span class="c"># plan + apply</span>
-<span class="p">$</span> tiyi apply -f site.yaml --dry-run  <span class="c"># create/update/unchanged per resource, nothing written</span>
-<span class="p">$</span> tiyi apply -f - &lt; site.yaml       <span class="c"># read the manifest from stdin</span>
-<span class="p">$</span> tiyi get site                       <span class="c"># current state as JSON (upstream | site | policy | cert | iplist)</span>
-<span class="p">$</span> tiyi get upstream &lt;id&gt;              <span class="c"># one resource by ID</span></code></pre>
-    <p><a href="templates/apply.yaml" download>Download the complete Policy + Upstream + Site + IpList template</a>. Cross-references (<code>upstreamRef</code>, <code>certRef</code>, <code>policyRef</code>, <code>crsRulesetRef</code>) are resolved before writes, so forward references work and a dangling reference rolls back the whole resource transaction. A <code>proxy apply failed</code> error is different: the resource transaction committed, but the data plane rejected the candidate and retained its last-good runtime config. Fix the cause and re-apply the same manifest.</p>
-<pre><code>apiVersion: tiyi.io/v1
-kind: Upstream
-metadata:
-  name: app-pool
-spec:
-  backends:
-    - url: http://10.0.0.11:8080   <span class="c"># weight defaults to 100; weights are relative</span>
-    - url: http://10.0.0.12:8080
-  loadBalance: round_robin         <span class="c"># the only supported policy</span>
-  healthCheck: { path: /healthz, intervalSeconds: 10 }
----
-apiVersion: tiyi.io/v1
-kind: Site
-metadata:
-  name: example-com
-spec:
-  primaryHost: example.com
-  aliases: [www.example.com]
-  upstreamRef: app-pool            <span class="c"># by name; or upstreamsInline: [{url: ...}] (mutually exclusive)</span>
-  tls: { mode: none }              <span class="c"># none | uploaded | managed_acme (+ certRef, minVersion, httpBehavior)</span>
-  waf: { enabled: true, mode: blocking }  <span class="c"># policyRef optional; built-in Light otherwise</span>
-  status: active                   <span class="c"># active | disabled</span>
----
-apiVersion: tiyi.io/v1
-kind: IpList
-metadata:
-  name: office-allowlist
-spec:
-  description: Office egress addresses
-  entries:
-    - { cidr: 203.0.113.0/24, description: office, expireAt: 2026-12-31T00:00:00Z }</code></pre>
-    <p>Supported kinds: <code>Upstream</code> (<code>backends[]</code>, <code>loadBalance</code>, <code>healthCheck</code>, <code>status</code>), <code>Site</code> (<code>primaryHost</code>, <code>aliases[]</code>, <code>upstreamRef</code>/<code>upstreamsInline[]</code>, <code>tls</code>, <code>waf</code>, <code>status</code>), <code>Policy</code> (<code>engineState</code>: <code>on</code>/<code>detection_only</code>/<code>off</code>, <code>blockingMode</code>: <code>anomaly</code>/<code>self_contained</code>, <code>crsRulesetRef</code>, <code>status</code>), and <code>IpList</code> (<code>description</code>, literal IP/CIDR <code>entries[]</code>). An IpList has no action until a separate binding is created; <code>geo:*</code> is rejected—use Country Access. Certificates are managed with <code>tiyi cert upload</code>/<code>cert issue</code> and referenced from a Site by name. Resources match case-insensitively by <code>(kind, name)</code>; unknown fields fail validation. References may point forward or backward within the same file.</p>
-
-    <h2 id="sites">Sites</h2>
-<pre><code>tiyi site list
-tiyi site get <span class="v">&lt;name|id&gt;</span>
-tiyi site create --name <span class="v">N</span> --host <span class="v">H</span> --upstream-url <span class="v">URL</span> [--tls none|managed-acme|uploaded] [--tls-http-behavior redirect|acme-only|serve-both]
-tiyi site update <span class="v">&lt;id&gt;</span> [...flags]
-tiyi site enable <span class="v">&lt;id&gt;</span>
-tiyi site disable <span class="v">&lt;id&gt;</span>
-tiyi site delete <span class="v">&lt;id&gt;</span>
-tiyi site routing get <span class="v">&lt;id&gt;</span>
-tiyi site routing set <span class="v">&lt;id&gt;</span> --route /api=<span class="v">UPSTREAM_ID</span> --unmatched default|404
-tiyi site policy-override get <span class="v">&lt;id&gt;</span>
-tiyi site policy-override set <span class="v">&lt;id&gt;</span> [--blocking-pl N --inbound-threshold N ...]
-tiyi site policy-override delete <span class="v">&lt;id&gt;</span></code></pre>
-
-    <h2 id="upstreams">Upstreams</h2>
-<pre><code>tiyi upstream list
-tiyi upstream get <span class="v">&lt;name|id&gt;</span>
-tiyi upstream create --name <span class="v">N</span> --endpoint-url <span class="v">URL</span> [--endpoint-url <span class="v">URL2</span> ...]
-tiyi upstream update <span class="v">&lt;id&gt;</span> [...flags]
-tiyi upstream delete <span class="v">&lt;id&gt;</span>      <span class="c"># refused if any site uses it (UPSTREAM_IN_USE)</span></code></pre>
-
-    <h2 id="certs">Certificates</h2>
-<pre><code>tiyi cert list
-tiyi cert get <span class="v">&lt;id&gt;</span>
-tiyi cert upload --name <span class="v">N</span> --cert-pem <span class="v">FILE</span> --key-pem <span class="v">FILE</span>
-tiyi cert issue <span class="v">DOMAIN</span> --email <span class="v">E</span> [--challenge-type http-01|dns-01] [--acme-issuer letsencrypt|letsencrypt-staging|custom] [--directory-url <span class="v">URL</span>]
-tiyi cert renew <span class="v">&lt;id&gt;</span>
-tiyi cert delete <span class="v">&lt;id&gt;</span>
-tiyi cert dns-provider drivers
-tiyi cert dns-provider list
-tiyi cert dns-provider create --name <span class="v">N</span> --provider cloudflare --credentials-file <span class="v">F</span>
-tiyi cert dns-provider get <span class="v">&lt;id&gt;</span>
-tiyi cert dns-provider update <span class="v">&lt;id&gt;</span>
-tiyi cert dns-provider delete <span class="v">&lt;id&gt;</span></code></pre>
-
-    <div class="callout callout-tip">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-      <div class="callout-body">
-        <p><strong>Prefer <code>--credentials-file</code></strong> over <code>--credentials-json</code> for DNS providers. The file path keeps secrets out of shell history and process listings.</p>
-      </div>
-    </div>
-
-    <h2 id="policies">WAF policies</h2>
-<pre><code>tiyi policy list
-tiyi policy get <span class="v">&lt;id&gt;</span>
-tiyi policy templates
-tiyi policy create-from-template --name <span class="v">N</span> --template-id <span class="v">TEMPLATE_ID</span>
-tiyi policy create --name <span class="v">N</span> [--engine-state on|detection-only|off]
-tiyi policy update <span class="v">&lt;id&gt;</span> [--name <span class="v">N</span>] [--engine-state on|detection-only|off]
-tiyi policy layer replace <span class="v">&lt;id&gt;</span> http-policy --json '{"allowedMethods":["GET","HEAD"]}'
-tiyi policy layer replace <span class="v">&lt;id&gt;</span> arg-limits --file <span class="v">FILE.json</span> <span class="c"># complete replacement, not a merge patch</span>
-tiyi policy delete <span class="v">&lt;id&gt;</span>
-tiyi policy preview-seclang <span class="v">&lt;id&gt;</span>              <span class="c"># compiled SecLang</span>
-tiyi policy preview-impact <span class="v">&lt;id&gt;</span> [--crs-ruleset-id <span class="v">R</span>]
-tiyi policy test <span class="v">&lt;id&gt;</span> --url /login --method POST
-tiyi policy versions <span class="v">&lt;id&gt;</span>                      <span class="c"># list saved versions</span>
-tiyi policy diff <span class="v">&lt;left-version-id&gt;</span> <span class="v">&lt;right-version-id&gt;</span>
-tiyi policy rollback <span class="v">&lt;id&gt;</span> --version-id <span class="v">REV</span></code></pre>
-
-    <h3 id="rule-tuning">Rule overrides, custom rules, IP lists</h3>
-<pre><code>tiyi rule override upsert <span class="v">&lt;policy-id&gt;</span> --crs-rule-id <span class="v">N</span> --action default|disable|log_only|score_override [--site-id <span class="v">S</span>] [--scope /api]
-tiyi rule override delete <span class="v">&lt;override-id&gt;</span>
-tiyi rule custom create <span class="v">&lt;policy-id&gt;</span> [--site-id <span class="v">S</span>] --name <span class="v">N</span> --rule-id <span class="v">8000001</span> --seclang-file <span class="v">FILE</span>
-tiyi rule custom update <span class="v">&lt;custom-rule-id&gt;</span> --site-id '' <span class="c"># return to policy-wide scope</span>
-tiyi rule custom delete <span class="v">&lt;custom-rule-id&gt;</span>
-tiyi rule ip-list create --kind allow|deny|monitor --name <span class="v">N</span> --entry 203.0.113.0/24
-tiyi rule ip-list add-entry <span class="v">&lt;id&gt;</span> --entry 198.51.100.0/24
-tiyi policy bind-ip-list <span class="v">&lt;policy-id&gt;</span> --ip-list-id <span class="v">&lt;id&gt;</span> --decision allow|deny|monitor
-tiyi rule rate-limit upsert --policy-id <span class="v">P</span> --path-pattern /login --per-minute 60 --action block</code></pre>
-
-    <h2 id="crs">CRS catalog</h2>
-<pre><code>tiyi crs ingest --tag <span class="v">v4.25.0</span>            <span class="c"># fetch a release from upstream</span>
-tiyi crs ingest --archive <span class="v">FILE</span>             <span class="c"># offline archive upload</span>
-tiyi crs releases                            <span class="c"># list available upstream tags</span>
-tiyi crs list                                <span class="c"># installed CRS rulesets</span>
-tiyi crs rules <span class="v">&lt;ruleset-id&gt;</span> --paranoia-level 1 --tag attack-sqli
-tiyi crs rule <span class="v">&lt;ruleset-id&gt;</span> <span class="v">&lt;rule-id&gt;</span>
-tiyi crs plugins
-tiyi crs plugin-schema <span class="v">&lt;plugin-id&gt;</span></code></pre>
-
-    <h2 id="agents">Agents</h2>
-<pre><code>tiyi agents list
-tiyi agents get <span class="v">&lt;id&gt;</span>
-tiyi agents issue-token [--tag edge] [--ttl-seconds 86400]
-tiyi agents install-script --controller-url <span class="v">URL</span> --enrollment-token <span class="v">TOKEN</span>
-tiyi agents bundles [<span class="v">agent-id</span>]
-tiyi agents bundle <span class="v">&lt;bundle-id&gt;</span>
-tiyi agent-group list
-tiyi agent-group get <span class="v">&lt;id&gt;</span>
-tiyi agent-group create --name <span class="v">N</span> --tag role=edge
-tiyi agent-group delete <span class="v">&lt;id&gt;</span></code></pre>
-
-    <h2 id="trust">Trust profile</h2>
-<pre><code>tiyi trust show
-tiyi trust set --proxy 10.0.0.0/8 --proxy 172.16.0.0/12 --header X-Forwarded-For
-tiyi trust set --cdn cloudflare --header CF-Connecting-IP --header X-Forwarded-For
-tiyi trust reset
-tiyi trust test --peer 10.0.0.5 --header <span class="s">"X-Forwarded-For: 1.2.3.4"</span>
-tiyi trust refresh cloudflare</code></pre>
-
-    <h2 id="alerts">Alerts</h2>
-<pre><code>tiyi alert list
-tiyi alert get <span class="v">&lt;id&gt;</span>
-tiyi alert ack <span class="v">&lt;id&gt;</span> [--note <span class="v">TEXT</span>]
-tiyi alert notes <span class="v">&lt;id&gt;</span>
-tiyi alert resolve <span class="v">&lt;id&gt;</span> [--note <span class="v">TEXT</span>]
-tiyi alert rule list
-tiyi alert rule upsert --name <span class="v">N</span> --expression-json <span class="v">JSON</span>
-tiyi alert channel list
-tiyi alert channel upsert --name <span class="v">N</span> --kind webhook|slack|pagerduty|feishu|wecom|email --config-json <span class="v">JSON</span>
-tiyi alert channel test <span class="v">&lt;id&gt;</span></code></pre>
-
-    <h2 id="logs">Logs</h2>
-<pre><code>tiyi log security list [--site-id <span class="v">S</span>] [--client-ip-cidr <span class="v">CIDR</span>] [--rule-id <span class="v">N</span>] [--start <span class="v">T</span>] [--end <span class="v">T</span>]
-tiyi log security get <span class="v">&lt;event-id&gt;</span>
-tiyi log security export --site-id <span class="v">S</span> --out <span class="v">F</span>
-tiyi log access  list [...filters]
-tiyi log error   list [...filters]
-tiyi log tail-security                       <span class="c"># live stream</span></code></pre>
-
-    <h2 id="security-investigation">SecurityFact investigation</h2>
-    <p>The current CLI has no <code>incident</code> or <code>campaign</code> resource. Start from <code>tiyi alert list</code> or <code>tiyi log security list</code>, then pivot by <code>--unique-id</code>, site, rule, client CIDR, and time window. Correlate the matching Attack, Access, and Runtime Error rows in the UI.</p>
-
-    <h2 id="audit-cli">Audit chain</h2>
-<pre><code>tiyi audit list [--actor-id <span class="v">UUID</span>] [--action <span class="v">ACTION</span>] [--start <span class="v">T</span>] [--end <span class="v">T</span>]
-tiyi audit get <span class="v">&lt;id&gt;</span>
-tiyi audit verify                            <span class="c"># walks the chain and reports each link</span></code></pre>
-
-    <h2 id="system">System</h2>
-<pre><code>tiyi system stats
-tiyi system traffic --window 1h
-tiyi system attack-distribution --window 1h
-tiyi system top-attackers --window 1h
-tiyi system settings get
-tiyi system settings update --values-json '{"siem.destinations":[{"id":"soc-primary","name":"SOC primary","enabled":true,"endpoint":"tls://siem.internal:6514","transport":"tls","format":"RFC5424","framing":"octet_counted","sources":["tiyi_formatted","raw_security"],"include_security":true,"include_access":true,"include_error":true,"include_audit":true,"min_severity":"info","blocked_only":false,"timeout_millis":1000,"queue_events":1024,"queue_bytes":8388608,"tls_server_name":"siem.internal"}]}'</code></pre>
-    <p>Logging and evidence policy is a revision-CAS LogService resource, managed under <strong>Administration → Settings → Logs &amp; evidence</strong>; no parallel system-setting path exists.</p>
-
-    <h2 id="release-mgmt">Releases (rolling agent upgrades)</h2>
-<pre><code>tiyi release import --tarball ./tiyi_3.5.2_linux_amd64.tar.gz
-tiyi release list
-tiyi release apply <span class="v">&lt;release-id&gt;</span>           <span class="c"># fan APPLY_BINARY to all matching agents</span>
-tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span> --agent-id <span class="v">B</span>
-tiyi release runs
-tiyi release run-get <span class="v">&lt;run-id&gt;</span>
-tiyi release run-cancel <span class="v">&lt;run-id&gt;</span>
-tiyi release rollback
-tiyi release check-updates</code></pre>
-
-    <h2 id="users-roles">Users and roles</h2>
-<pre><code>tiyi user list
-tiyi user create --username <span class="v">U</span> --password <span class="v">P</span> --role-id <span class="v">R</span>
-tiyi user reset-password <span class="v">&lt;id&gt;</span> --password <span class="v">P</span>
-tiyi user lock <span class="v">&lt;id&gt;</span>
-tiyi user unlock <span class="v">&lt;id&gt;</span>
-tiyi role list
-tiyi role get <span class="v">&lt;id&gt;</span></code></pre>
-
-    <h2 id="nodes">Controller and Agent processes</h2>
-<pre><code>tiyi run                         <span class="c"># complete writable Controller + local data plane</span>
-tiyi install --mode agent --unit-name tiyi-agent --now <span class="c"># Agent systemd service; reads /etc/tiyi/tiyi-agent.env</span>
-tiyi agent --controller-url http://controller:8080 --enrollment-token <span class="v">&lt;one-use-token&gt;</span> <span class="c"># foreground Agent</span>
-tiyi dashboard                   <span class="c"># UI-only process</span></code></pre>
-
-    <h2 id="exit-codes">Exit codes</h2>
-    <table>
-      <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>0</code></td><td>Success.</td></tr>
-        <tr><td><code>1</code></td><td>Generic error. Output explains.</td></tr>
-        <tr><td><code>2</code></td><td>Usage / flag parse error.</td></tr>
-        <tr><td><code>3</code></td><td>Authentication required or token rejected.</td></tr>
-        <tr><td><code>4</code></td><td>Resource not found.</td></tr>
-        <tr><td><code>5</code></td><td>Failed precondition (e.g. revision conflict, <code>UPSTREAM_IN_USE</code>).</td></tr>
-      </tbody>
-    </table>
-
-    <div class="docs-pager">
-      <a href="concepts.html">
-        <span class="label">← Previous</span>
-        <span class="title">Domain model</span>
-      </a>
-      <a class="next" href="api.html">
-        <span class="label">Next →</span>
-        <span class="title">API reference</span>
-      </a>
-    </div>
-  </main>
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="cli-task-reference">CLI task reference</h1>
+<p class="lede">For <strong>v3.8.0</strong>. On the Tiyi host, the system service uses a protected local socket: usually add <code>sudo</code>, with no login required.
+For remote CLI access, obtain <code>TIYI_API</code> and <code>TIYI_TOKEN</code> using the <a href="api.html#authentication">API guide</a> and omit sudo.
+For a custom foreground process, pass <code>--admin-socket /actual/path/admin.sock</code>.</p>
+<h2 id="common-read-only-checks">Common read-only checks</h2>
+<pre><code class="language-sh">sudo tiyi system health
+sudo tiyi site list
+sudo tiyi upstream list
+sudo tiyi cert list
+sudo tiyi policy list
+sudo tiyi agents list
+sudo tiyi audit verify
+</code></pre>
+<p>Lists and resource commands usually return JSON. Save output and use <code>jq</code> to obtain IDs instead of inventing them.
+Log lists are paginated; the default page is not the whole history. Failures return nonzero: ordinarily 1, or 78 for rejected Agent enrollment/reset-required state.
+<code>system health</code> also returns nonzero for unhealthy or unknown components; automation should check the exit status.</p>
+<h2 id="find-commands-by-task">Find commands by task</h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Commands</th>
+<th>Walkthrough</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Install, start, diagnose</td>
+<td><code>install</code>, <code>run</code>, <code>doctor</code></td>
+<td><a href="installation.html">Installation</a></td>
+</tr>
+<tr>
+<td>Sites, routes, site migration</td>
+<td><code>site</code>, <code>site routing</code>, <code>site export/import</code></td>
+<td><a href="operations.html">Operations</a> · <a href="site-import.html">JSON import template</a></td>
+</tr>
+<tr>
+<td>Origin pools, health probes, retries</td>
+<td><code>upstream</code></td>
+<td><a href="operations.html">Operations</a></td>
+</tr>
+<tr>
+<td>Uploaded certificates, ACME, DNS credentials</td>
+<td><code>cert</code></td>
+<td><a href="operations.html#https">HTTPS</a></td>
+</tr>
+<tr>
+<td>WAF policies, versions, request capacity</td>
+<td><code>policy</code></td>
+<td><a href="operations.html">Tuning</a></td>
+</tr>
+<tr>
+<td>Custom rules, CRS overrides, IP/country, rate limits</td>
+<td><code>rule</code>, <code>crs</code></td>
+<td><a href="operations.html">Operations</a></td>
+</tr>
+<tr>
+<td>Client IP and trusted proxies/CDNs</td>
+<td><code>trust</code></td>
+<td><a href="deployment.html#client-ip">Deployment</a></td>
+</tr>
+<tr>
+<td>API files, learning, validation, publication</td>
+<td><code>api-document</code></td>
+<td><a href="api-protection.html">API protection</a></td>
+</tr>
+<tr>
+<td>Request investigation, alerts, notifications, audit</td>
+<td><code>log</code>, <code>alert</code>, <code>audit</code></td>
+<td><a href="operations.html">Operations</a></td>
+</tr>
+<tr>
+<td>Remote nodes and groups</td>
+<td><code>agents</code>, <code>agent-group</code></td>
+<td><a href="deployment.html#nodes">Deployment</a></td>
+</tr>
+<tr>
+<td>Authentication, users, roles</td>
+<td><code>auth</code>, <code>user</code>, <code>role</code></td>
+<td><a href="api.html">API</a> · <a href="deployment.html">Deployment</a></td>
+</tr>
+<tr>
+<td>Resource files</td>
+<td><code>get</code>, <code>diff</code>, <code>apply</code></td>
+<td><a href="configuration.html">YAML templates</a></td>
+</tr>
+<tr>
+<td>Settings, updates, node rollout</td>
+<td><code>system</code>, <code>update</code>, <code>release</code></td>
+<td><a href="upgrade-migration.html">Upgrade and migration</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-mutations">Common mutations</h2>
+<p>Read the target with list/get first. Complete templates exist for every file below:</p>
+<pre><code class="language-sh">sudo tiyi diff -f first-site.yaml
+sudo tiyi apply -f first-site.yaml --dry-run
+sudo tiyi apply -f first-site.yaml
+sudo tiyi site import site-import.json
+sudo tiyi api-document upload --site SITE_ID --file orders-openapi.yaml
+</code></pre>
+<p><code>first-site.yaml</code> is for apply, <code>site-import.json</code> for site import, and <code>orders-openapi.yaml</code> for API documentation.
+These formats are not interchangeable. Resource creation usually takes effect immediately; <code>diff</code>, <code>--dry-run</code>, and document preview are the preview operations.</p>
+<h2 id="wildcard-site-hostnames">Wildcard site hostnames</h2>
+<p><code>site create</code> and <code>site update</code> accept wildcard values in <code>--host</code> and repeatable <code>--alias</code>. Quote them, for example <code>--host '*.example.com' --alias example.com</code>. This matches one subdomain level; it excludes the root domain unless added separately and excludes deeper names such as <code>a.b.example.com</code>. See the <a href="operations.html#wildcard-hosts">complete example and HTTPS/API requirements</a>.</p>
+<h2 id="look-up-exact-flags">Look up exact flags</h2>
+<p>The <a href="reference/cli-options.html">complete command option reference</a> is available here, without a source checkout.
+The installed binary also includes help:</p>
+<pre><code class="language-sh">tiyi --help
+tiyi site create --help
+tiyi site routing set --help
+tiyi api-document --help
+tiyi api-document preview --help
+tiyi alert channel upsert --help
+</code></pre>
+<p>Requests for <code>api-document -f</code> use protobuf JSON; see the <a href="reference/services/api_schema.html">API method tables</a>.
+Use the UI or HTTP JSON API for operations without a dedicated CLI wrapper. Do not edit the database or generated proxy configuration.</p>
+<div class="docs-pager"><a href="concepts.html"><span class="label">← Previous</span><span class="title">How Tiyi works</span></a><a class="next" href="api.html"><span class="label">Next →</span><span class="title">API integration</span></a></div>
+</main>
 
   <aside class="docs-toc" id="docs-toc" aria-label="On this page">
     <h4>On this page</h4>
@@ -360,7 +222,7 @@ tiyi dashboard                   <span class="c"># UI-only process</span></code>
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.7.2 · 2026-09-03</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
     </div>
   </div>
 </footer>

@@ -1,0 +1,2342 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>RPC index — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Every RPC Tiyi serves: 309 RPCs across 26 services . Generated from the protobuf schema, so this list is complete by construction." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../index.html">
+      <img src="../../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../../index.html#features">特性</a>
+      <a href="../../index.html#tour">产品</a>
+      <a href="../../index.html#pricing">价格</a>
+      <a href="../index.html" style="color:var(--fg)">文档</a>
+      <a href="../../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../docs/reference/rpc-index.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="../index.html">概览</a></li>
+        <li><a href="../quickstart.html">快速开始</a></li>
+        <li><a href="../installation.html">安装</a></li>
+        <li><a href="../configuration.html">配置与模板</a></li>
+        <li><a href="../practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="../operations.html">日常运维</a></li>
+        <li><a href="../troubleshooting.html">排障</a></li>
+        <li><a href="../upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="../site-import.html">站点导入与导出</a></li>
+        <li><a href="../api-protection.html">API 防护</a></li>
+        <li><a href="../responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="../concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="../cli.html">CLI 参考</a></li>
+        <li><a href="../api.html">API 参考</a></li>
+        <li><a href="index.html">完整参考</a></li>
+        <li><a href="rpc-index.html" aria-current="page">全部 RPC</a></li>
+        <li><a href="permissions.html">权限</a></li>
+        <li><a href="cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="../release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="../deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="rpc-index">RPC index</h1>
+<p class="lede">Every RPC Tiyi serves: <strong>310 RPCs across 26 services</strong>. Generated from the protobuf schema, so this list is complete by construction.</p>
+<p><code>Auth</code> is the permission the server requires. <code>authenticated</code> means any valid session may call it; <code>public</code> means no token at all. A role holding <code>tiyi:superadmin</code> satisfies every check. See <a href="../../../docs/api.html#authentication">the API guide</a> for how tokens are obtained.</p>
+<h2 id="authservice">AuthService</h2>
+<p><a href="services/auth.html#authservice">Full reference →</a> · <code>proto/tiyi/v1/auth.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/auth.html#authservicegetloginoptions"><code>GetLoginOptions</code></a></td>
+<td><code>/tiyi.v1.AuthService/GetLoginOptions</code></td>
+<td>unary</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicelogin"><code>Login</code></a></td>
+<td><code>/tiyi.v1.AuthService/Login</code></td>
+<td>unary</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicecompleteauthenticationchallenge"><code>CompleteAuthenticationChallenge</code></a></td>
+<td><code>/tiyi.v1.AuthService/CompleteAuthenticationChallenge</code></td>
+<td>unary</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicelogout"><code>Logout</code></a></td>
+<td><code>/tiyi.v1.AuthService/Logout</code></td>
+<td>unary</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicerefresh"><code>Refresh</code></a></td>
+<td><code>/tiyi.v1.AuthService/Refresh</code></td>
+<td>unary</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicegetuserinfo"><code>GetUserInfo</code></a></td>
+<td><code>/tiyi.v1.AuthService/GetUserInfo</code></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicegetaccesscodes"><code>GetAccessCodes</code></a></td>
+<td><code>/tiyi.v1.AuthService/GetAccessCodes</code></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicechangepassword"><code>ChangePassword</code></a></td>
+<td><code>/tiyi.v1.AuthService/ChangePassword</code></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicegetmfastatus"><code>GetMFAStatus</code></a></td>
+<td><code>/tiyi.v1.AuthService/GetMFAStatus</code></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicebegintotpenrollment"><code>BeginTOTPEnrollment</code></a></td>
+<td><code>/tiyi.v1.AuthService/BeginTOTPEnrollment</code></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authserviceconfirmtotpenrollment"><code>ConfirmTOTPEnrollment</code></a></td>
+<td><code>/tiyi.v1.AuthService/ConfirmTOTPEnrollment</code></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicedisabletotp"><code>DisableTOTP</code></a></td>
+<td><code>/tiyi.v1.AuthService/DisableTOTP</code></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authserviceregeneraterecoverycodes"><code>RegenerateRecoveryCodes</code></a></td>
+<td><code>/tiyi.v1.AuthService/RegenerateRecoveryCodes</code></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+</tbody>
+</table>
+<h2 id="systemservice">SystemService</h2>
+<p><a href="services/system.html#systemservice">Full reference →</a> · <code>proto/tiyi/v1/system.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/system.html#systemservicehealth"><code>Health</code></a></td>
+<td><code>/tiyi.v1.SystemService/Health</code></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemserviceversion"><code>Version</code></a></td>
+<td><code>/tiyi.v1.SystemService/Version</code></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicegetsystemsettings"><code>GetSystemSettings</code></a></td>
+<td><code>/tiyi.v1.SystemService/GetSystemSettings</code></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemserviceupdatesystemsettings"><code>UpdateSystemSettings</code></a></td>
+<td><code>/tiyi.v1.SystemService/UpdateSystemSettings</code></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemserviceimportlicense"><code>ImportLicense</code></a></td>
+<td><code>/tiyi.v1.SystemService/ImportLicense</code></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicegetdashboardstats"><code>GetDashboardStats</code></a></td>
+<td><code>/tiyi.v1.SystemService/GetDashboardStats</code></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicegetdashboardoverview"><code>GetDashboardOverview</code></a></td>
+<td><code>/tiyi.v1.SystemService/GetDashboardOverview</code></td>
+<td>unary</td>
+<td><code>site:read</code> and <code>telemetry:read</code></td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicegettraffictimeseries"><code>GetTrafficTimeseries</code></a></td>
+<td><code>/tiyi.v1.SystemService/GetTrafficTimeseries</code></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicegetattackdistribution"><code>GetAttackDistribution</code></a></td>
+<td><code>/tiyi.v1.SystemService/GetAttackDistribution</code></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicegettopattackers"><code>GetTopAttackers</code></a></td>
+<td><code>/tiyi.v1.SystemService/GetTopAttackers</code></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicepreviewapply"><code>PreviewApply</code></a></td>
+<td><code>/tiyi.v1.SystemService/PreviewApply</code></td>
+<td>unary</td>
+<td>(<code>system:apply</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemserviceapply"><code>Apply</code></a></td>
+<td><code>/tiyi.v1.SystemService/Apply</code></td>
+<td>unary</td>
+<td>(<code>system:apply</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicelistbinaryreleases"><code>ListBinaryReleases</code></a></td>
+<td><code>/tiyi.v1.SystemService/ListBinaryReleases</code></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicegetbinaryrelease"><code>GetBinaryRelease</code></a></td>
+<td><code>/tiyi.v1.SystemService/GetBinaryRelease</code></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemserviceimportbinaryrelease"><code>ImportBinaryRelease</code></a></td>
+<td><code>/tiyi.v1.SystemService/ImportBinaryRelease</code></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicedeletebinaryrelease"><code>DeleteBinaryRelease</code></a></td>
+<td><code>/tiyi.v1.SystemService/DeleteBinaryRelease</code></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemserviceapplybinaryrelease"><code>ApplyBinaryRelease</code></a></td>
+<td><code>/tiyi.v1.SystemService/ApplyBinaryRelease</code></td>
+<td>unary</td>
+<td>(<code>system:update:apply</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicerollbackbinaryrelease"><code>RollbackBinaryRelease</code></a></td>
+<td><code>/tiyi.v1.SystemService/RollbackBinaryRelease</code></td>
+<td>unary</td>
+<td>(<code>system:update:apply</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicelistsystemcrsrulesets"><code>ListSystemCrsRulesets</code></a></td>
+<td><code>/tiyi.v1.SystemService/ListSystemCrsRulesets</code></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicegetsystemcrsruleset"><code>GetSystemCrsRuleset</code></a></td>
+<td><code>/tiyi.v1.SystemService/GetSystemCrsRuleset</code></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemserviceimportcrsruleset"><code>ImportCrsRuleset</code></a></td>
+<td><code>/tiyi.v1.SystemService/ImportCrsRuleset</code></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicedeletecrsruleset"><code>DeleteCrsRuleset</code></a></td>
+<td><code>/tiyi.v1.SystemService/DeleteCrsRuleset</code></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicelistupgraderuns"><code>ListUpgradeRuns</code></a></td>
+<td><code>/tiyi.v1.SystemService/ListUpgradeRuns</code></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicegetupgraderun"><code>GetUpgradeRun</code></a></td>
+<td><code>/tiyi.v1.SystemService/GetUpgradeRun</code></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicestreamupgraderun"><code>StreamUpgradeRun</code></a></td>
+<td><code>/tiyi.v1.SystemService/StreamUpgradeRun</code></td>
+<td>server stream</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicecancelupgraderun"><code>CancelUpgradeRun</code></a></td>
+<td><code>/tiyi.v1.SystemService/CancelUpgradeRun</code></td>
+<td>unary</td>
+<td>(<code>system:update:apply</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicecheckforupdates"><code>CheckForUpdates</code></a></td>
+<td><code>/tiyi.v1.SystemService/CheckForUpdates</code></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicelistupstreamcrsreleases"><code>ListUpstreamCrsReleases</code></a></td>
+<td><code>/tiyi.v1.SystemService/ListUpstreamCrsReleases</code></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicegetobservationpipelinestats"><code>GetObservationPipelineStats</code></a></td>
+<td><code>/tiyi.v1.SystemService/GetObservationPipelineStats</code></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicelistgeodatabases"><code>ListGeoDatabases</code></a></td>
+<td><code>/tiyi.v1.SystemService/ListGeoDatabases</code></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicedownloadgeodatabase"><code>DownloadGeoDatabase</code></a></td>
+<td><code>/tiyi.v1.SystemService/DownloadGeoDatabase</code></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemserviceuploadgeodatabase"><code>UploadGeoDatabase</code></a></td>
+<td><code>/tiyi.v1.SystemService/UploadGeoDatabase</code></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/system.html#systemservicedeletegeodatabase"><code>DeleteGeoDatabase</code></a></td>
+<td><code>/tiyi.v1.SystemService/DeleteGeoDatabase</code></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="siteservice">SiteService</h2>
+<p><a href="services/site.html#siteservice">Full reference →</a> · <code>proto/tiyi/v1/site.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/site.html#siteservicelistsites"><code>ListSites</code></a></td>
+<td><code>/tiyi.v1.SiteService/ListSites</code></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteservicegetsite"><code>GetSite</code></a></td>
+<td><code>/tiyi.v1.SiteService/GetSite</code></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteservicecreatesite"><code>CreateSite</code></a></td>
+<td><code>/tiyi.v1.SiteService/CreateSite</code></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteserviceupdatesite"><code>UpdateSite</code></a></td>
+<td><code>/tiyi.v1.SiteService/UpdateSite</code></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteservicedeletesite"><code>DeleteSite</code></a></td>
+<td><code>/tiyi.v1.SiteService/DeleteSite</code></td>
+<td>unary</td>
+<td>(<code>site:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteserviceenablesite"><code>EnableSite</code></a></td>
+<td><code>/tiyi.v1.SiteService/EnableSite</code></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteservicedisablesite"><code>DisableSite</code></a></td>
+<td><code>/tiyi.v1.SiteService/DisableSite</code></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteservicepreviewcompiledconfig"><code>PreviewCompiledConfig</code></a></td>
+<td><code>/tiyi.v1.SiteService/PreviewCompiledConfig</code></td>
+<td>unary</td>
+<td>(<code>site:preview</code>)</td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteserviceexportsite"><code>ExportSite</code></a></td>
+<td><code>/tiyi.v1.SiteService/ExportSite</code></td>
+<td>unary</td>
+<td><code>site:read</code> and <code>upstream:read</code> and <code>cert:export</code></td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteserviceexportsites"><code>ExportSites</code></a></td>
+<td><code>/tiyi.v1.SiteService/ExportSites</code></td>
+<td>unary</td>
+<td><code>site:read</code> and <code>upstream:read</code> and <code>cert:export</code></td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteserviceimportsite"><code>ImportSite</code></a></td>
+<td><code>/tiyi.v1.SiteService/ImportSite</code></td>
+<td>unary</td>
+<td><code>site:write</code> and <code>upstream:write</code> and <code>cert:write</code></td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteservicegetsiterouting"><code>GetSiteRouting</code></a></td>
+<td><code>/tiyi.v1.SiteService/GetSiteRouting</code></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteserviceupdatesiterouting"><code>UpdateSiteRouting</code></a></td>
+<td><code>/tiyi.v1.SiteService/UpdateSiteRouting</code></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteservicegetsitepolicyoverride"><code>GetSitePolicyOverride</code></a></td>
+<td><code>/tiyi.v1.SiteService/GetSitePolicyOverride</code></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteserviceupsertsitepolicyoverride"><code>UpsertSitePolicyOverride</code></a></td>
+<td><code>/tiyi.v1.SiteService/UpsertSitePolicyOverride</code></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/site.html#siteservicedeletesitepolicyoverride"><code>DeleteSitePolicyOverride</code></a></td>
+<td><code>/tiyi.v1.SiteService/DeleteSitePolicyOverride</code></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="upstreamservice">UpstreamService</h2>
+<p><a href="services/upstream.html#upstreamservice">Full reference →</a> · <code>proto/tiyi/v1/upstream.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/upstream.html#upstreamservicelistupstreams"><code>ListUpstreams</code></a></td>
+<td><code>/tiyi.v1.UpstreamService/ListUpstreams</code></td>
+<td>unary</td>
+<td>(<code>upstream:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/upstream.html#upstreamservicegetupstream"><code>GetUpstream</code></a></td>
+<td><code>/tiyi.v1.UpstreamService/GetUpstream</code></td>
+<td>unary</td>
+<td>(<code>upstream:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/upstream.html#upstreamservicecreateupstream"><code>CreateUpstream</code></a></td>
+<td><code>/tiyi.v1.UpstreamService/CreateUpstream</code></td>
+<td>unary</td>
+<td>(<code>upstream:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/upstream.html#upstreamserviceupdateupstream"><code>UpdateUpstream</code></a></td>
+<td><code>/tiyi.v1.UpstreamService/UpdateUpstream</code></td>
+<td>unary</td>
+<td>(<code>upstream:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/upstream.html#upstreamservicedeleteupstream"><code>DeleteUpstream</code></a></td>
+<td><code>/tiyi.v1.UpstreamService/DeleteUpstream</code></td>
+<td>unary</td>
+<td>(<code>upstream:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="services/upstream.html#upstreamservicelistupstreamhealth"><code>ListUpstreamHealth</code></a></td>
+<td><code>/tiyi.v1.UpstreamService/ListUpstreamHealth</code></td>
+<td>unary</td>
+<td>(<code>upstream:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="certservice">CertService</h2>
+<p><a href="services/cert.html#certservice">Full reference →</a> · <code>proto/tiyi/v1/cert.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/cert.html#certservicelistcerts"><code>ListCerts</code></a></td>
+<td><code>/tiyi.v1.CertService/ListCerts</code></td>
+<td>unary</td>
+<td>(<code>cert:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/cert.html#certservicegetcert"><code>GetCert</code></a></td>
+<td><code>/tiyi.v1.CertService/GetCert</code></td>
+<td>unary</td>
+<td>(<code>cert:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/cert.html#certserviceuploadcert"><code>UploadCert</code></a></td>
+<td><code>/tiyi.v1.CertService/UploadCert</code></td>
+<td>unary</td>
+<td>(<code>cert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/cert.html#certserviceissueacmecert"><code>IssueACMECert</code></a></td>
+<td><code>/tiyi.v1.CertService/IssueACMECert</code></td>
+<td>unary</td>
+<td>(<code>cert:issue</code>)</td>
+</tr>
+<tr>
+<td><a href="services/cert.html#certservicerenewcert"><code>RenewCert</code></a></td>
+<td><code>/tiyi.v1.CertService/RenewCert</code></td>
+<td>unary</td>
+<td>(<code>cert:issue</code>)</td>
+</tr>
+<tr>
+<td><a href="services/cert.html#certservicedeletecert"><code>DeleteCert</code></a></td>
+<td><code>/tiyi.v1.CertService/DeleteCert</code></td>
+<td>unary</td>
+<td>(<code>cert:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="services/cert.html#certservicedownloadcert"><code>DownloadCert</code></a></td>
+<td><code>/tiyi.v1.CertService/DownloadCert</code></td>
+<td>unary</td>
+<td>(<code>cert:export</code>)</td>
+</tr>
+<tr>
+<td><a href="services/cert.html#certservicelistdnsproviders"><code>ListDNSProviders</code></a></td>
+<td><code>/tiyi.v1.CertService/ListDNSProviders</code></td>
+<td>unary</td>
+<td>(<code>cert:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/cert.html#certservicegetdnsprovider"><code>GetDNSProvider</code></a></td>
+<td><code>/tiyi.v1.CertService/GetDNSProvider</code></td>
+<td>unary</td>
+<td>(<code>cert:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/cert.html#certservicecreatednsprovider"><code>CreateDNSProvider</code></a></td>
+<td><code>/tiyi.v1.CertService/CreateDNSProvider</code></td>
+<td>unary</td>
+<td>(<code>cert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/cert.html#certserviceupdatednsprovider"><code>UpdateDNSProvider</code></a></td>
+<td><code>/tiyi.v1.CertService/UpdateDNSProvider</code></td>
+<td>unary</td>
+<td>(<code>cert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/cert.html#certservicedeletednsprovider"><code>DeleteDNSProvider</code></a></td>
+<td><code>/tiyi.v1.CertService/DeleteDNSProvider</code></td>
+<td>unary</td>
+<td>(<code>cert:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="services/cert.html#certservicelistdnsproviderdrivers"><code>ListDNSProviderDrivers</code></a></td>
+<td><code>/tiyi.v1.CertService/ListDNSProviderDrivers</code></td>
+<td>unary</td>
+<td>(<code>cert:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="policyservice">PolicyService</h2>
+<p><a href="services/policy.html#policyservice">Full reference →</a> · <code>proto/tiyi/v1/policy.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/policy.html#policyservicelistpolicies"><code>ListPolicies</code></a></td>
+<td><code>/tiyi.v1.PolicyService/ListPolicies</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicegetpolicy"><code>GetPolicy</code></a></td>
+<td><code>/tiyi.v1.PolicyService/GetPolicy</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicecreatepolicy"><code>CreatePolicy</code></a></td>
+<td><code>/tiyi.v1.PolicyService/CreatePolicy</code></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicecreatepolicyfromtemplate"><code>CreatePolicyFromTemplate</code></a></td>
+<td><code>/tiyi.v1.PolicyService/CreatePolicyFromTemplate</code></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyserviceupdatepolicy"><code>UpdatePolicy</code></a></td>
+<td><code>/tiyi.v1.PolicyService/UpdatePolicy</code></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyserviceupdatepolicylayer"><code>UpdatePolicyLayer</code></a></td>
+<td><code>/tiyi.v1.PolicyService/UpdatePolicyLayer</code></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicedeletepolicy"><code>DeletePolicy</code></a></td>
+<td><code>/tiyi.v1.PolicyService/DeletePolicy</code></td>
+<td>unary</td>
+<td>(<code>policy:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicesetenginestate"><code>SetEngineState</code></a></td>
+<td><code>/tiyi.v1.PolicyService/SetEngineState</code></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicesetactivecrsruleset"><code>SetActiveCrsRuleset</code></a></td>
+<td><code>/tiyi.v1.PolicyService/SetActiveCrsRuleset</code></td>
+<td>unary</td>
+<td>(<code>policy:crs:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicepreviewseclang"><code>PreviewSecLang</code></a></td>
+<td><code>/tiyi.v1.PolicyService/PreviewSecLang</code></td>
+<td>unary</td>
+<td>(<code>policy:preview</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicepreviewcrsimpact"><code>PreviewCrsImpact</code></a></td>
+<td><code>/tiyi.v1.PolicyService/PreviewCrsImpact</code></td>
+<td>unary</td>
+<td>(<code>policy:preview</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicetestpolicy"><code>TestPolicy</code></a></td>
+<td><code>/tiyi.v1.PolicyService/TestPolicy</code></td>
+<td>unary</td>
+<td>(<code>policy:test</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicelistpolicytemplates"><code>ListPolicyTemplates</code></a></td>
+<td><code>/tiyi.v1.PolicyService/ListPolicyTemplates</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicelistpolicyversions"><code>ListPolicyVersions</code></a></td>
+<td><code>/tiyi.v1.PolicyService/ListPolicyVersions</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicegetpolicyversion"><code>GetPolicyVersion</code></a></td>
+<td><code>/tiyi.v1.PolicyService/GetPolicyVersion</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicerollbackpolicy"><code>RollbackPolicy</code></a></td>
+<td><code>/tiyi.v1.PolicyService/RollbackPolicy</code></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/policy.html#policyservicediffpolicyversions"><code>DiffPolicyVersions</code></a></td>
+<td><code>/tiyi.v1.PolicyService/DiffPolicyVersions</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ruleoverrideservice">RuleOverrideService</h2>
+<p><a href="services/rule.html#ruleoverrideservice">Full reference →</a> · <code>proto/tiyi/v1/rule.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/rule.html#ruleoverrideservicelistruleoverrides"><code>ListRuleOverrides</code></a></td>
+<td><code>/tiyi.v1.RuleOverrideService/ListRuleOverrides</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#ruleoverrideservicegetruleoverride"><code>GetRuleOverride</code></a></td>
+<td><code>/tiyi.v1.RuleOverrideService/GetRuleOverride</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#ruleoverrideserviceupsertruleoverride"><code>UpsertRuleOverride</code></a></td>
+<td><code>/tiyi.v1.RuleOverrideService/UpsertRuleOverride</code></td>
+<td>unary</td>
+<td>(<code>policy:rule:override</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#ruleoverrideservicedeleteruleoverride"><code>DeleteRuleOverride</code></a></td>
+<td><code>/tiyi.v1.RuleOverrideService/DeleteRuleOverride</code></td>
+<td>unary</td>
+<td>(<code>policy:rule:override</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#ruleoverrideservicebulkupsertruleoverrides"><code>BulkUpsertRuleOverrides</code></a></td>
+<td><code>/tiyi.v1.RuleOverrideService/BulkUpsertRuleOverrides</code></td>
+<td>unary</td>
+<td>(<code>policy:rule:override</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#ruleoverrideservicelistcrsrulesforpolicy"><code>ListCrsRulesForPolicy</code></a></td>
+<td><code>/tiyi.v1.RuleOverrideService/ListCrsRulesForPolicy</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="customruleservice">CustomRuleService</h2>
+<p><a href="services/rule.html#customruleservice">Full reference →</a> · <code>proto/tiyi/v1/rule.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/rule.html#customruleservicelistcustomrules"><code>ListCustomRules</code></a></td>
+<td><code>/tiyi.v1.CustomRuleService/ListCustomRules</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#customruleservicegetcustomrule"><code>GetCustomRule</code></a></td>
+<td><code>/tiyi.v1.CustomRuleService/GetCustomRule</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#customruleservicecreatecustomrule"><code>CreateCustomRule</code></a></td>
+<td><code>/tiyi.v1.CustomRuleService/CreateCustomRule</code></td>
+<td>unary</td>
+<td>(<code>policy:custom:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#customruleserviceupdatecustomrule"><code>UpdateCustomRule</code></a></td>
+<td><code>/tiyi.v1.CustomRuleService/UpdateCustomRule</code></td>
+<td>unary</td>
+<td>(<code>policy:custom:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#customruleservicedeletecustomrule"><code>DeleteCustomRule</code></a></td>
+<td><code>/tiyi.v1.CustomRuleService/DeleteCustomRule</code></td>
+<td>unary</td>
+<td>(<code>policy:custom:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#customruleservicereordercustomrules"><code>ReorderCustomRules</code></a></td>
+<td><code>/tiyi.v1.CustomRuleService/ReorderCustomRules</code></td>
+<td>unary</td>
+<td>(<code>policy:custom:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#customruleservicepreviewcustomrule"><code>PreviewCustomRule</code></a></td>
+<td><code>/tiyi.v1.CustomRuleService/PreviewCustomRule</code></td>
+<td>unary</td>
+<td>(<code>policy:preview</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#customruleservicelistcustomruletemplates"><code>ListCustomRuleTemplates</code></a></td>
+<td><code>/tiyi.v1.CustomRuleService/ListCustomRuleTemplates</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#customruleservicecreatefromtemplate"><code>CreateFromTemplate</code></a></td>
+<td><code>/tiyi.v1.CustomRuleService/CreateFromTemplate</code></td>
+<td>unary</td>
+<td>(<code>policy:custom:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="iplistservice">IpListService</h2>
+<p><a href="services/rule.html#iplistservice">Full reference →</a> · <code>proto/tiyi/v1/rule.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/rule.html#iplistservicelistiplists"><code>ListIpLists</code></a></td>
+<td><code>/tiyi.v1.IpListService/ListIpLists</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicegetiplist"><code>GetIpList</code></a></td>
+<td><code>/tiyi.v1.IpListService/GetIpList</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicelistiplistentries"><code>ListIpListEntries</code></a></td>
+<td><code>/tiyi.v1.IpListService/ListIpListEntries</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicecreateiplist"><code>CreateIpList</code></a></td>
+<td><code>/tiyi.v1.IpListService/CreateIpList</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistserviceupdateiplist"><code>UpdateIpList</code></a></td>
+<td><code>/tiyi.v1.IpListService/UpdateIpList</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicedeleteiplist"><code>DeleteIpList</code></a></td>
+<td><code>/tiyi.v1.IpListService/DeleteIpList</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicereplaceiplistentries"><code>ReplaceIpListEntries</code></a></td>
+<td><code>/tiyi.v1.IpListService/ReplaceIpListEntries</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicecloneiplist"><code>CloneIpList</code></a></td>
+<td><code>/tiyi.v1.IpListService/CloneIpList</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicegetiplisteditimpact"><code>GetIpListEditImpact</code></a></td>
+<td><code>/tiyi.v1.IpListService/GetIpListEditImpact</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicecreateiplistsubscription"><code>CreateIpListSubscription</code></a></td>
+<td><code>/tiyi.v1.IpListService/CreateIpListSubscription</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:source:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistserviceupdateiplistsubscription"><code>UpdateIpListSubscription</code></a></td>
+<td><code>/tiyi.v1.IpListService/UpdateIpListSubscription</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:source:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicetestiplistsource"><code>TestIpListSource</code></a></td>
+<td><code>/tiyi.v1.IpListService/TestIpListSource</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:source:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicesynciplistnow"><code>SyncIpListNow</code></a></td>
+<td><code>/tiyi.v1.IpListService/SyncIpListNow</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:sync</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicepauseiplistsync"><code>PauseIpListSync</code></a></td>
+<td><code>/tiyi.v1.IpListService/PauseIpListSync</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:sync</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistserviceresumeiplistsync"><code>ResumeIpListSync</code></a></td>
+<td><code>/tiyi.v1.IpListService/ResumeIpListSync</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:sync</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicelistiplistsyncruns"><code>ListIpListSyncRuns</code></a></td>
+<td><code>/tiyi.v1.IpListService/ListIpListSyncRuns</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistserviceacceptheldiplistupdate"><code>AcceptHeldIpListUpdate</code></a></td>
+<td><code>/tiyi.v1.IpListService/AcceptHeldIpListUpdate</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:sync</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicediscardheldiplistupdate"><code>DiscardHeldIpListUpdate</code></a></td>
+<td><code>/tiyi.v1.IpListService/DiscardHeldIpListUpdate</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:sync</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistserviceaddentries"><code>AddEntries</code></a></td>
+<td><code>/tiyi.v1.IpListService/AddEntries</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistserviceremoveentries"><code>RemoveEntries</code></a></td>
+<td><code>/tiyi.v1.IpListService/RemoveEntries</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistserviceexportcsv"><code>ExportCsv</code></a></td>
+<td><code>/tiyi.v1.IpListService/ExportCsv</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicelookupip"><code>LookupIp</code></a></td>
+<td><code>/tiyi.v1.IpListService/LookupIp</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicelookupipscopes"><code>LookupIpScopes</code></a></td>
+<td><code>/tiyi.v1.IpListService/LookupIpScopes</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicelistiplistbindings"><code>ListIpListBindings</code></a></td>
+<td><code>/tiyi.v1.IpListService/ListIpListBindings</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistserviceupsertiplistbinding"><code>UpsertIpListBinding</code></a></td>
+<td><code>/tiyi.v1.IpListService/UpsertIpListBinding</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicedeleteiplistbinding"><code>DeleteIpListBinding</code></a></td>
+<td><code>/tiyi.v1.IpListService/DeleteIpListBinding</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicelistglobaliplistbindings"><code>ListGlobalIpListBindings</code></a></td>
+<td><code>/tiyi.v1.IpListService/ListGlobalIpListBindings</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistserviceupsertglobaliplistbinding"><code>UpsertGlobalIpListBinding</code></a></td>
+<td><code>/tiyi.v1.IpListService/UpsertGlobalIpListBinding</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicedeleteglobaliplistbinding"><code>DeleteGlobalIpListBinding</code></a></td>
+<td><code>/tiyi.v1.IpListService/DeleteGlobalIpListBinding</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistservicelistiplistreferences"><code>ListIpListReferences</code></a></td>
+<td><code>/tiyi.v1.IpListService/ListIpListReferences</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#iplistserviceapplyiplist"><code>ApplyIpList</code></a></td>
+<td><code>/tiyi.v1.IpListService/ApplyIpList</code></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="countryaccessservice">CountryAccessService</h2>
+<p><a href="services/rule.html#countryaccessservice">Full reference →</a> · <code>proto/tiyi/v1/rule.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/rule.html#countryaccessservicelistcountryaccessrules"><code>ListCountryAccessRules</code></a></td>
+<td><code>/tiyi.v1.CountryAccessService/ListCountryAccessRules</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#countryaccessservicegetcountryaccessrule"><code>GetCountryAccessRule</code></a></td>
+<td><code>/tiyi.v1.CountryAccessService/GetCountryAccessRule</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#countryaccessservicegetcountrycatalog"><code>GetCountryCatalog</code></a></td>
+<td><code>/tiyi.v1.CountryAccessService/GetCountryCatalog</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#countryaccessserviceupsertcountryaccessrule"><code>UpsertCountryAccessRule</code></a></td>
+<td><code>/tiyi.v1.CountryAccessService/UpsertCountryAccessRule</code></td>
+<td>unary</td>
+<td>(<code>policy:country:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#countryaccessservicedeletecountryaccessrule"><code>DeleteCountryAccessRule</code></a></td>
+<td><code>/tiyi.v1.CountryAccessService/DeleteCountryAccessRule</code></td>
+<td>unary</td>
+<td>(<code>policy:country:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ratelimitservice">RateLimitService</h2>
+<p><a href="services/rule.html#ratelimitservice">Full reference →</a> · <code>proto/tiyi/v1/rule.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/rule.html#ratelimitservicelistratelimitendpoints"><code>ListRateLimitEndpoints</code></a></td>
+<td><code>/tiyi.v1.RateLimitService/ListRateLimitEndpoints</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#ratelimitserviceupsertratelimitendpoint"><code>UpsertRateLimitEndpoint</code></a></td>
+<td><code>/tiyi.v1.RateLimitService/UpsertRateLimitEndpoint</code></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#ratelimitservicedeleteratelimitendpoint"><code>DeleteRateLimitEndpoint</code></a></td>
+<td><code>/tiyi.v1.RateLimitService/DeleteRateLimitEndpoint</code></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="crsservice">CrsService</h2>
+<p><a href="services/rule.html#crsservice">Full reference →</a> · <code>proto/tiyi/v1/rule.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/rule.html#crsservicelistcrsrulesets"><code>ListCrsRulesets</code></a></td>
+<td><code>/tiyi.v1.CrsService/ListCrsRulesets</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsservicegetcrsruleset"><code>GetCrsRuleset</code></a></td>
+<td><code>/tiyi.v1.CrsService/GetCrsRuleset</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsservicelistcrsrules"><code>ListCrsRules</code></a></td>
+<td><code>/tiyi.v1.CrsService/ListCrsRules</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsservicegetcrsrule"><code>GetCrsRule</code></a></td>
+<td><code>/tiyi.v1.CrsService/GetCrsRule</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsservicelistcrscategories"><code>ListCrsCategories</code></a></td>
+<td><code>/tiyi.v1.CrsService/ListCrsCategories</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsservicelistcrstags"><code>ListCrsTags</code></a></td>
+<td><code>/tiyi.v1.CrsService/ListCrsTags</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsservicelistcrsplugins"><code>ListCrsPlugins</code></a></td>
+<td><code>/tiyi.v1.CrsService/ListCrsPlugins</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsservicegetcrspluginconfigschema"><code>GetCrsPluginConfigSchema</code></a></td>
+<td><code>/tiyi.v1.CrsService/GetCrsPluginConfigSchema</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsservicelistcrsexclusionplugins"><code>ListCrsExclusionPlugins</code></a></td>
+<td><code>/tiyi.v1.CrsService/ListCrsExclusionPlugins</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsservicegetcrsexclusionplugin"><code>GetCrsExclusionPlugin</code></a></td>
+<td><code>/tiyi.v1.CrsService/GetCrsExclusionPlugin</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsserviceimportcrsexclusionplugin"><code>ImportCrsExclusionPlugin</code></a></td>
+<td><code>/tiyi.v1.CrsService/ImportCrsExclusionPlugin</code></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsservicelistupstreamcrsexclusionpluginreleases"><code>ListUpstreamCrsExclusionPluginReleases</code></a></td>
+<td><code>/tiyi.v1.CrsService/ListUpstreamCrsExclusionPluginReleases</code></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsservicelistpolicyexclusionplugins"><code>ListPolicyExclusionPlugins</code></a></td>
+<td><code>/tiyi.v1.CrsService/ListPolicyExclusionPlugins</code></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsserviceupsertpolicyexclusionplugin"><code>UpsertPolicyExclusionPlugin</code></a></td>
+<td><code>/tiyi.v1.CrsService/UpsertPolicyExclusionPlugin</code></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/rule.html#crsservicedeletepolicyexclusionplugin"><code>DeletePolicyExclusionPlugin</code></a></td>
+<td><code>/tiyi.v1.CrsService/DeletePolicyExclusionPlugin</code></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="logservice">LogService</h2>
+<p><a href="services/log.html#logservice">Full reference →</a> · <code>proto/tiyi/v1/log.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/log.html#logservicegetgloballogpolicy"><code>GetGlobalLogPolicy</code></a></td>
+<td><code>/tiyi.v1.LogService/GetGlobalLogPolicy</code></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logserviceupdategloballogpolicy"><code>UpdateGlobalLogPolicy</code></a></td>
+<td><code>/tiyi.v1.LogService/UpdateGlobalLogPolicy</code></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicegetsitelogpolicy"><code>GetSiteLogPolicy</code></a></td>
+<td><code>/tiyi.v1.LogService/GetSiteLogPolicy</code></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logserviceupsertsitelogpolicyoverride"><code>UpsertSiteLogPolicyOverride</code></a></td>
+<td><code>/tiyi.v1.LogService/UpsertSiteLogPolicyOverride</code></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicedeletesitelogpolicyoverride"><code>DeleteSiteLogPolicyOverride</code></a></td>
+<td><code>/tiyi.v1.LogService/DeleteSiteLogPolicyOverride</code></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicequerysecurityevents"><code>QuerySecurityEvents</code></a></td>
+<td><code>/tiyi.v1.LogService/QuerySecurityEvents</code></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicequeryaccessevents"><code>QueryAccessEvents</code></a></td>
+<td><code>/tiyi.v1.LogService/QueryAccessEvents</code></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicequeryerrorevents"><code>QueryErrorEvents</code></a></td>
+<td><code>/tiyi.v1.LogService/QueryErrorEvents</code></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicegetsecurityevent"><code>GetSecurityEvent</code></a></td>
+<td><code>/tiyi.v1.LogService/GetSecurityEvent</code></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicegetaccessevent"><code>GetAccessEvent</code></a></td>
+<td><code>/tiyi.v1.LogService/GetAccessEvent</code></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicegeterrorevent"><code>GetErrorEvent</code></a></td>
+<td><code>/tiyi.v1.LogService/GetErrorEvent</code></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicetailsecurityevents"><code>TailSecurityEvents</code></a></td>
+<td><code>/tiyi.v1.LogService/TailSecurityEvents</code></td>
+<td>server stream</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logserviceexportsecurityevents"><code>ExportSecurityEvents</code></a></td>
+<td><code>/tiyi.v1.LogService/ExportSecurityEvents</code></td>
+<td>unary</td>
+<td>(<code>log:export</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logserviceexportaccessevents"><code>ExportAccessEvents</code></a></td>
+<td><code>/tiyi.v1.LogService/ExportAccessEvents</code></td>
+<td>unary</td>
+<td>(<code>log:export</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logserviceexporterrorevents"><code>ExportErrorEvents</code></a></td>
+<td><code>/tiyi.v1.LogService/ExportErrorEvents</code></td>
+<td>unary</td>
+<td>(<code>log:export</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicegetaccesslogsummary"><code>GetAccessLogSummary</code></a></td>
+<td><code>/tiyi.v1.LogService/GetAccessLogSummary</code></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicegetaccesslogrankings"><code>GetAccessLogRankings</code></a></td>
+<td><code>/tiyi.v1.LogService/GetAccessLogRankings</code></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicegetsecuritylogsummary"><code>GetSecurityLogSummary</code></a></td>
+<td><code>/tiyi.v1.LogService/GetSecurityLogSummary</code></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicegetrequestevidencemetadata"><code>GetRequestEvidenceMetadata</code></a></td>
+<td><code>/tiyi.v1.LogService/GetRequestEvidenceMetadata</code></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicegetrequestevidenceheaders"><code>GetRequestEvidenceHeaders</code></a></td>
+<td><code>/tiyi.v1.LogService/GetRequestEvidenceHeaders</code></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicestreamrequestevidencebody"><code>StreamRequestEvidenceBody</code></a></td>
+<td><code>/tiyi.v1.LogService/StreamRequestEvidenceBody</code></td>
+<td>server stream</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/log.html#logservicedownloadrequestevidencebody"><code>DownloadRequestEvidenceBody</code></a></td>
+<td><code>/tiyi.v1.LogService/DownloadRequestEvidenceBody</code></td>
+<td>server stream</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="alertservice">AlertService</h2>
+<p><a href="services/alert.html#alertservice">Full reference →</a> · <code>proto/tiyi/v1/alert.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/alert.html#alertservicelistalerts"><code>ListAlerts</code></a></td>
+<td><code>/tiyi.v1.AlertService/ListAlerts</code></td>
+<td>unary</td>
+<td>(<code>alert:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicegetalert"><code>GetAlert</code></a></td>
+<td><code>/tiyi.v1.AlertService/GetAlert</code></td>
+<td>unary</td>
+<td>(<code>alert:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertserviceackalert"><code>AckAlert</code></a></td>
+<td><code>/tiyi.v1.AlertService/AckAlert</code></td>
+<td>unary</td>
+<td>(<code>alert:ack</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertserviceresolvealert"><code>ResolveAlert</code></a></td>
+<td><code>/tiyi.v1.AlertService/ResolveAlert</code></td>
+<td>unary</td>
+<td>(<code>alert:resolve</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicelistalertrules"><code>ListAlertRules</code></a></td>
+<td><code>/tiyi.v1.AlertService/ListAlertRules</code></td>
+<td>unary</td>
+<td>(<code>alert:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicegetalertrule"><code>GetAlertRule</code></a></td>
+<td><code>/tiyi.v1.AlertService/GetAlertRule</code></td>
+<td>unary</td>
+<td>(<code>alert:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertserviceupsertalertrule"><code>UpsertAlertRule</code></a></td>
+<td><code>/tiyi.v1.AlertService/UpsertAlertRule</code></td>
+<td>unary</td>
+<td>(<code>alert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicereplayalertrule"><code>ReplayAlertRule</code></a></td>
+<td><code>/tiyi.v1.AlertService/ReplayAlertRule</code></td>
+<td>unary</td>
+<td>(<code>alert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicedeletealertrule"><code>DeleteAlertRule</code></a></td>
+<td><code>/tiyi.v1.AlertService/DeleteAlertRule</code></td>
+<td>unary</td>
+<td>(<code>alert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicelistalertchannels"><code>ListAlertChannels</code></a></td>
+<td><code>/tiyi.v1.AlertService/ListAlertChannels</code></td>
+<td>unary</td>
+<td>(<code>alert:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicegetalertchannel"><code>GetAlertChannel</code></a></td>
+<td><code>/tiyi.v1.AlertService/GetAlertChannel</code></td>
+<td>unary</td>
+<td>(<code>alert:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertserviceupsertalertchannel"><code>UpsertAlertChannel</code></a></td>
+<td><code>/tiyi.v1.AlertService/UpsertAlertChannel</code></td>
+<td>unary</td>
+<td>(<code>alert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicedeletealertchannel"><code>DeleteAlertChannel</code></a></td>
+<td><code>/tiyi.v1.AlertService/DeleteAlertChannel</code></td>
+<td>unary</td>
+<td>(<code>alert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicetestalertchannel"><code>TestAlertChannel</code></a></td>
+<td><code>/tiyi.v1.AlertService/TestAlertChannel</code></td>
+<td>unary</td>
+<td>(<code>alert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicepreviewalertrulenotification"><code>PreviewAlertRuleNotification</code></a></td>
+<td><code>/tiyi.v1.AlertService/PreviewAlertRuleNotification</code></td>
+<td>unary</td>
+<td>(<code>alert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertserviceapplyalertchanneltorules"><code>ApplyAlertChannelToRules</code></a></td>
+<td><code>/tiyi.v1.AlertService/ApplyAlertChannelToRules</code></td>
+<td>unary</td>
+<td>(<code>alert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicelistalertnotes"><code>ListAlertNotes</code></a></td>
+<td><code>/tiyi.v1.AlertService/ListAlertNotes</code></td>
+<td>unary</td>
+<td>(<code>alert:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicelistalertsilences"><code>ListAlertSilences</code></a></td>
+<td><code>/tiyi.v1.AlertService/ListAlertSilences</code></td>
+<td>unary</td>
+<td>(<code>alert:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicecreatealertsilence"><code>CreateAlertSilence</code></a></td>
+<td><code>/tiyi.v1.AlertService/CreateAlertSilence</code></td>
+<td>unary</td>
+<td>(<code>alert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicedeletealertsilence"><code>DeleteAlertSilence</code></a></td>
+<td><code>/tiyi.v1.AlertService/DeleteAlertSilence</code></td>
+<td>unary</td>
+<td>(<code>alert:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/alert.html#alertservicepreviewalertsilence"><code>PreviewAlertSilence</code></a></td>
+<td><code>/tiyi.v1.AlertService/PreviewAlertSilence</code></td>
+<td>unary</td>
+<td>(<code>alert:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="auditservice">AuditService</h2>
+<p><a href="services/audit.html#auditservice">Full reference →</a> · <code>proto/tiyi/v1/audit.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/audit.html#auditservicequeryaudit"><code>QueryAudit</code></a></td>
+<td><code>/tiyi.v1.AuditService/QueryAudit</code></td>
+<td>unary</td>
+<td>(<code>audit:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/audit.html#auditservicegetauditentry"><code>GetAuditEntry</code></a></td>
+<td><code>/tiyi.v1.AuditService/GetAuditEntry</code></td>
+<td>unary</td>
+<td>(<code>audit:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/audit.html#auditservicegetchainstatus"><code>GetChainStatus</code></a></td>
+<td><code>/tiyi.v1.AuditService/GetChainStatus</code></td>
+<td>unary</td>
+<td>(<code>audit:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/audit.html#auditserviceverifychain"><code>VerifyChain</code></a></td>
+<td><code>/tiyi.v1.AuditService/VerifyChain</code></td>
+<td>unary</td>
+<td>(<code>audit:verify</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="agentservice">AgentService</h2>
+<p><a href="services/agent.html#agentservice">Full reference →</a> · <code>proto/tiyi/v1/agent.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/agent.html#agentserviceenroll"><code>Enroll</code></a></td>
+<td><code>/tiyi.v1.AgentService/Enroll</code></td>
+<td>unary</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentservicelistnodes"><code>ListNodes</code></a></td>
+<td><code>/tiyi.v1.AgentService/ListNodes</code></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentservicelistagents"><code>ListAgents</code></a></td>
+<td><code>/tiyi.v1.AgentService/ListAgents</code></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentservicegetagent"><code>GetAgent</code></a></td>
+<td><code>/tiyi.v1.AgentService/GetAgent</code></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentservicegetnodecapabilities"><code>GetNodeCapabilities</code></a></td>
+<td><code>/tiyi.v1.AgentService/GetNodeCapabilities</code></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentservicegetnodeservingstate"><code>GetNodeServingState</code></a></td>
+<td><code>/tiyi.v1.AgentService/GetNodeServingState</code></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentserviceupdateagent"><code>UpdateAgent</code></a></td>
+<td><code>/tiyi.v1.AgentService/UpdateAgent</code></td>
+<td>unary</td>
+<td>(<code>agent:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentservicedeleteagent"><code>DeleteAgent</code></a></td>
+<td><code>/tiyi.v1.AgentService/DeleteAgent</code></td>
+<td>unary</td>
+<td>(<code>agent:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentserviceretrynodeconfig"><code>RetryNodeConfig</code></a></td>
+<td><code>/tiyi.v1.AgentService/RetryNodeConfig</code></td>
+<td>unary</td>
+<td>(<code>agent:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentserviceissueenrollmenttoken"><code>IssueEnrollmentToken</code></a></td>
+<td><code>/tiyi.v1.AgentService/IssueEnrollmentToken</code></td>
+<td>unary</td>
+<td>(<code>agent:install</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentservicecreatenodeinstallation"><code>CreateNodeInstallation</code></a></td>
+<td><code>/tiyi.v1.AgentService/CreateNodeInstallation</code></td>
+<td>unary</td>
+<td>(<code>agent:install</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentservicegetnodeinstallstatus"><code>GetNodeInstallStatus</code></a></td>
+<td><code>/tiyi.v1.AgentService/GetNodeInstallStatus</code></td>
+<td>unary</td>
+<td>(<code>agent:install</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentservicestreamagentevents"><code>StreamAgentEvents</code></a></td>
+<td><code>/tiyi.v1.AgentService/StreamAgentEvents</code></td>
+<td>server stream</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentservicelistnodemetricsamples"><code>ListNodeMetricSamples</code></a></td>
+<td><code>/tiyi.v1.AgentService/ListNodeMetricSamples</code></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentservicelistconfigbundles"><code>ListConfigBundles</code></a></td>
+<td><code>/tiyi.v1.AgentService/ListConfigBundles</code></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentservicegetconfigbundle"><code>GetConfigBundle</code></a></td>
+<td><code>/tiyi.v1.AgentService/GetConfigBundle</code></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="agentgroupservice">AgentGroupService</h2>
+<p><a href="services/agent.html#agentgroupservice">Full reference →</a> · <code>proto/tiyi/v1/agent.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/agent.html#agentgroupservicelistagentgroups"><code>ListAgentGroups</code></a></td>
+<td><code>/tiyi.v1.AgentGroupService/ListAgentGroups</code></td>
+<td>unary</td>
+<td>(<code>agent_group:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentgroupservicegetagentgroup"><code>GetAgentGroup</code></a></td>
+<td><code>/tiyi.v1.AgentGroupService/GetAgentGroup</code></td>
+<td>unary</td>
+<td>(<code>agent_group:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentgroupservicecreateagentgroup"><code>CreateAgentGroup</code></a></td>
+<td><code>/tiyi.v1.AgentGroupService/CreateAgentGroup</code></td>
+<td>unary</td>
+<td>(<code>agent_group:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentgroupserviceupdateagentgroup"><code>UpdateAgentGroup</code></a></td>
+<td><code>/tiyi.v1.AgentGroupService/UpdateAgentGroup</code></td>
+<td>unary</td>
+<td>(<code>agent_group:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentgroupservicedeleteagentgroup"><code>DeleteAgentGroup</code></a></td>
+<td><code>/tiyi.v1.AgentGroupService/DeleteAgentGroup</code></td>
+<td>unary</td>
+<td>(<code>agent_group:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentgroupserviceresolveagentgroup"><code>ResolveAgentGroup</code></a></td>
+<td><code>/tiyi.v1.AgentGroupService/ResolveAgentGroup</code></td>
+<td>unary</td>
+<td>(<code>agent_group:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="agentstreamservice">AgentStreamService</h2>
+<p><a href="services/agent.html#agentstreamservice">Full reference →</a> · <code>proto/tiyi/v1/agent.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/agent.html#agentstreamserviceconnect"><code>Connect</code></a></td>
+<td><code>/tiyi.v1.AgentStreamService/Connect</code></td>
+<td>bidi stream</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="evidenceuploadservice">EvidenceUploadService</h2>
+<p><a href="services/agent.html#evidenceuploadservice">Full reference →</a> · <code>proto/tiyi/v1/agent.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/agent.html#evidenceuploadserviceupload"><code>Upload</code></a></td>
+<td><code>/tiyi.v1.EvidenceUploadService/Upload</code></td>
+<td>bidi stream</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="trustservice">TrustService</h2>
+<p><a href="services/trust.html#trustservice">Full reference →</a> · <code>proto/tiyi/v1/trust.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/trust.html#trustservicegettrustprofile"><code>GetTrustProfile</code></a></td>
+<td><code>/tiyi.v1.TrustService/GetTrustProfile</code></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/trust.html#trustservicesettrustprofile"><code>SetTrustProfile</code></a></td>
+<td><code>/tiyi.v1.TrustService/SetTrustProfile</code></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/trust.html#trustserviceresettrustprofile"><code>ResetTrustProfile</code></a></td>
+<td><code>/tiyi.v1.TrustService/ResetTrustProfile</code></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/trust.html#trustserviceexplaintrust"><code>ExplainTrust</code></a></td>
+<td><code>/tiyi.v1.TrustService/ExplainTrust</code></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/trust.html#trustservicegettruststatus"><code>GetTrustStatus</code></a></td>
+<td><code>/tiyi.v1.TrustService/GetTrustStatus</code></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/trust.html#trustservicestartclientipanalysis"><code>StartClientIPAnalysis</code></a></td>
+<td><code>/tiyi.v1.TrustService/StartClientIPAnalysis</code></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/trust.html#trustservicegetclientipanalysis"><code>GetClientIPAnalysis</code></a></td>
+<td><code>/tiyi.v1.TrustService/GetClientIPAnalysis</code></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/trust.html#trustservicestopclientipanalysis"><code>StopClientIPAnalysis</code></a></td>
+<td><code>/tiyi.v1.TrustService/StopClientIPAnalysis</code></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/trust.html#trustserviceapplyclientipanalysis"><code>ApplyClientIPAnalysis</code></a></td>
+<td><code>/tiyi.v1.TrustService/ApplyClientIPAnalysis</code></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="userservice">UserService</h2>
+<p><a href="services/user.html#userservice">Full reference →</a> · <code>proto/tiyi/v1/user.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/user.html#userservicelistusers"><code>ListUsers</code></a></td>
+<td><code>/tiyi.v1.UserService/ListUsers</code></td>
+<td>unary</td>
+<td>(<code>user:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#userservicegetuser"><code>GetUser</code></a></td>
+<td><code>/tiyi.v1.UserService/GetUser</code></td>
+<td>unary</td>
+<td>(<code>user:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#userservicecreateuser"><code>CreateUser</code></a></td>
+<td><code>/tiyi.v1.UserService/CreateUser</code></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#userserviceupdateuser"><code>UpdateUser</code></a></td>
+<td><code>/tiyi.v1.UserService/UpdateUser</code></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#userservicedeleteuser"><code>DeleteUser</code></a></td>
+<td><code>/tiyi.v1.UserService/DeleteUser</code></td>
+<td>unary</td>
+<td>(<code>user:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#userserviceassignroles"><code>AssignRoles</code></a></td>
+<td><code>/tiyi.v1.UserService/AssignRoles</code></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#userserviceresetpassword"><code>ResetPassword</code></a></td>
+<td><code>/tiyi.v1.UserService/ResetPassword</code></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#userservicelockuser"><code>LockUser</code></a></td>
+<td><code>/tiyi.v1.UserService/LockUser</code></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#userserviceunlockuser"><code>UnlockUser</code></a></td>
+<td><code>/tiyi.v1.UserService/UnlockUser</code></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#userserviceresetusermfa"><code>ResetUserMFA</code></a></td>
+<td><code>/tiyi.v1.UserService/ResetUserMFA</code></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="roleservice">RoleService</h2>
+<p><a href="services/user.html#roleservice">Full reference →</a> · <code>proto/tiyi/v1/user.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/user.html#roleservicelistroles"><code>ListRoles</code></a></td>
+<td><code>/tiyi.v1.RoleService/ListRoles</code></td>
+<td>unary</td>
+<td>(<code>role:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#roleservicegetrole"><code>GetRole</code></a></td>
+<td><code>/tiyi.v1.RoleService/GetRole</code></td>
+<td>unary</td>
+<td>(<code>role:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#roleservicecreaterole"><code>CreateRole</code></a></td>
+<td><code>/tiyi.v1.RoleService/CreateRole</code></td>
+<td>unary</td>
+<td>(<code>role:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#roleserviceupdaterole"><code>UpdateRole</code></a></td>
+<td><code>/tiyi.v1.RoleService/UpdateRole</code></td>
+<td>unary</td>
+<td>(<code>role:write</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#roleservicedeleterole"><code>DeleteRole</code></a></td>
+<td><code>/tiyi.v1.RoleService/DeleteRole</code></td>
+<td>unary</td>
+<td>(<code>role:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="services/user.html#roleservicelistpermissions"><code>ListPermissions</code></a></td>
+<td><code>/tiyi.v1.RoleService/ListPermissions</code></td>
+<td>unary</td>
+<td>(<code>role:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="menuservice">MenuService</h2>
+<p><a href="services/menu.html#menuservice">Full reference →</a> · <code>proto/tiyi/v1/menu.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/menu.html#menuservicelistmenus"><code>ListMenus</code></a></td>
+<td><code>/tiyi.v1.MenuService/ListMenus</code></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+</tbody>
+</table>
+<h2 id="aiservice">AIService</h2>
+<p><a href="services/ai.html#aiservice">Full reference →</a> · <code>proto/tiyi/v1/ai.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/ai.html#aiservicelistaiproposals"><code>ListAIProposals</code></a></td>
+<td><code>/tiyi.v1.AIService/ListAIProposals</code></td>
+<td>unary</td>
+<td>(<code>ai:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/ai.html#aiservicegetaiproposal"><code>GetAIProposal</code></a></td>
+<td><code>/tiyi.v1.AIService/GetAIProposal</code></td>
+<td>unary</td>
+<td>(<code>ai:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/ai.html#aiservicegetaistatus"><code>GetAIStatus</code></a></td>
+<td><code>/tiyi.v1.AIService/GetAIStatus</code></td>
+<td>unary</td>
+<td>(<code>ai:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/ai.html#aiservicedraftcustomrule"><code>DraftCustomRule</code></a></td>
+<td><code>/tiyi.v1.AIService/DraftCustomRule</code></td>
+<td>unary</td>
+<td>(<code>ai:propose</code>)</td>
+</tr>
+<tr>
+<td><a href="services/ai.html#aiservicetranslatelogquery"><code>TranslateLogQuery</code></a></td>
+<td><code>/tiyi.v1.AIService/TranslateLogQuery</code></td>
+<td>unary</td>
+<td>(<code>ai:read</code>)</td>
+</tr>
+<tr>
+<td><a href="services/ai.html#aiservicestreamanalysis"><code>StreamAnalysis</code></a></td>
+<td><code>/tiyi.v1.AIService/StreamAnalysis</code></td>
+<td>server stream</td>
+<td><code>ai:read</code> and <code>log:read</code></td>
+</tr>
+<tr>
+<td><a href="services/ai.html#aiservicestreamchat"><code>StreamChat</code></a></td>
+<td><code>/tiyi.v1.AIService/StreamChat</code></td>
+<td>server stream</td>
+<td><code>ai:read</code> and <code>log:read</code></td>
+</tr>
+<tr>
+<td><a href="services/ai.html#aiserviceapplyaiproposal"><code>ApplyAIProposal</code></a></td>
+<td><code>/tiyi.v1.AIService/ApplyAIProposal</code></td>
+<td>unary</td>
+<td>(<code>ai:apply</code>)</td>
+</tr>
+<tr>
+<td><a href="services/ai.html#aiservicerejectaiproposal"><code>RejectAIProposal</code></a></td>
+<td><code>/tiyi.v1.AIService/RejectAIProposal</code></td>
+<td>unary</td>
+<td>(<code>ai:propose</code>)</td>
+</tr>
+<tr>
+<td><a href="services/ai.html#aiservicesetaiprovidersecret"><code>SetAIProviderSecret</code></a></td>
+<td><code>/tiyi.v1.AIService/SetAIProviderSecret</code></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="apischemaservice">ApiSchemaService</h2>
+<p><a href="services/api_schema.html#apischemaservice">Full reference →</a> · <code>proto/tiyi/v1/api_schema.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicegetschemavalidation"><code>GetSchemaValidation</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/GetSchemaValidation</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicestageapicatalogchange"><code>StageApiCatalogChange</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/StageApiCatalogChange</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicegetschemalearning"><code>GetSchemaLearning</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/GetSchemaLearning</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicechangeschemalearning"><code>ChangeSchemaLearning</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/ChangeSchemaLearning</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicesnapshotschemalearning"><code>SnapshotSchemaLearning</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/SnapshotSchemaLearning</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicestagelearneddocument"><code>StageLearnedDocument</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/StageLearnedDocument</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaserviceexportlearneddocument"><code>ExportLearnedDocument</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/ExportLearnedDocument</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicegetapirequestdocument"><code>GetApiRequestDocument</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/GetApiRequestDocument</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicestageapirequestdocument"><code>StageApiRequestDocument</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/StageApiRequestDocument</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicestageschemasource"><code>StageSchemaSource</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/StageSchemaSource</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicelistschemasources"><code>ListSchemaSources</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/ListSchemaSources</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicegetschemasource"><code>GetSchemaSource</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/GetSchemaSource</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicelistapidocumentreports"><code>ListApiDocumentReports</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/ListApiDocumentReports</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicegetapidocumentreport"><code>GetApiDocumentReport</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/GetApiDocumentReport</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicestageschemaprofile"><code>StageSchemaProfile</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/StageSchemaProfile</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicelistschemaprofiles"><code>ListSchemaProfiles</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/ListSchemaProfiles</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicegetschemaprofile"><code>GetSchemaProfile</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/GetSchemaProfile</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicepreviewapideclaration"><code>PreviewApiDeclaration</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/PreviewApiDeclaration</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicestageapideclaration"><code>StageApiDeclaration</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/StageApiDeclaration</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicelistschemacontracts"><code>ListSchemaContracts</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/ListSchemaContracts</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicegetschemacontract"><code>GetSchemaContract</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/GetSchemaContract</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicepreviewschemacontrol"><code>PreviewSchemaControl</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/PreviewSchemaControl</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicechangeschemacontrol"><code>ChangeSchemaControl</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/ChangeSchemaControl</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code> and <code>policy:write</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicestageschemabindings"><code>StageSchemaBindings</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/StageSchemaBindings</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicegetschemabindings"><code>GetSchemaBindings</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/GetSchemaBindings</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicelistschemabindings"><code>ListSchemaBindings</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/ListSchemaBindings</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/api_schema.html#apischemaservicegetschemadetection"><code>GetSchemaDetection</code></a></td>
+<td><code>/tiyi.v1.ApiSchemaService/GetSchemaDetection</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="operationcontrolservice">OperationControlService</h2>
+<p><a href="services/operation_control.html#operationcontrolservice">Full reference →</a> · <code>proto/tiyi/v1/operation_control.proto</code></p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Procedure</th>
+<th>Kind</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/operation_control.html#operationcontrolservicegetrequestinspection"><code>GetRequestInspection</code></a></td>
+<td><code>/tiyi.v1.OperationControlService/GetRequestInspection</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code> and <code>policy:read</code></td>
+</tr>
+<tr>
+<td><a href="services/operation_control.html#operationcontrolservicepreviewbodycontrol"><code>PreviewBodyControl</code></a></td>
+<td><code>/tiyi.v1.OperationControlService/PreviewBodyControl</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/operation_control.html#operationcontrolserviceapplybodycontrol"><code>ApplyBodyControl</code></a></td>
+<td><code>/tiyi.v1.OperationControlService/ApplyBodyControl</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/operation_control.html#operationcontrolservicepreviewbodychange"><code>PreviewBodyChange</code></a></td>
+<td><code>/tiyi.v1.OperationControlService/PreviewBodyChange</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/operation_control.html#operationcontrolservicechangebodycontrol"><code>ChangeBodyControl</code></a></td>
+<td><code>/tiyi.v1.OperationControlService/ChangeBodyControl</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="services/operation_control.html#operationcontrolservicegetoperationcontrolstate"><code>GetOperationControlState</code></a></td>
+<td><code>/tiyi.v1.OperationControlService/GetOperationControlState</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/operation_control.html#operationcontrolservicelistoperationcontrolhistory"><code>ListOperationControlHistory</code></a></td>
+<td><code>/tiyi.v1.OperationControlService/ListOperationControlHistory</code></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="services/operation_control.html#operationcontrolservicereplaceoperationcontrols"><code>ReplaceOperationControls</code></a></td>
+<td><code>/tiyi.v1.OperationControlService/ReplaceOperationControls</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code> and <code>policy:write</code></td>
+</tr>
+<tr>
+<td><a href="services/operation_control.html#operationcontrolservicerollbackoperationcontrols"><code>RollbackOperationControls</code></a></td>
+<td><code>/tiyi.v1.OperationControlService/RollbackOperationControls</code></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code> and <code>policy:write</code></td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

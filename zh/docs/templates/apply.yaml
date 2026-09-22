@@ -1,15 +1,17 @@
 # 太一声明式资源模板
-# 替换示例值，用 `tiyi crs list` 核对 crsRulesetRef，然后执行：
-#   tiyi diff -f apply.yaml
-#   tiyi apply -f apply.yaml
-# spec 会替换全部 apply 管理字段，并不是 merge patch。
+#
+# 替换示例域名和上游地址，用 `tiyi crs list` 核对 CRS 版本，先执行
+# `tiyi diff -f apply.yaml`，确认后再执行 `tiyi apply -f apply.yaml`。
+#
+# spec 会完整替换 apply 管理的字段，不是 merge patch。从文件中删除文档并不会
+# 删除已存在的资源。
 
 apiVersion: tiyi.io/v1
 kind: Policy
 metadata:
   name: app-baseline
 spec:
-  engineState: on          # on | detection_only | off
+  engineState: "on"          # on | detection_only | off
   blockingMode: anomaly    # anomaly | self_contained
   crsRulesetRef: "4.25.1" # 已存在的 CRS ID 或版本
   status: active           # draft | active | archived
@@ -23,8 +25,9 @@ spec:
     - url: http://127.0.0.1:9000
       weight: 100
   loadBalance: round_robin
+  # path 留空时关闭主动探测；启用后，每个后端都必须通过 Controller 的提交预检。
   healthCheck:
-    path: "" # 留空时关闭主动探测
+    path: ""
     method: GET
     expectedStatus: 200
     intervalSeconds: 30
@@ -34,7 +37,7 @@ spec:
     followRedirects: false
     expectedBody: ""
     host: ""
-  status: active
+  status: active           # active | disabled
 ---
 apiVersion: tiyi.io/v1
 kind: Site
@@ -42,15 +45,28 @@ metadata:
   name: app-example
 spec:
   primaryHost: app.example.com
-  aliases: [www.app.example.com]
-  upstreamRef: app-pool # 或 upstreamsInline；不能同时填写
+  aliases:
+    - www.app.example.com
+  upstreamRef: app-pool
+  # upstreamRef 与 upstreamsInline 二选一，不能同时填写。
   tls:
-    mode: none # none | uploaded | managed_acme
+    mode: none             # none | uploaded | managed_acme
+    # 启用 TLS 时再添加 certRef/minVersion 和 httpBehavior。证书需先用
+    # `tiyi cert upload` 或 `tiyi cert issue` 单独创建。
   waf:
     enabled: true
     policyRef: app-baseline
     mode: blocking
-  status: active
+  botProtection:
+    mode: "off"               # off | browser_check | human_verification
+    challengeTtlSeconds: 120
+    clearanceTtlSeconds: 3600
+    proofDifficulty: 16
+    bindNetwork: true
+    exemptPaths:
+      - /healthz
+    trustedIpListRefs: []
+  status: active           # active | disabled
 ---
 apiVersion: tiyi.io/v1
 kind: IpList
@@ -65,5 +81,7 @@ spec:
       description: 主办公区 IPv6
       expireAt: 2026-12-31T00:00:00Z
 
-# apply IpList 后还需另建绑定才会产生防护行为；geo:* 会被拒绝，国家/地区防护请用
-# 防护策略 > Country Access。
+# IpList apply 只管理地址数据。需要另外创建 IP 列表绑定才会产生允许、拒绝或观察
+# 行为。geo:* 会被拒绝；国家/地区防护请使用 Country Access。
+
+# 当前 apply 无法按名称解析 Bot 可信列表；先创建地址列表，再在站点 Bot 设置中绑定。

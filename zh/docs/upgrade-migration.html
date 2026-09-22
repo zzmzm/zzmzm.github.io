@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<title>升级与迁移 — 太一文档</title>
+<title>升级与迁移太一 — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="更新太一二进制、处理不兼容状态，或把完整 Controller 安装迁移到另一台主机。" />
+<meta name="description" content="先按目标选择流程：" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -13,86 +13,270 @@
 <link rel="stylesheet" href="../../assets/css/main.css" />
 <script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
 </head>
-<body class="docs" data-assets-base="../../assets/img/"><div class="bg-field" aria-hidden="true"></div>
-<header class="nav"><div class="container nav-inner"><a class="brand" href="../index.html"><img src="../../assets/img/tiyi-logo.png" alt="太一 logo" /><span>太一</span></a><nav class="nav-links" aria-label="主导航"><a href="../index.html#features">特性</a><a href="../index.html#tour">产品</a><a href="../index.html#pricing">价格</a><a href="index.html" style="color:var(--fg)">文档</a><a href="../changelog.html">更新日志</a><button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button><a class="nav-toggle nav-lang" href="../../docs/upgrade-migration.html" hreflang="en" aria-label="Switch to English">EN</a><a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a></nav></div></header>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/upgrade-migration.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
 <div class="docs-layout">
-  <aside class="docs-sidebar" aria-label="文档导航"><div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div><div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-migration.html">升级与迁移</a></li></ul></div><div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div><div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div><div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div></aside>
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html" aria-current="page">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">运维</span><h1>升级与迁移太一</h1>
-    <p class="lede">原地更新兼容的签名二进制、在版本不兼容时重置状态，或把完整 Controller 安装迁移到另一台主机。</p>
-
-    <h2 id="choose-path">选择流程</h2>
-    <table><thead><tr><th>目标</th><th>流程</th></tr></thead><tbody><tr><td>原主机兼容更新</td><td>备份 → 更新 → 重启 → 验证</td></tr><tr><td>迁移 Controller</td><td>停止源端 → 完整复制状态和配置 → 在目标端用相同版本启动</td></tr><tr><td>状态不兼容更新</td><td>备份 → purge → 更新保留的二进制 → 安装 → 重新配置</td></tr></tbody></table>
-    <p>更新器只验证发行元数据、校验和与签名，没有硬编码最低版本，也不替代持久化数据兼容性判断；更新前应阅读目标版本说明。</p>
-
-    <h2 id="routine-update">日常签名更新</h2>
-<pre><code>sudo tiyi update --check
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="升级与迁移太一">升级与迁移太一</h1>
+<p class="lede">先按目标选择流程：</p>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>流程</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>在原主机安装兼容的签名版本</td>
+<td>备份 → <code>tiyi update --yes</code> → 重启 → 验证</td>
+</tr>
+<tr>
+<td>不改变状态格式，把 Controller 搬到新主机</td>
+<td>停止源端 → 完整复制状态和配置 → 在目标端用相同版本启动</td>
+</tr>
+<tr>
+<td>安装无法读取当前状态的版本</td>
+<td>备份 → <code>uninstall --purge</code> → 用保留的二进制更新 → <code>install --now</code> → 重新配置</td>
+</tr>
+</tbody>
+</table>
+<p>更新器只验证发行元数据、校验和与签名，没有硬编码最低版本，也不替代数据兼容性判断。
+更新前应阅读目标版本说明，并先保存可回滚副本。</p>
+<p><a id="backup"></a></p>
+<h2 id="先准备一份能恢复的备份">先准备一份能恢复的备份</h2>
+<p>日常备份也可直接使用本节，不需要执行后面的升级或 purge。下面针对默认 systemd 安装；
+自定义数据库、外部 KEK、证书、license 或其他持久目录时，把实际路径一起纳入。
+备份会短暂停止本节点业务，先安排维护窗口或切流，确认磁盘空间足够。</p>
+<pre><code class="language-sh">tiyi --version
+sudo systemctl cat tiyi
+TIYI_BACKUP_ID=$(date -u +%Y%m%dT%H%M%SZ)
+sudo install -d -m 0700 /var/backups/tiyi
+sudo systemctl stop tiyi
+sudo tar --xattrs --acls -C / \
+  -czf &quot;/var/backups/tiyi/tiyi-${TIYI_BACKUP_ID}.tar.gz&quot; \
+  var/lib/tiyi etc/tiyi etc/systemd/system/tiyi.service usr/local/bin/tiyi
+sudo tar -tzf &quot;/var/backups/tiyi/tiyi-${TIYI_BACKUP_ID}.tar.gz&quot; &gt;/dev/null
+sudo systemctl start tiyi
+sudo tiyi system health
+</code></pre>
+<p>归档和目录读取都应成功，服务恢复健康后，将备份复制到独立且受限的存储，记录实际二进制版本、配置路径和时间。
+备份含私钥和账号数据，不能作为普通工单附件。归档失败时恢复原服务并处理磁盘/路径问题，不继续升级。
+恢复演练按下方<a href="#restore">迁移到另一台主机</a>进行：在隔离目标上使用备份里的匹配二进制和完整状态，验证登录、站点、证书与请求。
+不要在同一业务入口同时运行两个独立恢复出的 Controller。站点 JSON 导出和单独复制 <code>state.db</code> 不能代替这份完整一致备份。</p>
+<h2 id="日常签名更新">日常签名更新</h2>
+<p>先完成<a href="#backup">备份</a>，核对目标版本的状态和 Agent 协议兼容性。以下只运行一次更新；强制 Gitee 时用 <code>sudo tiyi update --yes --mirror gitee</code> 替代默认更新命令。</p>
+<p>目标版本的状态与 Agent 协议兼容时：</p>
+<pre><code class="language-sh">tiyi --version
+sudo tiyi update --check
 sudo tiyi update --yes                 # GitHub，失败自动回退 Gitee
-sudo tiyi update --yes --mirror gitee # 强制 Gitee
 sudo systemctl restart tiyi
 tiyi --version
 sudo tiyi system health
-sudo journalctl -u tiyi -b -n 200 --no-pager</code></pre>
-    <p><code>update</code> 原子替换已验证的二进制，但不会重启正在运行的进程。</p>
+sudo journalctl -u tiyi -b -n 200 --no-pager
+</code></pre>
+<p><code>update</code> 验证成功后原子替换 <code>/usr/local/bin/tiyi</code>，但不会重启正在运行的进程。</p>
+<h2 id="状态不兼容的更新">状态不兼容的更新</h2>
+<p>先运行 <code>sudo tiyi update --check</code> 核对目标。<code>update</code> 选择当前频道的最新发行版，没有 <code>--version</code> 参数；
+只有目标确实是你已审核的版本时才执行下面的更新。如果要固定 v3.8.0 而频道已经有更新版本，
+先按<a href="installation.html">离线安装的下载与签名核验</a>准备对应架构的 v3.8.0 文件，备份/purge 后用
+<code>sudo install -m 0755 tiyi-release/tiyi /usr/local/bin/tiyi</code> 替代下面的 <code>update --yes</code>，核对版本后再安装服务。</p>
+<p>v3.8.0 无法读取 v3.7.2 或更早版本创建的状态。完成这一次过渡时，应把旧安装保存为
+离线回滚归档，并用空状态和空配置启动。不要把旧归档导入新的在线路径；重建
+Controller 后重新注册每一个远程 Agent。</p>
+<h3 id="1-停止并归档">1. 停止并归档</h3>
+<pre><code class="language-sh">tiyi --version
+systemctl cat tiyi
+sudo systemctl stop tiyi
 
-    <h2 id="incompatible-update">状态不兼容的更新</h2>
-    <p>v3.7.0 无法读取 v3.6.0 或更早版本创建的状态。先保留离线回滚归档，purge 旧状态/配置，再更新保留的二进制、安装新服务并重新注册每一个远程 Agent；不要导入旧数据库、身份、spool 或 bundle 缓存。</p>
-<pre><code>sudo systemctl stop tiyi
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 sudo install -d -m 0700 /var/backups/tiyi
 sudo tar --xattrs --acls -C / \
-  -czf "/var/backups/tiyi/tiyi-before-update-${stamp}.tar.gz" \
-  var/lib/tiyi etc/tiyi etc/systemd/system/tiyi.service usr/local/bin/tiyi
-sudo sha256sum "/var/backups/tiyi/tiyi-before-update-${stamp}.tar.gz"
-
-sudo /usr/local/bin/tiyi uninstall --purge
+  -czf &quot;/var/backups/tiyi/tiyi-before-update-${stamp}.tar.gz&quot; \
+  var/lib/tiyi \
+  etc/tiyi \
+  etc/systemd/system/tiyi.service \
+  usr/local/bin/tiyi
+sudo sha256sum &quot;/var/backups/tiyi/tiyi-before-update-${stamp}.tar.gz&quot;
+sudo tar -tzf &quot;/var/backups/tiyi/tiyi-before-update-${stamp}.tar.gz&quot; | head
+</code></pre>
+<p>若二进制、状态、配置、license、证书或密钥使用了自定义路径，把它们加入归档。
+归档和校验和必须放在太一在线目录之外。归档可能包含私钥、密码、Token、请求证据和
+个人数据，应按密钥等级保护。</p>
+<h3 id="2-purge更新并安装">2. purge、更新并安装</h3>
+<p><code>uninstall --purge</code> 会删除服务 unit、<code>/var/lib/tiyi</code>、<code>/etc/tiyi</code> 和服务账号，
+但有意保留 <code>/usr/local/bin/tiyi</code>，因此旧二进制可以把同一个文件替换为已验证版本：</p>
+<pre><code class="language-sh">sudo /usr/local/bin/tiyi uninstall --purge
 sudo /usr/local/bin/tiyi update --yes --mirror gitee
+/usr/local/bin/tiyi --version
 sudo /usr/local/bin/tiyi doctor --mode run
 sudo /usr/local/bin/tiyi install --now
 sudo systemctl status tiyi --no-pager
-sudo journalctl -u tiyi -b -n 200 --no-pager</code></pre>
-    <p><code>uninstall --purge</code> 会删除 unit、状态/配置和服务账号，但有意保留 <code>/usr/local/bin/tiyi</code>；<code>update</code> 会覆盖这个文件。若保留的二进制没有 update 命令，验证归档后只删除该二进制，再用公开安装器。保存新管理员密码，并在目标协议要求时重新注册 Agent。</p>
-
-    <h2 id="host-migration">把 Controller 迁移到另一台主机</h2>
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>尽量使用完全相同的版本，严禁两台 Controller 同时运行。</strong>它们共享部署身份、签名密钥和 Agent 信任。</p></div></div>
-    <p>停止源端后复制完整 <code>/var/lib/tiyi</code>，不能只复制 <code>state.db</code>。目录还可能包含 WAL 文件、KEK、日志/明细分区、请求证据、CRS 数据、发行制品、bundle 和身份。同时复制 <code>/etc/tiyi</code> 及配置引用的外部 KEK、license、证书和密钥文件。</p>
-<pre><code># 源端
-tiyi --version
+sudo journalctl -u tiyi -b -n 200 --no-pager
+sudo /usr/local/bin/tiyi system health
+</code></pre>
+<p>若保留的二进制没有 <code>update</code> 命令，先验证归档，只删除那个准确的二进制路径，再运行
+公开安装器。保存新的一次性管理员密码，重新创建审核过的站点、策略、证书、认证、
+信任、SIEM 和告警配置；重新注册每一个远程 Agent，不要把旧身份、spool 或 bundle
+缓存恢复到 v3.8.0。</p>
+<p><a id="restore"></a></p>
+<h2 id="把-controller-迁移到另一台主机">把 Controller 迁移到另一台主机</h2>
+<p>两台主机应尽量使用<strong>完全相同的太一版本</strong>。只有目标版本说明明确声明状态兼容时，
+才可以直接迁移到更新版本；单向 schema 变化应先在隔离副本上测试。</p>
+<p>必须复制<strong>完整状态目录</strong>，不能只复制 <code>state.db</code>。<code>/var/lib/tiyi</code> 还可能包含 SQLite
+WAL 文件、默认 KEK、日志/明细分区、请求证据、CRS 数据、发行制品、生成 bundle 和
+内嵌 Agent 身份。同时复制 <code>/etc/tiyi</code>，以及配置引用的外部 KEK、license、证书和
+密钥文件。</p>
+<h3 id="1-获取一致的源端归档">1. 获取一致的源端归档</h3>
+<pre><code class="language-sh">tiyi --version
 systemctl cat tiyi
 sudo systemctl stop tiyi
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 sudo install -d -m 0700 /var/backups/tiyi
 sudo tar --xattrs --acls -C / \
-  -czf "/var/backups/tiyi/tiyi-migrate-${stamp}.tar.gz" \
+  -czf &quot;/var/backups/tiyi/tiyi-migrate-${stamp}.tar.gz&quot; \
   var/lib/tiyi etc/tiyi
-sudo sha256sum "/var/backups/tiyi/tiyi-migrate-${stamp}.tar.gz"
-
-# 干净目标端：替换 vX.Y.Z 与归档文件名。
-source_tag=vX.Y.Z
+sudo sha256sum &quot;/var/backups/tiyi/tiyi-migrate-${stamp}.tar.gz&quot;
+</code></pre>
+<p>生成最终归档后不要再启动源端。记录自定义 unit 选项、drop-in 与注入的环境变量，
+再通过有认证的通道传输归档和校验和。</p>
+<h3 id="2-在干净目标主机恢复">2. 在干净目标主机恢复</h3>
+<p>安装同一签名版本，先创建服务账号和 unit，但不要启动。把 <code>vX.Y.Z</code> 和归档文件名
+替换为源端准确值：</p>
+<pre><code class="language-sh">source_tag=vX.Y.Z
 archive=/secure/path/tiyi-migrate-YYYYMMDDTHHMMSSZ.tar.gz
 curl -fsSL https://www.tiyisec.com/install.sh \
-  | TIYI_VERSION="$source_tag" bash
+  | TIYI_VERSION=&quot;$source_tag&quot; bash
 sudo /usr/local/bin/tiyi install
-sudo sha256sum "$archive"
-sudo tar --xattrs --acls -C / -xzf "$archive"
+
+sudo sha256sum &quot;$archive&quot;
+sudo tar --xattrs --acls -C / -xzf &quot;$archive&quot;
 sudo chown -R tiyi:tiyi /var/lib/tiyi
 sudo chgrp -R tiyi /etc/tiyi
 sudo chmod -R g+rX /etc/tiyi
-sudo /usr/local/bin/tiyi doctor --mode run --fix-state-ownership
-sudo /usr/local/bin/tiyi install --now</code></pre>
-    <p>解压前验证校验和，在运行 <code>doctor</code> 前重建审核过的 unit 选项、drop-in、注入环境与外部文件，并检查健康、站点、证书、远程 Agent、bundle revision、<code>tiyi audit verify</code>、日志和 <code>/metrics</code>。回滚时先停止目标端，再启动未改动的源端；两边都接受过写入后不能合并状态树。</p>
 
-    <h2 id="diagnose">排查失败</h2>
-<pre><code>sudo /usr/local/bin/tiyi doctor --mode run
+sudo /usr/local/bin/tiyi doctor --mode run --fix-state-ownership
+sudo /usr/local/bin/tiyi install --now
+sudo systemctl status tiyi --no-pager
+sudo journalctl -u tiyi -b -n 200 --no-pager
+sudo /usr/local/bin/tiyi system health
+</code></pre>
+<p>解压前先把目标端校验和与源端记录值进行比较。在运行 <code>doctor</code> 前重建审核过的 unit
+定制并恢复所有外部文件，保证 <code>tiyi</code> 服务用户可读。启动后检查站点、
+证书、远程 Agent 状态、当前 bundle revision、<code>tiyi audit verify</code> 和本地 <code>/metrics</code>。</p>
+<p>严禁源端与克隆的 Controller 同时运行：它们共享部署身份、签名密钥和 Agent 信任。
+回滚时必须先停止目标端，再启动未改动的源端。两边一旦都接受过写入，不能合并两份
+状态树。</p>
+<h2 id="排查失败">排查失败</h2>
+<pre><code class="language-sh">sudo /usr/local/bin/tiyi doctor --mode run
 systemctl status tiyi --no-pager
 journalctl -u tiyi -b -n 200 --no-pager
 journalctl -u tiyi -f
-ss -ltnp</code></pre>
-    <ul><li>安装器拒绝表示新主机安装器发现已有二进制、状态、配置或 unit，应使用相应升级或迁移流程。</li><li>schema 不兼容表示目标二进制无法读取该状态，应使用匹配的二进制，或恢复/重置预期状态。</li><li>sudo <code>secure_path</code> 找不到 <code>tiyi</code> 时使用完整二进制路径。</li><li>更新失败不会改动当前二进制；修复镜像/网络、磁盘或权限后重试。</li></ul>
-    <p>参见 <a href="operations.html#prometheus">Prometheus 接入</a>和<a href="troubleshooting.html">通用排障</a>。</p>
+ss -ltnp
+</code></pre>
+<ul>
+<li>安装器拒绝表示新主机安装器发现了已有二进制、状态、配置或 unit，应改用升级或
+  迁移流程。</li>
+<li>schema 不兼容表示目标二进制无法读取该状态；停止服务，改用匹配的二进制，或恢复/
+  重置预期状态。</li>
+<li>sudo 下 <code>command not found</code> 通常是 <code>secure_path</code> 未包含安装目录；请明确使用
+  <code>/usr/local/bin/tiyi</code>。</li>
+<li>更新失败不会破坏现有二进制；修复镜像、网络、磁盘空间或权限后重试。</li>
+</ul>
+<p>Prometheus 接入见<a href="operations.html#7-接入-prometheus">日常运维：接入 Prometheus</a>，
+其他问题见<a href="troubleshooting.html">排障</a>。</p>
+<div class="docs-pager"><a href="troubleshooting.html"><span class="label">← 上一页</span><span class="title">排障</span></a><a class="next" href="concepts.html"><span class="label">下一页 →</span><span class="title">工作方式与边界</span></a></div>
+</main>
 
-    <div class="docs-pager"><a href="installation.html"><span class="label">← 上一页</span><span class="title">安装</span></a><a class="next" href="operations.html"><span class="label">下一页 →</span><span class="title">日常运维</span></a></div>
-  </main><aside class="docs-toc" id="docs-toc" aria-label="本页大纲"><h4>本页大纲</h4></aside>
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span><span class="build">build v3.7.2 · 2026-09-03</span></div></div></footer><script src="../../assets/js/main.js" defer></script>
-</body></html>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

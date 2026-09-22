@@ -1,0 +1,1676 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>trust.proto — Client-IP trust profiles and resolved IP Lists — 太一文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="trust.proto — Client-IP trust profiles and resolved IP Lists v3.8.0 完整协议参考；字段名与协议注释保留英文。可从侧栏返回中文任务指南。 Schema: tiyi.v1 · trust.proto · English guide · 中文指南 " />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../../../index.html#features">特性</a>
+      <a href="../../../index.html#tour">产品</a>
+      <a href="../../../index.html#pricing">价格</a>
+      <a href="../../index.html" style="color:var(--fg)">文档</a>
+      <a href="../../../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../../docs/reference/services/trust.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="../../index.html">概览</a></li>
+        <li><a href="../../quickstart.html">快速开始</a></li>
+        <li><a href="../../installation.html">安装</a></li>
+        <li><a href="../../configuration.html">配置与模板</a></li>
+        <li><a href="../../practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="../../operations.html">日常运维</a></li>
+        <li><a href="../../troubleshooting.html">排障</a></li>
+        <li><a href="../../upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="../../site-import.html">站点导入与导出</a></li>
+        <li><a href="../../api-protection.html">API 防护</a></li>
+        <li><a href="../../responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="../../concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI 参考</a></li>
+        <li><a href="../../api.html">API 参考</a></li>
+        <li><a href="../index.html">完整参考</a></li>
+        <li><a href="../rpc-index.html">全部 RPC</a></li>
+        <li><a href="../permissions.html">权限</a></li>
+        <li><a href="../cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="../../deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="trustproto-client-ip-trust-profiles-and-resolved-ip-lists">trust.proto — Client-IP trust profiles and resolved IP Lists</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>trust.proto</code> · <a href="../../../../docs/api.html">English guide</a> · <a href="../../api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="trustservice">TrustService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#trustservicegettrustprofile"><code>GetTrustProfile</code></a></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#trustservicesettrustprofile"><code>SetTrustProfile</code></a></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#trustserviceresettrustprofile"><code>ResetTrustProfile</code></a></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#trustserviceexplaintrust"><code>ExplainTrust</code></a></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#trustservicegettruststatus"><code>GetTrustStatus</code></a></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#trustservicestartclientipanalysis"><code>StartClientIPAnalysis</code></a></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#trustservicegetclientipanalysis"><code>GetClientIPAnalysis</code></a></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#trustservicestopclientipanalysis"><code>StopClientIPAnalysis</code></a></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#trustserviceapplyclientipanalysis"><code>ApplyClientIPAnalysis</code></a></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="trustservicegettrustprofile">TrustService.GetTrustProfile</h3>
+<p>GetTrustProfile returns the deployment-wide profile. When site_id is set, returns the per-site override (or NotFound when no override is set). Use ExplainTrust for the resolved profile the data plane actually loads.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.TrustService/GetTrustProfile</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetTrustProfileRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>site_id selects a per-site override; empty returns the global default.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetTrustProfileResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>profile</code></td>
+<td><code>profile</code></td>
+<td><a href="#trustprofile"><code>TrustProfile</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>resolved</code></td>
+<td><code>resolved</code></td>
+<td><a href="#resolvedtrustprofile"><code>ResolvedTrustProfile</code></a></td>
+<td>singular</td>
+<td>resolved is the request-ready graph: referenced IP Lists are attached to their owning proxy nodes and extraction Headers are canonicalised.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustservicesettrustprofile">TrustService.SetTrustProfile</h3>
+<p>SetTrustProfile replaces the operator-authored profile JSON. The handler runs ValidateProfile; rejection returns an InvalidArgument carrying TrustProfileValidation as details.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.TrustService/SetTrustProfile</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.SetTrustProfileRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>empty ⇒ global default</td>
+</tr>
+<tr>
+<td><code>profile</code></td>
+<td><code>profile</code></td>
+<td><a href="#trustprofile"><code>TrustProfile</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>force</code></td>
+<td><code>force</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>force allows a non-safelisted forwarded header (audited).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.SetTrustProfileResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>profile</code></td>
+<td><code>profile</code></td>
+<td><a href="#trustprofile"><code>TrustProfile</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>resolved</code></td>
+<td><code>resolved</code></td>
+<td><a href="#resolvedtrustprofile"><code>ResolvedTrustProfile</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustserviceresettrustprofile">TrustService.ResetTrustProfile</h3>
+<p>ResetTrustProfile restores the safe default (empty profile — no proxies trusted, no headers honoured) for the targeted scope.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.TrustService/ResetTrustProfile</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ResetTrustProfileRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ResetTrustProfileResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustserviceexplaintrust">TrustService.ExplainTrust</h3>
+<p>ExplainTrust replays a request shape against the active profile or an optional validated draft and returns the same Result the data plane would produce. Powers <code>tiyi trust test</code> and the web editor's no-persist preview.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.TrustService/ExplainTrust</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ExplainTrustRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>peer</code></td>
+<td><code>peer</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td><code>headers</code></td>
+<td>map&lt;<code>string</code>, <code>string</code>&gt;</td>
+<td>map</td>
+<td>headers is the request shape the operator would like to explain. Empty value strings are skipped.</td>
+</tr>
+<tr>
+<td><code>draft_profile</code></td>
+<td><code>draftProfile</code></td>
+<td><a href="#trustprofile"><code>TrustProfile</code></a></td>
+<td>singular</td>
+<td>draft_profile, when present, is validated and explained instead of the saved effective profile. This lets the UI test unsaved edits without changing the live data-plane configuration.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ExplainTrustResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip</code></td>
+<td><code>ip</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>ip is the canonical client IP the data plane would have used.</td>
+</tr>
+<tr>
+<td><code>source_header</code></td>
+<td><code>sourceHeader</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>empty ⇒ peer fallback</td>
+</tr>
+<tr>
+<td><code>peer_trusted</code></td>
+<td><code>peerTrusted</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>spoofed</code></td>
+<td><code>spoofed</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>hops</code></td>
+<td><code>hops</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>hops is the full forwarded chain the explain call observed, left-to-right as on the wire.</td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td><code>warnings</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>warnings carries human-readable advisories the CLI renders under the WARNINGS heading (e.g. "header X present but peer not in cloudflare range").</td>
+</tr>
+<tr>
+<td><code>rule_traces</code></td>
+<td><code>ruleTraces</code></td>
+<td><a href="#clientipruletrace"><code>ClientIPRuleTrace</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>verified_node_ids</code></td>
+<td><code>verifiedNodeIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>untrusted_rule</code></td>
+<td><code>untrustedRule</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>untrusted_rule is true when an allow_untrusted rule supplied the result without a verified proxy path. It is configured risk, not proof of spoofing.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustservicegettruststatus">TrustService.GetTrustStatus</h3>
+<p>GetTrustStatus returns the high-level dashboard state: the global profile, per-site override summary, and recent spoof-warning ringbuffer.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.TrustService/GetTrustStatus</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetTrustStatusRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.GetTrustStatusResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>global</code></td>
+<td><code>global</code></td>
+<td><a href="#trustprofile"><code>TrustProfile</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_overrides</code></td>
+<td><code>siteOverrides</code></td>
+<td><a href="#trustsiteoverride"><code>TrustSiteOverride</code></a></td>
+<td>repeated</td>
+<td>per_site overrides list, in stable site_id order.</td>
+</tr>
+<tr>
+<td><code>recent_warnings</code></td>
+<td><code>recentWarnings</code></td>
+<td><a href="#trustspoofwarning"><code>TrustSpoofWarning</code></a></td>
+<td>repeated</td>
+<td>recent_warnings is the last hour of spoof-warning summary entries the data plane emitted (rate-limited 1/h/tuple).</td>
+</tr>
+<tr>
+<td><code>total_sites</code></td>
+<td><code>totalSites</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>total_sites is the tenant-wide non-deleted site count. It is returned here so global impact copy never depends on filtered list pagination.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustservicestartclientipanalysis">TrustService.StartClientIPAnalysis</h3>
+<p>Client-IP analysis is always scoped to one site. It samples a bounded allow-list of IP headers in memory and never changes normal log policy.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.TrustService/StartClientIPAnalysis</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StartClientIPAnalysisRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StartClientIPAnalysisResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>analysis</code></td>
+<td><code>analysis</code></td>
+<td><a href="#clientipanalysis"><code>ClientIPAnalysis</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustservicegetclientipanalysis">TrustService.GetClientIPAnalysis</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.TrustService/GetClientIPAnalysis</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetClientIPAnalysisRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>analysis_id</code></td>
+<td><code>analysisId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetClientIPAnalysisResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>analysis</code></td>
+<td><code>analysis</code></td>
+<td><a href="#clientipanalysis"><code>ClientIPAnalysis</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustservicestopclientipanalysis">TrustService.StopClientIPAnalysis</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.TrustService/StopClientIPAnalysis</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StopClientIPAnalysisRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>analysis_id</code></td>
+<td><code>analysisId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StopClientIPAnalysisResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>analysis</code></td>
+<td><code>analysis</code></td>
+<td><a href="#clientipanalysis"><code>ClientIPAnalysis</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustserviceapplyclientipanalysis">TrustService.ApplyClientIPAnalysis</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.TrustService/ApplyClientIPAnalysis</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ApplyClientIPAnalysisRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>analysis_id</code></td>
+<td><code>analysisId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td><code>scope</code></td>
+<td><a href="#clientipanalysisapplyscope"><code>ClientIPAnalysisApplyScope</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>acknowledge_unverified</code></td>
+<td><code>acknowledgeUnverified</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Required when the server-generated candidate is not verified. The web UI makes this acknowledgement explicit beside the action that changes live configuration.</td>
+</tr>
+<tr>
+<td><code>draft_profile</code></td>
+<td><code>draftProfile</code></td>
+<td><a href="#trustprofile"><code>TrustProfile</code></a></td>
+<td>singular</td>
+<td>Optional operator-edited form of the server-generated candidate. When an unchanged suggested node has no IP List yet, the server materializes that node's analysed ranges before validating and applying the draft.</td>
+</tr>
+<tr>
+<td><code>node_trust_drafts</code></td>
+<td><code>nodeTrustDrafts</code></td>
+<td><a href="#clientipanalysisnodetrustdraft"><code>ClientIPAnalysisNodeTrustDraft</code></a></td>
+<td>repeated</td>
+<td>Optional per-node decisions for the server-held analysed ranges. New web clients send an explicit decision for every suggested node; absence keeps the legacy draft_profile behavior for backwards compatibility.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ApplyClientIPAnalysisResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td><code>scope</code></td>
+<td><a href="#clientipanalysisapplyscope"><code>ClientIPAnalysisApplyScope</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>profile</code></td>
+<td><code>profile</code></td>
+<td><a href="#trustprofile"><code>TrustProfile</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>resolved</code></td>
+<td><code>resolved</code></td>
+<td><a href="#resolvedtrustprofile"><code>ResolvedTrustProfile</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="clientipanalysis">ClientIPAnalysis</h3>
+<p>ClientIPAnalysis is a point-in-time view of one site-only, memory-only diagnostic session.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code>state</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>collecting | complete | stopped</td>
+</tr>
+<tr>
+<td><code>started_at</code></td>
+<td><code>startedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>ends_at</code></td>
+<td><code>endsAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>completed_at</code></td>
+<td><code>completedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>sample_count</code></td>
+<td><code>sampleCount</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>target_sample_count</code></td>
+<td><code>targetSampleCount</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>distinct_peer_count</code></td>
+<td><code>distinctPeerCount</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>distinct_client_count</code></td>
+<td><code>distinctClientCount</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>confidence</code></td>
+<td><code>confidence</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>verified | partial | insufficient</td>
+</tr>
+<tr>
+<td><code>suggestion_kind</code></td>
+<td><code>suggestionKind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>direct | proxy | proxy_chain | fixed</td>
+</tr>
+<tr>
+<td><code>suggestion_header</code></td>
+<td><code>suggestionHeader</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>suggested_profile</code></td>
+<td><code>suggestedProfile</code></td>
+<td><a href="#trustprofile"><code>TrustProfile</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>paths</code></td>
+<td><code>paths</code></td>
+<td><a href="#clientipanalysispath"><code>ClientIPAnalysisPath</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>findings</code></td>
+<td><code>findings</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>evidence</code></td>
+<td><code>evidence</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>inferences</code></td>
+<td><code>inferences</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>conflicts</code></td>
+<td><code>conflicts</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>node_trust_previews</code></td>
+<td><code>nodeTrustPreviews</code></td>
+<td><a href="#clientipanalysisnodetrustpreview"><code>ClientIPAnalysisNodeTrustPreview</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clientipanalysisnodetrustdraft">ClientIPAnalysisNodeTrustDraft</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_id</code></td>
+<td><code>nodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>mode</code></td>
+<td><code>mode</code></td>
+<td><a href="#clientipanalysisrangesmode"><code>ClientIPAnalysisRangesMode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ranges</code></td>
+<td><code>ranges</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>Used only with REPLACE. These transient ranges are validated and materialized as an ordinary manual IP List in the Apply transaction.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clientipanalysisnodetrustpreview">ClientIPAnalysisNodeTrustPreview</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_id</code></td>
+<td><code>nodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>suggested_list_name</code></td>
+<td><code>suggestedListName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>The ordinary manual IP List name that Apply will use if these ranges are retained. Renaming the proxy node before Apply may update this name.</td>
+</tr>
+<tr>
+<td><code>source_kind</code></td>
+<td><code>sourceKind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>observed_peers | product_snapshot</td>
+</tr>
+<tr>
+<td><code>entry_count</code></td>
+<td><code>entryCount</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ranges</code></td>
+<td><code>ranges</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>Exact transient candidate content so the operator can review and edit it. It is not an authored TrustSource and is never persisted inline.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clientipanalysispath">ClientIPAnalysisPath</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>product_hint</code></td>
+<td><code>productHint</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Advisory product label inferred from bounded evidence. It is editable suggestion text, not node identity or a trust binding.</td>
+</tr>
+<tr>
+<td><code>header</code></td>
+<td><code>header</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Strongest Header name supporting this path or advisory product hint.</td>
+</tr>
+<tr>
+<td><code>sample_count</code></td>
+<td><code>sampleCount</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>Requests supporting this path. Advisory product signals count at most once per product per request, even when several Headers match.</td>
+</tr>
+<tr>
+<td><code>header_sample_count</code></td>
+<td><code>headerSampleCount</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>Requests containing the strongest matching Header signal.</td>
+</tr>
+<tr>
+<td><code>peer_verified</code></td>
+<td><code>peerVerified</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>observed_peers</code></td>
+<td><code>observedPeers</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>confidence</code></td>
+<td><code>confidence</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clientiprule">ClientIPRule</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>header</code></td>
+<td><code>header</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>empty for remote_addr</td>
+</tr>
+<tr>
+<td><code>parser</code></td>
+<td><code>parser</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>single_ip | xff | forwarded | remote_addr</td>
+</tr>
+<tr>
+<td><code>node_ids</code></td>
+<td><code>nodeIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>Alternative Header-writer/source bindings. At least one listed node must be evidenced by a complete surviving topology path. Verified rules always carry explicit bindings; Header names never imply a provider or node.</td>
+</tr>
+<tr>
+<td><code>managed</code></td>
+<td><code>managed</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>generated from a topology-node suggestion</td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td><code>enabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>selector</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>selector controls which address is chosen from xff/forwarded list values. Empty selects the verified-path first_untrusted default. Fixed list rules must explicitly use single, leftmost, rightmost, or position.</td>
+</tr>
+<tr>
+<td><code>position</code></td>
+<td><code>position</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>One-based; selector=position only. A right-counted position longer than the observed list falls back to the leftmost available address.</td>
+</tr>
+<tr>
+<td><code>position_from</code></td>
+<td><code>positionFrom</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>left | right; selector=position only</td>
+</tr>
+<tr>
+<td><code>allow_untrusted</code></td>
+<td><code>allowUntrusted</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>allow_untrusted permits extraction when no selected sender or configured proxy path verifies. The UI uses this for fixed extraction, which does not require proxy ranges and is surfaced as an explicit risk.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clientipruletrace">ClientIPRuleTrace</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule_id</code></td>
+<td><code>ruleId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>header</code></td>
+<td><code>header</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>used | skipped | rejected | fallback</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code>reason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>candidate_ip</code></td>
+<td><code>candidateIp</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>path_node_ids</code></td>
+<td><code>pathNodeIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="resolvedtrustnode">ResolvedTrustNode</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>real_ip_header</code></td>
+<td><code>realIpHeader</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>trust</code></td>
+<td><code>trust</code></td>
+<td><a href="#resolvedtrustsource"><code>ResolvedTrustSource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>xff_mode</code></td>
+<td><code>xffMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="resolvedtrustprofile">ResolvedTrustProfile</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nodes</code></td>
+<td><code>nodes</code></td>
+<td><a href="#resolvedtrustnode"><code>ResolvedTrustNode</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>edges</code></td>
+<td><code>edges</code></td>
+<td><a href="#trustedge"><code>TrustEdge</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>extraction_rules</code></td>
+<td><code>extractionRules</code></td>
+<td><a href="#clientiprule"><code>ClientIPRule</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="resolvedtrustsource">ResolvedTrustSource</h3>
+<p>ResolvedTrustProfile is the executable graph loaded by the data plane. Its node ranges contain the current content of referenced IP Lists, so request processing performs no I/O.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list_ids</code></td>
+<td><code>ipListIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ranges</code></td>
+<td><code>ranges</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustedge">TrustEdge</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>from</code></td>
+<td><code>from</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>node id or the reserved endpoint "internet"</td>
+</tr>
+<tr>
+<td><code>to</code></td>
+<td><code>to</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>node id or the reserved endpoint "tiyi"</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustnode">TrustNode</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>stable profile-local identifier</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>operator-owned label; presets only suggest a value</td>
+</tr>
+<tr>
+<td><code>real_ip_header</code></td>
+<td><code>realIpHeader</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>optional operator-authored Header suggestion</td>
+</tr>
+<tr>
+<td><code>trust</code></td>
+<td><code>trust</code></td>
+<td><a href="#trustsource"><code>TrustSource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>xff_mode</code></td>
+<td><code>xffMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Automatic XFF extraction accepts empty/auto/append/overwrite. A traversed preserve/duplicate/unknown node cannot establish a trusted chain boundary; an overwrite node cannot have another reported trusted hop upstream.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustprofile">TrustProfile</h3>
+<p>TrustProfile is an executable request-ingress topology. Internet and Tiyi are implicit endpoints; nodes are proxy hops between them, edges describe serial or parallel paths, and extraction_rules are evaluated in priority order against the node-tagged recursive trust state for the request.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nodes</code></td>
+<td><code>nodes</code></td>
+<td><a href="#trustnode"><code>TrustNode</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>edges</code></td>
+<td><code>edges</code></td>
+<td><a href="#trustedge"><code>TrustEdge</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>extraction_rules</code></td>
+<td><code>extractionRules</code></td>
+<td><a href="#clientiprule"><code>ClientIPRule</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustprofilevalidation">TrustProfileValidation</h3>
+<p>TrustProfileValidation is attached to InvalidArgument errors returned by SetTrustProfile so the CLI can render line-numbered fix hints (design § 6.3).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>issues</code></td>
+<td><code>issues</code></td>
+<td><a href="#trustprofilevalidationissue"><code>TrustProfileValidationIssue</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustprofilevalidationissue">TrustProfileValidationIssue</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>field</code></td>
+<td><code>field</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>e.g. nodes[0].trust.interval</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td><code>code</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>stable identifier; switchable on</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code>message</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>human-readable description</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustsiteoverride">TrustSiteOverride</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>primary_host</code></td>
+<td><code>primaryHost</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>profile</code></td>
+<td><code>profile</code></td>
+<td><a href="#trustprofile"><code>TrustProfile</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>resolved</code></td>
+<td><code>resolved</code></td>
+<td><a href="#resolvedtrustprofile"><code>ResolvedTrustProfile</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustsource">TrustSource</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list_ids</code></td>
+<td><code>ipListIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>Authored profiles contain stable list references only. List content, subscription source, schedule, and sync health are owned by IpListService.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trustspoofwarning">TrustSpoofWarning</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>first_seen_at</code></td>
+<td><code>firstSeenAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>peer</code></td>
+<td><code>peer</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>header</code></td>
+<td><code>header</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>count</code></td>
+<td><code>count</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="enums">Enums</h2>
+<h3 id="clientipanalysisapplyscope">ClientIPAnalysisApplyScope</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CLIENT_IP_ANALYSIS_APPLY_SCOPE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>CLIENT_IP_ANALYSIS_APPLY_SCOPE_SITE</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>CLIENT_IP_ANALYSIS_APPLY_SCOPE_GLOBAL</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="clientipanalysisrangesmode">ClientIPAnalysisRangesMode</h3>
+<p>Controls whether one analysed node's server-held ranges are retained, replaced by an operator-edited draft, or deliberately omitted on Apply.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CLIENT_IP_ANALYSIS_RANGES_MODE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>CLIENT_IP_ANALYSIS_RANGES_MODE_KEEP_SUGGESTED</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>CLIENT_IP_ANALYSIS_RANGES_MODE_REPLACE</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>CLIENT_IP_ANALYSIS_RANGES_MODE_DROP</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="../rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../../assets/js/main.js" defer></script>
+</body>
+</html>

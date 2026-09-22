@@ -1,0 +1,3905 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>log.proto — Observation v2: events, evidence, exports, log policy — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Schema: tiyi.v1 · log.proto · English guide · 中文指南 · Full RPC index" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../../../index.html#features">Features</a>
+      <a href="../../../index.html#tour">Product</a>
+      <a href="../../../index.html#pricing">Pricing</a>
+      <a href="../../index.html" style="color:var(--fg)">Docs</a>
+      <a href="../../../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../zh/docs/reference/services/log.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="../../index.html">Overview</a></li>
+        <li><a href="../../quickstart.html">Quickstart</a></li>
+        <li><a href="../../installation.html">Installation</a></li>
+        <li><a href="../../configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="../../practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="../../operations.html">Operations guide</a></li>
+        <li><a href="../../troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="../../upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="../../site-import.html">Import / export sites</a></li>
+        <li><a href="../../api-protection.html">API protection</a></li>
+        <li><a href="../../responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="../../concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI reference</a></li>
+        <li><a href="../../api.html">API reference</a></li>
+        <li><a href="../index.html">Full reference</a></li>
+        <li><a href="../rpc-index.html">All RPCs</a></li>
+        <li><a href="../permissions.html">Permissions</a></li>
+        <li><a href="../cli-options.html">All CLI flags</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="../../deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="logproto-observation-v2-events-evidence-exports-log-policy">log.proto — Observation v2: events, evidence, exports, log policy</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>log.proto</code> · <a href="../../api.html">English guide</a> · <a href="../../../zh/docs/api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="logservice">LogService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#logservicegetgloballogpolicy"><code>GetGlobalLogPolicy</code></a></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logserviceupdategloballogpolicy"><code>UpdateGlobalLogPolicy</code></a></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicegetsitelogpolicy"><code>GetSiteLogPolicy</code></a></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logserviceupsertsitelogpolicyoverride"><code>UpsertSiteLogPolicyOverride</code></a></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicedeletesitelogpolicyoverride"><code>DeleteSiteLogPolicyOverride</code></a></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicequerysecurityevents"><code>QuerySecurityEvents</code></a></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicequeryaccessevents"><code>QueryAccessEvents</code></a></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicequeryerrorevents"><code>QueryErrorEvents</code></a></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicegetsecurityevent"><code>GetSecurityEvent</code></a></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicegetaccessevent"><code>GetAccessEvent</code></a></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicegeterrorevent"><code>GetErrorEvent</code></a></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicetailsecurityevents"><code>TailSecurityEvents</code></a></td>
+<td>server stream</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logserviceexportsecurityevents"><code>ExportSecurityEvents</code></a></td>
+<td>unary</td>
+<td>(<code>log:export</code>)</td>
+</tr>
+<tr>
+<td><a href="#logserviceexportaccessevents"><code>ExportAccessEvents</code></a></td>
+<td>unary</td>
+<td>(<code>log:export</code>)</td>
+</tr>
+<tr>
+<td><a href="#logserviceexporterrorevents"><code>ExportErrorEvents</code></a></td>
+<td>unary</td>
+<td>(<code>log:export</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicegetaccesslogsummary"><code>GetAccessLogSummary</code></a></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicegetaccesslogrankings"><code>GetAccessLogRankings</code></a></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicegetsecuritylogsummary"><code>GetSecurityLogSummary</code></a></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicegetrequestevidencemetadata"><code>GetRequestEvidenceMetadata</code></a></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicegetrequestevidenceheaders"><code>GetRequestEvidenceHeaders</code></a></td>
+<td>unary</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicestreamrequestevidencebody"><code>StreamRequestEvidenceBody</code></a></td>
+<td>server stream</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#logservicedownloadrequestevidencebody"><code>DownloadRequestEvidenceBody</code></a></td>
+<td>server stream</td>
+<td>(<code>log:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="logservicegetgloballogpolicy">LogService.GetGlobalLogPolicy</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/GetGlobalLogPolicy</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetGlobalLogPolicyRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.GetGlobalLogPolicyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#globallogpolicy"><code>GlobalLogPolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>storage_health</code></td>
+<td><code>storageHealth</code></td>
+<td><a href="#logstoragehealth"><code>LogStorageHealth</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logserviceupdategloballogpolicy">LogService.UpdateGlobalLogPolicy</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/UpdateGlobalLogPolicy</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdateGlobalLogPolicyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#logpolicy"><code>LogPolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expected_revision</code></td>
+<td><code>expectedRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>acknowledge_storage_risk</code></td>
+<td><code>acknowledgeStorageRisk</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Required for storage-intensive combinations such as full request-body capture or retaining evidence for every Access row.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdateGlobalLogPolicyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#globallogpolicy"><code>GlobalLogPolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>storage_health</code></td>
+<td><code>storageHealth</code></td>
+<td><a href="#logstoragehealth"><code>LogStorageHealth</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicegetsitelogpolicy">LogService.GetSiteLogPolicy</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/GetSiteLogPolicy</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSiteLogPolicyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSiteLogPolicyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#resolvedlogpolicy"><code>ResolvedLogPolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>override</code></td>
+<td><code>override</code></td>
+<td><a href="#sitelogpolicyoverride"><code>SiteLogPolicyOverride</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logserviceupsertsitelogpolicyoverride">LogService.UpsertSiteLogPolicyOverride</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/UpsertSiteLogPolicyOverride</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpsertSiteLogPolicyOverrideRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>override</code></td>
+<td><code>override</code></td>
+<td><a href="#sitelogpolicyoverride"><code>SiteLogPolicyOverride</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expected_revision</code></td>
+<td><code>expectedRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpsertSiteLogPolicyOverrideResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#resolvedlogpolicy"><code>ResolvedLogPolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>override</code></td>
+<td><code>override</code></td>
+<td><a href="#sitelogpolicyoverride"><code>SiteLogPolicyOverride</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicedeletesitelogpolicyoverride">LogService.DeleteSiteLogPolicyOverride</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/DeleteSiteLogPolicyOverride</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteSiteLogPolicyOverrideRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expected_revision</code></td>
+<td><code>expectedRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteSiteLogPolicyOverrideResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#resolvedlogpolicy"><code>ResolvedLogPolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicequerysecurityevents">LogService.QuerySecurityEvents</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/QuerySecurityEvents</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><a id="querysecurityeventsrequest"></a>
+<strong>Request</strong> — <code>tiyi.v1.QuerySecurityEventsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#cursorrequest"><code>CursorRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>unique_id</code></td>
+<td><code>uniqueId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>client_ip_cidrs</code></td>
+<td><code>clientIpCidrs</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rule_ids</code></td>
+<td><code>ruleIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>attack_types</code></td>
+<td><code>attackTypes</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>target_identity</code></td>
+<td><code>targetIdentity</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>outcome</code></td>
+<td><code>outcome</code></td>
+<td><a href="common.html#securityeventoutcome"><code>SecurityEventOutcome</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>minimum_severity</code></td>
+<td><code>minimumSeverity</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Include this severity and more severe facts. Empty means any severity; supported values: critical, error, warning, notice, info, debug.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.QuerySecurityEventsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#securityevent"><code>SecurityEvent</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#cursorresponse"><code>CursorResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicequeryaccessevents">LogService.QueryAccessEvents</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/QueryAccessEvents</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><a id="queryaccesseventsrequest"></a>
+<strong>Request</strong> — <code>tiyi.v1.QueryAccessEventsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#cursorrequest"><code>CursorRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>unique_id</code></td>
+<td><code>uniqueId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>client_ip_cidrs</code></td>
+<td><code>clientIpCidrs</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>statuses</code></td>
+<td><code>statuses</code></td>
+<td><code>int32</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td><code>method</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>path_prefix</code></td>
+<td><code>pathPrefix</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>route_id</code></td>
+<td><code>routeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>upstream_id</code></td>
+<td><code>upstreamId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.QueryAccessEventsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#accessevent"><code>AccessEvent</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#cursorresponse"><code>CursorResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>detail_policy_annotations</code></td>
+<td><code>detailPolicyAnnotations</code></td>
+<td><a href="#detailpolicyannotation"><code>DetailPolicyAnnotation</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>observation_coverage</code></td>
+<td><code>observationCoverage</code></td>
+<td><a href="common.html#observationcoverage"><code>ObservationCoverage</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicequeryerrorevents">LogService.QueryErrorEvents</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/QueryErrorEvents</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><a id="queryerroreventsrequest"></a>
+<strong>Request</strong> — <code>tiyi.v1.QueryErrorEventsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#cursorrequest"><code>CursorRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>unique_id</code></td>
+<td><code>uniqueId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>level</code></td>
+<td><code>level</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>logger_contains</code></td>
+<td><code>loggerContains</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>message_contains</code></td>
+<td><code>messageContains</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.QueryErrorEventsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#errorevent"><code>ErrorEvent</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#cursorresponse"><code>CursorResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicegetsecurityevent">LogService.GetSecurityEvent</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/GetSecurityEvent</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSecurityEventRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSecurityEventResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event</code></td>
+<td><code>event</code></td>
+<td><a href="#securityevent"><code>SecurityEvent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicegetaccessevent">LogService.GetAccessEvent</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/GetAccessEvent</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetAccessEventRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetAccessEventResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event</code></td>
+<td><code>event</code></td>
+<td><a href="#accessevent"><code>AccessEvent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicegeterrorevent">LogService.GetErrorEvent</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/GetErrorEvent</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetErrorEventRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetErrorEventResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event</code></td>
+<td><code>event</code></td>
+<td><a href="#errorevent"><code>ErrorEvent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicetailsecurityevents">LogService.TailSecurityEvents</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/TailSecurityEvents</code></li>
+<li><strong>Kind</strong> server stream — server-streaming; the response is a stream of messages</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.TailSecurityEventsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.TailSecurityEventsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event</code></td>
+<td><code>event</code></td>
+<td><a href="#securityevent"><code>SecurityEvent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>skipped_events</code></td>
+<td><code>skippedEvents</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td>Events intentionally omitted by the bounded live-tail transport since the previous response. This does not delete admitted historical facts or alter exact counters. Reconnect gaps have no replay guarantee. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>heartbeat_at</code></td>
+<td><code>heartbeatAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td>Sent immediately on connection and every ten seconds while idle. <em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="logserviceexportsecurityevents">LogService.ExportSecurityEvents</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/ExportSecurityEvents</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:export</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ExportSecurityEventsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><a href="#querysecurityeventsrequest"><code>QuerySecurityEventsRequest</code></a></td>
+<td>singular</td>
+<td>Complete list query; pagination is owned by the exporter.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ExportSecurityEventsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ndjson</code></td>
+<td><code>ndjson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td><code>filename</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logserviceexportaccessevents">LogService.ExportAccessEvents</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/ExportAccessEvents</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:export</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ExportAccessEventsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><a href="#queryaccesseventsrequest"><code>QueryAccessEventsRequest</code></a></td>
+<td>singular</td>
+<td>Complete list query; pagination is owned by the exporter.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ExportAccessEventsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ndjson</code></td>
+<td><code>ndjson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td><code>filename</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logserviceexporterrorevents">LogService.ExportErrorEvents</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/ExportErrorEvents</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:export</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ExportErrorEventsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><a href="#queryerroreventsrequest"><code>QueryErrorEventsRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ExportErrorEventsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ndjson</code></td>
+<td><code>ndjson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td><code>filename</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicegetaccesslogsummary">LogService.GetAccessLogSummary</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/GetAccessLogSummary</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetAccessLogSummaryRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetAccessLogSummaryResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>total</code></td>
+<td><code>total</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>blocked</code></td>
+<td><code>blocked</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>errors</code></td>
+<td><code>errors</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>avg_duration_ms</code></td>
+<td><code>avgDurationMs</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>total_bytes</code></td>
+<td><code>totalBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>trend</code></td>
+<td><code>trend</code></td>
+<td><a href="#logtrendbucket"><code>LogTrendBucket</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_statuses</code></td>
+<td><code>topStatuses</code></td>
+<td><a href="#logtopentry"><code>LogTopEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_methods</code></td>
+<td><code>topMethods</code></td>
+<td><a href="#logtopentry"><code>LogTopEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicegetaccesslogrankings">LogService.GetAccessLogRankings</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/GetAccessLogRankings</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetAccessLogRankingsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>dimension</code></td>
+<td><code>dimension</code></td>
+<td><a href="#accesslogrankingdimension"><code>AccessLogRankingDimension</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetAccessLogRankingsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entries</code></td>
+<td><code>entries</code></td>
+<td><a href="#logtopentry"><code>LogTopEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>retained_detail_count</code></td>
+<td><code>retainedDetailCount</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicegetsecuritylogsummary">LogService.GetSecurityLogSummary</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/GetSecurityLogSummary</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSecurityLogSummaryRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><a href="#querysecurityeventsrequest"><code>QuerySecurityEventsRequest</code></a></td>
+<td>singular</td>
+<td>Same filter contract as the event list; page is ignored.</td>
+</tr>
+<tr>
+<td><code>top_limit</code></td>
+<td><code>topLimit</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>dimensions</code></td>
+<td><code>dimensions</code></td>
+<td><a href="#securitysummarydimension"><code>SecuritySummaryDimension</code></a></td>
+<td>repeated</td>
+<td>Only these rankings are calculated. Empty means totals only.</td>
+</tr>
+<tr>
+<td><code>include_trend</code></td>
+<td><code>includeTrend</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Trends are calculated only when explicitly requested.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSecurityLogSummaryResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>total</code></td>
+<td><code>total</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>Exact totals over admitted compact facts; independent of local detail mode. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>blocked</code></td>
+<td><code>blocked</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>passed</code></td>
+<td><code>passed</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>trend</code></td>
+<td><code>trend</code></td>
+<td><a href="#logtrendbucket"><code>LogTrendBucket</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_ips</code></td>
+<td><code>topIps</code></td>
+<td><a href="#logtopentry"><code>LogTopEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_paths</code></td>
+<td><code>topPaths</code></td>
+<td><a href="#logtopentry"><code>LogTopEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_rules</code></td>
+<td><code>topRules</code></td>
+<td><a href="#logtopentry"><code>LogTopEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_methods</code></td>
+<td><code>topMethods</code></td>
+<td><a href="#logtopentry"><code>LogTopEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_attack_types</code></td>
+<td><code>topAttackTypes</code></td>
+<td><a href="#logtopentry"><code>LogTopEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_targets</code></td>
+<td><code>topTargets</code></td>
+<td><a href="#logtopentry"><code>LogTopEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_sites</code></td>
+<td><code>topSites</code></td>
+<td><a href="#logtopentry"><code>LogTopEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicegetrequestevidencemetadata">LogService.GetRequestEvidenceMetadata</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/GetRequestEvidenceMetadata</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetRequestEvidenceMetadataRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>evidence_id</code></td>
+<td><code>evidenceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_id</code></td>
+<td><code>requestId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetRequestEvidenceMetadataResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>evidence</code></td>
+<td><code>evidence</code></td>
+<td><a href="#requestevidencemetadata"><code>RequestEvidenceMetadata</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicegetrequestevidenceheaders">LogService.GetRequestEvidenceHeaders</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/GetRequestEvidenceHeaders</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetRequestEvidenceHeadersRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>evidence_id</code></td>
+<td><code>evidenceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetRequestEvidenceHeadersResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>headers</code></td>
+<td><code>headers</code></td>
+<td><a href="#requestevidenceheader"><code>RequestEvidenceHeader</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicestreamrequestevidencebody">LogService.StreamRequestEvidenceBody</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/StreamRequestEvidenceBody</code></li>
+<li><strong>Kind</strong> server stream — server-streaming; the response is a stream of messages</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StreamRequestEvidenceBodyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>evidence_id</code></td>
+<td><code>evidenceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>offset</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td><code>limit</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StreamRequestEvidenceBodyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td><code>data</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>offset</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>eof</code></td>
+<td><code>eof</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logservicedownloadrequestevidencebody">LogService.DownloadRequestEvidenceBody</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.LogService/DownloadRequestEvidenceBody</code></li>
+<li><strong>Kind</strong> server stream — server-streaming; the response is a stream of messages</li>
+<li><strong>Auth</strong> (<code>log:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DownloadRequestEvidenceBodyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>evidence_id</code></td>
+<td><code>evidenceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>offset</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td><code>limit</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DownloadRequestEvidenceBodyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data</code></td>
+<td><code>data</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>offset</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>eof</code></td>
+<td><code>eof</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="accessevent">AccessEvent</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>unique_id</code></td>
+<td><code>uniqueId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>occurred_at</code></td>
+<td><code>occurredAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>client_ip</code></td>
+<td><code>clientIp</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td><code>method</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>host</code></td>
+<td><code>host</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td><code>path</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>duration_ms</code></td>
+<td><code>durationMs</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>bytes_read</code></td>
+<td><code>bytesRead</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>bytes_written</code></td>
+<td><code>bytesWritten</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>raw</code></td>
+<td><code>raw</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>route_id</code></td>
+<td><code>routeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>upstream_id</code></td>
+<td><code>upstreamId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>detail_selection</code></td>
+<td><code>detailSelection</code></td>
+<td><a href="#detailselection"><code>DetailSelection</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_id</code></td>
+<td><code>requestId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence</code></td>
+<td><code>requestEvidence</code></td>
+<td><a href="#requestevidencesummary"><code>RequestEvidenceSummary</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>user_agent</code></td>
+<td><code>userAgent</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Raw, bounded self-reported value retained only on selected access detail and SIEM records. Exact UA Top uses a separate fixed classifier.</td>
+</tr>
+<tr>
+<td><code>http_version</code></td>
+<td><code>httpVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Client-to-Tiyi application protocol negotiated for this request.</td>
+</tr>
+<tr>
+<td><code>transport_version</code></td>
+<td><code>transportVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Client-to-Tiyi transport security version, or PLAINTEXT.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="detailpolicyannotation">DetailPolicyAnnotation</h3>
+<p>Current policy snapshot for the selected site or sites represented on this page. It does not attest to completeness of the historical query window.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>configured</code></td>
+<td><code>configured</code></td>
+<td><a href="#logdetailmode"><code>LogDetailMode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>effective</code></td>
+<td><code>effective</code></td>
+<td><a href="#logdetailmode"><code>LogDetailMode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code>reason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>effective is UNSPECIFIED when no matching applied runtime is observable.</td>
+</tr>
+<tr>
+<td><code>configured_source</code></td>
+<td><code>configuredSource</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>observed_at</code></td>
+<td><code>observedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="detailselection">DetailSelection</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>retention_tier</code></td>
+<td><code>retentionTier</code></td>
+<td><a href="#detailretentiontier"><code>DetailRetentionTier</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>capture_reasons</code></td>
+<td><code>captureReasons</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sample_window</code></td>
+<td><code>sampleWindow</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>reservoir_score_hex</code></td>
+<td><code>reservoirScoreHex</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>evidence_bundle_id</code></td>
+<td><code>evidenceBundleId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_revision</code></td>
+<td><code>policyRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>selection_flags</code></td>
+<td><code>selectionFlags</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>feature_count</code></td>
+<td><code>featureCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="errorevent">ErrorEvent</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>unique_id</code></td>
+<td><code>uniqueId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>occurred_at</code></td>
+<td><code>occurredAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>level</code></td>
+<td><code>level</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>logger</code></td>
+<td><code>logger</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code>message</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>raw</code></td>
+<td><code>raw</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>detail_selection</code></td>
+<td><code>detailSelection</code></td>
+<td><a href="#detailselection"><code>DetailSelection</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="globallogpolicy">GlobalLogPolicy</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#logpolicy"><code>LogPolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="logpolicy">LogPolicy</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>access_mode</code></td>
+<td><code>accessMode</code></td>
+<td><a href="#logdetailmode"><code>LogDetailMode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_mode</code></td>
+<td><code>securityMode</code></td>
+<td><a href="#logdetailmode"><code>LogDetailMode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>access_full_retention_days</code></td>
+<td><code>accessFullRetentionDays</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_full_retention_days</code></td>
+<td><code>securityFullRetentionDays</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>exemplar_retention_days</code></td>
+<td><code>exemplarRetentionDays</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_fact_retention_days</code></td>
+<td><code>securityFactRetentionDays</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>evidence_pairing</code></td>
+<td><code>evidencePairing</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status_exemplar_k</code></td>
+<td><code>statusExemplarK</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>api_exemplar_k</code></td>
+<td><code>apiExemplarK</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_exemplar_k</code></td>
+<td><code>securityExemplarK</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sample_window_seconds</code></td>
+<td><code>sampleWindowSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>pressure_policy</code></td>
+<td><code>pressurePolicy</code></td>
+<td><a href="#logpressurepolicy"><code>LogPressurePolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_mode</code></td>
+<td><code>requestEvidenceMode</code></td>
+<td><a href="#requestevidencemode"><code>RequestEvidenceMode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_header_max_bytes</code></td>
+<td><code>requestEvidenceHeaderMaxBytes</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_body_mode</code></td>
+<td><code>requestEvidenceBodyMode</code></td>
+<td><a href="#requestevidencebodymode"><code>RequestEvidenceBodyMode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_body_max_bytes</code></td>
+<td><code>requestEvidenceBodyMaxBytes</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_retention_days</code></td>
+<td><code>requestEvidenceRetentionDays</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_inflight_max_bytes</code></td>
+<td><code>requestEvidenceInflightMaxBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>request_evidence_finalized_queue_max_bytes</code></td>
+<td><code>requestEvidenceFinalizedQueueMaxBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>schema_violation_details</code></td>
+<td><code>schemaViolationDetails</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logpolicysources">LogPolicySources</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>access_mode</code></td>
+<td><code>accessMode</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_mode</code></td>
+<td><code>securityMode</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>access_full_retention_days</code></td>
+<td><code>accessFullRetentionDays</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_full_retention_days</code></td>
+<td><code>securityFullRetentionDays</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>exemplar_retention_days</code></td>
+<td><code>exemplarRetentionDays</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_fact_retention_days</code></td>
+<td><code>securityFactRetentionDays</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>evidence_pairing</code></td>
+<td><code>evidencePairing</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status_exemplar_k</code></td>
+<td><code>statusExemplarK</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>api_exemplar_k</code></td>
+<td><code>apiExemplarK</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_exemplar_k</code></td>
+<td><code>securityExemplarK</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sample_window_seconds</code></td>
+<td><code>sampleWindowSeconds</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>pressure_policy</code></td>
+<td><code>pressurePolicy</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_mode</code></td>
+<td><code>requestEvidenceMode</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_header_max_bytes</code></td>
+<td><code>requestEvidenceHeaderMaxBytes</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_body_mode</code></td>
+<td><code>requestEvidenceBodyMode</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_body_max_bytes</code></td>
+<td><code>requestEvidenceBodyMaxBytes</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_retention_days</code></td>
+<td><code>requestEvidenceRetentionDays</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_inflight_max_bytes</code></td>
+<td><code>requestEvidenceInflightMaxBytes</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence_finalized_queue_max_bytes</code></td>
+<td><code>requestEvidenceFinalizedQueueMaxBytes</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>schema_violation_details</code></td>
+<td><code>schemaViolationDetails</code></td>
+<td><a href="#logpolicysource"><code>LogPolicySource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logstoragehealth">LogStorageHealth</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#logstoragehealthstatus"><code>LogStorageHealthStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>managed_bytes</code></td>
+<td><code>managedBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>filesystem_total_bytes</code></td>
+<td><code>filesystemTotalBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>filesystem_available_bytes</code></td>
+<td><code>filesystemAvailableBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>growth_bytes_per_day</code></td>
+<td><code>growthBytesPerDay</code></td>
+<td><code>double</code></td>
+<td>singular</td>
+<td>Signed window changes are floored at zero only after measuring the window.</td>
+</tr>
+<tr>
+<td><code>estimate_state</code></td>
+<td><code>estimateState</code></td>
+<td><a href="#logstorageestimatestate"><code>LogStorageEstimateState</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>estimated_remaining_seconds</code></td>
+<td><code>estimatedRemainingSeconds</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>Valid only for PRELIMINARY / READY, as of calculated_at. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>evidence_stored_bytes</code></td>
+<td><code>evidenceStoredBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>evidence_staged_bytes</code></td>
+<td><code>evidenceStagedBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>pending_bytes</code></td>
+<td><code>pendingBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>evidence_quota_bytes</code></td>
+<td><code>evidenceQuotaBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>quota_rejected</code></td>
+<td><code>quotaRejected</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>write_failed</code></td>
+<td><code>writeFailed</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>observed_at</code></td>
+<td><code>observedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>calculated_at</code></td>
+<td><code>calculatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>observation_window_seconds</code></td>
+<td><code>observationWindowSeconds</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="logtopentry">LogTopEntry</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key</code></td>
+<td><code>key</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>count</code></td>
+<td><code>count</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Human-friendly label for the key, when one is available. For the security-log top-rules aggregation this is the matched CRS rule message (for example "SQL Injection Attack Detected via libinjection" for rule 942100). Empty when the aggregator has no enrichment.</td>
+</tr>
+<tr>
+<td><code>geo</code></td>
+<td><code>geo</code></td>
+<td><a href="common.html#networkgeo"><code>NetworkGeo</code></a></td>
+<td>singular</td>
+<td>Present when the key is a source IP and a local GeoIP dataset resolves it. This describes the observed network exit, not a physical attacker location.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logtrendbucket">LogTrendBucket</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time</code></td>
+<td><code>time</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>count</code></td>
+<td><code>count</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>blocked</code></td>
+<td><code>blocked</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>errors</code></td>
+<td><code>errors</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="requestevidenceheader">RequestEvidenceHeader</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>values</code></td>
+<td><code>values</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="requestevidencemetadata">RequestEvidenceMetadata</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>evidence_id</code></td>
+<td><code>evidenceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_id</code></td>
+<td><code>requestId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>started_at</code></td>
+<td><code>startedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>completed_at</code></td>
+<td><code>completedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>expiresAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code>reason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td><code>method</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>host</code></td>
+<td><code>host</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_target</code></td>
+<td><code>requestTarget</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>content_type</code></td>
+<td><code>contentType</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>content_encoding</code></td>
+<td><code>contentEncoding</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>transfer_encodings</code></td>
+<td><code>transferEncodings</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>content_length</code></td>
+<td><code>contentLength</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>header_original_bytes</code></td>
+<td><code>headerOriginalBytes</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>header_captured_bytes</code></td>
+<td><code>headerCapturedBytes</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>header_truncated</code></td>
+<td><code>headerTruncated</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>body_original_bytes</code></td>
+<td><code>bodyOriginalBytes</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>body_captured_bytes</code></td>
+<td><code>bodyCapturedBytes</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>body_truncated</code></td>
+<td><code>bodyTruncated</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>unavailable_reason</code></td>
+<td><code>unavailableReason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="requestevidencesummary">RequestEvidenceSummary</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>evidence_id</code></td>
+<td><code>evidenceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>available</code></td>
+<td><code>available</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>header_original_bytes</code></td>
+<td><code>headerOriginalBytes</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>header_captured_bytes</code></td>
+<td><code>headerCapturedBytes</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>header_truncated</code></td>
+<td><code>headerTruncated</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>body_original_bytes</code></td>
+<td><code>bodyOriginalBytes</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>body_captured_bytes</code></td>
+<td><code>bodyCapturedBytes</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>body_truncated</code></td>
+<td><code>bodyTruncated</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>unavailable_reason</code></td>
+<td><code>unavailableReason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>expiresAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="resolvedlogpolicy">ResolvedLogPolicy</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inherited</code></td>
+<td><code>inherited</code></td>
+<td><a href="#logpolicy"><code>LogPolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>configured</code></td>
+<td><code>configured</code></td>
+<td><a href="#logpolicy"><code>LogPolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>effective</code></td>
+<td><code>effective</code></td>
+<td><a href="#logpolicy"><code>LogPolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>configured_sources</code></td>
+<td><code>configuredSources</code></td>
+<td><a href="#logpolicysources"><code>LogPolicySources</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>effective_sources</code></td>
+<td><code>effectiveSources</code></td>
+<td><a href="#logpolicysources"><code>LogPolicySources</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>global_revision</code></td>
+<td><code>globalRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>site_revision</code></td>
+<td><code>siteRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>safety_epoch</code></td>
+<td><code>safetyEpoch</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="securityevent">SecurityEvent</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>unique_id</code></td>
+<td><code>uniqueId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>occurred_at</code></td>
+<td><code>occurredAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>client_ip</code></td>
+<td><code>clientIp</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td><code>method</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>path</code></td>
+<td><code>path</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>blocked</code></td>
+<td><code>blocked</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>messages</code></td>
+<td><code>messages</code></td>
+<td><a href="#securitymessage"><code>SecurityMessage</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>raw</code></td>
+<td><code>raw</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>detail_selection</code></td>
+<td><code>detailSelection</code></td>
+<td><a href="#detailselection"><code>DetailSelection</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>attack_type</code></td>
+<td><code>attackType</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>attack_types</code></td>
+<td><code>attackTypes</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>target_identity</code></td>
+<td><code>targetIdentity</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>severity</code></td>
+<td><code>severity</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>anomaly_score</code></td>
+<td><code>anomalyScore</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rule_match_count</code></td>
+<td><code>ruleMatchCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rule_ids</code></td>
+<td><code>ruleIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td><code>tags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>detail_available</code></td>
+<td><code>detailAvailable</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>detail_available is true only when this response includes retained Full/Exemplar review payload. Compact fact fields above are always exact.</td>
+</tr>
+<tr>
+<td><code>request_id</code></td>
+<td><code>requestId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_evidence</code></td>
+<td><code>requestEvidence</code></td>
+<td><a href="#requestevidencesummary"><code>RequestEvidenceSummary</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>http_version</code></td>
+<td><code>httpVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Client-to-Tiyi application protocol negotiated for this request.</td>
+</tr>
+<tr>
+<td><code>transport_version</code></td>
+<td><code>transportVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Client-to-Tiyi transport security version, or PLAINTEXT.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="securitymessage">SecurityMessage</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule_id</code></td>
+<td><code>ruleId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>severity</code></td>
+<td><code>severity</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code>message</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>error_message</code></td>
+<td><code>errorMessage</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td><code>tags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>match_variable</code></td>
+<td><code>matchVariable</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Structured Coraza match evidence. match_value is the bounded value as evaluated by the WAF after rule transformations; it is not redacted.</td>
+</tr>
+<tr>
+<td><code>match_key</code></td>
+<td><code>matchKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>match_value</code></td>
+<td><code>matchValue</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>match_data</code></td>
+<td><code>matchData</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>matched_text</code></td>
+<td><code>matchedText</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>phase</code></td>
+<td><code>phase</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>operator</code></td>
+<td><code>operator</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>disruptive</code></td>
+<td><code>disruptive</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>chain_level</code></td>
+<td><code>chainLevel</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>match_value_truncated</code></td>
+<td><code>matchValueTruncated</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sitelogpolicyoverride">SiteLogPolicyOverride</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>access_mode</code></td>
+<td><code>accessMode</code></td>
+<td><a href="#logdetailmode"><code>LogDetailMode</code></a></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_mode</code></td>
+<td><code>securityMode</code></td>
+<td><a href="#logdetailmode"><code>LogDetailMode</code></a></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>access_full_retention_days</code></td>
+<td><code>accessFullRetentionDays</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_full_retention_days</code></td>
+<td><code>securityFullRetentionDays</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>exemplar_retention_days</code></td>
+<td><code>exemplarRetentionDays</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>evidence_pairing</code></td>
+<td><code>evidencePairing</code></td>
+<td><code>bool</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>request_evidence_mode</code></td>
+<td><code>requestEvidenceMode</code></td>
+<td><a href="#requestevidencemode"><code>RequestEvidenceMode</code></a></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>schema_violation_details</code></td>
+<td><code>schemaViolationDetails</code></td>
+<td><code>bool</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="enums">Enums</h2>
+<h3 id="accesslogrankingdimension">AccessLogRankingDimension</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ACCESS_LOG_RANKING_DIMENSION_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ACCESS_LOG_RANKING_DIMENSION_PATH</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ACCESS_LOG_RANKING_DIMENSION_IP</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ACCESS_LOG_RANKING_DIMENSION_HOST</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="detailretentiontier">DetailRetentionTier</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DETAIL_RETENTION_TIER_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>DETAIL_RETENTION_TIER_FULL</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>DETAIL_RETENTION_TIER_EVIDENCE</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logdetailmode">LogDetailMode</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LOG_DETAIL_MODE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_DETAIL_MODE_NONE</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_DETAIL_MODE_EXEMPLARS</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_DETAIL_MODE_ALL</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logpolicysource">LogPolicySource</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LOG_POLICY_SOURCE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_POLICY_SOURCE_GLOBAL</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_POLICY_SOURCE_SITE</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_POLICY_SOURCE_EMERGENCY</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logpressurepolicy">LogPressurePolicy</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LOG_PRESSURE_POLICY_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_PRESSURE_POLICY_PROTECT_TRAFFIC</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_PRESSURE_POLICY_REPORT_ONLY</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logstorageestimatestate">LogStorageEstimateState</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LOG_STORAGE_ESTIMATE_STATE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_STORAGE_ESTIMATE_STATE_COLLECTING</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_STORAGE_ESTIMATE_STATE_PRELIMINARY</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_STORAGE_ESTIMATE_STATE_READY</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_STORAGE_ESTIMATE_STATE_NOT_GROWING</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_STORAGE_ESTIMATE_STATE_UNAVAILABLE</code></td>
+<td>5</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logstoragehealthstatus">LogStorageHealthStatus</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LOG_STORAGE_HEALTH_STATUS_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_STORAGE_HEALTH_STATUS_UNKNOWN</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_STORAGE_HEALTH_STATUS_HEALTHY</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_STORAGE_HEALTH_STATUS_WARNING</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_STORAGE_HEALTH_STATUS_CRITICAL</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="requestevidencebodymode">RequestEvidenceBodyMode</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>REQUEST_EVIDENCE_BODY_MODE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>REQUEST_EVIDENCE_BODY_MODE_OFF</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>REQUEST_EVIDENCE_BODY_MODE_PREFIX</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>REQUEST_EVIDENCE_BODY_MODE_FULL</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="requestevidencemode">RequestEvidenceMode</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>REQUEST_EVIDENCE_MODE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>REQUEST_EVIDENCE_MODE_OFF</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>REQUEST_EVIDENCE_MODE_SECURITY_ONLY</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>REQUEST_EVIDENCE_MODE_RETAINED_LOGS</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="securitysummarydimension">SecuritySummaryDimension</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SECURITY_SUMMARY_DIMENSION_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>SECURITY_SUMMARY_DIMENSION_ATTACKER</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>SECURITY_SUMMARY_DIMENSION_SITE</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>SECURITY_SUMMARY_DIMENSION_TARGET</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>SECURITY_SUMMARY_DIMENSION_ATTACK_TYPE</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>SECURITY_SUMMARY_DIMENSION_PATH</code></td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>SECURITY_SUMMARY_DIMENSION_RULE</code></td>
+<td>6</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>SECURITY_SUMMARY_DIMENSION_METHOD</code></td>
+<td>7</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← Previous</span><span class="title">API integration</span></a><a class="next" href="../rpc-index.html"><span class="label">Next →</span><span class="title">All RPCs</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

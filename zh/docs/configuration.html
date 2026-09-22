@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>配置文件与模板 — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="适用版本： v3.8.0 。先选择你要完成的任务；这几类文件有不同的入口和字段。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/configuration.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html" aria-current="page">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="配置文件与模板">配置文件与模板</h1>
+<p class="lede">适用版本：<strong>v3.8.0</strong>。先选择你要完成的任务；这几类文件有不同的入口和字段。</p>
+<table>
+<thead>
+<tr>
+<th>我要做什么</th>
+<th>文件 / 下载</th>
+<th>怎样使用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>改管理地址、代理端口、数据库路径、启动认证</td>
+<td><a href="templates/tiyi.yaml">完整 tiyi.yaml</a></td>
+<td><code>/etc/tiyi/tiyi.yaml</code>，重启进程</td>
+</tr>
+<tr>
+<td>首次建站，或重复部署同名资源</td>
+<td><a href="templates/first-site.yaml">最小 first-site.yaml</a></td>
+<td><code>tiyi diff</code> → <code>tiyi apply</code></td>
+</tr>
+<tr>
+<td>自定义基础策略、IP 列表、站点和上游</td>
+<td><a href="templates/apply.yaml">四类资源 apply.yaml</a></td>
+<td>编辑后 <code>tiyi diff</code> → <code>tiyi apply</code></td>
+</tr>
+<tr>
+<td>从文件导入一个新站点及其依赖</td>
+<td><a href="templates/site-import.json">site-import.json</a></td>
+<td><a href="site-import.html">站点导入指南</a>；<code>tiyi site import</code> 或站点页导入</td>
+</tr>
+<tr>
+<td>描述应用接口的请求字段</td>
+<td><a href="templates/orders-openapi.yaml">orders-openapi.yaml</a></td>
+<td><a href="api-protection.html">API 资产导入</a>；不用于站点导入</td>
+</tr>
+</tbody>
+</table>
+<p>下载不是必需步骤，下面直接给出可复制的起点。完整模板的用途是查选项，不要求新用户填写所有键。</p>
+<a id="1-新安装的启动配置"></a>
+<h2 id="startup">1. 新安装的启动配置</h2>
+<p>此模板使用默认管理监听 <code>0.0.0.0:8080</code>，网站监听 80/443。浏览器直接访问 <code>http://服务器IP:8080</code>，将“服务器IP”替换为太一主机的实际 IP。
+在<strong>新主机安装完二进制、尚未启动服务时</strong>运行。已有配置请先备份并编辑，不要直接覆盖。</p>
+<pre><code class="language-sh">sudo tiyi install
+sudo install -d -m 0750 -o root -g tiyi /etc/tiyi
+sudo tee /etc/tiyi/tiyi.yaml &gt;/dev/null <span class="s">&lt;&lt;'YAML'
+server:
+  addr: "0.0.0.0:8080"
+store:
+  state_db: "/var/lib/tiyi/state.db"
+proxy:
+  http_addr: ":80"
+  https_addr: ":443"
+  caddy_admin_socket: "/var/lib/tiyi/caddy-admin.sock"
+log:
+  level: "info"
+auth:
+  refresh_cookie_secure: false
+geo:
+  auto_update: true
+update:
+  repo: "zzmzm/tiyi"
+  channel: "stable"
+  mirror: "auto"
+YAML</span>
+sudo chown root:tiyi /etc/tiyi/tiyi.yaml
+sudo chmod 0640 /etc/tiyi/tiyi.yaml
+sudo tiyi --config /etc/tiyi/tiyi.yaml doctor --mode run
+sudo tiyi install --now
+</code></pre>
+<p><code>doctor</code> 检查启动前提，不代表网站已经能访问；最后还应执行 <code>sudo tiyi system health</code> 和真实站点请求。
+前台运行同一文件：<code>sudo tiyi --config /etc/tiyi/tiyi.yaml run</code>。已有服务改 YAML 后执行
+<code>sudo systemctl restart tiyi</code>。站点、策略等资源通过 UI/CLI/API 保存，通常直接发布，无需改 YAML 或重启。</p>
+<a id="2-已有-web-服务改用其他端口"></a>
+<h2 id="ports">2. 已有 Web 服务：改用其他端口</h2>
+<p>把上面模板的相应字段改为：</p>
+<pre><code class="language-yaml"><span class="k">server</span>:
+  <span class="k">addr</span>: <span class="s">"</span><span class="s">0.0.0.0:8081</span><span class="s">"</span>
+<span class="k">proxy</span>:
+  <span class="k">http_addr</span>: <span class="s">"</span><span class="s">:8180</span><span class="s">"</span>
+  <span class="k">https_addr</span>: <span class="s">"</span><span class="s">:18443</span><span class="s">"</span>
+  <span class="k">caddy_admin_socket</span>: <span class="s">"</span><span class="s">/var/lib/tiyi/caddy-admin.sock</span><span class="s">"</span>
+</code></pre>
+<p>已有服务：先备份启动文件，编辑上面列出的字段并保留其余配置，然后重启：</p>
+<pre><code class="language-sh">sudo cp -a /etc/tiyi/tiyi.yaml /etc/tiyi/tiyi.yaml.before-ports
+sudoedit /etc/tiyi/tiyi.yaml
+sudo systemctl restart tiyi
+sudo systemctl status tiyi --no-pager
+sudo tiyi system health
+curl -i -H <span class="s">'Host: quickstart.test'</span> http://127.0.0.1:8180/
+</code></pre>
+<p>备份名如已存在请换一个；默认安装可能尚无 YAML，此时先按上节创建文件。新安装的首次启动使用 <code>sudo tiyi install --now</code>。
+上面的请求需要已有 <code>quickstart.test</code> 站点和运行中的源站；没有站点时先完成<a href="quickstart.html">快速开始</a>。</p>
+<p>浏览器直接访问 <code>http://服务器IP:8081</code>。管理端口已改为 8081，网站 HTTP 请求使用 8180，源站端口不随它改变。
+TLS 站点可用 <code>curl --resolve app.example.com:18443:服务器IP https://app.example.com:18443/</code> 验证；替换实际域名/IP，并使用覆盖该域名的证书。</p>
+<p>失败时查看 journal；若需撤销且备份对应这次变更，恢复 <code>tiyi.yaml.before-ports</code> 到 <code>tiyi.yaml</code> 后重启。
+公网 ACME HTTP-01 仍验证公网 80；自定义本地端口不会改变 CA 的目标。已有 Web 服务器占用端口时，先明确谁作为公网入口，再决定迁移端口或转发。</p>
+<h2 id="3-固定密钥与配置优先级">3. 固定密钥与配置优先级</h2>
+<p>默认值 → YAML → 支持的 <code>TIYI_*</code> 环境变量 → 显式 CLI 参数，后者优先。
+例如 <code>TIYI_SERVER_ADDR</code> 对应 <code>server.addr</code>。完整键、默认值与 LDAP/RADIUS 选项见
+<a href="templates/tiyi.yaml">带注释的启动模板</a>。管理 socket 的路径、权限和组使用
+<code>--admin-socket</code>、<code>--admin-socket-mode</code>、<code>--admin-socket-group</code>；它们不是该 YAML 的键。</p>
+<p>在生产环境首次启动前固定 JWT 密钥，使重启不会使已有会话失效。下面为<strong>尚无该文件的新安装</strong>创建
+root 可读的 systemd 环境文件；已有 <code>tiyi.env</code> 时只添加缺少的键，保留原有密钥与配置。</p>
+<pre><code class="language-sh">sudo sh -c <span class="s">'umask 077; printf "TIYI_AUTH_JWT_SECRET=%s\n" "$(openssl rand -hex 32)" &gt; /etc/tiyi/tiyi.env'</span>
+sudo systemctl restart tiyi
+</code></pre>
+<p>默认 KEK 持久存储于状态数据库目录的 <code>kek.bin</code>；它用于解密证书和其他秘密，必须与状态一起备份。
+HTTPS 控制台使用 <code>auth.refresh_cookie_secure: true</code>；仅通过 HTTP 演示时保持 false。
+首次管理员可用 <code>auth.bootstrap_admin_*</code> 或对应环境变量预置；已有用户时这些字段不会重置密码。</p>
+<a id="4-从文件创建受保护站点"></a>
+<h2 id="apply">4. 从文件创建受保护站点</h2>
+<p>先使源站 <code>http://127.0.0.1:9000</code> 可访问（可复用<a href="quickstart.html">演示源站</a>）。
+复制以下整段；正式使用只需先改域名、上游 URL 和两个资源名称。省略 <code>policyRef</code> 时，开启 WAF 的站点使用内置 Light 策略。</p>
+<pre><code class="language-sh">cat &gt; first-site.yaml <span class="s">&lt;&lt;'YAML'
+apiVersion: tiyi.io/v1
+kind: Upstream
+metadata:
+  name: example-origin
+spec:
+  backends:
+    - url: http://127.0.0.1:9000
+      weight: 100
+  loadBalance: round_robin
+  status: active
+---
+apiVersion: tiyi.io/v1
+kind: Site
+metadata:
+  name: example-site
+spec:
+  primaryHost: app.example.com
+  upstreamRef: example-origin
+  tls:
+    mode: none
+  waf:
+    enabled: true
+    mode: blocking
+  status: active
+YAML</span>
+sudo tiyi diff -f first-site.yaml
+sudo tiyi apply -f first-site.yaml --dry-run
+sudo tiyi apply -f first-site.yaml
+curl -i -H <span class="s">'Host: app.example.com'</span> http://127.0.0.1/
+</code></pre>
+<p>正常响应应与直接访问源站一致。文件包含两个文档，<code>---</code> 分隔。
+所有本机服务管理命令使用 <code>sudo</code>；自定义前台实例请追加其 <code>--admin-socket</code>。</p>
+<p>配置<a href="operations.html#wildcard-hosts">通配站点</a>时，在上面的 Site 文档中使用 <code>primaryHost: "*.example.com"</code>；YAML 中的通配值要加引号。<code>aliases</code> 也支持一级通配域名；根域名 <code>example.com</code> 和 OpenAPI/Schema 映射使用的具体 API 域名需分别添加。启用 HTTPS 前先准备覆盖全部域名的证书。</p>
+<h2 id="5-apply-会如何处理已有资源">5. apply 会如何处理已有资源</h2>
+<ul>
+<li>按大小写不敏感的 <code>(kind, metadata.name)</code> 找资源；改名会新建，不会重命名旧资源。</li>
+<li><code>spec</code> 完整替换 apply 管理的字段，省略的可选字段可能恢复默认或清空。先看 diff；它不是 merge patch。</li>
+<li>从文件中删掉一个资源不会删除在线资源。未知键会被拒绝。</li>
+<li><code>upstreamRef</code>、<code>policyRef</code>、<code>certRef</code> 按名称解析，CRS 可按 ID/版本解析；同文件支持向前引用。</li>
+<li><code>metadata.id</code> 可在创建时指定 UUID；租户来自登录身份，不能传 <code>metadata.tenant</code>。</li>
+<li>一份 manifest 的数据库写入使用同一事务；提交后的代理发布若失败，资源已保存，运行流量保留最后有效配置。修复后重试并检查节点结果。</li>
+</ul>
+<h2 id="6-四种-kind-与边界">6. 四种 kind 与边界</h2>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>核心字段</th>
+<th>另需注意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Upstream</code></td>
+<td><code>backends[].url/weight/healthCheckPath</code>、<code>loadBalance</code>、<code>healthCheck</code>、<code>status</code></td>
+<td>负载算法为 <code>round_robin</code>；健康检查 <code>path</code> 为空时关闭主动探测</td>
+</tr>
+<tr>
+<td><code>Site</code></td>
+<td><code>primaryHost</code>、<code>aliases</code>、<code>upstreamRef</code> 或 <code>upstreamsInline</code>、<code>tls</code>、<code>waf</code>、<code>botProtection</code>、<code>status</code></td>
+<td>两种上游选择互斥；Bot 开启要求仅 HTTPS；TLS 证书先单独创建</td>
+</tr>
+<tr>
+<td><code>Policy</code></td>
+<td><code>engineState</code>、<code>blockingMode</code>、<code>crsRulesetRef</code>、<code>status</code></td>
+<td>active 策略须引用现有 CRS；高级策略层、规则、绑定另用 UI/CLI/API</td>
+</tr>
+<tr>
+<td><code>IpList</code></td>
+<td><code>description</code>、<code>entries[].cidr/description/expireAt</code></td>
+<td>只建地址表，需再绑定才产生防护；<code>expireAt</code> 用 RFC 3339；不支持 <code>geo:*</code></td>
+</tr>
+</tbody>
+</table>
+<p>完整字段和注释见<a href="templates/apply.yaml">四类资源模板</a>。证书、路径路由、限速、API 规范、用户、告警、SIEM
+不属于 apply kind；使用<a href="operations.html">任务指南</a>、<a href="cli.html">CLI</a>或<a href="api.html">API</a>管理。
+不要把 apply 字段名照搬到 API JSON：例如 apply 的 <code>backends</code> 对应 API 上游对象的 <code>endpoints</code>。</p>
+<p>当前 <code>trustedIpListRefs</code> 的非空名称引用会被 apply 拒绝；模板保持空列表，建表后在站点 Bot 设置绑定。</p>
+<div class="docs-pager"><a href="installation.html"><span class="label">← 上一页</span><span class="title">安装参考</span></a><a class="next" href="site-import.html"><span class="label">下一页 →</span><span class="title">站点导入与导出</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

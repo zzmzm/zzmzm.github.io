@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<title>CLI 参考 — 太一文档</title>
+<title>CLI 任务参考 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="按资源整理当前太一 CLI 命令，包含本地管理 socket 鉴权、远程 API 鉴权、安全示例与退出码。" />
+<meta name="description" content="CLI 任务参考 适用版本： v3.8.0 。在太一主机上，系统服务使用受权限保护的本地 socket：通常加 sudo 即可，不用登录。 远程 CLI 使用 API 指南 取得的 TIYI_API 和 TIYI_TOKEN ，然后省略 sudo。 自定义前台进程使用 --admin-socket /实际路径" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -42,276 +42,174 @@
 <div class="docs-layout">
 
   <aside class="docs-sidebar" aria-label="文档导航">
-    <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-migration.html">升级与迁移</a></li></ul></div>
-    <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
-    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
-    <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html" aria-current="page">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
   </aside>
 
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">参考</span>
-    <h1>CLI 参考</h1>
-    <p class="lede"><code>tiyi</code> CLI 是驱动 UI 的同一个 ConnectRPC API 的瘦客户端。本页按资源整理当前运维命令；示例只列常用 flag。写入前请运行 <code>tiyi &lt;command&gt; --help</code>，并以已安装二进制为准。</p>
-
-    <h2 id="auth-modes">鉴权模式</h2>
-    <p>CLI 用两种方式之一与太一通信。本地命令不需要 token；远程命令需要 API URL 与一个 JWT。</p>
-
-    <table>
-      <thead>
-        <tr><th>模式</th><th>flag</th><th>鉴权</th><th>使用场景</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>本地管理 socket</strong></td>
-          <td><em>(默认)</em></td>
-          <td>Unix socket 上的 OS 文件权限</td>
-          <td>跑在与 <code>tiyi run</code> 同一主机上。</td>
-        </tr>
-        <tr>
-          <td><strong>远程</strong></td>
-          <td><code>--api URL --token JWT</code></td>
-          <td><code>Authorization: Bearer</code> header 中的 HS256 JWT</td>
-          <td>从工作站或 CI runner 操作。</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p>从用户名/密码取一个 JWT：</p>
-<pre><code><span class="p">$</span> tiyi auth login --api http://controller:8080 --username admin
-<span class="c"># 输入密码,打印 JWT,可选写入 ~/.config/tiyi/credentials</span></code></pre>
-
-    <h2 id="diagnostics">诊断</h2>
-    <p>在安装前后都可以在目标主机上运行 <code>tiyi doctor</code>,它默认不会修改系统,只高亮提示配置加载错误、systemd 可用性、sudo PATH 问题、已安装服务的状态目录所有权问题,以及 API / 仪表盘与代理端口的监听占用。如果还没有安装 systemd unit,状态目录所有权检查会跳过,除非传入 <code>--service-user</code>/<code>--service-group</code> 或显式请求修复。状态目录修复必须显式执行且需要 root:<code>sudo tiyi doctor --fix-state-ownership</code>。</p>
-<pre><code><span class="p">$</span> tiyi doctor
-<span class="p">$</span> tiyi doctor --mode agent
-<span class="p">$</span> tiyi doctor --proxy-http-addr :8180 --proxy-https-addr :18443
-<span class="p">$</span> sudo tiyi doctor --fix-state-ownership</code></pre>
-
-    <h2 id="apply">声明式 apply</h2>
-    <p>kubectl 风格入口。一份 YAML 对应一个 SQLite 事务，每个发生变更的资源都有审计回执。apply 创建不存在的资源、更新发生漂移的资源；完全相同的重复 apply 报 <code>unchanged</code> 且不写库，也不会删除 manifest 中缺失的资源。提交的 <code>spec</code> 会完整替换该 kind 由 apply 管理的字段，并不是 merge patch。</p>
-<pre><code><span class="p">$</span> tiyi apply -f site.yaml          <span class="c"># 计划 + 落库</span>
-<span class="p">$</span> tiyi apply -f site.yaml --dry-run  <span class="c"># 逐资源显示 create/update/unchanged，不写库</span>
-<span class="p">$</span> tiyi apply -f - &lt; site.yaml       <span class="c"># 从 stdin 读取 manifest</span>
-<span class="p">$</span> tiyi get site                       <span class="c"># 以 JSON 查看当前状态（upstream | site | policy | cert | iplist）</span>
-<span class="p">$</span> tiyi get upstream &lt;id&gt;              <span class="c"># 按 ID 查看单个资源</span></code></pre>
-    <p><a href="templates/apply.yaml" download>下载包含 Policy + Upstream + Site + IpList 的完整模板</a>。交叉引用（<code>upstreamRef</code>、<code>certRef</code>、<code>policyRef</code>、<code>crsRulesetRef</code>）在写入前解析，因此支持向前引用；悬空引用会回滚整个资源事务。<code>proxy apply failed</code> 是另一类错误：资源事务已经提交，但数据面拒绝候选配置并保留 last-good 运行配置。修复原因后用同一 manifest 重试。</p>
-<pre><code>apiVersion: tiyi.io/v1
-kind: Upstream
-metadata:
-  name: app-pool
-spec:
-  backends:
-    - url: http://10.0.0.11:8080   <span class="c"># weight 默认 100；权重为相对值</span>
-    - url: http://10.0.0.12:8080
-  loadBalance: round_robin         <span class="c"># 目前唯一支持的策略</span>
-  healthCheck: { path: /healthz, intervalSeconds: 10 }
----
-apiVersion: tiyi.io/v1
-kind: Site
-metadata:
-  name: example-com
-spec:
-  primaryHost: example.com
-  aliases: [www.example.com]
-  upstreamRef: app-pool            <span class="c"># 按名字引用；或 upstreamsInline: [{url: ...}]（二选一）</span>
-  tls: { mode: none }              <span class="c"># none | uploaded | managed_acme（另有 certRef、minVersion、httpBehavior）</span>
-  waf: { enabled: true, mode: blocking }  <span class="c"># policyRef 可选；缺省用内置 Light</span>
-  status: active                   <span class="c"># active | disabled</span>
----
-apiVersion: tiyi.io/v1
-kind: IpList
-metadata:
-  name: office-allowlist
-spec:
-  description: 办公出口地址
-  entries:
-    - { cidr: 203.0.113.0/24, description: office, expireAt: 2026-12-31T00:00:00Z }</code></pre>
-    <p>支持的 kind：<code>Upstream</code>（<code>backends[]</code>、<code>loadBalance</code>、<code>healthCheck</code>、<code>status</code>）、<code>Site</code>（<code>primaryHost</code>、<code>aliases[]</code>、<code>upstreamRef</code>/<code>upstreamsInline[]</code>、<code>tls</code>、<code>waf</code>、<code>status</code>）、<code>Policy</code>（<code>engineState</code>：<code>on</code>/<code>detection_only</code>/<code>off</code>，<code>blockingMode</code>：<code>anomaly</code>/<code>self_contained</code>，以及 <code>crsRulesetRef</code>、<code>status</code>）、<code>IpList</code>（<code>description</code> 与只接受真实 IP/CIDR 的 <code>entries[]</code>）。IpList 在单独创建绑定前没有动作；<code>geo:*</code> 会被拒绝，请使用 Country Access。证书请用 <code>tiyi cert upload</code>/<code>cert issue</code> 管理，再在 Site 中按名称引用。资源按大小写不敏感的 <code>(kind, name)</code> 匹配；未知字段校验失败；同一文件可向前或向后引用。</p>
-
-    <h2 id="sites">站点</h2>
-<pre><code>tiyi site list
-tiyi site get <span class="v">&lt;name|id&gt;</span>
-tiyi site create --name <span class="v">N</span> --host <span class="v">H</span> --upstream-url <span class="v">URL</span> [--tls none|managed-acme|uploaded] [--tls-http-behavior redirect|acme-only|serve-both]
-tiyi site update <span class="v">&lt;id&gt;</span> [...flag]
-tiyi site enable <span class="v">&lt;id&gt;</span>
-tiyi site disable <span class="v">&lt;id&gt;</span>
-tiyi site delete <span class="v">&lt;id&gt;</span>
-tiyi site routing get <span class="v">&lt;id&gt;</span>
-tiyi site routing set <span class="v">&lt;id&gt;</span> --route /api=<span class="v">UPSTREAM_ID</span> --unmatched default|404
-tiyi site policy-override get <span class="v">&lt;id&gt;</span>
-tiyi site policy-override set <span class="v">&lt;id&gt;</span> [--blocking-pl N --inbound-threshold N ...]
-tiyi site policy-override delete <span class="v">&lt;id&gt;</span></code></pre>
-
-    <h2 id="upstreams">上游</h2>
-<pre><code>tiyi upstream list
-tiyi upstream get <span class="v">&lt;name|id&gt;</span>
-tiyi upstream create --name <span class="v">N</span> --endpoint-url <span class="v">URL</span> [--endpoint-url <span class="v">URL2</span> ...]
-tiyi upstream update <span class="v">&lt;id&gt;</span> [...flag]
-tiyi upstream delete <span class="v">&lt;id&gt;</span>      <span class="c"># 若任何站点引用,拒绝(UPSTREAM_IN_USE)</span></code></pre>
-
-    <h2 id="certs">证书</h2>
-<pre><code>tiyi cert list
-tiyi cert get <span class="v">&lt;id&gt;</span>
-tiyi cert upload --name <span class="v">N</span> --cert-pem <span class="v">FILE</span> --key-pem <span class="v">FILE</span>
-tiyi cert issue <span class="v">DOMAIN</span> --email <span class="v">E</span> [--challenge-type http-01|dns-01] [--acme-issuer letsencrypt|letsencrypt-staging|custom] [--directory-url <span class="v">URL</span>]
-tiyi cert renew <span class="v">&lt;id&gt;</span>
-tiyi cert delete <span class="v">&lt;id&gt;</span>
-tiyi cert dns-provider drivers
-tiyi cert dns-provider list
-tiyi cert dns-provider create --name <span class="v">N</span> --provider cloudflare --credentials-file <span class="v">F</span>
-tiyi cert dns-provider get <span class="v">&lt;id&gt;</span>
-tiyi cert dns-provider update <span class="v">&lt;id&gt;</span>
-tiyi cert dns-provider delete <span class="v">&lt;id&gt;</span></code></pre>
-
-    <div class="callout callout-tip">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-      <div class="callout-body">
-        <p><strong>DNS provider 优先用 <code>--credentials-file</code></strong>，不要用 <code>--credentials-json</code>。文件路径不会进入 shell 历史与进程列表。</p>
-      </div>
-    </div>
-
-    <h2 id="policies">WAF 策略</h2>
-<pre><code>tiyi policy list
-tiyi policy get <span class="v">&lt;id&gt;</span>
-tiyi policy templates
-tiyi policy create-from-template --name <span class="v">N</span> --template-id <span class="v">TEMPLATE_ID</span>
-tiyi policy create --name <span class="v">N</span> [--engine-state on|detection-only|off]
-tiyi policy update <span class="v">&lt;id&gt;</span> [--name <span class="v">N</span>] [--engine-state on|detection-only|off]
-tiyi policy layer replace <span class="v">&lt;id&gt;</span> http-policy --json '{"allowedMethods":["GET","HEAD"]}'
-tiyi policy layer replace <span class="v">&lt;id&gt;</span> arg-limits --file <span class="v">FILE.json</span> <span class="c"># 整层替换，不是合并补丁</span>
-tiyi policy delete <span class="v">&lt;id&gt;</span>
-tiyi policy preview-seclang <span class="v">&lt;id&gt;</span>              <span class="c"># 编译后的 SecLang</span>
-tiyi policy preview-impact <span class="v">&lt;id&gt;</span> [--crs-ruleset-id <span class="v">R</span>]
-tiyi policy test <span class="v">&lt;id&gt;</span> --url /login --method POST
-tiyi policy versions <span class="v">&lt;id&gt;</span>                      <span class="c"># 列出已保存版本</span>
-tiyi policy diff <span class="v">&lt;left-version-id&gt;</span> <span class="v">&lt;right-version-id&gt;</span>
-tiyi policy rollback <span class="v">&lt;id&gt;</span> --version-id <span class="v">REV</span></code></pre>
-
-    <h3 id="rule-tuning">规则覆盖、自定义规则、IP 列表</h3>
-<pre><code>tiyi rule override upsert <span class="v">&lt;policy-id&gt;</span> --crs-rule-id <span class="v">N</span> --action default|disable|log_only|score_override [--site-id <span class="v">S</span>] [--scope /api]
-tiyi rule override delete <span class="v">&lt;override-id&gt;</span>
-tiyi rule custom create <span class="v">&lt;policy-id&gt;</span> [--site-id <span class="v">S</span>] --name <span class="v">N</span> --rule-id <span class="v">8000001</span> --seclang-file <span class="v">FILE</span>
-tiyi rule custom update <span class="v">&lt;custom-rule-id&gt;</span> --site-id '' <span class="c"># 恢复为策略级作用域</span>
-tiyi rule custom delete <span class="v">&lt;custom-rule-id&gt;</span>
-tiyi rule ip-list create --kind allow|deny|monitor --name <span class="v">N</span> --entry 203.0.113.0/24
-tiyi rule ip-list add-entry <span class="v">&lt;id&gt;</span> --entry 198.51.100.0/24
-tiyi policy bind-ip-list <span class="v">&lt;policy-id&gt;</span> --ip-list-id <span class="v">&lt;id&gt;</span> --decision allow|deny|monitor
-tiyi rule rate-limit upsert --policy-id <span class="v">P</span> --path-pattern /login --per-minute 60 --action block</code></pre>
-
-    <h2 id="crs">CRS 目录</h2>
-<pre><code>tiyi crs ingest --tag <span class="v">v4.25.0</span>            <span class="c"># 从上游抓取 release</span>
-tiyi crs ingest --archive <span class="v">FILE</span>             <span class="c"># 离线归档导入</span>
-tiyi crs releases                            <span class="c"># 列出可用上游 tag</span>
-tiyi crs list                                <span class="c"># 已安装 CRS 规则集</span>
-tiyi crs rules <span class="v">&lt;ruleset-id&gt;</span> --paranoia-level 1 --tag attack-sqli
-tiyi crs rule <span class="v">&lt;ruleset-id&gt;</span> <span class="v">&lt;rule-id&gt;</span>
-tiyi crs plugins
-tiyi crs plugin-schema <span class="v">&lt;plugin-id&gt;</span></code></pre>
-
-    <h2 id="agents">节点</h2>
-<pre><code>tiyi agents list
-tiyi agents get <span class="v">&lt;id&gt;</span>
-tiyi agents issue-token [--tag edge] [--ttl-seconds 86400]
-tiyi agents install-script --controller-url <span class="v">URL</span> --enrollment-token <span class="v">TOKEN</span>
-tiyi agents bundles [<span class="v">agent-id</span>]
-tiyi agents bundle <span class="v">&lt;bundle-id&gt;</span>
-tiyi agent-group list
-tiyi agent-group get <span class="v">&lt;id&gt;</span>
-tiyi agent-group create --name <span class="v">N</span> --tag role=edge
-tiyi agent-group delete <span class="v">&lt;id&gt;</span></code></pre>
-
-    <h2 id="trust">信任配置</h2>
-<pre><code>tiyi trust show
-tiyi trust set --proxy 10.0.0.0/8 --proxy 172.16.0.0/12 --header X-Forwarded-For
-tiyi trust set --cdn cloudflare --header CF-Connecting-IP --header X-Forwarded-For
-tiyi trust reset
-tiyi trust test --peer 10.0.0.5 --header <span class="s">"X-Forwarded-For: 1.2.3.4"</span>
-tiyi trust refresh cloudflare</code></pre>
-
-    <h2 id="alerts">告警</h2>
-<pre><code>tiyi alert list
-tiyi alert get <span class="v">&lt;id&gt;</span>
-tiyi alert ack <span class="v">&lt;id&gt;</span> [--note <span class="v">TEXT</span>]
-tiyi alert notes <span class="v">&lt;id&gt;</span>
-tiyi alert resolve <span class="v">&lt;id&gt;</span> [--note <span class="v">TEXT</span>]
-tiyi alert rule list
-tiyi alert rule upsert --name <span class="v">N</span> --expression-json <span class="v">JSON</span>
-tiyi alert channel list
-tiyi alert channel upsert --name <span class="v">N</span> --kind webhook|slack|pagerduty|feishu|wecom|email --config-json <span class="v">JSON</span>
-tiyi alert channel test <span class="v">&lt;id&gt;</span></code></pre>
-
-    <h2 id="logs">日志</h2>
-<pre><code>tiyi log security list [--site-id <span class="v">S</span>] [--client-ip-cidr <span class="v">CIDR</span>] [--rule-id <span class="v">N</span>] [--start <span class="v">T</span>] [--end <span class="v">T</span>]
-tiyi log security get <span class="v">&lt;event-id&gt;</span>
-tiyi log security export --site-id <span class="v">S</span> --out <span class="v">F</span>
-tiyi log access  list [...过滤器]
-tiyi log error   list [...过滤器]
-tiyi log tail-security                       <span class="c"># 实时流</span></code></pre>
-
-    <h2 id="security-investigation">SecurityFact 调查</h2>
-    <p>当前 CLI 没有 <code>incident</code> 或 <code>campaign</code> 资源。从 <code>tiyi alert list</code> 或 <code>tiyi log security list</code> 开始，再按 <code>--unique-id</code>、站点、规则、客户端 CIDR 与时间窗口筛选，并在 UI 中关联匹配的攻击、访问和运行时错误日志。</p>
-
-    <h2 id="audit-cli">审计链</h2>
-<pre><code>tiyi audit list [--actor-id <span class="v">UUID</span>] [--action <span class="v">ACTION</span>] [--start <span class="v">T</span>] [--end <span class="v">T</span>]
-tiyi audit get <span class="v">&lt;id&gt;</span>
-tiyi audit verify                            <span class="c"># 走完整条链并报告每一段</span></code></pre>
-
-    <h2 id="system">系统</h2>
-<pre><code>tiyi system stats
-tiyi system traffic --window 1h
-tiyi system attack-distribution --window 1h
-tiyi system top-attackers --window 1h
-tiyi system settings get
-tiyi system settings update --values-json '{"siem.destinations":[{"id":"soc-primary","name":"SOC primary","enabled":true,"endpoint":"tls://siem.internal:6514","transport":"tls","format":"RFC5424","framing":"octet_counted","sources":["tiyi_formatted","raw_security"],"include_security":true,"include_access":true,"include_error":true,"include_audit":true,"min_severity":"info","blocked_only":false,"timeout_millis":1000,"queue_events":1024,"queue_bytes":8388608,"tls_server_name":"siem.internal"}]}'</code></pre>
-    <p>日志与证据策略是带 revision CAS 的 LogService 资源，请在<strong>系统管理 → 设置 → 日志与证据</strong>管理；旧 <code>telemetry.*</code>、<code>logsink.*</code>、<code>log_mode.*</code> 与 <code>log_retention</code> 设置会被拒绝。</p>
-
-    <h2 id="release-mgmt">发布（滚动节点升级）</h2>
-<pre><code>tiyi release import --tarball ./tiyi_3.5.2_linux_amd64.tar.gz
-tiyi release list
-tiyi release apply <span class="v">&lt;release-id&gt;</span>           <span class="c"># 把 APPLY_BINARY 散到所有匹配的节点</span>
-tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span> --agent-id <span class="v">B</span>
-tiyi release runs
-tiyi release run-get <span class="v">&lt;run-id&gt;</span>
-tiyi release run-cancel <span class="v">&lt;run-id&gt;</span>
-tiyi release rollback
-tiyi release check-updates</code></pre>
-
-    <h2 id="users-roles">用户与角色</h2>
-<pre><code>tiyi user list
-tiyi user create --username <span class="v">U</span> --password <span class="v">P</span> --role-id <span class="v">R</span>
-tiyi user reset-password <span class="v">&lt;id&gt;</span> --password <span class="v">P</span>
-tiyi user lock <span class="v">&lt;id&gt;</span>
-tiyi user unlock <span class="v">&lt;id&gt;</span>
-tiyi role list
-tiyi role get <span class="v">&lt;id&gt;</span></code></pre>
-
-    <h2 id="nodes">Controller 与 Agent 进程</h2>
-<pre><code>tiyi run                         <span class="c"># 完整可写 Controller + 本机数据平面</span>
-tiyi install --mode agent --unit-name tiyi-agent --now <span class="c"># Agent systemd 服务；读取 /etc/tiyi/tiyi-agent.env</span>
-tiyi agent --controller-url http://controller:8080 --enrollment-token <span class="v">&lt;一次性-token&gt;</span> <span class="c"># 前台 Agent</span>
-tiyi dashboard                   <span class="c"># 仅 UI 进程</span></code></pre>
-
-    <h2 id="exit-codes">退出码</h2>
-    <table>
-      <thead><tr><th>码</th><th>含义</th></tr></thead>
-      <tbody>
-        <tr><td><code>0</code></td><td>成功。</td></tr>
-        <tr><td><code>1</code></td><td>通用错误。输出说明。</td></tr>
-        <tr><td><code>2</code></td><td>使用方法 / flag 解析错误。</td></tr>
-        <tr><td><code>3</code></td><td>需要鉴权或 token 被拒绝。</td></tr>
-        <tr><td><code>4</code></td><td>资源未找到。</td></tr>
-        <tr><td><code>5</code></td><td>前置条件失败（例如版本冲突、<code>UPSTREAM_IN_USE</code>）。</td></tr>
-      </tbody>
-    </table>
-
-    <div class="docs-pager">
-      <a href="concepts.html"><span class="label">← 上一页</span><span class="title">领域模型</span></a>
-      <a class="next" href="api.html"><span class="label">下一页 →</span><span class="title">API 参考</span></a>
-    </div>
-  </main>
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="cli-任务参考">CLI 任务参考</h1>
+<p class="lede">适用版本：<strong>v3.8.0</strong>。在太一主机上，系统服务使用受权限保护的本地 socket：通常加 <code>sudo</code> 即可，不用登录。
+远程 CLI 使用<a href="api.html#authentication">API 指南</a>取得的 <code>TIYI_API</code> 和 <code>TIYI_TOKEN</code>，然后省略 sudo。
+自定义前台进程使用 <code>--admin-socket /实际路径/admin.sock</code>。</p>
+<h2 id="常用只读检查">常用只读检查</h2>
+<pre><code class="language-sh">sudo tiyi system health
+sudo tiyi site list
+sudo tiyi upstream list
+sudo tiyi cert list
+sudo tiyi policy list
+sudo tiyi agents list
+sudo tiyi audit verify
+</code></pre>
+<p>列表和资源操作通常输出 JSON；保存命令输出后可用 <code>jq</code> 提取 ID。不要凭空编造 ID，先 list/get。
+日志列表可分页，默认第一页不代表全部记录。CLI 出错返回非零；普通失败为 1，Agent 注册需要重置/被拒绝时为 78。
+<code>system health</code> 在 unhealthy/unknown 时也返回非零，自动化要检查退出状态。</p>
+<h2 id="按任务找命令">按任务找命令</h2>
+<table>
+<thead>
+<tr>
+<th>任务</th>
+<th>命令组</th>
+<th>完整操作说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>安装、启动、诊断</td>
+<td><code>install</code>、<code>run</code>、<code>doctor</code></td>
+<td><a href="installation.html">安装</a></td>
+</tr>
+<tr>
+<td>站点、路径路由、迁移</td>
+<td><code>site</code>、<code>site routing</code>、<code>site export/import</code></td>
+<td><a href="operations.html">运维</a> · <a href="site-import.html">导入 JSON 模板</a></td>
+</tr>
+<tr>
+<td>源站池、健康探测、重试</td>
+<td><code>upstream</code></td>
+<td><a href="operations.html">运维</a></td>
+</tr>
+<tr>
+<td>上传证书、ACME、DNS 凭据</td>
+<td><code>cert</code></td>
+<td><a href="operations.html#https">HTTPS</a></td>
+</tr>
+<tr>
+<td>WAF 策略、版本、请求容量</td>
+<td><code>policy</code></td>
+<td><a href="operations.html">调优</a></td>
+</tr>
+<tr>
+<td>自定义规则、CRS 覆盖、IP/国家、限速</td>
+<td><code>rule</code>、<code>crs</code></td>
+<td><a href="operations.html">运维</a></td>
+</tr>
+<tr>
+<td>客户端 IP/CDN 可信代理</td>
+<td><code>trust</code></td>
+<td><a href="deployment.html#client-ip">部署</a></td>
+</tr>
+<tr>
+<td>API 文件、学习、校验、发布</td>
+<td><code>api-document</code></td>
+<td><a href="api-protection.html">API 防护</a></td>
+</tr>
+<tr>
+<td>请求调查、告警、通知、审计</td>
+<td><code>log</code>、<code>alert</code>、<code>audit</code></td>
+<td><a href="operations.html">运维</a></td>
+</tr>
+<tr>
+<td>远端节点、节点分组</td>
+<td><code>agents</code>、<code>agent-group</code></td>
+<td><a href="deployment.html#nodes">部署</a></td>
+</tr>
+<tr>
+<td>身份、用户、角色</td>
+<td><code>auth</code>、<code>user</code>、<code>role</code></td>
+<td><a href="api.html">API</a> · <a href="deployment.html">部署</a></td>
+</tr>
+<tr>
+<td>文件化资源管理</td>
+<td><code>get</code>、<code>diff</code>、<code>apply</code></td>
+<td><a href="configuration.html">YAML 模板</a></td>
+</tr>
+<tr>
+<td>系统设置、更新、节点升级</td>
+<td><code>system</code>、<code>update</code>、<code>release</code></td>
+<td><a href="upgrade-migration.html">升级与迁移</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="常用写入示例">常用写入示例</h2>
+<p>操作自己的资源前先 list/get 核对目标。以下文件均有完整模板：</p>
+<pre><code class="language-sh">sudo tiyi diff -f first-site.yaml
+sudo tiyi apply -f first-site.yaml --dry-run
+sudo tiyi apply -f first-site.yaml
+sudo tiyi site import site-import.json
+sudo tiyi api-document upload --site SITE_ID --file orders-openapi.yaml
+</code></pre>
+<p><code>first-site.yaml</code> 用于 apply；<code>site-import.json</code> 用于站点导入；<code>orders-openapi.yaml</code> 用于 API 文档。
+三者不能混用。新增 CLI 资源通常立即生效；<code>diff</code>、<code>--dry-run</code> 和文档预览才是预览步骤。</p>
+<h2 id="通配域名建站">通配域名建站</h2>
+<p><code>site create</code> 和 <code>site update</code> 的 <code>--host</code>、可重复的 <code>--alias</code> 都支持通配域名。通配值要加引号，例如 <code>--host '*.example.com' --alias example.com</code>。通配符只匹配一级子域名；根域名需要单独添加，<code>a.b.example.com</code> 等多级子域名不会匹配。完整命令及 HTTPS/API 要求见<a href="operations.html#wildcard-hosts">通配域名建站</a>。</p>
+<h2 id="查准确参数">查准确参数</h2>
+<p>不用翻源码：本站同时提供<a href="reference/cli-options.html">完整命令与参数参考</a>。
+安装版本也随二进制带完整帮助：</p>
+<pre><code class="language-sh">tiyi --help
+tiyi site create --help
+tiyi site routing set --help
+tiyi api-document --help
+tiyi api-document preview --help
+tiyi alert channel upsert --help
+</code></pre>
+<p>CLI 的 <code>api-document -f</code> 请求字段使用 protobuf JSON，完整字段见<a href="reference/services/api_schema.html">API 方法表</a>。
+没有专用 CLI 的操作可使用 UI 或 HTTP JSON API，不需要直接编辑数据库或生成的代理配置。</p>
+<div class="docs-pager"><a href="concepts.html"><span class="label">← 上一页</span><span class="title">工作方式与边界</span></a><a class="next" href="api.html"><span class="label">下一页 →</span><span class="title">API 接入</span></a></div>
+</main>
 
   <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
     <h4>本页大纲</h4>
@@ -323,7 +221,7 @@ tiyi dashboard                   <span class="c"># 仅 UI 进程</span></code></
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.7.2 · 2026-09-03</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
     </div>
   </div>
 </footer>

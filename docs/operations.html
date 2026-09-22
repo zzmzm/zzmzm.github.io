@@ -2,135 +2,445 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Operations guide — Tiyi docs</title>
+<title>Operations guide — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Publish applications, observe traffic, investigate attacks, tune WAF policies, and operate Tiyi agents." />
+<meta name="description" content="This page follows the normal operator loop: publish, observe, investigate,
+tune, and verify. Run local CLI commands on the Tiyi host with sudo; omit sudo and add --api URL
+--token JWT when operating remotely." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
 <link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
 <script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
 </head>
+
 <body class="docs" data-assets-base="../assets/img/">
 <div class="bg-field" aria-hidden="true"></div>
-<header class="nav"><div class="container nav-inner">
-  <a class="brand" href="../index.html"><img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" /><span>Tiyi</span></a>
-  <nav class="nav-links" aria-label="Main navigation">
-    <a href="../index.html#features">Features</a><a href="../index.html#tour">Product</a><a href="../index.html#pricing">Pricing</a><a href="index.html" style="color:var(--fg)">Docs</a><a href="../changelog.html">Changelog</a>
-    <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button>
-    <a class="nav-toggle nav-lang" href="../zh/docs/operations.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a><a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
-  </nav>
-</div></header>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/operations.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
 <div class="docs-layout">
+
   <aside class="docs-sidebar" aria-label="Docs navigation">
-    <div class="docs-nav-group"><h4>Get started</h4><ul><li><a href="index.html">Overview</a></li><li><a href="quickstart.html">Quickstart</a></li><li><a href="installation.html">Installation</a></li></ul></div>
-    <div class="docs-nav-group"><h4>Operate</h4><ul><li><a href="operations.html">Operations guide</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="upgrade-migration.html">Upgrade and migration</a></li></ul></div>
-    <div class="docs-nav-group"><h4>Concepts</h4><ul><li><a href="concepts.html">Domain model</a></li></ul></div>
-    <div class="docs-nav-group"><h4>Reference</h4><ul><li><a href="cli.html">CLI reference</a></li><li><a href="api.html">API reference</a></li></ul></div>
-    <div class="docs-nav-group"><h4>Run in production</h4><ul><li><a href="deployment.html">Deployment</a></li></ul></div>
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html" aria-current="page">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
   </aside>
+
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">Operate</span>
-    <h1>From request to response</h1>
-    <p class="lede">A practical loop for publishing an application, seeing what Tiyi sees, investigating suspicious traffic, and making the narrowest safe change.</p>
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="operations-guide">Operations guide</h1>
+<p class="lede">This page follows the normal operator loop: publish, observe, investigate,
+tune, and verify. Run local CLI commands on the Tiyi host with sudo; omit sudo and add <code>--api URL
+--token JWT</code> when operating remotely.</p>
+<p>Choose a task: <a href="#wildcard-hosts">Wildcard hosts</a> · <a href="#https">HTTPS</a> · <a href="#tuning">WAF tuning</a> · <a href="#notifications">Notifications</a> · <a href="#prometheus">Monitoring</a> · <a href="upgrade-migration.html#backup">Backup and recovery</a>. For guided exercises on a demo, use <a href="practice.html">practice and advanced use</a>.</p>
+<h2 id="1-publish-an-application">1. Publish an application</h2>
+<p>Start the backend, create a site, and test routing before changing DNS:</p>
+<pre><code class="language-sh">sudo tiyi site create <span class="o">\
+</span>  --name shop <span class="o">\
+</span>  --host shop.example.com <span class="o">\
+</span>  --upstream-url http://10.0.0.20:9000 <span class="o">\
+</span>  --tls none
 
-    <div class="request-path" role="img" aria-label="Client request passes through listener and TLS, site and path routing, WAF policy, then upstream; independent observation planes produce exact counters, SecurityFacts, optional evidence, alerts, and SIEM output.">
-      <span>Client</span><b>→</b><span>Listener + TLS</span><b>→</b><span>Site + path</span><b>→</b><span>WAF policy</span><b>→</b><span>Upstream</span>
-      <small>exact counters · bounded SecurityFact samples · optional detail/evidence · alerts/direct SIEM</small>
-    </div>
-
-    <h2 id="publish">1. Publish an application</h2>
-    <p>Start the backend, create a site, and verify routing before changing public DNS. A newly created site is active immediately; the one-step command creates its upstream pool and uses the built-in Light policy. Light keeps attack and resource-limit blocking enabled while treating common MIME/parser mismatches as compatibility observations.</p>
-<pre><code>tiyi site create <span class="o">\</span>
-  --name shop <span class="o">\</span>
-  --host shop.example.com <span class="o">\</span>
-  --upstream-url http://10.0.0.20:9000 <span class="o">\</span>
-  --tls none
-
-curl -i -H <span class="s">'Host: shop.example.com'</span> http://127.0.0.1/</code></pre>
-    <p>Use <strong>Application Delivery → Sites</strong> for TLS, path routes, health state, and site-level security overrides. For one hostname with several apps, use longest-prefix routes such as <code>/api/</code> and <code>/static/</code>, keep a fallback, and probe every route after saving.</p>
-
-    <h2 id="baseline">2. Establish a baseline</h2>
-    <p>In <strong>Overview</strong>, select a site and time range. Read the protection chain first — Bot gate → rate/challenge → IP/country → resource guards → WAF/CRS → origin — then inspect request rate, terminated totals, status classes, top attackers, normalized URL Top, and fixed-class UA Top. The Bot stage opens <strong>Logs → Bot Analytics</strong>; other stages open <strong>Logs → Enforcement</strong> already filtered. Use <strong>Security &amp; Traffic → API Inventory</strong> for discovered assets; use <strong>System Monitoring → Log Pipeline</strong> for consumer health.</p>
-    <table><thead><tr><th>Truth plane</th><th>Answers</th><th>Failure isolation</th></tr></thead><tbody>
-      <tr><td>Exact counters</td><td>How much traffic passed or was blocked?</td><td>Never sampled by detail policy.</td></tr>
-      <tr><td>SecurityFacts</td><td>Which security matches occurred?</td><td>Immutable compact investigation truth.</td></tr>
-      <tr><td>Retained detail/evidence</td><td>Which request-level context should remain available?</td><td>Independent policy, retention, and storage quotas.</td></tr>
-      <tr><td>Direct SIEM</td><td>Which native or formatted events should leave each node?</td><td>Independent per-destination queues; cannot block proxy traffic.</td></tr>
-    </tbody></table>
-    <h3 id="evidence-siem">Request Evidence and direct SIEM</h3>
-    <p>Request Evidence defaults to the recommended <code>security_only</code> scope. Configure it under <strong>System Administration → Settings → Global logging &amp; evidence policy</strong>, then optionally override a site from its <strong>Logging &amp; evidence</strong> drawer. <code>security_only</code> retains evidence only for requests that produced a SecurityFact; <code>retained_logs</code> attaches evidence to retained Attack/Access rows. Captured Cookie, Authorization, API keys, personal data, and request bodies are intentionally unredacted, so restrict log-read access and keep retention short. Open an Attack or Access log, expand <strong>Request evidence</strong>, and load the bounded preview only when needed. The preview starts with an HTTP-style request line (method, exact target, client HTTP version), then Host and captured headers.</p>
-    <p>Configure producer-side targets under <strong>System Administration → Settings → SIEM</strong>. Each destination independently selects native Caddy access JSON, native Coraza audit JSON, or Tiyi-formatted security/access/error/audit events and uses its own UDP/TCP/TLS queue, byte budget, framing, and timeout. A queue-full or network failure drops that destination's event and increments its Log Pipeline lane; it never delays a WAF response.</p>
-
-    <h2 id="investigate">3. Investigate an alert</h2>
-    <ol>
-      <li>Open <strong>Alerts &amp; Notifications → Alert Center</strong> and follow its evidence URL.</li>
-      <li>Pin site and time range, then copy the <code>X-Request-Id</code>.</li>
-      <li>Use <strong>Security &amp; Traffic → Security Events</strong> to pivot the immutable facts by attacker, attack type, or target.</li>
-      <li>Open the matching <strong>Attack Logs</strong> row for rule evidence, then correlate Access and Runtime Error rows by request ID.</li>
-      <li>Load Request Evidence only when authorized and needed; treat Geo/ASN as advisory network-exit metadata.</li>
-      <li>Acknowledge and note the alert; resolve only after mitigation is verified.</li>
-    </ol>
-    <div class="callout callout-info"><div class="callout-body"><p><strong>AI is advisory.</strong> Enrichment is optional and default-off. Verify retained evidence and the compiled policy before applying any suggestion.</p></div></div>
-
-    <h2 id="tune">4. Tune safely</h2>
-    <ol><li>Reproduce and identify the rule, site, path, and client class.</li><li>Preview effective policy or inspect the UI diff.</li><li>Use log-only/canary behavior where available.</li><li>Scope exclusions to the exact rule and path.</li><li>Send malicious and legitimate regression requests.</li><li>Watch blocked rate, status codes, SecurityFacts, and attack logs after apply.</li></ol>
-    <p>An IP allow list is not a rule exclusion. A WAF bypass skips remaining inspection and must be scoped more tightly than a normal per-rule pass.</p>
-
-    <h2 id="agents">5. Operate agents</h2>
-<pre><code>tiyi agents issue-token --tag edge --ttl-seconds 3600
-tiyi agents list</code></pre>
-    <p>Use Agent Groups for stable targeting. Before rollout, inspect the bundle diff; afterward verify online state, applied revision/hash, apply result, proxy health, and—when enabled—Evidence upload backlog plus direct-SIEM destination lanes. “Offline” and “online on an old revision” are different failures.</p>
-
-    <h2 id="checklist">6. Daily and change checks</h2>
-    <div class="docs-cards">
-      <div class="docs-card"><div class="docs-card-title">Daily</div><p>Health, disk, certificate expiry, agents, evidence/pipeline backlog, firing alerts, SecurityFact trends, API Inventory, failed SIEM/channel delivery, and audit chain.</p></div>
-      <div class="docs-card"><div class="docs-card-title">Every change</div><p><code>tiyi doctor</code> → <code>tiyi diff</code> → apply → health → functional request → <code>tiyi audit verify</code>.</p></div>
-    </div>
-    <p>Back up the complete state directory, configuration, external KEK, uploaded certificate sources, license, and declarative manifests. Test restoration, not just backup creation; see <a href="upgrade-migration.html#host-migration">host migration</a>.</p>
-
-    <h2 id="prometheus">7. Connect Prometheus</h2>
-    <p>Tiyi exposes OpenMetrics only on the permission-protected local admin socket. Verify it locally:</p>
-<pre><code>sudo curl -fsS --unix-socket /run/tiyi/admin.sock \
-  http://localhost/metrics | grep '^tiyi_' | head</code></pre>
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>Do not publish the admin socket through a generic TCP proxy.</strong> It also carries passwordless local-administration endpoints.</p></div></div>
-    <p>A safe bridge is node_exporter's textfile collector. Configure node_exporter with <code>--collector.textfile.directory=/var/lib/node_exporter/textfile_collector</code>, then create:</p>
-<pre><code># /etc/systemd/system/tiyi-metrics-textfile.service
+curl -i -H <span class="s">'Host: shop.example.com'</span> http://127.0.0.1/
+sudo tiyi site list
+</code></pre>
+<p>A newly created site is active immediately. The one-step form creates the
+inline upstream and uses the built-in Light policy. Light keeps attack blocking enabled while logging ordinary argument/body-size excess and treating MIME/parser mismatches as compatibility observations. Upload, Schema, and other resource guards retain their independent controls. Use <strong>Application
+Delivery → Sites</strong> for TLS, path routes, health state, and per-site security
+overrides. Use an uploaded certificate or managed ACME before changing public
+DNS to the Tiyi listener.</p>
+<p>For one hostname with several applications, configure longest-prefix path
+routes (for example <code>/api/</code> and <code>/static/</code>) and keep a fallback route. Probe
+each route after saving.</p>
+<a id="use-a-wildcard-hostname"></a>
+<h3 id="wildcard-hosts">Use a wildcard hostname</h3>
+<p>In <strong>Sites → Create / Edit</strong>, both <strong>Primary Host</strong> and <strong>Aliases</strong> accept
+<code>*.example.com</code>. Enter hostnames without a scheme, port, or path; separate UI
+aliases with commas. The wildcard replaces exactly one subdomain label:</p>
+<table>
+<thead>
+<tr>
+<th>Request hostname</th>
+<th>Matches <code>*.example.com</code>?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>www.example.com</code>, <code>api.example.com</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>example.com</code></td>
+<td>No; add it separately as a primary host or alias</td>
+</tr>
+<tr>
+<td><code>a.b.example.com</code></td>
+<td>No; add that exact host or a separate <code>*.b.example.com</code> pattern</td>
+</tr>
+</tbody>
+</table>
+<p>For a separate new site, this example serves the wildcard and root domain and
+explicitly registers <code>api.example.com</code> for API configuration. Replace the
+domain, site name, and origin URL with your own values:</p>
+<pre><code class="language-sh">sudo tiyi site create --name wildcard-app <span class="o">\
+</span>  --host <span class="s">'*.example.com'</span> --alias example.com --alias api.example.com <span class="o">\
+</span>  --upstream-url http://10.0.0.20:9000 --tls none
+curl -i -H <span class="s">'Host: api.example.com'</span> http://127.0.0.1/
+</code></pre>
+<p>Quote <code>*.example.com</code> in shell commands so the shell does not expand <code>*</code> into
+local filenames. Before public access, point the actual hostnames or a wildcard
+DNS record at Tiyi. Saving a site does not create DNS records.</p>
+<p>For <strong>HTTPS</strong>, first obtain a certificate covering the wildcard and every
+configured alias. A certificate for <code>*.example.com</code> alone does not cover
+<code>example.com</code> or <code>a.b.example.com</code>. Upload an existing certificate, or use
+<strong>DNS-01</strong> for ACME wildcard issuance; HTTP-01 cannot issue a wildcard
+certificate. Configure the supported Cloudflare DNS Provider before requesting
+DNS-01 issuance. Bind the covering certificate, then enable HTTPS as described
+<a href="#https">below</a>. HTTP hostname matching itself does not require ACME or DNS-01.</p>
+<p>For <strong>OpenAPI import and request validation</strong>, first add each concrete API
+hostname, such as <code>api.example.com</code>, as the primary host or an alias, then use
+that exact hostname in the mapping. A wildcard can route requests but does not
+automatically create concrete API bindings or apply Schema validation to every
+matching subdomain. Follow the <a href="api-protection.html">API protection guide</a>.</p>
+<a id="enable-https-for-a-real-site"></a>
+<h3 id="https">Enable HTTPS for a real site</h3>
+<p>Replace <code>app.example.com</code> with your domain. HTTP-01 requires its A/AAAA records to point to Tiyi and public port 80 to be reachable.
+Check DNS and the firewall before requesting a certificate. Take IDs from list output:</p>
+<pre><code class="language-sh">sudo tiyi cert issue app.example.com --email admin@example.com
+sudo tiyi cert list
+sudo tiyi site list
+<span class="v">SITE_ID</span><span class="o">=</span><span class="s">'replace-with-site-id'</span>
+<span class="v">CERT_ID</span><span class="o">=</span><span class="s">'replace-with-issued-certificate-id'</span>
+sudo tiyi site update <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span> --tls managed-acme --tls-cert-id <span class="s">"</span><span class="v">$CERT_ID</span><span class="s">"</span> <span class="o">\
+</span>  --tls-http-behavior redirect
+curl -i --resolve app.example.com:443:127.0.0.1 https://app.example.com/
+</code></pre>
+<p>Bind only after issuance succeeds and the certificate covers all site hostnames. For an existing enterprise certificate use
+<code>sudo tiyi cert upload --name app-cert --cert-pem cert.pem --key-pem key.pem</code>, then bind with <code>--tls uploaded</code>.
+Supply intermediates with repeated <code>--chain-pem</code>. ACME wildcard certificate issuance needs DNS-01: configure a supported Cloudflare DNS Provider in the certificate UI,
+then check credential scope, challenge type, and domain coverage. Uploaded certificates need your renewal process; managed certificates renew automatically.</p>
+<h3 id="multiple-origins-and-path-routes">Multiple origins and path routes</h3>
+<p>This creates a two-backend pool and routes <code>/api</code> to it. Replace addresses and IDs with your values.
+Both backends must answer <code>/healthz</code> with 200; submission checks connectivity and probes:</p>
+<pre><code class="language-sh">sudo tiyi upstream create --name api-pool <span class="o">\
+</span>  --endpoint-url http://10.0.0.20:9000 --endpoint-url http://10.0.0.21:9000 <span class="o">\
+</span>  --health-check-path /healthz --health-expected-status 200
+sudo tiyi upstream list
+sudo tiyi site routing get SITE_ID
+sudo tiyi site routing set SITE_ID --route /api<span class="o">=</span>UPSTREAM_ID --unmatched default
+</code></pre>
+<p><code>routing set</code> replaces the complete routing table. Save <code>routing get</code> first and include every route you intend to keep.
+The longest segment-bounded prefix wins: <code>/api</code> does not match <code>/apix</code>. Paths are preserved by default;
+use <code>--route /api=UPSTREAM_ID:strip</code> when the origin expects the prefix removed.
+<code>--unmatched default</code> requires a default site upstream; <code>--unmatched 404</code> rejects unmatched paths.
+Test every route and the unmatched case. Review health on all serving nodes; unknown or stale reports are not healthy results.</p>
+<h3 id="site-migration-and-repeatable-setup">Site migration and repeatable setup</h3>
+<p>Use <a href="site-import.html">site import/export JSON</a> or <a href="configuration.html#apply">declarative YAML</a>.
+Follow the <a href="api-protection.html">API protection walkthrough</a> for application APIs; do not put OpenAPI into startup configuration.</p>
+<h2 id="2-establish-a-baseline">2. Establish a baseline</h2>
+<p>Use <strong>Overview</strong> to select a site and time range. Read the protection chain
+first — Bot gate → rate/challenge → IP/country → resource guards → WAF/CRS →
+origin — then check request rate, terminated totals, status classes, top
+attackers, normalized URL Top, and fixed UA classes. The Bot stage opens
+<strong>Logs → Bot Analytics</strong>; other stages open <strong>Logs → Enforcement</strong> already
+filtered. Use <strong>Application Delivery → API Assets</strong> for discovered assets.</p>
+<p>The observation pipeline has four independent truth planes:</p>
+<ul>
+<li>exact hot-path traffic and block counters;</li>
+<li>immutable compact <code>SecurityFact</code> records for direct investigation;</li>
+<li>optional retained detail and Request Evidence under independent policy,
+  retention, and storage quotas;</li>
+<li>producer-direct SIEM delivery with one bounded queue per destination.</li>
+</ul>
+<p>Check <strong>System Monitoring → Log Pipeline</strong> when a consumer falls behind. A slow SIEM
+must not change exact counters or block proxy requests.</p>
+<h3 id="read-exact-counts-and-sampled-investigation-correctly">Read exact counts and sampled investigation correctly</h3>
+<p>Overview security rankings, Enforcement and threshold alerts use counters collected before sampling. Event Analysis uses retained samples for relationship pivots; do not use its associations as full traffic totals. Keep the same site, time range and IP when moving into Enforcement. A limited dimension shows lost coverage and cannot prove that a missing entity had no activity.</p>
+<p>Automatic remediation respects attack-type and severity filters. IP quick actions report saved and applied states separately, retain the same operation when retried, and support withdrawal. Check remote-node deployment results before concluding a block is active everywhere.</p>
+<h3 id="request-evidence-and-direct-siem">Request Evidence and direct SIEM</h3>
+<p>Fresh installations default Request Evidence to <code>security_only</code>. Configure the global policy under
+<strong>System Administration → Settings → Global logging &amp; evidence policy</strong>, then
+optionally override a site from its <strong>Logging &amp; evidence</strong> drawer.
+<code>security_only</code> retains evidence for requests that produced a SecurityFact;
+<code>retained_logs</code> attaches it to retained Attack/Access rows. Captured Cookie,
+Authorization, API keys, personal data, and bodies are intentionally
+unredacted. Restrict log-read access and use short retention. The in-console
+preview starts with an HTTP-style request line (method, exact target, client
+HTTP version), then Host and captured headers.</p>
+<p>Configure destinations under <strong>System Administration → Settings → SIEM</strong>. Each
+target independently selects native Caddy access JSON, native Coraza audit
+JSON, or Tiyi-formatted events over UDP/TCP/TLS. Queue-full and network errors
+drop only that target's event and increment its pipeline lane; they never
+delay a WAF response.</p>
+<h2 id="3-investigate-an-alert">3. Investigate an alert</h2>
+<ol>
+<li>Open <strong>Alerts &amp; Notifications → Alert Center</strong> and follow the evidence link.</li>
+<li>Pin the site and time range. Copy the <code>X-Request-Id</code> / unique request ID.</li>
+<li>Use <strong>Logs → Security Events</strong> to pivot bounded facts by
+   attacker, attack type, or target.</li>
+<li>Open the matching <strong>Attack Logs</strong> row, then correlate Access and Runtime
+   Error rows by request ID.</li>
+<li>Load Request Evidence only when authorized and needed; treat Geo/ASN as
+   advisory network-exit metadata.</li>
+<li>Acknowledge, add a note, then resolve only after the cause or safe
+   mitigation is verified.</li>
+</ol>
+<p>AI enrichment is optional, default-off, structured, and advisory. Never apply
+an AI suggestion without checking the retained evidence and compiled policy.</p>
+<h2 id="4-tune-safely">4. Tune safely</h2>
+<p>Prefer the narrowest change:</p>
+<ol>
+<li>reproduce and identify the rule, path, site, and client class;</li>
+<li>preview the effective policy or use the UI diff;</li>
+<li>use log-only/canary behavior where the feature supports it;</li>
+<li>scope an exclusion to the exact site/path/rule;</li>
+<li>send both malicious and legitimate regression requests;</li>
+<li>monitor blocked rate, status codes, SecurityFacts, and attack logs after
+   apply.</li>
+</ol>
+<p>An IP allow list is not a substitute for a rule exclusion. A WAF bypass skips
+remaining inspection and should be restricted more tightly than a normal
+per-rule pass.</p>
+<h3 id="v37-adaptive-controls">v3.7 adaptive controls</h3>
+<ul>
+<li>Configure <strong>Protection → IP Lists</strong> subscriptions as untrusted inputs: preview
+  parser output, bind only an accepted snapshot, and investigate an <strong>Update
+  protected</strong> hold instead of bypassing empty, oversized, or invalid results.
+  Use <strong>Protection → Country Access</strong> for country policy; <code>geo:*</code> is not an
+  IP-list entry.</li>
+<li>Configure site-wide <strong>Bot protection</strong> only on HTTPS-only sites. Start with
+  browser check, exempt only narrow health/login callbacks, and reserve human
+  verification for flows where a private WebAuthn device gesture is acceptable.</li>
+<li>Under <strong>System Administration → Settings → WAF overload</strong>, keep <strong>Continue
+  full inspection</strong> unless the service has an explicit availability policy.
+  Reject mode returns 503 with <code>X-Tiyi-Enforcement-Reason:
+  cpu_overload_reject</code>; bypass mode skips only Coraza/CRS and remains visible in
+  <strong>Logs → Enforcement</strong>.</li>
+<li>Rate-limit temporary bans and challenge profiles are independent controls.
+  Verify rolling-window thresholds, site/global scope, TTL, and final response
+  in <strong>Logs → Enforcement</strong> before widening rollout.</li>
+</ul>
+<h2 id="5-operate-remote-nodes">5. Operate remote nodes</h2>
+<p>Under <strong>Nodes → Install</strong>, set the reachable Controller URL, tags, expiry, and maximum registered nodes, then generate the installation command.
+Run the recommended systemd command on the target host and inspect enrollment and configuration results in Nodes.
+See <a href="deployment.html#nodes">remote deployment</a> for platform, license, complete commands, and recovery boundaries.</p>
+<p>Use <code>sudo tiyi agents list</code> for current status. Site configuration is published to the local node and all enrolled nodes; offline nodes receive it on reconnect.
+Groups organize machines and do not limit a site to that group. Check current applied configuration, proxy/origin health, and a real request on every serving node.
+Offline and online-but-not-applied are separate failures.</p>
+<h2 id="6-daily-and-change-checks">6. Daily and change checks</h2>
+<p>Daily:</p>
+<ul>
+<li>health, disk space, certificate expiry, agents, and evidence/pipeline backlog;</li>
+<li>firing alerts, SecurityFact trends, and unusual API inventory;</li>
+<li>failed SIEM/channel deliveries and audit-chain verification.</li>
+</ul>
+<p>Before and after a change:</p>
+<pre><code class="language-sh">sudo tiyi doctor
+sudo tiyi diff -f desired.yaml
+sudo tiyi apply -f desired.yaml
+sudo tiyi system health
+sudo tiyi audit verify
+</code></pre>
+<p>For a version-controlled change, start from the
+<a href="templates/apply.yaml">complete four-kind manifest</a> and review the
+<a href="configuration.html">replacement, reference, transaction, and rollback rules</a>
+before the first apply. In particular, apply specs replace their managed
+fields; they are not merge patches.</p>
+<p>Keep the complete state directory, configuration, external KEK, uploaded
+certificate sources, license file, and declarative manifests in the backup
+plan. Test restoration rather than only testing backup creation; see
+<a href="upgrade-migration.html">Upgrade and migration</a>.</p>
+<a id="7-connect-prometheus"></a>
+<h2 id="prometheus">7. Connect Prometheus</h2>
+<p>Tiyi exposes OpenMetrics only on the permission-protected local admin socket.
+Verify it locally first:</p>
+<pre><code class="language-sh">sudo curl -fsS --unix-socket /run/tiyi/admin.sock <span class="o">\
+</span>  http://localhost/metrics | grep <span class="s">'^tiyi_'</span> | head
+</code></pre>
+<p>Do <strong>not</strong> publish that Unix socket through a generic TCP proxy: the socket also
+provides passwordless local-administration endpoints. A safe, simple bridge is
+node_exporter's textfile collector, which publishes only the metrics body.
+Configure node_exporter with
+<code>--collector.textfile.directory=/var/lib/node_exporter/textfile_collector</code>, then
+create this oneshot collector and timer:</p>
+<pre><code class="language-ini"># /etc/systemd/system/tiyi-metrics-textfile.service
 [Unit]
-Description=Export Tiyi OpenMetrics to node_exporter
+Description=Export Tiyi OpenMetrics to node_exporter textfile collector
 After=tiyi.service
 
 [Service]
 Type=oneshot
 User=root
+UMask=0022
 NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
 ExecStart=/bin/sh -ec '/usr/bin/curl -fsS --unix-socket /run/tiyi/admin.sock http://localhost/metrics -o /var/lib/node_exporter/textfile_collector/tiyi.prom.tmp; /usr/bin/chmod 0644 /var/lib/node_exporter/textfile_collector/tiyi.prom.tmp; /usr/bin/mv -f /var/lib/node_exporter/textfile_collector/tiyi.prom.tmp /var/lib/node_exporter/textfile_collector/tiyi.prom'
-
-# /etc/systemd/system/tiyi-metrics-textfile.timer
+</code></pre>
+<pre><code class="language-ini"># /etc/systemd/system/tiyi-metrics-textfile.timer
 [Unit]
 Description=Refresh Tiyi OpenMetrics for node_exporter
 
 [Timer]
 OnBootSec=30s
 OnUnitActiveSec=30s
+AccuracySec=5s
 Unit=tiyi-metrics-textfile.service
 
 [Install]
-WantedBy=timers.target</code></pre>
-<pre><code>sudo install -d -m 0755 /var/lib/node_exporter/textfile_collector
+WantedBy=timers.target
+</code></pre>
+<pre><code class="language-sh">sudo install -d -m 0755 /var/lib/node_exporter/textfile_collector
 sudo systemctl daemon-reload
 sudo systemctl enable --now tiyi-metrics-textfile.timer
 sudo systemctl start tiyi-metrics-textfile.service
-curl -fsS http://127.0.0.1:9100/metrics | grep '^tiyi_' | head</code></pre>
-    <p>Prometheus scrapes the existing node_exporter target. Watch <code>tiyi_observation_lane_value</code>, <code>tiyi_observation_pipeline_value</code>, and <code>tiyi_api_inventory_value</code>, and alert on timer/oneshot failures plus queue, drop, and panic fields.</p>
+systemctl status tiyi-metrics-textfile.timer --no-pager
+curl -fsS http://127.0.0.1:9100/metrics | grep <span class="s">'^tiyi_'</span> | head
+</code></pre>
+<p>Prometheus then scrapes the existing node_exporter target:</p>
+<pre><code class="language-yaml"><span class="k">scrape_configs</span>:
+  - <span class="k">job_name</span>: node
+    <span class="k">static_configs</span>:
+      - <span class="k">targets</span>: [<span class="s">'</span><span class="s">tiyi-host.example.com:9100</span><span class="s">'</span>]
+</code></pre>
+<p>The main families are <code>tiyi_observation_lane_value{lane,field}</code>,
+<code>tiyi_observation_pipeline_value{field}</code>, and
+<code>tiyi_api_inventory_value{site_id,field}</code>. Alert if the timer or oneshot unit
+fails, and watch queue/drop/panic fields. Adjust paths if your node_exporter
+package uses another textfile directory.</p>
+<h2 id="8-operate-api-assets">8. Operate API Assets</h2>
+<p>Open <strong>API Assets</strong>, select a site, and inspect the endpoint tree. Discovery
+does not add an endpoint to the API catalog. Use <strong>Add to API catalog</strong> or
+import an API document, review its host/base-path mappings and apply it.
+New catalog entries do not silently enable validation. Hiding a row only
+changes the default list; it does not change request handling or learning.</p>
+<p>Open an endpoint to review its request definition, traffic samples and learning
+results. <strong>Request specification validation</strong> offers Off, Observe and Enforce
+where supported. Select a mode, review the change and apply once; wait for all
+serving-node receipts before treating it as effective. Unsupported constraints
+prevent enforcement. Unlisted-request handling is an independent site/document
+scope choice; include legitimate health checks, callbacks and OPTIONS endpoints
+before blocking requests outside the catalog.</p>
+<p>Eligible POST/PUT/PATCH endpoints automatically learn bounded successful JSON
+structures after their sampling configuration is applied. Learning does not
+store field values, overwrite authored definitions or turn on blocking.
+Review <strong>Learning results</strong>, save a version and export an OpenAPI draft or
+establish a specification through the normal review/apply flow. Sampling limits
+mean learning counts differ from request counts; incomplete evidence is shown.</p>
+<p>Configure body and upload capacities in the site's policy. Endpoint definitions
+can add file-field requirements without duplicating the site capacity controls.
+Use <strong>Detection statistics</strong> for the actual server-resolved time window and
+coverage; enable Schema violation samples explicitly in global/site Log policy
+only when retained examples are needed. Counts work with sample capture off.</p>
+<p>Use <strong>Manage API document → History and rollback</strong> to inspect publication
+results and restore a reviewed prior version. Current intent and actual serving
+state are shown separately. See the <a href="release-3.8.0.html">v3.8.0 release notes</a>
+before upgrading an existing deployment.</p>
+<a id="9-set-up-notifications-that-reach-someone"></a>
+<h2 id="notifications">9. Set up notifications that reach someone</h2>
+<p>In <strong>Alerts &amp; Notifications → Notification Channels</strong>, choose Webhook, Slack, PagerDuty, Feishu, WeCom, or email,
+provide the required address/credentials, and save. Test sends a real notification: verify receipt at the destination.
+In <strong>Alert Rules</strong>, select events, site/node scope, time window, and threshold, attach the channel, preview content, and enable it.
+Certificate expiry, offline nodes, HTTP error rates, and slow requests are useful starting points.
+Review firing, repeat, and recovery messages against your on-call needs. Use time-bounded silences for maintenance.
+Acknowledging or resolving an alert records the operator and note; manual resolution does not establish that the cause has disappeared.</p>
+<a id="10-tune-waf-and-create-virtual-patches"></a>
+<h2 id="tuning">10. Tune WAF and create virtual patches</h2>
+<p>New sites use Light. Evaluate Standard/Strict for stricter Content-Type/parser requirements after testing login, search, payment callbacks, and uploads.
+Policies are attached to sites; changing a shared policy affects every consumer. Inspect impact and create a separate policy when needed.
+Start false-positive analysis from rule evidence in Attack Logs. Prefer an exact rule/site/path exception; a custom <code>pass</code> rule does not prevent later CRS blocking.
+The custom-rule editor includes path, method, and header recipes for virtual patches. Fill real business values, inspect the preview, and test normal plus malicious requests.
+<code>log_only</code> removes that rule's blocking-score contribution; other rules can still block. Full bypass skips later inspection.
+Policy history supports rollback, but shared lists, country datasets, and external CRS dependencies must still exist. It does not roll back application data, site settings, or logs.</p>
+<p>Browser/human Bot challenges are unsuitable for noninteractive API clients. Identify the caller before choosing path/IP exemptions or other rate controls.
+IP lists contain addresses and need an allow/deny/observe binding; country controls use an activated Country database.
+Missing node counters or logs represent incomplete coverage, not proof that no attacks occurred. Check AI suggestions against real request evidence.</p>
+<h2 id="customize-block-pages-and-api-errors">Customize block pages and API errors</h2>
+<p>Six protection scenarios share templates and have individual statuses. Use the <a href="responses.html">complete response template and restore steps</a>, then verify actual HTML and JSON responses.</p>
+<div class="docs-pager"><a href="responses.html"><span class="label">← Previous</span><span class="title">Protection responses</span></a><a class="next" href="troubleshooting.html"><span class="label">Next →</span><span class="title">Troubleshooting</span></a></div>
+</main>
 
-    <div class="docs-pager"><a href="upgrade-migration.html"><span class="label">← Previous</span><span class="title">Upgrade and migration</span></a><a class="next" href="troubleshooting.html"><span class="label">Next →</span><span class="title">Troubleshooting</span></a></div>
-  </main>
-  <aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4></aside>
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.7.2 · 2026-09-03</span></div></div></footer>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
 <script src="../assets/js/main.js" defer></script>
 </body>
 </html>

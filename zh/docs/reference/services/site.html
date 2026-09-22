@@ -1,0 +1,1742 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>site.proto — Sites, routing, and per-site policy overrides — 太一文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="site.proto — Sites, routing, and per-site policy overrides v3.8.0 完整协议参考；字段名与协议注释保留英文。可从侧栏返回中文任务指南。 Schema: tiyi.v1 · site.proto · English guide · 中文指南 · F" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../../../index.html#features">特性</a>
+      <a href="../../../index.html#tour">产品</a>
+      <a href="../../../index.html#pricing">价格</a>
+      <a href="../../index.html" style="color:var(--fg)">文档</a>
+      <a href="../../../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../../docs/reference/services/site.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="../../index.html">概览</a></li>
+        <li><a href="../../quickstart.html">快速开始</a></li>
+        <li><a href="../../installation.html">安装</a></li>
+        <li><a href="../../configuration.html">配置与模板</a></li>
+        <li><a href="../../practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="../../operations.html">日常运维</a></li>
+        <li><a href="../../troubleshooting.html">排障</a></li>
+        <li><a href="../../upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="../../site-import.html">站点导入与导出</a></li>
+        <li><a href="../../api-protection.html">API 防护</a></li>
+        <li><a href="../../responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="../../concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI 参考</a></li>
+        <li><a href="../../api.html">API 参考</a></li>
+        <li><a href="../index.html">完整参考</a></li>
+        <li><a href="../rpc-index.html">全部 RPC</a></li>
+        <li><a href="../permissions.html">权限</a></li>
+        <li><a href="../cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="../../deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="siteproto-sites-routing-and-per-site-policy-overrides">site.proto — Sites, routing, and per-site policy overrides</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>site.proto</code> · <a href="../../../../docs/api.html">English guide</a> · <a href="../../api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="siteservice">SiteService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#siteservicelistsites"><code>ListSites</code></a></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#siteservicegetsite"><code>GetSite</code></a></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#siteservicecreatesite"><code>CreateSite</code></a></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#siteserviceupdatesite"><code>UpdateSite</code></a></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#siteservicedeletesite"><code>DeleteSite</code></a></td>
+<td>unary</td>
+<td>(<code>site:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="#siteserviceenablesite"><code>EnableSite</code></a></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#siteservicedisablesite"><code>DisableSite</code></a></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#siteservicepreviewcompiledconfig"><code>PreviewCompiledConfig</code></a></td>
+<td>unary</td>
+<td>(<code>site:preview</code>)</td>
+</tr>
+<tr>
+<td><a href="#siteserviceexportsite"><code>ExportSite</code></a></td>
+<td>unary</td>
+<td><code>site:read</code> and <code>upstream:read</code> and <code>cert:export</code></td>
+</tr>
+<tr>
+<td><a href="#siteserviceexportsites"><code>ExportSites</code></a></td>
+<td>unary</td>
+<td><code>site:read</code> and <code>upstream:read</code> and <code>cert:export</code></td>
+</tr>
+<tr>
+<td><a href="#siteserviceimportsite"><code>ImportSite</code></a></td>
+<td>unary</td>
+<td><code>site:write</code> and <code>upstream:write</code> and <code>cert:write</code></td>
+</tr>
+<tr>
+<td><a href="#siteservicegetsiterouting"><code>GetSiteRouting</code></a></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#siteserviceupdatesiterouting"><code>UpdateSiteRouting</code></a></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#siteservicegetsitepolicyoverride"><code>GetSitePolicyOverride</code></a></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#siteserviceupsertsitepolicyoverride"><code>UpsertSitePolicyOverride</code></a></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#siteservicedeletesitepolicyoverride"><code>DeleteSitePolicyOverride</code></a></td>
+<td>unary</td>
+<td>(<code>site:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="siteservicelistsites">SiteService.ListSites</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/ListSites</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListSitesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="common.html#resourcestatus"><code>ResourceStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListSitesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#site"><code>Site</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteservicegetsite">SiteService.GetSite</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/GetSite</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSiteRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSiteResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site</code></td>
+<td><code>site</code></td>
+<td><a href="#site"><code>Site</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteservicecreatesite">SiteService.CreateSite</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/CreateSite</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CreateSiteRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site</code></td>
+<td><code>site</code></td>
+<td><a href="#site"><code>Site</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CreateSiteResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site</code></td>
+<td><code>site</code></td>
+<td><a href="#site"><code>Site</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteserviceupdatesite">SiteService.UpdateSite</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/UpdateSite</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdateSiteRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site</code></td>
+<td><code>site</code></td>
+<td><a href="#site"><code>Site</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>update_mask</code></td>
+<td><code>updateMask</code></td>
+<td><code>google.protobuf.FieldMask</code></td>
+<td>singular</td>
+<td><em>comma-joined field paths, e.g. <code>"name,status"</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdateSiteResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site</code></td>
+<td><code>site</code></td>
+<td><a href="#site"><code>Site</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteservicedeletesite">SiteService.DeleteSite</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/DeleteSite</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:delete</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteSiteRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteSiteResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteserviceenablesite">SiteService.EnableSite</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/EnableSite</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.EnableSiteRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>force</code></td>
+<td><code>force</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.EnableSiteResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site</code></td>
+<td><code>site</code></td>
+<td><a href="#site"><code>Site</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteservicedisablesite">SiteService.DisableSite</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/DisableSite</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DisableSiteRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DisableSiteResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site</code></td>
+<td><code>site</code></td>
+<td><a href="#site"><code>Site</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteservicepreviewcompiledconfig">SiteService.PreviewCompiledConfig</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/PreviewCompiledConfig</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:preview</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.PreviewCompiledConfigRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site</code></td>
+<td><code>site</code></td>
+<td><a href="#site"><code>Site</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.PreviewCompiledConfigResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>caddy_json</code></td>
+<td><code>caddyJson</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td><code>warnings</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteserviceexportsite">SiteService.ExportSite</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/ExportSite</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>site:read</code> and <code>upstream:read</code> and <code>cert:export</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ExportSiteRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ExportSiteResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>configuration</code></td>
+<td><code>configuration</code></td>
+<td><a href="#siteconfiguration"><code>SiteConfiguration</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td><code>filename</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteserviceexportsites">SiteService.ExportSites</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/ExportSites</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>site:read</code> and <code>upstream:read</code> and <code>cert:export</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ExportSitesRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.ExportSitesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>archive</code></td>
+<td><code>archive</code></td>
+<td><a href="#siteconfigurationarchive"><code>SiteConfigurationArchive</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td><code>filename</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteserviceimportsite">SiteService.ImportSite</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/ImportSite</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>site:write</code> and <code>upstream:write</code> and <code>cert:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ImportSiteRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>configuration</code></td>
+<td><code>configuration</code></td>
+<td><a href="#siteconfiguration"><code>SiteConfiguration</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ImportSiteResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site</code></td>
+<td><code>site</code></td>
+<td><a href="#site"><code>Site</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>upstreams_created</code></td>
+<td><code>upstreamsCreated</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>certificate_imported</code></td>
+<td><code>certificateImported</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td><code>warnings</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteservicegetsiterouting">SiteService.GetSiteRouting</h3>
+<p>Path routing — see PATH_ROUTING_DESIGN.md § 6. Routing is managed through its own RPC (not the Site message) so an UpdateSite from a routing-unaware client can never erase routes.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/GetSiteRouting</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSiteRoutingRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSiteRoutingResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>routing</code></td>
+<td><code>routing</code></td>
+<td><a href="#siterouting"><code>SiteRouting</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>current site revision, for optimistic concurrency on update <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteserviceupdatesiterouting">SiteService.UpdateSiteRouting</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/UpdateSiteRouting</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdateSiteRoutingRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>expected site revision (0 = unchecked) <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>routing</code></td>
+<td><code>routing</code></td>
+<td><a href="#siterouting"><code>SiteRouting</code></a></td>
+<td>singular</td>
+<td>the COMPLETE desired route set</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdateSiteRoutingResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>routing</code></td>
+<td><code>routing</code></td>
+<td><a href="#siterouting"><code>SiteRouting</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteservicegetsitepolicyoverride">SiteService.GetSitePolicyOverride</h3>
+<p>Per-site policy overrides — see WAF_POLICY_DESIGN.md § 3.2.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/GetSitePolicyOverride</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSitePolicyOverrideRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSitePolicyOverrideResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>override</code></td>
+<td><code>override</code></td>
+<td><a href="#sitepolicyoverride"><code>SitePolicyOverride</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteserviceupsertsitepolicyoverride">SiteService.UpsertSitePolicyOverride</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/UpsertSitePolicyOverride</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpsertSitePolicyOverrideRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>override</code></td>
+<td><code>override</code></td>
+<td><a href="#sitepolicyoverride"><code>SitePolicyOverride</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpsertSitePolicyOverrideResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>override</code></td>
+<td><code>override</code></td>
+<td><a href="#sitepolicyoverride"><code>SitePolicyOverride</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteservicedeletesitepolicyoverride">SiteService.DeleteSitePolicyOverride</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SiteService/DeleteSitePolicyOverride</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteSitePolicyOverrideRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteSitePolicyOverrideResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="botprotectionconfig">BotProtectionConfig</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mode</code></td>
+<td><code>mode</code></td>
+<td><a href="#botprotectionmode"><code>BotProtectionMode</code></a></td>
+<td>singular</td>
+<td>Site-wide mode. UNSPECIFIED is accepted as OFF.</td>
+</tr>
+<tr>
+<td><code>challenge_ttl_seconds</code></td>
+<td><code>challengeTtlSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Lifetime of one proof or WebAuthn stage, in seconds (30–600; default 120).</td>
+</tr>
+<tr>
+<td><code>clearance_ttl_seconds</code></td>
+<td><code>clearanceTtlSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Lifetime of the signed host clearance, in seconds (300–86400; default 3600).</td>
+</tr>
+<tr>
+<td><code>proof_difficulty</code></td>
+<td><code>proofDifficulty</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Required SHA-256 leading zero bits (12–24; default 16).</td>
+</tr>
+<tr>
+<td><code>bind_network</code></td>
+<td><code>bindNetwork</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Also bind challenge and clearance tokens to the resolved /24 or /56 network.</td>
+</tr>
+<tr>
+<td><code>exempt_paths</code></td>
+<td><code>exemptPaths</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>Canonical literal path prefixes that skip only the Bot gate.</td>
+</tr>
+<tr>
+<td><code>trusted_ip_list_ids</code></td>
+<td><code>trustedIpListIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>Tenant-owned IP Lists whose matching resolved clients skip only the Bot gate.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="site">Site</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>primary_host</code></td>
+<td><code>primaryHost</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Hostname or IP literal, without a scheme, port, or path. A leading "*.example.com" matches one subdomain level (api.example.com), not the root example.com or deeper a.b.example.com. HTTPS certificates must cover this host and all aliases. OpenAPI/Schema mappings require explicitly configured concrete hostnames; a wildcard does not create concrete API bindings.</td>
+</tr>
+<tr>
+<td><code>aliases</code></td>
+<td><code>aliases</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>Additional hosts with the same matching rules as primary_host. Add example.com separately when serving both the root domain and *.example.com. Add concrete API hosts here before using them in OpenAPI/Schema mappings.</td>
+</tr>
+<tr>
+<td><code>upstreams</code></td>
+<td><code>upstreams</code></td>
+<td><a href="#siteupstream"><code>SiteUpstream</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tls</code></td>
+<td><code>tls</code></td>
+<td><a href="common.html#tlsconfig"><code>TlsConfig</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>waf</code></td>
+<td><code>waf</code></td>
+<td><a href="common.html#wafconfig"><code>WafConfig</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="common.html#resourcestatus"><code>ResourceStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>deleted_at</code></td>
+<td><code>deletedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>bot_protection</code></td>
+<td><code>botProtection</code></td>
+<td><a href="#botprotectionconfig"><code>BotProtectionConfig</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sitecertificatematerial">SiteCertificateMaterial</h3>
+<p>SiteCertificateMaterial contains the exact serving certificate selected by the exported site. key_pem is intentionally present: exporting this message requires cert:export. Imported managed ACME certificates are stored as uploaded certificates because ACME account credentials are deployment-wide and are not part of a site bundle.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source_id</code></td>
+<td><code>sourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>cert_pem</code></td>
+<td><code>certPem</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>key_pem</code></td>
+<td><code>keyPem</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>chain_pem</code></td>
+<td><code>chainPem</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>managed</code></td>
+<td><code>managed</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteconfiguration">SiteConfiguration</h3>
+<p>SiteConfiguration is the portable, versioned site bundle used by ExportSite and ImportSite. Referenced upstream pools and the selected TLS certificate are embedded so a bundle can be restored on another Tiyi installation. The WAF policy remains an explicit external reference and must already exist in the destination tenant.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api_version</code></td>
+<td><code>apiVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>currently "tiyi.io/v1"</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>currently "SiteConfiguration"</td>
+</tr>
+<tr>
+<td><code>site</code></td>
+<td><code>site</code></td>
+<td><a href="#site"><code>Site</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>routing</code></td>
+<td><code>routing</code></td>
+<td><a href="#siterouting"><code>SiteRouting</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_override</code></td>
+<td><code>policyOverride</code></td>
+<td><a href="#sitepolicyoverride"><code>SitePolicyOverride</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>upstreams</code></td>
+<td><code>upstreams</code></td>
+<td><a href="upstream.html#upstream"><code>Upstream</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>certificate</code></td>
+<td><code>certificate</code></td>
+<td><a href="#sitecertificatematerial"><code>SiteCertificateMaterial</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>contains_secrets</code></td>
+<td><code>containsSecrets</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>external_references</code></td>
+<td><code>externalReferences</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteconfigurationarchive">SiteConfigurationArchive</h3>
+<p>SiteConfigurationArchive is the all-sites export format. Each configuration remains independently importable, which keeps the single-site format stable and makes a partially recovered archive diagnosable by site.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api_version</code></td>
+<td><code>apiVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>currently "tiyi.io/v1"</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>currently "SiteConfigurationArchive"</td>
+</tr>
+<tr>
+<td><code>configurations</code></td>
+<td><code>configurations</code></td>
+<td><a href="#siteconfiguration"><code>SiteConfiguration</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>contains_secrets</code></td>
+<td><code>containsSecrets</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="sitepolicyoverride">SitePolicyOverride</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>blocking_paranoia_level</code></td>
+<td><code>blockingParanoiaLevel</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>Scalar overrides. An unset field means "inherit the policy value"; a set field replaces the base policy's value for this site. Follows the same semantics as CRS docs § 2-1 (thresholds), § 2-2 (paranoia levels), § 2-4 (sampling).</td>
+</tr>
+<tr>
+<td><code>detection_paranoia_level</code></td>
+<td><code>detectionParanoiaLevel</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>inbound_anomaly_score_threshold</code></td>
+<td><code>inboundAnomalyScoreThreshold</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>outbound_anomaly_score_threshold</code></td>
+<td><code>outboundAnomalyScoreThreshold</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sampling_percentage</code></td>
+<td><code>samplingPercentage</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rationale</code></td>
+<td><code>rationale</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteroute">SiteRoute</h3>
+<p>SiteRoute sends every request whose path falls under path_prefix (segment-boundary, case-insensitive) to exactly one named upstream pool.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>path_prefix</code></td>
+<td><code>pathPrefix</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>canonicalized server-side (lowercased, no trailing slash)</td>
+</tr>
+<tr>
+<td><code>upstream_id</code></td>
+<td><code>upstreamId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rewrite_mode</code></td>
+<td><code>rewriteMode</code></td>
+<td><a href="#pathrewritemode"><code>PathRewriteMode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siterouting">SiteRouting</h3>
+<p>SiteRouting is a site's complete path-routing configuration. Route order is not authoritative — the server orders by longest prefix first.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>routes</code></td>
+<td><code>routes</code></td>
+<td><a href="#siteroute"><code>SiteRoute</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>unmatched_action</code></td>
+<td><code>unmatchedAction</code></td>
+<td><a href="#unmatchedpathaction"><code>UnmatchedPathAction</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="siteupstream">SiteUpstream</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>upstream_id</code></td>
+<td><code>upstreamId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>inline</code></td>
+<td><code>inline</code></td>
+<td><a href="common.html#upstreamendpoint"><code>UpstreamEndpoint</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_headers</code></td>
+<td><code>requestHeaders</code></td>
+<td>map&lt;<code>string</code>, <code>string</code>&gt;</td>
+<td>map</td>
+<td>Used only with inline. Named pools carry their own request_headers.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="enums">Enums</h2>
+<h3 id="botprotectionmode">BotProtectionMode</h3>
+<p>BotProtectionMode is a site-wide admission contract. It is deliberately independent from WAF policy rate limits: every request without a valid site clearance is denied unless it enters and completes the selected browser/human verification flow.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BOT_PROTECTION_MODE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>canonicalized to OFF</td>
+</tr>
+<tr>
+<td><code>BOT_PROTECTION_MODE_OFF</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>BOT_PROTECTION_MODE_BROWSER_CHECK</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>BOT_PROTECTION_MODE_HUMAN_VERIFICATION</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pathrewritemode">PathRewriteMode</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PATH_REWRITE_MODE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>treated as PRESERVE</td>
+</tr>
+<tr>
+<td><code>PATH_REWRITE_MODE_PRESERVE</code></td>
+<td>1</td>
+<td>forward the original path to the backend</td>
+</tr>
+<tr>
+<td><code>PATH_REWRITE_MODE_STRIP_PREFIX</code></td>
+<td>2</td>
+<td>strip the matched prefix before proxying</td>
+</tr>
+</tbody>
+</table>
+<h3 id="unmatchedpathaction">UnmatchedPathAction</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UNMATCHED_PATH_ACTION_UNSPECIFIED</code></td>
+<td>0</td>
+<td>treated as DEFAULT_UPSTREAM</td>
+</tr>
+<tr>
+<td><code>UNMATCHED_PATH_ACTION_DEFAULT_UPSTREAM</code></td>
+<td>1</td>
+<td>fall through to the site default pool</td>
+</tr>
+<tr>
+<td><code>UNMATCHED_PATH_ACTION_RETURN_404</code></td>
+<td>2</td>
+<td>strict allowlist: 404 unmatched paths</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="../rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../../assets/js/main.js" defer></script>
+</body>
+</html>

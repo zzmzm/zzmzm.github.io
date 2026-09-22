@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>audit.proto — Tamper-evident audit chain — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="audit.proto — Tamper-evident audit chain Complete v3.8.0 reference. Use the task guides in the sidebar for working examples. Schema: tiyi.v1 · audit.proto " />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../../../index.html#features">Features</a>
+      <a href="../../../index.html#tour">Product</a>
+      <a href="../../../index.html#pricing">Pricing</a>
+      <a href="../../index.html" style="color:var(--fg)">Docs</a>
+      <a href="../../../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../zh/docs/reference/services/audit.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="../../index.html">Overview</a></li>
+        <li><a href="../../quickstart.html">Quickstart</a></li>
+        <li><a href="../../installation.html">Installation</a></li>
+        <li><a href="../../configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="../../practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="../../operations.html">Operations guide</a></li>
+        <li><a href="../../troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="../../upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="../../site-import.html">Import / export sites</a></li>
+        <li><a href="../../api-protection.html">API protection</a></li>
+        <li><a href="../../responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="../../concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI reference</a></li>
+        <li><a href="../../api.html">API reference</a></li>
+        <li><a href="../index.html">Full reference</a></li>
+        <li><a href="../rpc-index.html">All RPCs</a></li>
+        <li><a href="../permissions.html">Permissions</a></li>
+        <li><a href="../cli-options.html">All CLI flags</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="../../deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="auditproto-tamper-evident-audit-chain">audit.proto — Tamper-evident audit chain</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>audit.proto</code> · <a href="../../api.html">English guide</a> · <a href="../../../zh/docs/api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="auditservice">AuditService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#auditservicequeryaudit"><code>QueryAudit</code></a></td>
+<td>unary</td>
+<td>(<code>audit:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#auditservicegetauditentry"><code>GetAuditEntry</code></a></td>
+<td>unary</td>
+<td>(<code>audit:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#auditservicegetchainstatus"><code>GetChainStatus</code></a></td>
+<td>unary</td>
+<td>(<code>audit:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#auditserviceverifychain"><code>VerifyChain</code></a></td>
+<td>unary</td>
+<td>(<code>audit:verify</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="auditservicequeryaudit">AuditService.QueryAudit</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuditService/QueryAudit</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>audit:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.QueryAuditRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#cursorrequest"><code>CursorRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>actor_id</code></td>
+<td><code>actorId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td><code>action</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>resource_type</code></td>
+<td><code>resourceType</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>resource_id</code></td>
+<td><code>resourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>actor_query</code></td>
+<td><code>actorQuery</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>outcome</code></td>
+<td><code>outcome</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>actor_ip</code></td>
+<td><code>actorIp</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.QueryAuditResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#auditentry"><code>AuditEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#cursorresponse"><code>CursorResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>total</code></td>
+<td><code>total</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>Total rows matching the tenant and active filters. Web clients use this with CursorRequest.offset for direct, server-backed page navigation. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="auditservicegetauditentry">AuditService.GetAuditEntry</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuditService/GetAuditEntry</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>audit:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetAuditEntryRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetAuditEntryResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entry</code></td>
+<td><code>entry</code></td>
+<td><a href="#auditentry"><code>AuditEntry</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="auditservicegetchainstatus">AuditService.GetChainStatus</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuditService/GetChainStatus</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>audit:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetChainStatusRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.GetChainStatusResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>healthy</code></td>
+<td><code>healthy</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>latest_hash</code></td>
+<td><code>latestHash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>latest_verified_at</code></td>
+<td><code>latestVerifiedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>breaks</code></td>
+<td><code>breaks</code></td>
+<td><a href="#chainbreak"><code>ChainBreak</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>checked_rows</code></td>
+<td><code>checkedRows</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="auditserviceverifychain">AuditService.VerifyChain</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuditService/VerifyChain</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>audit:verify</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.VerifyChainRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.VerifyChainResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>healthy</code></td>
+<td><code>healthy</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>breaks</code></td>
+<td><code>breaks</code></td>
+<td><a href="#chainbreak"><code>ChainBreak</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>verified_at</code></td>
+<td><code>verifiedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>checked_rows</code></td>
+<td><code>checkedRows</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>latest_hash</code></td>
+<td><code>latestHash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="auditentry">AuditEntry</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>actor_id</code></td>
+<td><code>actorId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td><code>action</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>resource_type</code></td>
+<td><code>resourceType</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>resource_id</code></td>
+<td><code>resourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>diff</code></td>
+<td><code>diff</code></td>
+<td><a href="common.html#jsonpatch"><code>JsonPatch</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>prev_hash</code></td>
+<td><code>prevHash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>hash</code></td>
+<td><code>hash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td><code>metadata</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>actor_name</code></td>
+<td><code>actorName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Current display name (falling back to username) for the canonical actor_id.</td>
+</tr>
+<tr>
+<td><code>resource_name</code></td>
+<td><code>resourceName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Best-effort resource label captured from this row's immutable diff.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="chainbreak">ChainBreak</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>row_id</code></td>
+<td><code>rowId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>expected_prev_hash</code></td>
+<td><code>expectedPrevHash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>actual_prev_hash</code></td>
+<td><code>actualPrevHash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expected_row_hash</code></td>
+<td><code>expectedRowHash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>actual_row_hash</code></td>
+<td><code>actualRowHash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← Previous</span><span class="title">API integration</span></a><a class="next" href="../rpc-index.html"><span class="label">Next →</span><span class="title">All RPCs</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

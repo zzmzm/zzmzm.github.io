@@ -1,30 +1,295 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8" /><title>排障 — 太一文档</title><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" /><meta name="description" content="排查太一启动、登录、路由、WAF、TLS、Agent 与观测管道问题。" /><meta name="theme-color" content="#0A0E1A" /><link rel="icon" href="../../favicon.ico" /><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" /><link rel="stylesheet" href="../../assets/css/main.css" /><script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+<meta charset="utf-8" />
+<title>排障 — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="按从外到内的顺序诊断：进程、监听、站点匹配、路由、WAF、上游。每次只改变一层，
+并保留失败请求的 ID。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
 </head>
-<body class="docs" data-assets-base="../../assets/img/"><div class="bg-field" aria-hidden="true"></div>
-<header class="nav"><div class="container nav-inner"><a class="brand" href="../index.html"><img src="../../assets/img/tiyi-logo.png" alt="太一 logo" /><span>太一</span></a><nav class="nav-links" aria-label="主导航"><a href="../index.html#features">特性</a><a href="../index.html#tour">产品</a><a href="../index.html#pricing">价格</a><a href="index.html" style="color:var(--fg)">文档</a><a href="../changelog.html">更新日志</a><button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button><a class="nav-toggle nav-lang" href="../../docs/troubleshooting.html" hreflang="en" aria-label="Switch to English">EN</a><a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a></nav></div></header>
-<div class="docs-layout"><aside class="docs-sidebar" aria-label="文档导航"><div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div><div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-migration.html">升级与迁移</a></li></ul></div><div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div><div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div><div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div></aside>
-  <main class="docs-content" role="main"><span class="docs-eyebrow">运维</span><h1>排障</h1><p class="lede">按从外到内顺序诊断：进程、监听、站点匹配、路由、WAF、上游。每次只改变一层，并保留失败请求 ID。</p>
-    <h2 id="first-five">最初五分钟</h2><pre><code>tiyi doctor
-systemctl status tiyi --no-pager
-journalctl -u tiyi -n 200 --no-pager
-ss -ltnp
-tiyi system health</code></pre><p>Agent 检查 <code>tiyi-agent</code> unit；手动前台运行时检查终端与命令行路径。</p>
-    <h2 id="dashboard">无法打开控制台</h2><ul><li>确认配置的 <code>server.addr</code> 与主机防火墙。</li><li>80/443 服务代理流量；控制台默认监听 8080。</li><li>运行 <code>tiyi doctor</code> 检查端口冲突与配置错误。</li><li>若报告服务状态目录所有权，先核对路径，再运行 <code>sudo tiyi doctor --fix-state-ownership</code>。</li></ul>
-    <h2 id="password">丢失首次管理员密码</h2><div class="callout callout-warn"><div class="callout-body"><p><strong>不要删除 <code>state.db</code>。</strong>如果首次 Controller unit 是直接用 <code>systemctl</code> 启动的，随机密码会进入 journal；应把它视为已暴露，并通过本地管理 socket 重置已有账号。socket 文件系统权限就是鉴权边界。</p></div></div><pre><code>sudo tiyi user list
-sudo tiyi user reset-password <span class="v">&lt;user-id&gt;</span> --password <span class="s">'&lt;new-strong-password&gt;'</span></code></pre>
-    <h2 id="routing">请求没有匹配站点或错误上游响应</h2><pre><code>curl -v -H <span class="s">'Host: app.example.com'</span> http://127.0.0.1/
-tiyi site list
-tiyi upstream list</code></pre><p>检查 Host 规范化、监听、站点启用状态、最长前缀路由、上游 scheme/端口与健康探针。浏览器直接访问 IP 而不带配置 Host，不是有效站点测试。</p>
-    <h2 id="waf">预期攻击没有被拦截</h2><ul><li>确认请求进入预期站点且 WAF 已启用。</li><li>检查有效策略、engine state、偏执级别、阈值、bypass、IP 列表优先级与路径覆盖。</li><li>按请求 ID 与规则 ID 查询<strong>安全事件</strong>与<strong>攻击日志</strong>。</li><li>使用不受信任来源测试；global/site allow 或 bypass 可能决定结果。</li><li>修改前预览编译后策略。</li></ul>
-    <h2 id="tls">TLS 或 ACME 失败</h2><p>检查 DNS、公网可达性、HTTP-01 所需的 80 端口、证书绑定、时钟与 ACME order 详情。DNS-01 要求受支持 provider 与正确范围凭据。不要在 issue 或支持材料中包含 provider 密钥。</p>
-    <h2 id="agent">Agent 离线或不能应用</h2><ul><li>对比 Server URL、注册有效期、时钟、DNS 与网络路径。</li><li>读取同一时间点的 Server 与 Agent journal。</li><li>区分离线、身份/协议拒绝、签名失败与 apply 失败。</li><li>重连后确认 applied revision/hash，不能只看 online。</li></ul>
-    <h2 id="incompatible-state">安装器拒绝主机或启动拒绝状态</h2><p>公开安装器用于干净主机，会拒绝已有二进制、状态数据库、配置或 systemd unit。运行时会拒绝 schema 或迁移台账与当前二进制不兼容的状态。</p><p>不要绕过保护或编辑迁移元数据。请按<a href="upgrade-migration.html">升级与迁移</a>选择兼容的二进制与状态、完整迁移安装，或执行 purge 流程。v3.7.0 无法读取 v3.6.0 或更早版本创建的状态；需要 purge 并重新注册每一个远程 Agent。</p>
-    <h2 id="pipeline">有计数但证据或 SIEM 延迟</h2><p>打开<strong>监控 → 日志管道</strong>，检查队列深度、丢弃、重试与 panic 计数。精确计数、保留证据、明细/SIEM 投递彼此独立。从太一主机测试目标并修复消费者；除非诊断明确要求，不要重启健康的数据面。</p>
-    <h2 id="support">收集安全的支持材料</h2><p>包含版本、模式、脱敏配置、unit、health/doctor 输出、相关 journal、站点/上游 ID、时间与时区、请求 ID。删除 JWT、密码、注册 token、私钥、DNS 凭据、cookie 与敏感请求体。</p>
-    <div class="docs-pager"><a href="operations.html"><span class="label">← 上一页</span><span class="title">日常运维</span></a><a class="next" href="concepts.html"><span class="label">下一页 →</span><span class="title">领域模型</span></a></div>
-  </main><aside class="docs-toc" id="docs-toc" aria-label="本页大纲"><h4>本页大纲</h4></aside></div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span><span class="build">build v3.7.2 · 2026-09-03</span></div></div></footer><script src="../../assets/js/main.js" defer></script>
-</body></html>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/troubleshooting.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html" aria-current="page">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="排障">排障</h1>
+<p class="lede">按从外到内的顺序诊断：进程、监听、站点匹配、路由、WAF、上游。每次只改变一层，
+并保留失败请求的 ID。</p>
+<h2 id="先按现象定位">先按现象定位</h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>先查什么</th>
+<th>接下来做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sudo: tiyi: command not found</code></td>
+<td><code>/usr/local/bin/tiyi --version</code></td>
+<td>用 <code>sudo /usr/local/bin/tiyi …</code>，核对 sudo PATH</td>
+</tr>
+<tr>
+<td><code>address already in use</code></td>
+<td><code>sudo ss -ltnp</code>、<code>sudo tiyi doctor</code></td>
+<td>找到占用者；按<a href="configuration.html#ports">端口指南</a>调整，不直接停掉未知业务</td>
+</tr>
+<tr>
+<td>安装后没有 443 监听</td>
+<td>是否有已启用的 TLS 站点和证书</td>
+<td>按<a href="operations.html#https">HTTPS 步骤</a>配置；仅管理页启动不会建立 HTTPS 网站</td>
+</tr>
+<tr>
+<td>浏览器打不开控制台</td>
+<td>服务器 IP、管理监听、防火墙或安全组</td>
+<td>访问 <code>http://服务器IP:8080</code>；用 <code>sudo ss -ltnp</code> 核对默认监听 <code>0.0.0.0:8080</code>，确认 8080 端口可达</td>
+</tr>
+<tr>
+<td>本机 CLI <code>permission denied</code></td>
+<td>系统服务的管理 socket 权限</td>
+<td>默认服务使用 sudo；前台实例显式指定其 socket</td>
+</tr>
+<tr>
+<td>网站返回 421</td>
+<td>Host 是否匹配启用站点</td>
+<td>使用真实域名或 <code>curl -H 'Host: …'</code>，不要只请求裸 IP</td>
+</tr>
+<tr>
+<td>网站返回 502</td>
+<td>从处理请求的节点能否直连源站</td>
+<td>核对源站进程、地址、端口、协议和健康探针</td>
+</tr>
+<tr>
+<td>网站返回 403 / 413 / 503</td>
+<td>请求 ID、防护原因、源站响应</td>
+<td>区分太一终止与业务响应；检查具体规则/限制/过载，勿仅凭状态码归因</td>
+</tr>
+<tr>
+<td>保存了配置，行为没变</td>
+<td>节点应用结果与实际请求路径</td>
+<td>检查所选站点、策略、节点和发布错误，再重试</td>
+</tr>
+</tbody>
+</table>
+<h2 id="最初五分钟">最初五分钟</h2>
+<pre><code class="language-sh">sudo tiyi doctor
+sudo systemctl status tiyi --no-pager
+sudo journalctl -u tiyi -n 200 --no-pager
+sudo ss -ltnp
+sudo tiyi system health
+</code></pre>
+<p>Agent 使用 <code>tiyi-agent</code> unit 名。手动前台运行时，查看终端以及命令行指定的路径。</p>
+<h2 id="无法打开控制台">无法打开控制台</h2>
+<ul>
+<li>确认配置的 <code>server.addr</code> 监听与主机防火墙。</li>
+<li>80/443 代理监听不是控制台监听（默认 8080）。</li>
+<li>运行 <code>tiyi doctor</code> 检查端口冲突与配置错误。</li>
+<li>systemd 服务无法写状态树时，先核对报告路径，再运行
+  <code>sudo tiyi doctor --fix-state-ownership</code>。</li>
+</ul>
+<a id="丢失首次管理员密码"></a>
+<h2 id="reset-password">丢失首次管理员密码</h2>
+<p><strong>不要删除 <code>state.db</code>。</strong> 首次密码按设计只打印一次。请在太一主机上通过本地管理
+socket 重置已有账号：</p>
+<pre><code class="language-sh">sudo tiyi user list
+sudo tiyi user reset-password &lt;user-id&gt; --password <span class="s">'&lt;new-strong-password&gt;'</span>
+</code></pre>
+<p>若配置了自定义管理 socket，请传入对应路径。socket 文件系统权限就是本地鉴权边界。</p>
+<h2 id="请求没有匹配站点或进入错误上游">请求没有匹配站点或进入错误上游</h2>
+<pre><code class="language-sh">curl -v -H <span class="s">'Host: app.example.com'</span> http://127.0.0.1/
+sudo tiyi site list
+sudo tiyi upstream list
+</code></pre>
+<p>依次检查 Host header（含端口规范化）、监听、站点启用状态、最长前缀路径路由、上游
+scheme/端口与健康探针。浏览器直接访问 IP 而不带配置 Host，不是有效站点测试。</p>
+<h2 id="预期攻击没有被拦截">预期攻击没有被拦截</h2>
+<ul>
+<li>确认请求进入预期站点且 WAF 已启用。</li>
+<li>检查有效策略、engine state、偏执级别、阈值、bypass、IP 列表优先级和路径覆盖。</li>
+<li>按请求 ID 和规则 ID 查询<strong>安全事件</strong>与<strong>攻击日志</strong>。</li>
+<li>使用不受信任来源测试；global/site allow 或 bypass 会决定最终结果。</li>
+<li>修改前预览编译后的策略。</li>
+</ul>
+<h2 id="tls-或-acme-失败">TLS 或 ACME 失败</h2>
+<p>检查 DNS、公网可达性、HTTP-01 所需的 80 端口、证书绑定、时钟与 ACME order 详情。
+DNS-01 要求受支持 provider 与正确范围凭据。不要把 provider 密钥粘贴到 issue 或支持包。</p>
+<h2 id="agent-离线或不能应用配置">Agent 离线或不能应用配置</h2>
+<ul>
+<li>对比 Server URL、注册 token 有效期、时钟、DNS 与网络路径。</li>
+<li>在同一时间点读取 Server 与 Agent journal。</li>
+<li>区分离线、身份/协议拒绝、签名失败与 apply 失败。</li>
+<li>目标版本改变身份或协议契约时，应重新注册 Agent；不要强行恢复不兼容的身份、
+  spool 或 bundle 缓存。</li>
+<li>重连后确认 applied revision/hash，不能只看 online。</li>
+</ul>
+<h2 id="请求收到太一-503-或绕过-crs">请求收到太一 503 或绕过 CRS</h2>
+<p>检查 <code>X-Tiyi-Enforcement-Reason</code> 与<strong>日志 → 执行分析</strong>。因果 WAF CPU 拒绝是
+<code>cpu_overload_reject</code>，只降级 CRS 是 <code>cpu_overload_bypass</code>；源站 503 没有这两类
+决策。修改阈值前先查看对应节点的 WAF 压力趋势，以及受保护本地管理 socket 上的
+<code>/debug/wafoverload/stats</code>。观测积压或遥测缺口不会触发 WAF 过载。</p>
+<h2 id="bot-挑战或-ip-订阅失败">Bot 挑战或 IP 订阅失败</h2>
+<ul>
+<li>Bot 防护要求仅 HTTPS 站点。检查证书绑定、浏览器 Cookie/存储策略、系统时间、
+  豁免路径和可信列表引用。人工验证还需要 WebAuthn 支持与用户手势。</li>
+<li>IP 订阅应检查同步历史、HTTP 状态、响应大小限制、解析器/JSONPath 输出、删除比例
+  hold 与消费者编译结果。更新受保护时，先前已接受快照继续生效。</li>
+</ul>
+<h2 id="安装器拒绝主机或启动拒绝状态">安装器拒绝主机或启动拒绝状态</h2>
+<p>公开安装器用于干净主机，会拒绝已有二进制、状态数据库、配置或 systemd unit。
+运行时会拒绝 schema 或迁移台账与当前二进制不兼容的状态。</p>
+<p>不要编辑迁移元数据。请按<a href="upgrade-migration.html">升级与迁移指南</a>选择兼容的二进制与
+状态、完整迁移安装，或执行文档中的 purge 流程。v3.8.0 无法读取 v3.7.2 或更早版本
+创建的状态，需要执行 purge 并重新注册远程 Agent。</p>
+<h2 id="有计数但证据或-siem-延迟">有计数但证据或 SIEM 延迟</h2>
+<p>打开<strong>系统监控 → 日志管道</strong>，检查队列深度、丢弃、重试与 panic 计数。请求证据会
+新增本地/存储/上传通道，直达 SIEM 会新增原始源和每目标通道。精确流量计数、
+有界 SecurityFact 样本、保留证据与 SIEM 投递彼此独立。从产生事件的节点测试目标并
+修复消费者；除非诊断明确要求，不要重启健康的数据面。</p>
+<h2 id="控制台恢复与诊断输出阻塞">控制台恢复与诊断输出阻塞</h2>
+<p>会话恢复暂时不可用时，先检查网络和组件健康，再在重试页面重试。暂时读取失败不代表会话已经过期；设置保存及应用结果明确前保留草稿。</p>
+<p>在 Controller 主机通过受权限保护的本地 socket 查看诊断压力和管理请求延迟：</p>
+<pre><code class="language-sh">sudo curl -fsS --unix-socket /run/tiyi/admin.sock http://tiyi.local/debug/runtime/stats
+sudo tiyi system health
+</code></pre>
+<p>自定义实例使用实际 socket 路径。核对日志输出消费者和存储压力；诊断队列满时按整条丢弃并计数，持久审计与安全记录走独立路径。不要为了采集诊断而把管理 socket 暴露到网络。</p>
+<h2 id="收集安全的支持材料">收集安全的支持材料</h2>
+<p>包含版本、模式、脱敏配置、unit、health、<code>tiyi doctor</code>、近期相关 journal、站点/上游
+ID、时间与时区、请求 ID。删除 JWT、密码、注册 token、私钥、DNS 凭据、cookie 与
+敏感请求体。</p>
+<h2 id="api-与配置文件问题">API 与配置文件问题</h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>检查与下一步</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>站点导入提示 JSON 错误</td>
+<td>使用 <a href="templates/site-import.json">site-import.json</a>，不能上传 apply YAML 或 OpenAPI。</td>
+</tr>
+<tr>
+<td>apply 提示未知字段或 unsupported reference</td>
+<td>使用<a href="configuration.html">资源模板</a>；当前 apply 无法解析 Bot 可信 IP 列表名称，先建列表再在站点 UI 绑定。</td>
+</tr>
+<tr>
+<td>API 文档提示 <code>invalid_oas</code></td>
+<td>对照 <a href="api-protection.html">OpenAPI 模板</a>；根映射用 <code>basePath: ""</code> 而非 <code>/</code>，检查是否重复拼接基础路径。</td>
+</tr>
+<tr>
+<td>文档已保存，请求行为没变</td>
+<td>检查发布和服务节点结果；上传或保存草稿并未应用到流量。</td>
+</tr>
+<tr>
+<td>有违规计数但没有样本</td>
+<td>计数与保留样本独立；确有需要时在日志策略主动启用 Schema 违规采样，默认关闭。</td>
+</tr>
+<tr>
+<td>CLI 连不上自定义实例</td>
+<td>显式传正确 <code>--admin-socket</code>，或 <code>TIYI_API</code> 与 <code>TIYI_TOKEN</code>；<code>auth login</code> 不会保存 CLI 会话。</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="operations.html"><span class="label">← 上一页</span><span class="title">日常运维</span></a><a class="next" href="upgrade-migration.html"><span class="label">下一页 →</span><span class="title">升级与迁移</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

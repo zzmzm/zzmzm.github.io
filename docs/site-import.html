@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Import, export, and move sites — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Import, export, and move sites For v3.8.0 . Use the starter below to create a site from a file. For an existing site, export its complete configuration fir" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/site-import.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html" aria-current="page">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="import-export-and-move-sites">Import, export, and move sites</h1>
+<p class="lede">For <strong>v3.8.0</strong>. Use the starter below to create a site from a file. For an existing site, export its complete configuration first.
+Moving sites does not require copying the database. For an entire Controller, follow <a href="upgrade-migration.html">backup and migration</a>.</p>
+<h2 id="1-copyable-import-starter">1. Copyable import starter</h2>
+<p>Prepare a reachable origin at <code>http://127.0.0.1:9000</code>, or replace that URL. The starter creates a <strong>disabled</strong> site so you can inspect it before serving traffic.
+Use a hostname, site name, and upstream name not already present on the destination. Download: <a href="templates/site-import.json">site-import.json</a>.</p>
+<pre><code class="language-sh">umask 077
+cat &gt; site-import.json <span class="s">&lt;&lt;'JSON'
+{
+  "apiVersion": "tiyi.io/v1",
+  "kind": "SiteConfiguration",
+  "site": {
+    "name": "imported-app",
+    "primaryHost": "imported.example.com",
+    "upstreams": [
+      {
+        "upstreamId": "00000000-0000-4000-8000-000000000010"
+      }
+    ],
+    "tls": {
+      "mode": "TLS_MODE_NONE"
+    },
+    "waf": {
+      "enabled": true,
+      "mode": "WAF_MODE_BLOCKING"
+    },
+    "status": "RESOURCE_STATUS_DISABLED"
+  },
+  "upstreams": [
+    {
+      "id": "00000000-0000-4000-8000-000000000010",
+      "name": "imported-origin",
+      "endpoints": [
+        {
+          "url": "http://127.0.0.1:9000",
+          "weight": 100
+        }
+      ],
+      "status": "RESOURCE_STATUS_ACTIVE"
+    }
+  ],
+  "routing": {
+    "unmatchedAction": "UNMATCHED_PATH_ACTION_DEFAULT_UPSTREAM"
+  },
+  "containsSecrets": false
+}
+JSON</span>
+sudo tiyi site import site-import.json
+sudo tiyi site list
+</code></pre>
+<p>The console equivalent is <strong>Application Delivery → Sites → Import</strong>; upload the same JSON.
+The result includes the new <code>site.id</code>, created upstream count, and warnings. Copy the returned ID:</p>
+<pre><code class="language-sh"><span class="v">SITE_ID</span><span class="o">=</span><span class="s">'replace-with-returned-site-id'</span>
+sudo tiyi site get <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span>
+sudo tiyi site enable <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span>
+curl -i -H <span class="s">'Host: imported.example.com'</span> http://127.0.0.1/
+</code></pre>
+<p>Expect the normal origin response. For HTTPS use <code>curl --resolve domain:443:TIYI_IP https://domain/</code>; keep certificate verification enabled.</p>
+<h2 id="2-fields-to-edit">2. Fields to edit</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>What to supply</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>apiVersion</code>, <code>kind</code></td>
+<td>Keep <code>tiyi.io/v1</code> and <code>SiteConfiguration</code></td>
+</tr>
+<tr>
+<td><code>site.name</code> / <code>primaryHost</code> / <code>aliases</code></td>
+<td>New site name, primary hostname, and optional aliases; omit scheme, port, and path. Both hostname fields support <a href="operations.html#wildcard-hosts">one-level wildcards</a></td>
+</tr>
+<tr>
+<td><code>upstreams[].id</code> and <code>site.upstreams[].upstreamId</code></td>
+<td>Matching in-file references; import assigns new IDs, so the sample UUID can remain</td>
+</tr>
+<tr>
+<td><code>upstreams[].endpoints[].url</code></td>
+<td>Full origin URL reachable from serving nodes, including scheme and port</td>
+</tr>
+<tr>
+<td><code>site.waf</code></td>
+<td>This starter enables blocking and omits <code>policyId</code> to use built-in Light; custom policies must exist at the destination</td>
+</tr>
+<tr>
+<td><code>site.status</code></td>
+<td><code>RESOURCE_STATUS_DISABLED</code> for review before enabling; <code>RESOURCE_STATUS_ACTIVE</code> publishes immediately</td>
+</tr>
+<tr>
+<td><code>routing</code></td>
+<td>This example uses the default upstream; export an existing multi-route site for a routing starter</td>
+</tr>
+</tbody>
+</table>
+<p>For a wildcard site, set <code>primaryHost</code> to <code>"*.example.com"</code>; add <code>"example.com"</code> to <code>aliases</code> for the root domain and <code>"api.example.com"</code> for concrete OpenAPI/Schema mappings. Deeper names such as <code>a.b.example.com</code> need a separate exact host or pattern. HTTPS certificates must cover every configured host.</p>
+<p>These are API enum names, different from the short <code>active</code> and <code>none</code> values in <code>tiyi apply</code>.
+This <strong>site configuration bundle</strong> is for <code>site import</code>; neither an apply manifest nor an OpenAPI file is interchangeable with it.</p>
+<h2 id="3-export-an-existing-site">3. Export an existing site</h2>
+<p>Find its ID on the source, then export:</p>
+<pre><code class="language-sh">sudo tiyi site list
+sudo tiyi site export SITE_ID -o site-backup.json
+sudo tiyi site export -o all-sites.json
+</code></pre>
+<p>Without an ID, export includes all non-deleted sites in a <code>SiteConfigurationArchive</code>. A single export is a <code>SiteConfiguration</code>.
+Import either with <code>sudo tiyi site import FILE</code>. Output files default to mode 0600 and refuse overwrite; use <code>--force</code> only when replacement is intended.
+Preserve file privacy during editing and transfer.</p>
+<p>A bundle includes the site, referenced upstream pools, routes, scalar site-policy overrides, upstream request headers, and the selected TLS certificate with its private key.
+<strong>It is not a full installation backup.</strong> WAF policies remain external references. Check or recreate custom rules, shared IP lists, API documents and learning versions,
+alerts, users, ACME accounts, and other dependencies separately. Bot IP-list references must exist too.
+Even when <code>containsSecrets</code> is false, upstream headers can contain sensitive data; do not treat the flag as permission to publish the file.</p>
+<h2 id="4-migration-checks">4. Migration checks</h2>
+<ol>
+<li>Prepare referenced policies, lists, and dependencies on the destination; check compatibility when crossing versions.</li>
+<li>Check origin reachability, hostname conflicts, and certificate coverage. Set exported sites to disabled before import when review is needed.</li>
+<li>Import assigns new IDs and <strong>never overwrites</strong> destination resources. Duplicate hostnames, upstream names, or certificate fingerprints produce explicit conflicts.</li>
+<li>Imported managed ACME certificates become uploaded certificates; the renewal account is not transferred. Issue and bind a new managed certificate if you need automatic renewal.</li>
+<li>Enable and verify all domains, routes, TLS, normal traffic, and WAF behavior before switching DNS. Keep the old installation as a rollback point.</li>
+</ol>
+<p>Archives import one site at a time. If a later site fails, earlier successes remain and progress is reported; resources created for the failed site are cleaned up.
+Retry only entries that did not succeed. Replaying the whole archive can conflict with already imported resources; the archive is not one transaction.</p>
+<div class="docs-pager"><a href="configuration.html"><span class="label">← Previous</span><span class="title">Configuration &amp; templates</span></a><a class="next" href="api-protection.html"><span class="label">Next →</span><span class="title">Protect APIs</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

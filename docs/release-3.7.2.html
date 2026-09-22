@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Tiyi v3.7.2 release notes — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Tiyi v3.7.2 release notes Released 2026-09-03. v3.7.2 is a compatible operations patch on the v3.7 state contract. Highlights Protection chain on Overview:" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/release-3.7.2.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="tiyi-v372-release-notes">Tiyi v3.7.2 release notes</h1>
+<p class="lede">Released 2026-09-03. v3.7.2 is a compatible operations patch on the v3.7
+state contract.</p>
+<h2 id="highlights">Highlights</h2>
+<ul>
+<li><strong>Protection chain on Overview:</strong> one unfiltered Enforcement summary folds
+  all eight sources into the five stages a request actually traverses — Bot
+  gate → rate/challenge → IP/country → resource guards → WAF/CRS → origin.
+  Each stage reports configuration posture, decisions, fault-first reasons,
+  and an action split. The Bot stage opens <strong>Logs → Bot Analytics</strong>; other
+  stages open <strong>Logs → Enforcement</strong> already filtered. KPI totals use the
+  proven contract <code>terminated = blocked/rejected/banned + challenged</code>.</li>
+<li><strong>Bot Analytics:</strong> <strong>Logs → Bot Analytics</strong> records fixed-cardinality
+  admission outcomes from the Observation V2 counter plane: path and
+  trusted-IP exemptions, Clearance hits, challenge issue/pass/fail,
+  unsupported clients, and internal failures. Successful admission is not an
+  Enforcement decision. The page does not claim identified bots or a visitor
+  pass rate.</li>
+<li><strong>Readable Request Evidence:</strong> the in-console preview starts with method,
+  exact request target, and client HTTP version, then Host and captured
+  headers. Client IPs can show an advisory network-region tag when GeoIP data
+  is installed.</li>
+<li><strong>SecLang quoting:</strong> path-scoped CRS exclusions, rule-target updates, and
+  visual-rule regex now reach Coraza unchanged, so authored <code>\.</code> / <code>\d</code>
+  escapes are no longer double-escaped.</li>
+</ul>
+<h2 id="upgrade">Upgrade</h2>
+<p>v3.7.1 and v3.7.0 installations can use the routine signed update flow:</p>
+<pre><code class="language-sh">sudo tiyi update --check
+sudo tiyi update --yes                 # GitHub with Gitee fallback
+sudo tiyi update --yes --mirror gitee # force Gitee
+sudo systemctl restart tiyi
+tiyi --version
+sudo tiyi system health
+</code></pre>
+<p>The earlier clean-state boundary still applies when moving from v3.6.0 or
+older state into the v3.7 line. Follow
+<a href="upgrade-migration.html">Upgrade and migration</a> before that transition.</p>
+<p>Downloads, <code>SHA256SUMS</code>, its Ed25519 signature, and the release manifest are on
+the <a href="https://github.com/zzmzm/tiyi/releases/tag/v3.7.2">GitHub release</a> and the
+<a href="https://gitee.com/tiyisec/tiyi/releases/tag/v3.7.2">Gitee mirror</a>.</p>
+<div class="docs-pager"><a href="api.html"><span class="label">← Previous</span><span class="title">API integration</span></a><a class="next" href="reference/rpc-index.html"><span class="label">Next →</span><span class="title">All RPCs</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

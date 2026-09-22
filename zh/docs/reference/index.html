@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>v3.8.0 API field reference / 接口字段参考 — 太一文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="v3.8.0 API field reference / 接口字段参考 v3.8.0 完整协议参考；字段名与协议注释保留英文。可从侧栏返回中文任务指南。 English integration guide · 中文接入指南 This reference contains the complete v3.8.0" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../index.html">
+      <img src="../../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../../index.html#features">特性</a>
+      <a href="../../index.html#tour">产品</a>
+      <a href="../../index.html#pricing">价格</a>
+      <a href="../index.html" style="color:var(--fg)">文档</a>
+      <a href="../../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../docs/reference/index.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="../index.html">概览</a></li>
+        <li><a href="../quickstart.html">快速开始</a></li>
+        <li><a href="../installation.html">安装</a></li>
+        <li><a href="../configuration.html">配置与模板</a></li>
+        <li><a href="../practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="../operations.html">日常运维</a></li>
+        <li><a href="../troubleshooting.html">排障</a></li>
+        <li><a href="../upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="../site-import.html">站点导入与导出</a></li>
+        <li><a href="../api-protection.html">API 防护</a></li>
+        <li><a href="../responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="../concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="../cli.html">CLI 参考</a></li>
+        <li><a href="../api.html">API 参考</a></li>
+        <li><a href="index.html" aria-current="page">完整参考</a></li>
+        <li><a href="rpc-index.html">全部 RPC</a></li>
+        <li><a href="permissions.html">权限</a></li>
+        <li><a href="cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="../release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="../deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="v380-api-field-reference-接口字段参考">v3.8.0 API field reference / 接口字段参考</h1>
+<p class="lede"><a href="../../../docs/api.html">English integration guide</a> · <a href="../api.html">中文接入指南</a></p>
+<p>This reference contains the complete v3.8.0 RPC request/response fields and static permissions.
+Tables preserve protocol identifiers and source descriptions in English. Use the bilingual guides for complete task examples.
+本参考包含 v3.8.0 的完整 RPC 请求/响应字段和静态权限；协议名保持原文，任务示例见上方中英文指南。</p>
+<ul>
+<li><a href="rpc-index.html">All RPCs / 全部接口</a></li>
+<li><a href="permissions.html">Permissions / 权限</a></li>
+<li><a href="../../../docs/api.html#http">HTTP endpoints / HTTP 端点</a> · <a href="../api.html#http">中文</a></li>
+</ul>
+<p>Field presence in a schema does not authorize a mutation or prove a capability is active.
+Read method permissions, capability reports, preview results, and serving-node acknowledgements.
+字段出现在协议中不代表某项能力已启用；以接口权限、能力报告、预览和服务节点结果为准。</p>
+<div class="docs-pager"><a href="../api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

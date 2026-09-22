@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>API reference — Tiyi docs</title>
+<title>API integration and complete reference — Tiyi Docs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="The ConnectRPC contract behind the Tiyi UI, CLI, and agent stream: transports, authentication, request conventions, error codes, RBAC, streaming, and the 23-service catalog." />
+<meta name="description" content="API integration and complete reference For v3.8.0 . Automate administration with ordinary ConnectRPC HTTP JSON: POST /tiyi.v1.Service/Method . No SDK is ne" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -49,6 +49,8 @@
         <li><a href="index.html">Overview</a></li>
         <li><a href="quickstart.html">Quickstart</a></li>
         <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -57,19 +59,27 @@
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
         <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
       <h4>Concepts</h4>
       <ul>
-        <li><a href="concepts.html">Domain model</a></li>
+        <li><a href="concepts.html">How it works</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
       <h4>Reference</h4>
       <ul>
         <li><a href="cli.html">CLI reference</a></li>
-        <li><a href="api.html">API reference</a></li>
+        <li><a href="api.html" aria-current="page">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -81,214 +91,404 @@
   </aside>
 
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">Reference</span>
-    <h1>API reference</h1>
-    <p class="lede">Tiyi exposes one ConnectRPC API. The same contract serves the embedded Admin UI (JSON over HTTP), the <code>tiyi</code> CLI (JSON over HTTP), and the agent stream (gRPC bidi) — so anything the UI can do, a script can do too. <strong>255 RPCs across 23 services</strong>, plus a small non-RPC HTTP surface.</p>
-
-    <h2 id="transport">Transport</h2>
-    <p>Every procedure is a <code>POST</code> to <code>/{package}.{Service}/{Method}</code>, for example <code>POST /tiyi.v1.SiteService/ListSites</code>. Three wire protocols share the same routes:</p>
-    <table>
-      <thead><tr><th>Protocol</th><th><code>Content-Type</code></th><th>Use it for</th></tr></thead>
-      <tbody>
-        <tr><td>Connect (unary)</td><td><code>application/json</code></td><td>curl, scripts, CI — no framing and no generated code required.</td></tr>
-        <tr><td>Connect (streaming)</td><td><code>application/connect+json</code></td><td>server-streaming and bidi RPCs from non-gRPC clients.</td></tr>
-        <tr><td>gRPC / gRPC-Web</td><td><code>application/grpc</code></td><td>generated gRPC clients; the agent stream.</td></tr>
-      </tbody>
-    </table>
-    <p>The API listens on the management address (<code>--addr</code>, default <code>0.0.0.0:8080</code>) and, in parallel, on a local Unix socket (<code>--admin-socket</code>, default <code>/run/tiyi/admin.sock</code>).</p>
-
-    <h2 id="auth">Authentication</h2>
-    <p>Three auth surfaces, picked by deployment context:</p>
-
-    <table>
-      <thead>
-        <tr><th>Surface</th><th>Mechanism</th><th>Used by</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Local admin socket</td>
-          <td>OS file permissions on <code>admin.sock</code></td>
-          <td><code>tiyi</code> CLI on the same host as the server. Requests run as a synthetic superadmin, which is why password recovery works with no credentials.</td>
-        </tr>
-        <tr>
-          <td>HS256 JWT</td>
-          <td><code>Authorization: Bearer &lt;jwt&gt;</code> over HTTP</td>
-          <td>Admin UI, remote CLI, anything driving the API from off-host. Issued by <code>AuthService.Login</code>, renewed by <code>AuthService.Refresh</code>.</td>
-        </tr>
-        <tr>
-          <td>Agent stream token</td>
-          <td>One-use enrollment token → long-lived stream token</td>
-          <td>Agents on <code>AgentStreamService.Connect</code>. Tokens come from <code>AgentService.IssueEnrollmentToken</code>.</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h3 id="login-example">Login</h3>
-<pre><code><span class="p">$</span> curl -sS http://tiyi:8080/tiyi.v1.AuthService/Login <span class="o">\</span>
-    -H <span class="s">"Content-Type: application/json"</span> <span class="o">\</span>
-    -d <span class="s">'{"username":"admin","password":"..."}'</span>
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="api-integration-and-complete-reference">API integration and complete reference</h1>
+<p class="lede">For <strong>v3.8.0</strong>. Automate administration with ordinary ConnectRPC HTTP JSON:
+<code>POST /tiyi.v1.Service/Method</code>. No SDK is needed. Your application's OpenAPI file belongs to <a href="api-protection.html">request protection</a>;
+this page covers the <strong>API that manages Tiyi</strong>.</p>
+<p>Complete reference: <a href="reference/rpc-index.html">309 RPCs / 26 services</a> · <a href="reference/index.html">request/response fields</a> ·
+<a href="reference/permissions.html">permissions</a>. Each RPC includes its path, request, response, enums, and required permissions.</p>
+<a id="1-choose-authentication"></a>
+<h2 id="authentication">1. Choose authentication</h2>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>Entry point</th>
+<th>Credentials</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Maintenance on the Tiyi host</td>
+<td><code>/run/tiyi/admin.sock</code></td>
+<td>Unix file permissions, usually sudo; local administrator privileges</td>
+</tr>
+<tr>
+<td>Your computer, CI, or another service</td>
+<td>Management URL; use HTTPS in production</td>
+<td><code>Authorization: Bearer JWT</code>, with the user's permissions</td>
+</tr>
+<tr>
+<td>Remote Agent</td>
+<td>Generated node-install flow</td>
+<td>Expiring, node-limited enrollment token and node identity, separate from an administrator JWT</td>
+</tr>
+</tbody>
+</table>
+<p>Local read without a login:</p>
+<pre><code class="language-sh">sudo curl --fail-with-body -sS --unix-socket /run/tiyi/admin.sock <span class="o">\
+</span>  http://localhost/tiyi.v1.SiteService/ListSites <span class="o">\
+</span>  -H <span class="s">'Content-Type: application/json'</span> -d <span class="s">'{"page":{"page":1,"pageSize":20}}'</span>
+</code></pre>
+<p>Do not expose the entire admin socket through a public TCP proxy. For remote automation, create a user and role with the permissions needed for its tasks.</p>
+<h2 id="2-log-in-and-obtain-a-token">2. Log in and obtain a token</h2>
+<p>This example needs Bash, curl, Python 3, and jq. Replace <code>SERVER_IP</code> below with the Tiyi host's IP address; if you have an HTTPS management URL, use that URL instead.
+Change the username in the script from <code>admin</code> to your automation user when appropriate.
+The password is entered without echo and kept out of shell history; temporary credentials stay in a private directory.</p>
+<pre><code class="language-sh">export <span class="v">TIYI_API</span><span class="o">=</span><span class="s">'http://SERVER_IP:8080'</span>
+umask 077
+<span class="v">SESSION_DIR</span><span class="o">=</span><span class="k">$(</span>mktemp -d<span class="k">)</span>
+python3 - <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/login.json</span><span class="s">"</span> <span class="s">&lt;&lt;'PY'
+import getpass, json, pathlib, sys
+pathlib.Path(sys.argv[1]).write_text(json.dumps({
+    "username": "admin", "password": getpass.getpass("Tiyi password: ")
+}))
+PY</span>
+curl --fail-with-body -sS -c <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/cookies</span><span class="s">"</span> <span class="o">\
+</span>  -H <span class="s">'Content-Type: application/json'</span> <span class="o">\
+</span>  --data-binary @<span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/login.json</span><span class="s">"</span> <span class="o">\
+</span>  <span class="s">"</span><span class="v">$TIYI_API</span><span class="s">/tiyi.v1.AuthService/Login</span><span class="s">"</span> -o <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/session.json</span><span class="s">"</span>
+rm <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/login.json</span><span class="s">"</span>
+<span class="k">while</span> jq -e <span class="s">'.challengeRequired == true'</span> <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/session.json</span><span class="s">"</span> &gt;/dev/null; <span class="k">do</span>
+  python3 - <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/challenge.json</span><span class="s">"</span> <span class="s">&lt;&lt;'PY'
+import getpass, json, pathlib, sys
+pathlib.Path(sys.argv[1]).write_text(json.dumps({"code": getpass.getpass("MFA / RADIUS code: ")}))
+PY</span>
+  curl --fail-with-body -sS -b <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/cookies</span><span class="s">"</span> -c <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/cookies</span><span class="s">"</span> <span class="o">\
+</span>    -H <span class="s">'Content-Type: application/json'</span> --data-binary @<span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/challenge.json</span><span class="s">"</span> <span class="o">\
+</span>    <span class="s">"</span><span class="v">$TIYI_API</span><span class="s">/tiyi.v1.AuthService/CompleteAuthenticationChallenge</span><span class="s">"</span> <span class="o">\
+</span>    -o <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/session.json</span><span class="s">"</span> <span class="o">||</span> <span class="k">break</span>
+  rm -f <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/challenge.json</span><span class="s">"</span>
+<span class="k">done</span>
+<span class="v">TIYI_TOKEN</span><span class="o">=</span><span class="k">$(</span>jq -er <span class="s">'.accessToken | select(length &gt; 0)'</span> <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/session.json</span><span class="s">"</span><span class="k">)</span>
+export TIYI_TOKEN
+tiyi auth user
+</code></pre>
+<p>A successful <code>auth user</code> returns the current identity. Resolve login failures before proceeding; an empty token is not a successful login.
+With TOTP or RADIUS challenges, <code>challengeRequired</code> is true and the challenge cookie must accompany completion.
+OIDC/SAML use browser redirect flows; an identity-provider token is not a Tiyi JWT.</p>
+<p>The CLI does not automatically persist <code>auth login</code> output as a session. <code>TIYI_API</code> and <code>TIYI_TOKEN</code> provide credentials for subsequent CLI calls here.
+Defaults are 8 hours for access tokens and 7 days for refresh tokens, configurable by the administrator.</p>
+<h2 id="3-query-and-create-a-site">3. Query and create a site</h2>
+<p>Define a reusable function and request the first page:</p>
+<pre><code class="language-sh">tiyi_rpc<span class="o">(</span><span class="o">)</span> <span class="o">{</span>
+  curl --fail-with-body -sS <span class="s">"</span><span class="v">$TIYI_API</span><span class="s">/tiyi.v1.</span><span class="v">$1</span><span class="s">"</span> <span class="o">\
+</span>    -H <span class="s">"</span><span class="s">Authorization: Bearer </span><span class="v">$TIYI_TOKEN</span><span class="s">"</span> <span class="o">\
+</span>    -H <span class="s">'Content-Type: application/json'</span> -H <span class="s">'Connect-Protocol-Version: 1'</span> <span class="o">\
+</span>    --data-binary <span class="s">"</span><span class="v">$2</span><span class="s">"</span>
+<span class="o">}</span>
+tiyi_rpc SiteService/ListSites <span class="s">'{"page":{"page":1,"pageSize":20}}'</span>
+</code></pre>
+<p><code>items</code> contains the current page; <code>page.total</code> is the total as a 64-bit decimal string. Increment <code>page.page</code> for subsequent pages.</p>
+<p>The following creates an <strong>immediately active</strong> demo site. Start the quickstart origin first and change example names or domains already in use:</p>
+<pre><code class="language-sh">cat &gt; api-site.json <span class="s">&lt;&lt;'JSON'
 {
-  <span class="s">"accessToken"</span>: <span class="s">"&lt;jwt&gt;"</span>,
-  <span class="s">"expiresAt"</span>: <span class="s">"2026-07-26T21:13:41Z"</span>,
-  <span class="s">"user"</span>: {
-    <span class="s">"id"</span>: <span class="s">"&lt;uuid&gt;"</span>,
-    <span class="s">"tenantId"</span>: <span class="s">"&lt;uuid&gt;"</span>,
-    <span class="s">"username"</span>: <span class="s">"admin"</span>,
-    <span class="s">"roles"</span>: [<span class="s">"Administrator"</span>],
-    <span class="s">"accessCodes"</span>: [<span class="s">"site:read"</span>, <span class="s">"site:write"</span>, <span class="s">"..."</span>]
+  "site": {
+    "name": "api-example",
+    "primaryHost": "api.example.com",
+    "upstreams": [{"inline": {"url": "http://127.0.0.1:9000", "weight": 100}}],
+    "tls": {"mode": "TLS_MODE_NONE"},
+    "waf": {"enabled": true, "mode": "WAF_MODE_BLOCKING"},
+    "status": "RESOURCE_STATUS_ACTIVE"
   }
-}</code></pre>
-
-    <p>Three things that are easy to get wrong:</p>
-    <ul>
-      <li>The login body is <strong>flat</strong> — <code>{"username":…,"password":…}</code>, not nested under a credentials object.</li>
-      <li>The <strong>refresh token is not in the response body</strong>. It is set as an <code>HttpOnly</code>, <code>SameSite=Strict</code> cookie named <code>tiyi_refresh</code> scoped to <code>Path=/tiyi.v1.AuthService/</code>. Browsers replay it automatically; a script must capture it (<code>curl -c</code>) or pass it explicitly as <code>{"refreshToken":"…"}</code> to <code>Refresh</code>.</li>
-      <li><code>Refresh</code> <strong>rotates</strong> the refresh token, and replaying a consumed one is treated as theft: the call fails <code>unauthenticated</code> and the session is cleared. Always store the newest value.</li>
-    </ul>
-    <p>Default lifetimes are 8 hours for the access token (<code>auth.access_token_ttl</code>) and 7 days for the refresh token (<code>auth.refresh_token_ttl</code>). LDAP and RADIUS, when configured, are tried as fallbacks on the same <code>Login</code> call.</p>
-
-    <h3 id="local-socket">Local admin socket</h3>
-<pre><code><span class="p">$</span> curl -sS --unix-socket /run/tiyi/admin.sock <span class="o">\</span>
-    http://tiyi.local/tiyi.v1.SystemService/GetSystemSettings <span class="o">\</span>
-    -H <span class="s">"Content-Type: application/json"</span> -d <span class="s">'{}'</span></code></pre>
-    <p><code>http://tiyi.local</code> is a placeholder — the socket path decides the destination. The socket is <code>0600</code> by default; <code>--admin-socket-mode 0660 --admin-socket-group tiyi-admin</code> shares it with a Unix group. Anyone who can open it has full control, so treat that group as root-equivalent.</p>
-
-    <h3 id="cli-config">CLI</h3>
-<pre><code><span class="p">$</span> export TIYI_API=https://tiyi.example.com   <span class="c"># omit to use the local socket</span>
-<span class="p">$</span> export TIYI_TOKEN=<span class="s">"$TOKEN"</span>
-<span class="p">$</span> tiyi site list</code></pre>
-    <p>Flags <code>--api</code>, <code>--token</code>, and <code>--admin-socket</code> override the environment per command.</p>
-
-    <h2 id="conventions">Request conventions</h2>
-    <ul>
-      <li><strong>Responses use camelCase</strong> (<code>primaryHost</code>); requests accept camelCase <em>or</em> the original snake_case (<code>primary_host</code>).</li>
-      <li><strong>64-bit integers are JSON strings</strong> — <code>"revision": "2"</code>. Send them quoted too.</li>
-      <li><strong>Enums are prefixed strings</strong> — <code>"RESOURCE_STATUS_ACTIVE"</code>, <code>"WAF_MODE_BLOCKING"</code>. The zero value is always <code>*_UNSPECIFIED</code>.</li>
-      <li><strong>Timestamps are RFC 3339 UTC</strong> — <code>"2026-07-26T13:15:08.217701748Z"</code>.</li>
-      <li><strong>Mutations wrap their resource</strong>: <code>CreateSite</code> takes <code>{"site": {…}}</code>, not the fields at top level. Sending them bare returns <code>invalid_argument: site is required</code>.</li>
-      <li><strong>Field masks are comma-joined strings</strong>, not arrays: <code>"updateMask": "name,status"</code>. Without a mask the whole message is applied.</li>
-      <li><strong>Unknown request fields are rejected.</strong> Removed fields and misspelled keys fail instead of being silently discarded.</li>
-      <li><strong>Every request is tenant-scoped</strong> from the token, never from a field in the request.</li>
-    </ul>
-
-    <h3 id="revisions">Revisions</h3>
-    <p>Versioned resources carry a <code>revision</code> that increments on every write. Send the revision you read; if another writer got there first the call fails with <code>failed_precondition: revision conflict</code>. Re-read, re-apply, retry. Omitting <code>revision</code> skips the check.</p>
-    <p>Routing and per-site policy overrides have their own RPCs (<code>UpdateSiteRouting</code>, <code>UpsertSitePolicyOverride</code>) so that a routing-unaware client cannot erase them with a plain <code>UpdateSite</code>.</p>
-
-    <h3 id="pagination">Pagination</h3>
-    <p>Bounded lists (sites, users, certs, policies) use offset pages: <code>{"page":{"page":1,"pageSize":50}}</code>, 1-based, default size 50, capped at 200. Log and event queries use cursors: pass the previous <code>nextCursor</code> and stop when <code>hasMore</code> is false. For direct page jumps set <code>offset</code> instead of <code>cursor</code> — capped at 100,000 rows, past which you should narrow the time range.</p>
-
-    <h2 id="services">The 23 services</h2>
-    <table>
-      <thead>
-        <tr><th>Service</th><th>Scope</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>AuthService</code></td><td>Login, logout, refresh, current user, access codes, password change.</td></tr>
-        <tr><td><code>SystemService</code></td><td>Health, settings, dashboard rollups, declarative apply, CRS/GeoIP/binary releases, upgrade runs.</td></tr>
-        <tr><td><code>MenuService</code></td><td>Permission-filtered navigation for the management UI.</td></tr>
-        <tr><td><code>UserService</code></td><td>User CRUD, role assignment, lock/unlock, password reset.</td></tr>
-        <tr><td><code>RoleService</code></td><td>Role CRUD and the permission catalog.</td></tr>
-        <tr><td><code>SiteService</code></td><td>Site CRUD, enable/disable, compiled-config preview, path routing, per-site policy override.</td></tr>
-        <tr><td><code>UpstreamService</code></td><td>Upstream pool CRUD; deletion refused while in use.</td></tr>
-        <tr><td><code>CertService</code></td><td>Upload, ACME issue/renew, download, DNS provider CRUD.</td></tr>
-        <tr><td><code>PolicyService</code></td><td>WAF policy CRUD, layer updates, version snapshots and rollback, SecLang preview, test lab.</td></tr>
-        <tr><td><code>RuleOverrideService</code></td><td>Per-CRS-rule behaviour and scoped override lifecycle.</td></tr>
-        <tr><td><code>CustomRuleService</code></td><td>Custom SecLang and visual-rule lifecycle, ordering, templates.</td></tr>
-        <tr><td><code>IpListService</code></td><td>Reusable IP data, scoped bindings, CSV import/export, lookup and precedence.</td></tr>
-        <tr><td><code>RateLimitService</code></td><td>Endpoint and client-scope rate-limit resources.</td></tr>
-        <tr><td><code>CrsService</code></td><td>CRS catalog browse, ingest, exclusion-package install and attach.</td></tr>
-        <tr><td><code>AgentService</code></td><td>Agent CRUD, enrollment tokens, install scripts, commands, config bundles, metric samples.</td></tr>
-        <tr><td><code>AgentGroupService</code></td><td>Tag-based and explicit agent targeting with match preview.</td></tr>
-        <tr><td><code>AgentStreamService</code></td><td>The authenticated bidi agent session.</td></tr>
-        <tr><td><code>EvidenceUploadService</code></td><td>Request-evidence upload on its own stream, so large bodies never block control traffic.</td></tr>
-        <tr><td><code>TrustService</code></td><td>Client-IP trust profile (tenant + site overrides), CDN snapshots, explain.</td></tr>
-        <tr><td><code>AlertService</code></td><td>Alert rule and channel CRUD, ack/resolve, silences, notes, channel test send.</td></tr>
-        <tr><td><code>LogService</code></td><td>Security/access/error event queries, retained evidence, exports, log policy, live tail.</td></tr>
-        <tr><td><code>AuditService</code></td><td>Tamper-evident audit query, chain status, and verification.</td></tr>
-        <tr><td><code>AIService</code></td><td>Optional, default-off advisory proposals, copilot analysis, and chat.</td></tr>
-      </tbody>
-    </table>
-    <p>The exhaustive per-RPC reference — every request and response field, with the permission each RPC requires — is generated from the schema and ships in the source tree under <code>docs/api/</code>, alongside the protobuf definitions in <code>proto/tiyi/v1/</code>.</p>
-
-    <h2 id="errors">Errors</h2>
-    <p>Errors return a canonical code, a human message, and sometimes typed details. Branch on <code>code</code> (and <code>details[].debug.reason</code>), never on <code>message</code>.</p>
-<pre><code>{
-  <span class="s">"code"</span>: <span class="s">"unauthenticated"</span>,
-  <span class="s">"message"</span>: <span class="s">"invalid session"</span>,
-  <span class="s">"details"</span>: [{ <span class="s">"type"</span>: <span class="s">"google.rpc.ErrorInfo"</span>,
-               <span class="s">"debug"</span>: { <span class="s">"reason"</span>: <span class="s">"TOKEN_INVALID"</span>, <span class="s">"domain"</span>: <span class="s">"tiyi.io"</span> } }]
-}</code></pre>
-    <table>
-      <thead><tr><th>Code</th><th>HTTP</th><th>Typical cause</th><th>Retry?</th></tr></thead>
-      <tbody>
-        <tr><td><code>invalid_argument</code></td><td>400</td><td>Input rejected by the validator.</td><td>No — fix the request.</td></tr>
-        <tr><td><code>failed_precondition</code></td><td>400</td><td>Revision conflict, resource in use, or another state guard.</td><td>Re-read, then retry.</td></tr>
-        <tr><td><code>unauthenticated</code></td><td>401</td><td>Missing, malformed, or expired token.</td><td>Refresh, retry once.</td></tr>
-        <tr><td><code>permission_denied</code></td><td>403</td><td>Valid session without the required permission; also <code>ACCOUNT_LOCKED</code>.</td><td>No.</td></tr>
-        <tr><td><code>not_found</code></td><td>404</td><td>Id does not exist or is soft-deleted.</td><td>No.</td></tr>
-        <tr><td><code>already_exists</code></td><td>409</td><td>Uniqueness violated.</td><td>No.</td></tr>
-        <tr><td><code>resource_exhausted</code></td><td>429</td><td>Write-admission queue is full.</td><td>Yes — honour <code>Retry-After</code>.</td></tr>
-        <tr><td><code>unimplemented</code></td><td>501</td><td>Declared in the schema but not wired yet.</td><td>No.</td></tr>
-        <tr><td><code>unavailable</code></td><td>503</td><td>SQLite busy or a dependency is down.</td><td>Yes — backoff.</td></tr>
-        <tr><td><code>deadline_exceeded</code></td><td>504</td><td>Server-side timeout.</td><td>Narrow the query.</td></tr>
-        <tr><td><code>internal</code></td><td>500</td><td>Unhandled server-side failure.</td><td>No — report it.</td></tr>
-      </tbody>
-    </table>
-    <p>Known <code>ErrorInfo</code> reasons: <code>BAD_CREDENTIALS</code>, <code>TOKEN_INVALID</code>, <code>ACCOUNT_LOCKED</code>.</p>
-
-    <h3 id="backpressure">Write admission</h3>
-    <p>Mutating RPCs are queued through a write-admission gate so a burst of writers cannot overwhelm the embedded SQLite store. When the queue is full the call returns <code>resource_exhausted</code> with a <code>Retry-After</code> header in seconds. Reads are never queued. Bulk importers should limit write concurrency and respect that header.</p>
-
-    <h2 id="rbac">RBAC</h2>
-    <p>Each RPC declares the permission it needs — <code>site:read</code>, <code>policy:write</code>, <code>log:export</code>, <code>system:apply</code>, and so on across 56 permissions. The server checks the JWT subject's roles against the permission table; a role holding <code>tiyi:superadmin</code> passes every check. <code>Administrator</code> is the only built-in role and holds everything, so build least-privilege roles with <code>tiyi role</code> or the Roles page, and inspect the live catalog with <code>RoleService.ListPermissions</code> rather than trusting a frozen list.</p>
-    <p>Nine procedures are reachable without a session: <code>SystemService.Health</code>, <code>AuthService.GetLoginOptions</code> / <code>Login</code> / <code>CompleteAuthenticationChallenge</code> / <code>Refresh</code> / <code>Logout</code>, <code>AgentService.Enroll</code>, <code>AgentStreamService.Connect</code>, and <code>EvidenceUploadService.Upload</code>. Enrollment and stream procedures enforce dedicated tokens; challenge completion enforces signed state.</p>
-
-    <h2 id="streaming">Streaming RPCs</h2>
-    <p>Streaming works over gRPC or the Connect streaming protocol. For Connect, set <code>Content-Type: application/connect+json</code> and frame each message with a five-byte envelope: one flag byte, then a big-endian <code>uint32</code> length. <strong>A failed stream still returns HTTP 200</strong> — the status lives in the trailing frame (flag <code>0x02</code>), so a client that only checks the HTTP code will miss the error.</p>
-    <ul>
-      <li><strong><code>AgentStreamService.Connect</code></strong> — bidi. The agent session: hello, state reports, events, apply results, observation batches; the server sends welcome, config updates, commands, challenges.</li>
-      <li><strong><code>EvidenceUploadService.Upload</code></strong> — bidi. Request-evidence bodies, isolated from the control stream.</li>
-      <li><strong><code>AgentService.StreamAgentEvents</code></strong> — server. Live agent online/offline and metrics.</li>
-      <li><strong><code>LogService.TailSecurityEvents</code></strong> — server. Live security-event feed for the live-tail page.</li>
-      <li><strong><code>LogService.StreamRequestEvidenceBody</code></strong> / <strong><code>DownloadRequestEvidenceBody</code></strong> — server. Retained request bodies, chunked.</li>
-      <li><strong><code>AlertService.StreamAlerts</code></strong> — server. Alert lifecycle events.</li>
-      <li><strong><code>SystemService.StreamUpgradeRun</code></strong> — server. Per-agent upgrade progress.</li>
-      <li><strong><code>AIService.StreamAnalysis</code></strong> / <strong><code>StreamChat</code></strong> — server. Incremental copilot output.</li>
-    </ul>
-    <p>Reconnect with backoff. None of these streams replay history, so re-query for anything missed during a gap.</p>
-
-    <h2 id="http">Non-RPC HTTP endpoints</h2>
-    <table>
-      <thead><tr><th>Endpoint</th><th>Listener</th><th>Auth</th><th>Purpose</th></tr></thead>
-      <tbody>
-        <tr><td><code>GET /healthz</code></td><td>both</td><td>none</td><td>Liveness/readiness probe: 200 healthy, 503 otherwise, JSON body either way.</td></tr>
-        <tr><td><code>GET /download/tiyi</code></td><td>both</td><td>none</td><td>Serves the running binary so a new agent can bootstrap before it has credentials.</td></tr>
-        <tr><td><code>/api/v1/telemetry/*</code></td><td>both</td><td>JWT + <code>telemetry:read</code></td><td>Exact counters: <code>qps</code>, <code>series</code>, <code>topk</code>, <code>apitree</code>, and the API-inventory action route.</td></tr>
-        <tr><td><code>GET /metrics</code></td><td>socket only</td><td>socket permissions</td><td>Prometheus/OpenMetrics scrape for the observation pipeline.</td></tr>
-        <tr><td><code>GET /debug/*</code></td><td>socket only</td><td>socket permissions</td><td>Diagnostic counters for logsink, alerts, AI, and licensing. Not a stable contract.</td></tr>
-      </tbody>
-    </table>
-    <p>The management listener also serves the Admin UI, and unknown paths fall back to the SPA with HTTP 200 — so a successful <code>curl</code> against a path that only exists on the socket is returning HTML, not data. Check the <code>Content-Type</code>.</p>
-
-    <h2 id="clients">Generating a client</h2>
-    <p>Point your codegen at <code>proto/tiyi/v1</code> in the source tree. Known-good combinations are <code>connect-go</code> (what the CLI uses), <code>connect-es</code> / <code>@connectrpc/connect-web</code> (what the Admin UI uses), and any standard gRPC client for streaming-heavy work. Because unary Connect is plain JSON over HTTP, a small <code>fetch</code> or <code>requests</code> wrapper is also a perfectly good client.</p>
-    <p>The package is <code>tiyi.v1</code>; removed field numbers and names stay <code>reserved</code> so they cannot acquire a different meaning. Clients and servers must use the current contract; this reservation is protocol safety, not an older-client support promise.</p>
-
-    <h2 id="canonical-spec">API contract</h2>
-    <p>These docs describe the operator-facing API and should agree with the installed binary — file an issue if they don't.</p>
-
-    <div class="docs-pager">
-      <a href="cli.html">
-        <span class="label">← Previous</span>
-        <span class="title">CLI reference</span>
-      </a>
-      <a class="next" href="deployment.html">
-        <span class="label">Next →</span>
-        <span class="title">Deployment</span>
-      </a>
-    </div>
-  </main>
+}
+JSON</span>
+tiyi_rpc SiteService/CreateSite @api-site.json &gt; created-site.json
+<span class="v">SITE_ID</span><span class="o">=</span><span class="k">$(</span>jq -er <span class="s">'.site.id'</span> created-site.json<span class="k">)</span>
+curl -i -H <span class="s">'Host: api.example.com'</span> http://127.0.0.1/
+</code></pre>
+<p>Expect the origin's normal response. WAF is enabled and defaults to Light when no policy is specified. Also verify attack probes and node publication results.</p>
+<h2 id="4-update-one-field-with-concurrency-protection">4. Update one field with concurrency protection</h2>
+<p>Read the latest site, then send its revision and a mask to change only the name:</p>
+<pre><code class="language-sh">jq -n --arg id <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span> <span class="s">'{id:$id}'</span> &gt; get-site.json
+tiyi_rpc SiteService/GetSite @get-site.json &gt; current-site.json
+jq <span class="s">'{site:{id:.site.id,name:"api-renamed"},
+     revision:.site.revision,updateMask:"name"}'</span> current-site.json &gt; update-site.json
+tiyi_rpc SiteService/UpdateSite @update-site.json
+</code></pre>
+<p><code>updateMask</code> is a comma-separated JSON field-path string, not an array. Keep <code>revision</code> as the returned decimal string to avoid JavaScript precision loss.
+On <code>aborted</code> or a revision conflict, reread, compare, and decide the change again instead of overwriting blindly.
+Update behavior varies by service; some operations, including policy-layer writes, replace complete objects.</p>
+<h2 id="5-refresh-log-out-and-follow-json-conventions">5. Refresh, log out, and follow JSON conventions</h2>
+<p>The refresh token normally arrives in an HttpOnly cookie, not the login JSON. Renew using the latest cookie:</p>
+<pre><code class="language-sh">curl --fail-with-body -sS -b <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/cookies</span><span class="s">"</span> -c <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/cookies</span><span class="s">"</span> <span class="o">\
+</span>  -H <span class="s">'Content-Type: application/json'</span> -d <span class="s">'{}'</span> <span class="o">\
+</span>  <span class="s">"</span><span class="v">$TIYI_API</span><span class="s">/tiyi.v1.AuthService/Refresh</span><span class="s">"</span> -o <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/session.json</span><span class="s">"</span>
+<span class="v">TIYI_TOKEN</span><span class="o">=</span><span class="k">$(</span>jq -er <span class="s">'.accessToken | select(length &gt; 0)'</span> <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/session.json</span><span class="s">"</span><span class="k">)</span>
+export TIYI_TOKEN
+</code></pre>
+<p>Refresh rotates the token. Do not concurrently reuse or repeatedly replay an old refresh cookie.
+When done, log out and remove this session's temporary credentials:</p>
+<pre><code class="language-sh">curl --fail-with-body -sS -b <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/cookies</span><span class="s">"</span> <span class="o">\
+</span>  -H <span class="s">'Content-Type: application/json'</span> -d <span class="s">'{}'</span> <span class="s">"</span><span class="v">$TIYI_API</span><span class="s">/tiyi.v1.AuthService/Logout</span><span class="s">"</span>
+unset TIYI_TOKEN
+rm -rf -- <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">"</span>
+unset SESSION_DIR
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Convention</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JSON fields</td>
+<td>Use documented lowerCamelCase such as <code>siteId</code>, not apply-YAML aliases</td>
+</tr>
+<tr>
+<td>64-bit integers</td>
+<td>Keep revisions, counts, and totals as decimal strings unless conversion is known to be safe</td>
+</tr>
+<tr>
+<td><code>bytes</code></td>
+<td>Base64 strings, including <code>source</code>, <code>reportJson</code>, and certificate PEM fields</td>
+</tr>
+<tr>
+<td>Enums</td>
+<td>Full symbolic names, such as <code>RESOURCE_STATUS_ACTIVE</code> and <code>TLS_MODE_MANAGED_ACME</code></td>
+</tr>
+<tr>
+<td>Time</td>
+<td>RFC 3339, preferably UTC, e.g. <code>2026-09-17T08:00:00Z</code></td>
+</tr>
+<tr>
+<td>Tenant</td>
+<td>Determined by the caller; a supplied <code>tenantId</code> does not grant cross-tenant access</td>
+</tr>
+<tr>
+<td>Idempotency</td>
+<td>Use <code>idempotencyKey</code> only where defined; exact retries retain the key and request, changed requests need a new key</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-errors-and-permissions">6. Errors and permissions</h2>
+<p>Connect errors usually look like <code>{"code":"permission_denied","message":"..."}</code>.
+Preserve the response body and HTTP status; completion of a network request is not proof of success.</p>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Next action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>unauthenticated</code> / 401</td>
+<td>Check token, expiry, and clock; refresh or log in again</td>
+</tr>
+<tr>
+<td><code>permission_denied</code> / 403</td>
+<td>Check the user's roles and all required method permissions</td>
+</tr>
+<tr>
+<td><code>invalid_argument</code> / 400</td>
+<td>Check field names, types, enums, limits, and required values</td>
+</tr>
+<tr>
+<td><code>already_exists</code> / 409</td>
+<td>Read the existing name/hostname instead of recreating it</td>
+</tr>
+<tr>
+<td><code>aborted</code> / 409</td>
+<td>State or preview changed; reread and preview again</td>
+</tr>
+<tr>
+<td><code>failed_precondition</code></td>
+<td>Check certificates, policies, dependencies, node capabilities, and current state</td>
+</tr>
+<tr>
+<td><code>resource_exhausted</code> / <code>unavailable</code></td>
+<td>Use bounded backoff; establish whether a write already succeeded and follow its idempotency contract</td>
+</tr>
+<tr>
+<td><code>unimplemented</code> / 501</td>
+<td>The entry point cannot perform the action; retries or fabricated fields will not enable it</td>
+</tr>
+</tbody>
+</table>
+<p><code>SystemService.Health</code> needs <code>system:read</code>; use <code>/healthz</code> for anonymous liveness. A schema field is not an authorization grant.</p>
+<a id="7-api-document-and-validation-publication"></a>
+<h2 id="api-documents">7. API document and validation publication</h2>
+<p>Start with the <a href="api-protection.html#7-cli-and-api-automation">copyable upload and preview</a>.
+Call <a href="reference/services/api_schema.html">ApiSchemaService</a> in dependency order below.
+Take IDs, hashes, and approval objects from real responses:</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Method / CLI</th>
+<th>Output needed next</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Upload a file</td>
+<td><code>StageSchemaSource</code> / <code>api-document upload</code></td>
+<td><code>source.id</code>; the request's <code>source</code> field is file content as base64</td>
+</tr>
+<tr>
+<td>Review mapping and existing endpoints</td>
+<td><code>PreviewApiDeclaration</code> / <code>declaration-preview</code></td>
+<td><code>reportSha256</code>, <code>catalogSha256</code>, decoded report and matching results</td>
+</tr>
+<tr>
+<td>Save the reviewed declaration</td>
+<td><code>StageApiDeclaration</code> / <code>declaration-stage</code></td>
+<td><code>contract.id</code>; explicit decisions for ambiguous matches; independently reviewed coverage</td>
+</tr>
+<tr>
+<td>Compile executable checks</td>
+<td><code>StageSchemaProfile</code> / <code>profile-stage</code></td>
+<td><code>profile.id</code> and capability/diagnostic report; unsupported checks are not enforced</td>
+</tr>
+<tr>
+<td>Select endpoint modes</td>
+<td><code>StageSchemaBindings</code> / <code>bindings-stage</code></td>
+<td><code>bindings.id</code>; <code>operationKeys</code> selects validation and <code>enforceOperationKeys</code> is its enforced subset</td>
+</tr>
+<tr>
+<td>Preview publication</td>
+<td><code>PreviewSchemaControl</code> / <code>preview</code></td>
+<td>Complete <code>approval</code>, change/resource reports, and <code>executionSupported</code></td>
+</tr>
+<tr>
+<td>Submit the review</td>
+<td><code>ChangeSchemaControl</code> / <code>publish</code></td>
+<td><code>intent</code> and state; send the original approval, reason, idempotency key, and actually reviewed acknowledgements</td>
+</tr>
+<tr>
+<td>Check application and requests</td>
+<td><code>OperationControlService.GetOperationControlState</code>, <code>GetSchemaValidation</code>, <code>GetSchemaDetection</code></td>
+<td>Serving-node results, configured validation, and detection statistics</td>
+</tr>
+</tbody>
+</table>
+<p>Catalog-only publication may omit a validation binding and does not enable request validation. A root mapping uses <code>basePath: ""</code>.
+Learning, request editing, document versions, deactivation, and rollback have dedicated methods in the <a href="reference/services/api_schema.html">field reference</a>.
+Hiding/restoring an asset row does not enable blocking. Catalog membership changes use <code>StageApiCatalogChange</code> and the same publication lifecycle.</p>
+<h3 id="copyable-recipe-publish-the-demo-order-endpoint-in-observe">Copyable recipe: publish the demo order endpoint in Observe</h3>
+<p>Continue in the same directory and terminal with <code>source-result.json</code>, <code>declaration-preview.json</code>, and <code>preview-result.json</code>
+from the <a href="api-protection.html#7-cli-and-api-automation">API protection tutorial</a>. This needs jq and assumes the single demo endpoint has been reviewed.
+For a real document with ambiguous matches, conflicts, or unsupported checks, resolve the report first; do not automatically accept everything.</p>
+<p><strong>Stage the declaration and compile checks.</strong> After reviewing mapping and reconciliation:</p>
+<pre><code class="language-sh">jq -s <span class="s">'.[0] + {reportSha256:.[1].reportSha256,
+  catalogSha256:.[1].catalogSha256,idempotencyKey:"orders-declaration-v1"}'</span> <span class="o">\
+</span>  declaration-preview.json preview-result.json &gt; declaration-stage.json
+sudo tiyi api-document declaration-stage -f declaration-stage.json &gt; declaration-result.json
+jq <span class="s">'. + {idempotencyKey:"orders-profile-v1"}'</span> declaration-preview.json &gt; profile-stage.json
+sudo tiyi api-document profile-stage -f profile-stage.json &gt; profile-result.json
+jq <span class="s">'{siteId:.contract.siteId,contractId:.contract.id}'</span> declaration-result.json &gt; contract-request.json
+sudo tiyi api-document declaration -f contract-request.json &gt; contract-result.json
+jq -r <span class="s">'.contractJson'</span> contract-result.json | base64 -d &gt; contract.json
+jq <span class="s">'.operations'</span> contract.json
+</code></pre>
+<p>The operations should contain only the demo <code>POST /api/orders</code>. Inspect the profile's report; these operations still have not published to traffic.</p>
+<p><strong>Select observation and preview impact.</strong> The next block selects every endpoint in this one-endpoint demo. For your own document, narrow <code>operationKeys</code> to the reviewed endpoints:</p>
+<pre><code class="language-sh">jq -n --slurpfile c declaration-result.json --slurpfile p profile-result.json <span class="o">\
+</span>  --slurpfile d contract.json <span class="s">'{siteId:$c[0].contract.siteId,
+    declarationId:$c[0].contract.id,profileId:$p[0].profile.id,
+    operationKeys:[$d[0].operations[].key],idempotencyKey:"orders-bindings-observe-v1"}'</span> <span class="o">\
+</span>  &gt; bindings-stage.json
+sudo tiyi api-document bindings-stage -f bindings-stage.json &gt; bindings-result.json
+jq -n --slurpfile c declaration-result.json --slurpfile b bindings-result.json <span class="o">\
+</span>  <span class="s">'{siteId:$c[0].contract.siteId,action:"activate",contractId:$c[0].contract.id,
+    bindingId:$b[0].bindings.id,undeclaredAction:"allow"}'</span> &gt; control-preview.json
+sudo tiyi api-document preview -f control-preview.json &gt; control-preview-result.json
+jq <span class="s">'{executionSupported,approval}'</span> control-preview-result.json
+jq -r <span class="s">'.changesJson'</span> control-preview-result.json | base64 -d
+jq -r <span class="s">'.resourcesJson'</span> control-preview-result.json | base64 -d
+</code></pre>
+<p>Require <code>executionSupported: true</code> and review scope, capabilities, and resource reports. If execution is unavailable or partial acceptance is required, resolve it rather than adding flags to bypass review.</p>
+<p><strong>Submit the reviewed change and check nodes.</strong> The acknowledgement fields below represent the review you just performed. Query the exact returned intent:</p>
+<pre><code class="language-sh">jq -e <span class="s">'select(.executionSupported == true) | {approval:.approval,
+  idempotencyKey:"orders-publish-observe-v1",reason:"Reviewed demo orders API",
+  impactAcknowledged:true,resourceAcknowledged:true,typeOnlyAcknowledged:true}'</span> <span class="o">\
+</span>  control-preview-result.json &gt; publish-request.json
+sudo tiyi api-document publish -f publish-request.json &gt; publication-result.json
+jq <span class="s">'{siteId:.intent.siteId,intentId:.intent.id}'</span> publication-result.json &gt; state-request.json
+sudo curl --fail-with-body -sS --unix-socket /run/tiyi/admin.sock <span class="o">\
+</span>  http://localhost/tiyi.v1.OperationControlService/GetOperationControlState <span class="o">\
+</span>  -H <span class="s">'Content-Type: application/json'</span> --data-binary @state-request.json
+</code></pre>
+<p>Repeat the final read-only query until the target nodes have applied it, then send both tutorial probes. Observe returns 200 for both unless an independent rule blocks.
+These idempotency keys identify one demo revision. Use a new key for changed content and retain the same key/request for an exact retry.</p>
+<h3 id="move-from-observation-to-enforcement">Move from observation to enforcement</h3>
+<p>After validating the demo and deciding to reject type errors, create an enforced binding:</p>
+<pre><code class="language-sh">jq <span class="s">'.enforceOperationKeys = .operationKeys |
+    .idempotencyKey = "orders-bindings-enforce-v1"'</span> <span class="o">\
+</span>  bindings-stage.json &gt; bindings-enforce.json
+sudo tiyi api-document bindings-stage -f bindings-enforce.json &gt; bindings-result.json
+</code></pre>
+<p>Rebuild the control-preview request above using the new <code>bindings-result.json</code>, preview again, and review the reports.
+For publication, change the key to <code>orders-publish-enforce-v1</code> and supply the real reason for the change. <strong>Do not reuse the Observe approval.</strong>
+Check this intent's serving-node results, then replay both probes: valid 200, invalid type 403.
+To revert, select the observing binding through a new preview/publication or restore a reviewed version in console history. Editing a local JSON file alone never changes live traffic.</p>
+<a id="8-http-probes-telemetry-and-metrics"></a>
+<h2 id="http">8. HTTP probes, telemetry, and metrics</h2>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Method and authentication</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/healthz</code></td>
+<td>GET, management or socket, anonymous</td>
+<td>Process liveness only, normally <code>{"status":"ok"}</code></td>
+</tr>
+<tr>
+<td><code>/readyz</code></td>
+<td>GET, local socket only</td>
+<td>Storage and built-in proxy/config readiness; failure returns 503, management listener returns 404</td>
+</tr>
+<tr>
+<td><code>/metrics</code></td>
+<td>GET, local socket only</td>
+<td>OpenMetrics; <a href="operations.html#prometheus">Prometheus setup</a></td>
+</tr>
+<tr>
+<td><code>/download/tiyi</code></td>
+<td>GET, anonymous</td>
+<td>Running Controller binary for Agents on the same platform</td>
+</tr>
+<tr>
+<td><code>/api/v1/telemetry/qps</code></td>
+<td>GET, JWT + <code>telemetry:read</code></td>
+<td>Optional <code>site</code>, <code>window</code> such as <code>1m</code></td>
+</tr>
+<tr>
+<td><code>/api/v1/telemetry/series</code>, <code>topk</code></td>
+<td>GET, JWT + <code>telemetry:read</code></td>
+<td>Time windows, dimensions, and aggregates</td>
+</tr>
+<tr>
+<td><code>/api/v1/telemetry/apitree</code></td>
+<td>GET, JWT + <code>telemetry:read</code></td>
+<td>Required <code>site</code>; optional <code>base=/</code>, <code>depth=128</code>, and time bounds</td>
+</tr>
+<tr>
+<td><code>/api/v1/telemetry/apitree/action</code></td>
+<td>POST, <code>api_inventory:write</code> + <code>site:read</code></td>
+<td><code>hide</code>, <code>restore</code>, <code>retire</code>, with the current <code>expected_revision</code> string</td>
+</tr>
+<tr>
+<td><code>/debug/*</code></td>
+<td>GET, local socket only</td>
+<td>Diagnostics; fields may change across versions</td>
+</tr>
+</tbody>
+</table>
+<p>Telemetry HTTP JSON uses its own snake_case fields and errors shaped as <code>{"error":{"code":...,"message":...}}</code>.
+Asset <code>block</code> and <code>apply_body_suggestion</code> actions are reserved and return 501; the old <code>confirm</code> action is unsupported.
+Unknown management URLs may return the console's HTML with status 200. Check <code>Content-Type</code> before treating it as an API response.</p>
+<div class="docs-pager"><a href="cli.html"><span class="label">← Previous</span><span class="title">CLI guide</span></a><a class="next" href="deployment.html"><span class="label">Next →</span><span class="title">Production deployment</span></a></div>
+</main>
 
   <aside class="docs-toc" id="docs-toc" aria-label="On this page">
     <h4>On this page</h4>
@@ -300,7 +500,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.7.2 · 2026-09-03</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
     </div>
   </div>
 </footer>

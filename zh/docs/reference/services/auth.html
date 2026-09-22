@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>auth.proto — Authentication and session lifecycle — 太一文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="auth.proto — Authentication and session lifecycle v3.8.0 完整协议参考；字段名与协议注释保留英文。可从侧栏返回中文任务指南。 Schema: tiyi.v1 · auth.proto · English guide · 中文指南 · Full RPC i" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../../../index.html#features">特性</a>
+      <a href="../../../index.html#tour">产品</a>
+      <a href="../../../index.html#pricing">价格</a>
+      <a href="../../index.html" style="color:var(--fg)">文档</a>
+      <a href="../../../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../../docs/reference/services/auth.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="../../index.html">概览</a></li>
+        <li><a href="../../quickstart.html">快速开始</a></li>
+        <li><a href="../../installation.html">安装</a></li>
+        <li><a href="../../configuration.html">配置与模板</a></li>
+        <li><a href="../../practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="../../operations.html">日常运维</a></li>
+        <li><a href="../../troubleshooting.html">排障</a></li>
+        <li><a href="../../upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="../../site-import.html">站点导入与导出</a></li>
+        <li><a href="../../api-protection.html">API 防护</a></li>
+        <li><a href="../../responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="../../concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI 参考</a></li>
+        <li><a href="../../api.html">API 参考</a></li>
+        <li><a href="../index.html">完整参考</a></li>
+        <li><a href="../rpc-index.html">全部 RPC</a></li>
+        <li><a href="../permissions.html">权限</a></li>
+        <li><a href="../cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="../../deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="authproto-authentication-and-session-lifecycle">auth.proto — Authentication and session lifecycle</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>auth.proto</code> · <a href="../../../../docs/api.html">English guide</a> · <a href="../../api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="authservice">AuthService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#authservicegetloginoptions"><code>GetLoginOptions</code></a></td>
+<td>unary</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+<tr>
+<td><a href="#authservicelogin"><code>Login</code></a></td>
+<td>unary</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+<tr>
+<td><a href="#authservicecompleteauthenticationchallenge"><code>CompleteAuthenticationChallenge</code></a></td>
+<td>unary</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+<tr>
+<td><a href="#authservicelogout"><code>Logout</code></a></td>
+<td>unary</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+<tr>
+<td><a href="#authservicerefresh"><code>Refresh</code></a></td>
+<td>unary</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+<tr>
+<td><a href="#authservicegetuserinfo"><code>GetUserInfo</code></a></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="#authservicegetaccesscodes"><code>GetAccessCodes</code></a></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="#authservicechangepassword"><code>ChangePassword</code></a></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="#authservicegetmfastatus"><code>GetMFAStatus</code></a></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="#authservicebegintotpenrollment"><code>BeginTOTPEnrollment</code></a></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="#authserviceconfirmtotpenrollment"><code>ConfirmTOTPEnrollment</code></a></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="#authservicedisabletotp"><code>DisableTOTP</code></a></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="#authserviceregeneraterecoverycodes"><code>RegenerateRecoveryCodes</code></a></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="authservicegetloginoptions">AuthService.GetLoginOptions</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/GetLoginOptions</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <strong>public</strong> (no token)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetLoginOptionsRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.GetLoginOptionsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>password_enabled</code></td>
+<td><code>passwordEnabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>providers</code></td>
+<td><code>providers</code></td>
+<td><a href="#loginprovider"><code>LoginProvider</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="authservicelogin">AuthService.Login</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/Login</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <strong>public</strong> (no token)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.LoginRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code></td>
+<td><code>username</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td><code>password</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>remember</code></td>
+<td><code>remember</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.LoginResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>access_token</code></td>
+<td><code>accessToken</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>expiresAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td><code>user</code></td>
+<td><a href="#currentuser"><code>CurrentUser</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>challenge_required</code></td>
+<td><code>challengeRequired</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>challenge_kind</code></td>
+<td><code>challengeKind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>challenge_prompt</code></td>
+<td><code>challengePrompt</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>recovery_code_allowed</code></td>
+<td><code>recoveryCodeAllowed</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="authservicecompleteauthenticationchallenge">AuthService.CompleteAuthenticationChallenge</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/CompleteAuthenticationChallenge</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <strong>public</strong> (no token)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CompleteAuthenticationChallengeRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code</code></td>
+<td><code>code</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CompleteAuthenticationChallengeResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>access_token</code></td>
+<td><code>accessToken</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>expiresAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td><code>user</code></td>
+<td><a href="#currentuser"><code>CurrentUser</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>challenge_required</code></td>
+<td><code>challengeRequired</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>challenge_kind</code></td>
+<td><code>challengeKind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>challenge_prompt</code></td>
+<td><code>challengePrompt</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>recovery_code_allowed</code></td>
+<td><code>recoveryCodeAllowed</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="authservicelogout">AuthService.Logout</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/Logout</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <strong>public</strong> (no token)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.LogoutRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.LogoutResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>logged_out</code></td>
+<td><code>loggedOut</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="authservicerefresh">AuthService.Refresh</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/Refresh</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <strong>public</strong> (no token)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.RefreshRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>refresh_token</code></td>
+<td><code>refreshToken</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.RefreshResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>access_token</code></td>
+<td><code>accessToken</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>expiresAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="authservicegetuserinfo">AuthService.GetUserInfo</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/GetUserInfo</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> authenticated</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetUserInfoRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.GetUserInfoResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td><code>user</code></td>
+<td><a href="#currentuser"><code>CurrentUser</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="authservicegetaccesscodes">AuthService.GetAccessCodes</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/GetAccessCodes</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> authenticated</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetAccessCodesRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.GetAccessCodesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>codes</code></td>
+<td><code>codes</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="authservicechangepassword">AuthService.ChangePassword</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/ChangePassword</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> authenticated</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ChangePasswordRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>current_password</code></td>
+<td><code>currentPassword</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>new_password</code></td>
+<td><code>newPassword</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ChangePasswordResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>changed</code></td>
+<td><code>changed</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="authservicegetmfastatus">AuthService.GetMFAStatus</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/GetMFAStatus</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> authenticated</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetMFAStatusRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.GetMFAStatusResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>totp_enabled</code></td>
+<td><code>totpEnabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>enabled_at</code></td>
+<td><code>enabledAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>recovery_codes_left</code></td>
+<td><code>recoveryCodesLeft</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="authservicebegintotpenrollment">AuthService.BeginTOTPEnrollment</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/BeginTOTPEnrollment</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> authenticated</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.BeginTOTPEnrollmentRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.BeginTOTPEnrollmentResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enrollment_token</code></td>
+<td><code>enrollmentToken</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>secret</code></td>
+<td><code>secret</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>provisioning_uri</code></td>
+<td><code>provisioningUri</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>expiresAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="authserviceconfirmtotpenrollment">AuthService.ConfirmTOTPEnrollment</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/ConfirmTOTPEnrollment</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> authenticated</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ConfirmTOTPEnrollmentRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enrollment_token</code></td>
+<td><code>enrollmentToken</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>code</code></td>
+<td><code>code</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ConfirmTOTPEnrollmentResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enabled</code></td>
+<td><code>enabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>recovery_codes</code></td>
+<td><code>recoveryCodes</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="authservicedisabletotp">AuthService.DisableTOTP</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/DisableTOTP</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> authenticated</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DisableTOTPRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code</code></td>
+<td><code>code</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DisableTOTPResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>disabled</code></td>
+<td><code>disabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="authserviceregeneraterecoverycodes">AuthService.RegenerateRecoveryCodes</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AuthService/RegenerateRecoveryCodes</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> authenticated</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.RegenerateRecoveryCodesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code</code></td>
+<td><code>code</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.RegenerateRecoveryCodesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>recovery_codes</code></td>
+<td><code>recoveryCodes</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="currentuser">CurrentUser</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>username</code></td>
+<td><code>username</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>email</code></td>
+<td><code>email</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td><code>displayName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>roles</code></td>
+<td><code>roles</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>access_codes</code></td>
+<td><code>accessCodes</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="loginprovider">LoginProvider</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>login_url</code></td>
+<td><code>loginUrl</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="../rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../../assets/js/main.js" defer></script>
+</body>
+</html>

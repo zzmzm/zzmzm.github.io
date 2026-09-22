@@ -1,0 +1,3795 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>system.proto — System settings, health, dashboards, updates, and declarative apply — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Schema: tiyi.v1 · system.proto · English guide · 中文指南 · Full RPC index" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../../../index.html#features">Features</a>
+      <a href="../../../index.html#tour">Product</a>
+      <a href="../../../index.html#pricing">Pricing</a>
+      <a href="../../index.html" style="color:var(--fg)">Docs</a>
+      <a href="../../../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../zh/docs/reference/services/system.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="../../index.html">Overview</a></li>
+        <li><a href="../../quickstart.html">Quickstart</a></li>
+        <li><a href="../../installation.html">Installation</a></li>
+        <li><a href="../../configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="../../practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="../../operations.html">Operations guide</a></li>
+        <li><a href="../../troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="../../upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="../../site-import.html">Import / export sites</a></li>
+        <li><a href="../../api-protection.html">API protection</a></li>
+        <li><a href="../../responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="../../concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI reference</a></li>
+        <li><a href="../../api.html">API reference</a></li>
+        <li><a href="../index.html">Full reference</a></li>
+        <li><a href="../rpc-index.html">All RPCs</a></li>
+        <li><a href="../permissions.html">Permissions</a></li>
+        <li><a href="../cli-options.html">All CLI flags</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="../../deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="systemproto-system-settings-health-dashboards-updates-and-declarative-apply">system.proto — System settings, health, dashboards, updates, and declarative apply</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>system.proto</code> · <a href="../../api.html">English guide</a> · <a href="../../../zh/docs/api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="systemservice">SystemService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#systemservicehealth"><code>Health</code></a></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemserviceversion"><code>Version</code></a></td>
+<td>unary</td>
+<td>authenticated</td>
+</tr>
+<tr>
+<td><a href="#systemservicegetsystemsettings"><code>GetSystemSettings</code></a></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemserviceupdatesystemsettings"><code>UpdateSystemSettings</code></a></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemserviceimportlicense"><code>ImportLicense</code></a></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicegetdashboardstats"><code>GetDashboardStats</code></a></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicegetdashboardoverview"><code>GetDashboardOverview</code></a></td>
+<td>unary</td>
+<td><code>site:read</code> and <code>telemetry:read</code></td>
+</tr>
+<tr>
+<td><a href="#systemservicegettraffictimeseries"><code>GetTrafficTimeseries</code></a></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicegetattackdistribution"><code>GetAttackDistribution</code></a></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicegettopattackers"><code>GetTopAttackers</code></a></td>
+<td>unary</td>
+<td>(<code>site:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicepreviewapply"><code>PreviewApply</code></a></td>
+<td>unary</td>
+<td>(<code>system:apply</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemserviceapply"><code>Apply</code></a></td>
+<td>unary</td>
+<td>(<code>system:apply</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicelistbinaryreleases"><code>ListBinaryReleases</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicegetbinaryrelease"><code>GetBinaryRelease</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemserviceimportbinaryrelease"><code>ImportBinaryRelease</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicedeletebinaryrelease"><code>DeleteBinaryRelease</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemserviceapplybinaryrelease"><code>ApplyBinaryRelease</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:apply</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicerollbackbinaryrelease"><code>RollbackBinaryRelease</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:apply</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicelistsystemcrsrulesets"><code>ListSystemCrsRulesets</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicegetsystemcrsruleset"><code>GetSystemCrsRuleset</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemserviceimportcrsruleset"><code>ImportCrsRuleset</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicedeletecrsruleset"><code>DeleteCrsRuleset</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicelistupgraderuns"><code>ListUpgradeRuns</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicegetupgraderun"><code>GetUpgradeRun</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicestreamupgraderun"><code>StreamUpgradeRun</code></a></td>
+<td>server stream</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicecancelupgraderun"><code>CancelUpgradeRun</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:apply</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicecheckforupdates"><code>CheckForUpdates</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicelistupstreamcrsreleases"><code>ListUpstreamCrsReleases</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicegetobservationpipelinestats"><code>GetObservationPipelineStats</code></a></td>
+<td>unary</td>
+<td>(<code>system:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicelistgeodatabases"><code>ListGeoDatabases</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicedownloadgeodatabase"><code>DownloadGeoDatabase</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemserviceuploadgeodatabase"><code>UploadGeoDatabase</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#systemservicedeletegeodatabase"><code>DeleteGeoDatabase</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="systemservicehealth">SystemService.Health</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/Health</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.HealthRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.HealthResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>controller_id</code></td>
+<td><code>controllerId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>deployment_id</code></td>
+<td><code>deploymentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>checks</code></td>
+<td><code>checks</code></td>
+<td><a href="#systemhealthcheck"><code>SystemHealthCheck</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>checked_at</code></td>
+<td><code>checkedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>config_revision</code></td>
+<td><code>configRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>active_sites</code></td>
+<td><code>activeSites</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>remote_agents_connected</code></td>
+<td><code>remoteAgentsConnected</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemserviceversion">SystemService.Version</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/Version</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> authenticated</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.VersionRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.VersionResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>build</code></td>
+<td><code>build</code></td>
+<td><a href="common.html#buildinfo"><code>BuildInfo</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>license</code></td>
+<td><code>license</code></td>
+<td><a href="#licensestatus"><code>LicenseStatus</code></a></td>
+<td>singular</td>
+<td>LICENSE-GATE</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicegetsystemsettings">SystemService.GetSystemSettings</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/GetSystemSettings</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSystemSettingsRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSystemSettingsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>settings</code></td>
+<td><code>settings</code></td>
+<td><a href="#systemsettings"><code>SystemSettings</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemserviceupdatesystemsettings">SystemService.UpdateSystemSettings</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/UpdateSystemSettings</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdateSystemSettingsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>values</code></td>
+<td><code>values</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdateSystemSettingsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>settings</code></td>
+<td><code>settings</code></td>
+<td><a href="#systemsettings"><code>SystemSettings</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>application</code></td>
+<td><code>application</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>The settings have committed. Application is separate from persistence.</td>
+</tr>
+<tr>
+<td><code>apply_error</code></td>
+<td><code>applyError</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemserviceimportlicense">SystemService.ImportLicense</h3>
+<p>LICENSE-GATE</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/ImportLicense</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ImportLicenseRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>license</code></td>
+<td><code>license</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>raw bytes of the signed license file. <em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ImportLicenseResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#licensestatus"><code>LicenseStatus</code></a></td>
+<td>singular</td>
+<td>the resulting (verified, possibly expired) status.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicegetdashboardstats">SystemService.GetDashboardStats</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/GetDashboardStats</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetDashboardStatsRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.GetDashboardStatsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stats</code></td>
+<td><code>stats</code></td>
+<td><a href="#dashboardstats"><code>DashboardStats</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicegetdashboardoverview">SystemService.GetDashboardOverview</h3>
+<p>Returns the complete dashboard read model in one bounded request. The richer telemetry rankings require both site and telemetry visibility.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/GetDashboardOverview</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>site:read</code> and <code>telemetry:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetDashboardOverviewRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>bucket_size</code></td>
+<td><code>bucketSize</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_k_limit</code></td>
+<td><code>topKLimit</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Applies to every ranking. The server defaults to 10 and caps at 100.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetDashboardOverviewResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>Actual immutable snapshot scope, including when a cached response is served.</td>
+</tr>
+<tr>
+<td><code>traffic_bucket_seconds</code></td>
+<td><code>trafficBucketSeconds</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>stats</code></td>
+<td><code>stats</code></td>
+<td><a href="#dashboardstats"><code>DashboardStats</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>traffic</code></td>
+<td><code>traffic</code></td>
+<td><a href="#trafficpoint"><code>TrafficPoint</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>attack_distribution</code></td>
+<td><code>attackDistribution</code></td>
+<td><a href="#attackdistributionitem"><code>AttackDistributionItem</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_attackers</code></td>
+<td><code>topAttackers</code></td>
+<td><a href="#topattacker"><code>TopAttacker</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_statuses</code></td>
+<td><code>topStatuses</code></td>
+<td><a href="#dashboardtopk"><code>DashboardTopK</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_paths</code></td>
+<td><code>topPaths</code></td>
+<td><a href="#dashboardtopk"><code>DashboardTopK</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_user_agents</code></td>
+<td><code>topUserAgents</code></td>
+<td><a href="#dashboardtopk"><code>DashboardTopK</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_sites</code></td>
+<td><code>topSites</code></td>
+<td><a href="#dashboardtopsite"><code>DashboardTopSite</code></a></td>
+<td>repeated</td>
+<td>Empty for a site-scoped request: ranking one selected site against itself is not useful and preserving this distinction avoids a semantic surprise when the operator changes the dashboard site selector.</td>
+</tr>
+<tr>
+<td><code>other_sites_total</code></td>
+<td><code>otherSitesTotal</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>security_top_attackers</code></td>
+<td><code>securityTopAttackers</code></td>
+<td><a href="#dashboardsecuritytopk"><code>DashboardSecurityTopK</code></a></td>
+<td>singular</td>
+<td>SecurityFact-derived rankings. These are separate from the all-traffic top_paths/top_sites fields above so their semantics cannot be confused.</td>
+</tr>
+<tr>
+<td><code>security_top_sites</code></td>
+<td><code>securityTopSites</code></td>
+<td><a href="#dashboardsecuritytopk"><code>DashboardSecurityTopK</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_top_targets</code></td>
+<td><code>securityTopTargets</code></td>
+<td><a href="#dashboardsecuritytopk"><code>DashboardSecurityTopK</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_top_attack_types</code></td>
+<td><code>securityTopAttackTypes</code></td>
+<td><a href="#dashboardsecuritytopk"><code>DashboardSecurityTopK</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_top_rules</code></td>
+<td><code>securityTopRules</code></td>
+<td><a href="#dashboardsecuritytopk"><code>DashboardSecurityTopK</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_top_methods</code></td>
+<td><code>securityTopMethods</code></td>
+<td><a href="#dashboardsecuritytopk"><code>DashboardSecurityTopK</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>freshness</code></td>
+<td><code>freshness</code></td>
+<td><a href="#dashboardfreshness"><code>DashboardFreshness</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>traffic_quality</code></td>
+<td><code>trafficQuality</code></td>
+<td><a href="#dashboardtrafficquality"><code>DashboardTrafficQuality</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_methods</code></td>
+<td><code>topMethods</code></td>
+<td><a href="#dashboardtopk"><code>DashboardTopK</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_http_versions</code></td>
+<td><code>topHttpVersions</code></td>
+<td><a href="#dashboardtopk"><code>DashboardTopK</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_transport_versions</code></td>
+<td><code>topTransportVersions</code></td>
+<td><a href="#dashboardtopk"><code>DashboardTopK</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>security_top_countries</code></td>
+<td><code>securityTopCountries</code></td>
+<td><a href="#dashboardsecuritytopk"><code>DashboardSecurityTopK</code></a></td>
+<td>singular</td>
+<td>Country distribution derived from the bounded attacker heavy-hitter set. other_count includes attackers outside that set and IPs that cannot be resolved by the currently installed Country database.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicegettraffictimeseries">SystemService.GetTrafficTimeseries</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/GetTrafficTimeseries</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetTrafficTimeseriesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>bucket_size</code></td>
+<td><code>bucketSize</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetTrafficTimeseriesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>points</code></td>
+<td><code>points</code></td>
+<td><a href="#trafficpoint"><code>TrafficPoint</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicegetattackdistribution">SystemService.GetAttackDistribution</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/GetAttackDistribution</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetAttackDistributionRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td><code>limit</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetAttackDistributionResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#attackdistributionitem"><code>AttackDistributionItem</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicegettopattackers">SystemService.GetTopAttackers</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/GetTopAttackers</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>site:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetTopAttackersRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>time_range</code></td>
+<td><code>timeRange</code></td>
+<td><a href="common.html#timerange"><code>TimeRange</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td><code>limit</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetTopAttackersResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#topattacker"><code>TopAttacker</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicepreviewapply">SystemService.PreviewApply</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/PreviewApply</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:apply</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.PreviewApplyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>manifest_yaml</code></td>
+<td><code>manifestYaml</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.PreviewApplyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plan</code></td>
+<td><code>plan</code></td>
+<td><a href="#applyplan"><code>ApplyPlan</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemserviceapply">SystemService.Apply</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/Apply</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:apply</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ApplyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>manifest_yaml</code></td>
+<td><code>manifestYaml</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>dry_run</code></td>
+<td><code>dryRun</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ApplyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plan</code></td>
+<td><code>plan</code></td>
+<td><a href="#applyplan"><code>ApplyPlan</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>results</code></td>
+<td><code>results</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicelistbinaryreleases">SystemService.ListBinaryReleases</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/ListBinaryReleases</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListBinaryReleasesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListBinaryReleasesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#binaryrelease"><code>BinaryRelease</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicegetbinaryrelease">SystemService.GetBinaryRelease</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/GetBinaryRelease</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetBinaryReleaseRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetBinaryReleaseResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>release</code></td>
+<td><code>release</code></td>
+<td><a href="#binaryrelease"><code>BinaryRelease</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemserviceimportbinaryrelease">SystemService.ImportBinaryRelease</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/ImportBinaryRelease</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ImportBinaryReleaseRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tarball</code></td>
+<td><code>tarball</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>source_url</code></td>
+<td><code>sourceUrl</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ImportBinaryReleaseResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>release</code></td>
+<td><code>release</code></td>
+<td><a href="#binaryrelease"><code>BinaryRelease</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicedeletebinaryrelease">SystemService.DeleteBinaryRelease</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/DeleteBinaryRelease</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteBinaryReleaseRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteBinaryReleaseResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemserviceapplybinaryrelease">SystemService.ApplyBinaryRelease</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/ApplyBinaryRelease</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:apply</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ApplyBinaryReleaseRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>release_id</code></td>
+<td><code>releaseId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent_ids</code></td>
+<td><code>agentIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ApplyBinaryReleaseResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run</code></td>
+<td><code>run</code></td>
+<td><a href="#upgraderun"><code>UpgradeRun</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicerollbackbinaryrelease">SystemService.RollbackBinaryRelease</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/RollbackBinaryRelease</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:apply</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.RollbackBinaryReleaseRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent_ids</code></td>
+<td><code>agentIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.RollbackBinaryReleaseResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run</code></td>
+<td><code>run</code></td>
+<td><a href="#upgraderun"><code>UpgradeRun</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicelistsystemcrsrulesets">SystemService.ListSystemCrsRulesets</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/ListSystemCrsRulesets</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListSystemCrsRulesetsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListSystemCrsRulesetsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="rule.html#crsruleset"><code>CrsRuleset</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicegetsystemcrsruleset">SystemService.GetSystemCrsRuleset</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/GetSystemCrsRuleset</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSystemCrsRulesetRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSystemCrsRulesetResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ruleset</code></td>
+<td><code>ruleset</code></td>
+<td><a href="rule.html#crsruleset"><code>CrsRuleset</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemserviceimportcrsruleset">SystemService.ImportCrsRuleset</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/ImportCrsRuleset</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ImportCrsRulesetRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>archive</code></td>
+<td><code>archive</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>source_url</code></td>
+<td><code>sourceUrl</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>github_tag</code></td>
+<td><code>githubTag</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>When set, the server fetches the CRS release tarball from GitHub (https://github.com/coreruleset/coreruleset/releases/tag/<github_tag>), extracts it to a local cache, and imports the rules from there. Takes precedence over source_url when both are set.</github_tag></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ImportCrsRulesetResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ruleset</code></td>
+<td><code>ruleset</code></td>
+<td><a href="rule.html#crsruleset"><code>CrsRuleset</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicedeletecrsruleset">SystemService.DeleteCrsRuleset</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/DeleteCrsRuleset</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteCrsRulesetRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteCrsRulesetResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicelistupgraderuns">SystemService.ListUpgradeRuns</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/ListUpgradeRuns</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListUpgradeRunsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListUpgradeRunsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#upgraderun"><code>UpgradeRun</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicegetupgraderun">SystemService.GetUpgradeRun</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/GetUpgradeRun</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetUpgradeRunRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetUpgradeRunResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run</code></td>
+<td><code>run</code></td>
+<td><a href="#upgraderun"><code>UpgradeRun</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicestreamupgraderun">SystemService.StreamUpgradeRun</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/StreamUpgradeRun</code></li>
+<li><strong>Kind</strong> server stream — server-streaming; the response is a stream of messages</li>
+<li><strong>Auth</strong> (<code>system:update:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StreamUpgradeRunRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run_id</code></td>
+<td><code>runId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StreamUpgradeRunResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event</code></td>
+<td><code>event</code></td>
+<td><a href="#upgraderunevent"><code>UpgradeRunEvent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicecancelupgraderun">SystemService.CancelUpgradeRun</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/CancelUpgradeRun</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:apply</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CancelUpgradeRunRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run_id</code></td>
+<td><code>runId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CancelUpgradeRunResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run</code></td>
+<td><code>run</code></td>
+<td><a href="#upgraderun"><code>UpgradeRun</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicecheckforupdates">SystemService.CheckForUpdates</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/CheckForUpdates</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CheckForUpdatesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>channel</code></td>
+<td><code>channel</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CheckForUpdatesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>releases</code></td>
+<td><code>releases</code></td>
+<td><a href="#binaryrelease"><code>BinaryRelease</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>crs_rulesets</code></td>
+<td><code>crsRulesets</code></td>
+<td><a href="rule.html#crsruleset"><code>CrsRuleset</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>unconfigured, no_release, current, available</td>
+</tr>
+<tr>
+<td><code>checked_at</code></td>
+<td><code>checkedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td><code>channel</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicelistupstreamcrsreleases">SystemService.ListUpstreamCrsReleases</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/ListUpstreamCrsReleases</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListUpstreamCrsReleasesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>limit</code></td>
+<td><code>limit</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Maximum number of releases to return (default 20, max 100).</td>
+</tr>
+<tr>
+<td><code>include_prerelease</code></td>
+<td><code>includePrerelease</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>If true, include pre-release and draft releases.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListUpstreamCrsReleasesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>releases</code></td>
+<td><code>releases</code></td>
+<td><a href="#upstreamcrsrelease"><code>UpstreamCrsRelease</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicegetobservationpipelinestats">SystemService.GetObservationPipelineStats</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/GetObservationPipelineStats</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetObservationPipelineStatsRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.GetObservationPipelineStatsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stats</code></td>
+<td><code>stats</code></td>
+<td><a href="#observationpipelinestats"><code>ObservationPipelineStats</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicelistgeodatabases">SystemService.ListGeoDatabases</h3>
+<p>DB-IP Lite geo-IP datasets (country/city/asn). See internal/controlplane/geofetch. Each RPC is per (tenant, kind); a deployment typically installs at least the Country DB to enrich logs with geographic context. Enforcement IP lists accept only literal IP addresses and CIDR prefixes.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/ListGeoDatabases</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListGeoDatabasesRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.ListGeoDatabasesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#geodatabase"><code>GeoDatabase</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicedownloadgeodatabase">SystemService.DownloadGeoDatabase</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/DownloadGeoDatabase</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DownloadGeoDatabaseRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>country | city | asn</td>
+</tr>
+<tr>
+<td><code>month</code></td>
+<td><code>month</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional YYYY-MM override. Empty → current month then previous.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DownloadGeoDatabaseResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>database</code></td>
+<td><code>database</code></td>
+<td><a href="#geodatabase"><code>GeoDatabase</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemserviceuploadgeodatabase">SystemService.UploadGeoDatabase</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/UploadGeoDatabase</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UploadGeoDatabaseRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>country | city | asn</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Operator-supplied label for the UI (e.g. "2026-05-custom"); if empty the server derives one from the MMDB build timestamp.</td>
+</tr>
+<tr>
+<td><code>payload</code></td>
+<td><code>payload</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>Raw .mmdb or .mmdb.gz bytes. The fetcher transparently handles either. <em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UploadGeoDatabaseResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>database</code></td>
+<td><code>database</code></td>
+<td><a href="#geodatabase"><code>GeoDatabase</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemservicedeletegeodatabase">SystemService.DeleteGeoDatabase</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.SystemService/DeleteGeoDatabase</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteGeoDatabaseRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteGeoDatabaseResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="applychange">ApplyChange</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td><code>action</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>diff</code></td>
+<td><code>diff</code></td>
+<td><a href="common.html#jsonpatch"><code>JsonPatch</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="applyplan">ApplyPlan</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>changes</code></td>
+<td><code>changes</code></td>
+<td><a href="#applychange"><code>ApplyChange</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td><code>warnings</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="attackdistributionitem">AttackDistributionItem</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tag</code></td>
+<td><code>tag</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>count</code></td>
+<td><code>count</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="binaryrelease">BinaryRelease</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td><code>channel</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sha256</code></td>
+<td><code>sha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>signature</code></td>
+<td><code>signature</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>imported_at</code></td>
+<td><code>importedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="dashboardfreshness">DashboardFreshness</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>as_of</code></td>
+<td><code>asOf</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>resolution_seconds</code></td>
+<td><code>resolutionSeconds</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>stale</code></td>
+<td><code>stale</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>snapshot_age_ms</code></td>
+<td><code>snapshotAgeMs</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>Age of the complete cached Overview response. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>snapshot_stale</code></td>
+<td><code>snapshotStale</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>observation_degraded</code></td>
+<td><code>observationDegraded</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>The security observation lane sampled events under recent pressure. Exact counters and rankings are unaffected; Event Analysis and drill-down logs are based on retained samples.</td>
+</tr>
+<tr>
+<td><code>observation_dropped</code></td>
+<td><code>observationDropped</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td>Process-lifetime count of sampled audit log records after full counters. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>observation_last_drop_at</code></td>
+<td><code>observationLastDropAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>waf_overload_state</code></td>
+<td><code>wafOverloadState</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Live node-local WAF pressure chain: resource pressure, Coraza causality, and the action currently selected by the overload controller.</td>
+</tr>
+<tr>
+<td><code>waf_agent_cpu_percent</code></td>
+<td><code>wafAgentCpuPercent</code></td>
+<td><code>double</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>waf_coraza_demand_percent</code></td>
+<td><code>wafCorazaDemandPercent</code></td>
+<td><code>double</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>waf_phase_p99_millis</code></td>
+<td><code>wafPhaseP99Millis</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>waf_overload_action</code></td>
+<td><code>wafOverloadAction</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>waf_probe_percent</code></td>
+<td><code>wafProbePercent</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>waf_overload_last_transition_at</code></td>
+<td><code>wafOverloadLastTransitionAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>waf_overload_node_id</code></td>
+<td><code>wafOverloadNodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Worst currently affected node selected from the existing local/Agent health projections. active_nodes counts degraded + recovering nodes.</td>
+</tr>
+<tr>
+<td><code>waf_overload_node_name</code></td>
+<td><code>wafOverloadNodeName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>waf_overload_active_nodes</code></td>
+<td><code>wafOverloadActiveNodes</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>remote_observation_coverage</code></td>
+<td><code>remoteObservationCoverage</code></td>
+<td><a href="common.html#observationcoverage"><code>ObservationCoverage</code></a></td>
+<td>singular</td>
+<td>Current remote delivery state. Dashboard totals remain available but are explicitly lower bounds while any fresh online Agent reports a gap.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dashboardsecuritytopk">DashboardSecurityTopK</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#dashboardsecuritytopkitem"><code>DashboardSecurityTopKItem</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>other_count</code></td>
+<td><code>otherCount</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>total_weight</code></td>
+<td><code>totalWeight</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>unavailable_reason</code></td>
+<td><code>unavailableReason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dashboardsecuritytopkitem">DashboardSecurityTopKItem</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key</code></td>
+<td><code>key</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>count</code></td>
+<td><code>count</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>geo</code></td>
+<td><code>geo</code></td>
+<td><a href="common.html#networkgeo"><code>NetworkGeo</code></a></td>
+<td>singular</td>
+<td>Populated only for source-IP dimensions when GeoIP data is available.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dashboardstats">DashboardStats</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sites_enabled</code></td>
+<td><code>sitesEnabled</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>log_mode_degraded_sites</code></td>
+<td><code>logModeDegradedSites</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>certs_expiring_14d</code></td>
+<td><code>certsExpiring14d</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>ACME / certificate renewal observability (Phase D). All counters are tenant-scoped and do not include soft-deleted rows.</td>
+</tr>
+<tr>
+<td><code>certs_expiring_30d</code></td>
+<td><code>certsExpiring30d</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>acme_renewals_failed_24h</code></td>
+<td><code>acmeRenewalsFailed24h</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>acme_orders_pending</code></td>
+<td><code>acmeOrdersPending</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>acme_last_valid_at</code></td>
+<td><code>acmeLastValidAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>nodes_online</code></td>
+<td><code>nodesOnline</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Role-free node counts: the built-in local data plane plus enrolled remote Agents. A healthy single-node deployment reports 1 / 1.</td>
+</tr>
+<tr>
+<td><code>nodes_total</code></td>
+<td><code>nodesTotal</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dashboardtopk">DashboardTopK</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#dashboardtopkitem"><code>DashboardTopKItem</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>other_total</code></td>
+<td><code>otherTotal</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>other_blocked</code></td>
+<td><code>otherBlocked</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="dashboardtopkitem">DashboardTopKItem</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key</code></td>
+<td><code>key</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>total</code></td>
+<td><code>total</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>blocked</code></td>
+<td><code>blocked</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="dashboardtopsite">DashboardTopSite</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>total</code></td>
+<td><code>total</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>blocked</code></td>
+<td><code>blocked</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="dashboardtrafficquality">DashboardTrafficQuality</h3>
+<p>Exact request-quality totals over the same time/site scope as Overview. Rates are intentionally calculated by clients so zero-total semantics stay explicit and the wire values remain lossless integer counters.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>total</code></td>
+<td><code>total</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>status_2xx</code></td>
+<td><code>status2xx</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>status_3xx</code></td>
+<td><code>status3xx</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>status_4xx</code></td>
+<td><code>status4xx</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>status_5xx</code></td>
+<td><code>status5xx</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>slow_requests</code></td>
+<td><code>slowRequests</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>gateway_errors</code></td>
+<td><code>gatewayErrors</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>duration_sum_micros</code></td>
+<td><code>durationSumMicros</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>business_requests</code></td>
+<td><code>businessRequests</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>Requests that were not terminated by a trusted Tiyi enforcement action. Dashboard quality rates use this denominator so protection traffic does not dilute application availability or latency. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>business_status_4xx</code></td>
+<td><code>businessStatus4xx</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>business_status_5xx</code></td>
+<td><code>businessStatus5xx</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>business_slow_requests</code></td>
+<td><code>businessSlowRequests</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>business_very_slow_requests</code></td>
+<td><code>businessVerySlowRequests</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>business_duration_sum_micros</code></td>
+<td><code>businessDurationSumMicros</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>top_business_4xx_status</code></td>
+<td><code>topBusiness4xxStatus</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_business_4xx_count</code></td>
+<td><code>topBusiness4xxCount</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>top_business_5xx_status</code></td>
+<td><code>topBusiness5xxStatus</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>top_business_5xx_count</code></td>
+<td><code>topBusiness5xxCount</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="geodatabase">GeoDatabase</h3>
+<p>GeoDatabase is the metadata projection the UI consumes (no blob). Kind is "country", "city", or "asn". License: DB-IP Lite is CC-BY-4.0, the UI surfaces the attribution whenever the table is populated.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>online | offline</td>
+</tr>
+<tr>
+<td><code>sha256</code></td>
+<td><code>sha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>size_bytes</code></td>
+<td><code>sizeBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>build_epoch</code></td>
+<td><code>buildEpoch</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>MMDB build timestamp (unix seconds) <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>node_count</code></td>
+<td><code>nodeCount</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>fetched_at</code></td>
+<td><code>fetchedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>activation_status</code></td>
+<td><code>activationStatus</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Country only: pending | activating | active | failed. City/ASN report not_applicable. A failed state is retried independently of auto-download.</td>
+</tr>
+<tr>
+<td><code>activated_sha256</code></td>
+<td><code>activatedSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>last_activation_error</code></td>
+<td><code>lastActivationError</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>activation_attempted_at</code></td>
+<td><code>activationAttemptedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>activated_at</code></td>
+<td><code>activatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="licensestatus">LicenseStatus</h3>
+<p>LicenseStatus is the scale-gate status surfaced on the About page (docs/design/licensing-scale-gate.md § 3.7). No new service or page: it rides on the existing SystemService.Version response.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>edition</code></td>
+<td><code>edition</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>"Community (single node)" or, in Phase 2, the plan.</td>
+</tr>
+<tr>
+<td><code>remote_nodes</code></td>
+<td><code>remoteNodes</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>deployment-wide live remote-agent count.</td>
+</tr>
+<tr>
+<td><code>max_remote_nodes</code></td>
+<td><code>maxRemoteNodes</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>node budget; 0 for unlicensed Community.</td>
+</tr>
+<tr>
+<td><code>licensee</code></td>
+<td><code>licensee</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Signed-license display fields. Empty/unset for unlicensed Community.</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>expiresAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td>license expiry; unset = perpetual. <em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>built_in, stored, file</td>
+</tr>
+<tr>
+<td><code>import_supported</code></td>
+<td><code>importSupported</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>community, valid, expired, invalid</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td><code>error</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="observationlanestats">ObservationLaneStats</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>attempted</code></td>
+<td><code>attempted</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>admitted</code></td>
+<td><code>admitted</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>written</code></td>
+<td><code>written</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>dropped</code></td>
+<td><code>dropped</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>retried</code></td>
+<td><code>retried</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>panicked</code></td>
+<td><code>panicked</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>pending_items</code></td>
+<td><code>pendingItems</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>pending_bytes</code></td>
+<td><code>pendingBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>capacity</code></td>
+<td><code>capacity</code></td>
+<td><code>int64</code></td>
+<td>optional (explicit)</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>last_error</code></td>
+<td><code>lastError</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>last_error_at</code></td>
+<td><code>lastErrorAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>sampled</code></td>
+<td><code>sampled</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td>Intentionally shed before admission to protect the request path. This is degraded sampling coverage, not an unexpected post-admission loss. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>sampled_client_limit</code></td>
+<td><code>sampledClientLimit</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td>Repeats collapsed by the per-client fairness budget. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>sampled_global_budget</code></td>
+<td><code>sampledGlobalBudget</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td>Shed because the node-wide coverage/repeat budget was exhausted. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>sampled_queue_pressure</code></td>
+<td><code>sampledQueuePressure</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td>Shed because reserved queue items or bytes were exhausted. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>byte_capacity</code></td>
+<td><code>byteCapacity</code></td>
+<td><code>int64</code></td>
+<td>optional (explicit)</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>last_success_at</code></td>
+<td><code>lastSuccessAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td><code>displayName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code>state</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>ready, disabled or unavailable; lifetime counters remain independent.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="observationpipelinestats">ObservationPipelineStats</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lanes</code></td>
+<td><code>lanes</code></td>
+<td><a href="#observationlanestats"><code>ObservationLaneStats</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>panicked_total</code></td>
+<td><code>panickedTotal</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>boundary_panics</code></td>
+<td><code>boundaryPanics</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>invalid_envelopes</code></td>
+<td><code>invalidEnvelopes</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>late_detail_beyond_retention</code></td>
+<td><code>lateDetailBeyondRetention</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>data_plane_requests</code></td>
+<td><code>dataPlaneRequests</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>data_plane_blocked</code></td>
+<td><code>dataPlaneBlocked</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>active_connections</code></td>
+<td><code>activeConnections</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>late_metric_beyond_retention</code></td>
+<td><code>lateMetricBeyondRetention</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>available</code></td>
+<td><code>available</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>epoch</code></td>
+<td><code>epoch</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>started_at</code></td>
+<td><code>startedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>observed_at</code></td>
+<td><code>observedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>siem_delivery_losses</code></td>
+<td><code>siemDeliveryLosses</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemhealthcheck">SystemHealthCheck</h3>
+<p>Independent current component observation. status is healthy, unhealthy or unknown.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>component</code></td>
+<td><code>component</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code>message</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>checked_at</code></td>
+<td><code>checkedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>duration_ms</code></td>
+<td><code>durationMs</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="systemsettings">SystemSettings</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>values</code></td>
+<td><code>values</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>sources</code></td>
+<td><code>sources</code></td>
+<td>map&lt;<code>string</code>, <code>string</code>&gt;</td>
+<td>map</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="topattacker">TopAttacker</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>client_ip</code></td>
+<td><code>clientIp</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>count</code></td>
+<td><code>count</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>top_tags</code></td>
+<td><code>topTags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>geo</code></td>
+<td><code>geo</code></td>
+<td><a href="common.html#networkgeo"><code>NetworkGeo</code></a></td>
+<td>singular</td>
+<td>Best-effort source-network context; absent when GeoIP cannot resolve it.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trafficpoint">TrafficPoint</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bucket_start</code></td>
+<td><code>bucketStart</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>total</code></td>
+<td><code>total</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>blocked</code></td>
+<td><code>blocked</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>bytes_in</code></td>
+<td><code>bytesIn</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>Exact HTTP payload bytes for this bucket. bytes_in is request-body data read from clients; bytes_out is response-body data written to clients. Headers, TLS and transport framing are intentionally excluded. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>bytes_out</code></td>
+<td><code>bytesOut</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>interval_seconds</code></td>
+<td><code>intervalSeconds</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>Effective wall-clock coverage of this bucket. The first and last buckets may be partial when the requested range is not bucket-aligned. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="upgraderun">UpgradeRun</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>target_version</code></td>
+<td><code>targetVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#upgraderunstatus"><code>UpgradeRunStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>started_at</code></td>
+<td><code>startedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>finished_at</code></td>
+<td><code>finishedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="upgraderunevent">UpgradeRunEvent</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run_id</code></td>
+<td><code>runId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><a href="#upgraderuneventkind"><code>UpgradeRunEventKind</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>occurred_at</code></td>
+<td><code>occurredAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>payload</code></td>
+<td><code>payload</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="upstreamcrsrelease">UpstreamCrsRelease</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tag</code></td>
+<td><code>tag</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>published_at</code></td>
+<td><code>publishedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>tarball_url</code></td>
+<td><code>tarballUrl</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>prerelease</code></td>
+<td><code>prerelease</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>draft</code></td>
+<td><code>draft</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td><code>body</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="enums">Enums</h2>
+<h3 id="upgraderuneventkind">UpgradeRunEventKind</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UPGRADE_RUN_EVENT_KIND_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>UPGRADE_RUN_EVENT_KIND_WAVE_STARTED</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>UPGRADE_RUN_EVENT_KIND_NODE_UPDATED</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>UPGRADE_RUN_EVENT_KIND_NODE_FAILED</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>UPGRADE_RUN_EVENT_KIND_WAVE_COMPLETED</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>UPGRADE_RUN_EVENT_KIND_RUN_SUCCEEDED</code></td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>UPGRADE_RUN_EVENT_KIND_RUN_FAILED</code></td>
+<td>6</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>UPGRADE_RUN_EVENT_KIND_RUN_CANCELED</code></td>
+<td>7</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="upgraderunstatus">UpgradeRunStatus</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UPGRADE_RUN_STATUS_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>UPGRADE_RUN_STATUS_PENDING</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>UPGRADE_RUN_STATUS_RUNNING</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>UPGRADE_RUN_STATUS_SUCCEEDED</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>UPGRADE_RUN_STATUS_FAILED</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>UPGRADE_RUN_STATUS_CANCELED</code></td>
+<td>5</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← Previous</span><span class="title">API integration</span></a><a class="next" href="../rpc-index.html"><span class="label">Next →</span><span class="title">All RPCs</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

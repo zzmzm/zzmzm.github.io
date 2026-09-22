@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>快速开始 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="安装、运行并验证太一在五分钟内拦截真实攻击。" />
+<meta name="description" content="用几分钟，从一台干净的 Linux 主机走到太一拦截真实攻击。我们会安装太一、打开控制台、创建一个站点，再用几个请求看看 WAF 如何保护它。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,8 +46,10 @@
       <h4>开始使用</h4>
       <ul>
         <li><a href="index.html">概览</a></li>
-        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="quickstart.html" aria-current="page">快速开始</a></li>
         <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -56,145 +58,178 @@
         <li><a href="operations.html">日常运维</a></li>
         <li><a href="troubleshooting.html">排障</a></li>
         <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
       <h4>核心概念</h4>
-      <ul><li><a href="concepts.html">领域模型</a></li></ul>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
     </div>
     <div class="docs-nav-group">
       <h4>参考</h4>
       <ul>
         <li><a href="cli.html">CLI 参考</a></li>
         <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
       <h4>生产环境</h4>
-      <ul><li><a href="deployment.html">部署</a></li></ul>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
     </div>
   </aside>
 
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">开始使用</span>
-    <h1>快速开始</h1>
-    <p class="lede">从一台干净的 Linux 主机到一个太一实例拦截真实 OWASP CRS 攻击，只需要五分钟。我们会安装签名二进制、启动 <code>tiyi run</code>、创建一个站点，并看 WAF 干活。</p>
+<span class="docs-eyebrow">开始使用</span>
+<h1 id="快速开始">快速开始</h1>
+<p class="lede">用几分钟，从一台干净的 Linux 主机走到太一拦截真实攻击。我们会安装太一、打开控制台、创建一个站点，再用几个请求看看 WAF 如何保护它。</p>
+<a id="前置条件"></a>
+<h2 id="prerequisites">前置条件</h2>
+<ul>
+<li>一台 <strong>Linux amd64 或 arm64</strong> 主机。默认安装使用 sudo 和 systemd。</li>
+<li>在线安装需要 <strong>curl、tar、sha256sum</strong>，以及可访问发行包的网络。</li>
+<li>一个太一能访问的 HTTP 后端。没有现成应用也没关系，下面用 Python 3 启动一个演示后端。</li>
+</ul>
+<p>本页默认使用网站端口 <strong>80 / 443</strong> 和管理端口 <strong>8080</strong>。需要<a href="#manual">手动分步骤</a>、<a href="#custom-ports">自定义端口</a>或<a href="#offline">离线安装</a>，可以直接跳到相应段落。</p>
+<div class="callout callout-info"><div class="callout-body">
+<p><strong>已有太一安装？</strong> 请先阅读<a href="upgrade-migration.html">升级与迁移</a>。下面的安装命令用于新主机。</p>
+</div></div>
+<a id="1-安装并启动太一"></a>
+<a id="one-line"></a>
+<h2 id="install">1. 安装并启动太一</h2>
+<p>在太一主机执行：</p>
+<pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh | bash <span class="o">&amp;&amp;</span> sudo tiyi install --now
+</code></pre>
+<p>前半段下载并校验最新稳定版二进制，安装到 <code>/usr/local/bin</code>；后半段安装 systemd 服务，立即启动并设置开机自启。
+网站默认使用 <strong>80 / 443</strong>，控制台使用 <strong>8080</strong>。HTTPS 会在配置 TLS 站点和证书后提供服务；此时还没有 443 监听是正常的。</p>
+<p>首次安装会在当前终端打印登录信息，密码以实际输出为准：</p>
+<pre><code class="language-text"><span class="c">Tiyi administrator created
+  username:  admin
+  password:  &lt;your-generated-one-time-password&gt;
+</span></code></pre>
+<p>用下面两条命令确认版本与运行状态：</p>
+<pre><code class="language-sh">tiyi --version
+sudo tiyi system health
+</code></pre>
+<p>启动失败时，运行 <code>sudo journalctl -u tiyi -n 100 --no-pager</code>，对照<a href="troubleshooting.html">排障指南</a>。没有 systemd 的主机见<a href="installation.html#foreground">前台运行</a>。</p>
+<a id="2-打开控制台"></a>
+<a id="login"></a>
+<h2 id="run">2. 打开控制台</h2>
+<p>在浏览器打开 <code>http://服务器IP:8080</code>，将“服务器IP”换成安装太一的主机 IP。
+太一默认监听 <code>0.0.0.0:8080</code>。使用 <strong>admin</strong> 和安装时终端显示的密码登录，即可进入总览，查看流量与防护结果。</p>
+<p>如果页面打不开，检查服务是否已启动，以及服务器防火墙或云安全组是否允许访问 8080 端口。</p>
+<div class="callout callout-warn"><div class="callout-icon">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="18"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" x2="12" y1="9" y2="13"></line><line x1="12" x2="12.01" y1="17" y2="17"></line></svg>
+</div><div class="callout-body">
+<p><strong>首次密码只显示一次。</strong> 登录后修改密码；若丢失，可在太一主机<a href="troubleshooting.html#reset-password">通过本机 CLI 重置</a>，不需要删除数据库。</p>
+</div></div>
+<a id="3-准备一个后端"></a>
+<h2 id="upstream">3. 准备一个后端</h2>
+<p>在太一主机另开一个终端，启动一个简单的 HTTP 服务：</p>
+<pre><code class="language-sh">mkdir -p <span class="s">"</span><span class="v">$HOME</span><span class="s">/tiyi-demo</span><span class="s">"</span>
+printf <span class="s">'Hello from the origin\n'</span> &gt; <span class="s">"</span><span class="v">$HOME</span><span class="s">/tiyi-demo/index.html</span><span class="s">"</span>
+python3 -m http.server 9000 --bind 127.0.0.1 --directory <span class="s">"</span><span class="v">$HOME</span><span class="s">/tiyi-demo</span><span class="s">"</span>
+</code></pre>
+<p>保持这个终端运行。已有应用时，直接使用它的源站地址即可；下一步把 <code>http://127.0.0.1:9000</code> 换成太一主机能访问的 URL。
+演示后端只监听本机，不需要对外放行 9000。</p>
+<a id="4-创建第一个站点"></a>
+<h2 id="site">4. 创建第一个站点</h2>
+<p>回到太一主机的另一个终端。CLI 通过本地管理通道连接系统服务，不需要先登录或获取 token：</p>
+<pre><code class="language-sh">sudo tiyi site create --name quickstart --host quickstart.test <span class="o">\
+</span>  --upstream-url http://127.0.0.1:9000 --tls none
+</code></pre>
+<p>站点创建后立即启用，默认使用内置 <strong>Light</strong> WAF 策略。也可以在控制台 <strong>应用交付 → 站点 → 新建</strong> 中填入相同的名称、域名与上游地址，关闭 TLS，保留 WAF 和 Light 策略后保存；两种方式选一种即可。</p>
+<p><code>quickstart.test</code> 只是这个演示的域名，下面的请求会直接指定它，不需要修改 DNS。用真实域名上线时，再配置证书和 HTTPS。</p>
+<p>主机名和别名都支持 <code>*.example.com</code>，只匹配 <code>api.example.com</code> 这样的一级子域名，不包含 <code>example.com</code> 或 <code>a.b.example.com</code>；需要根域名时单独添加。具体填写、证书和 API 绑定限制见<a href="operations.html#wildcard-hosts">通配域名建站</a>。</p>
+<a id="5-验证-waf-拦截攻击"></a>
+<h2 id="verify">5. 验证 WAF 拦截攻击</h2>
+<p>在太一主机先发一个正常请求，再向刚创建的演示站点发三个常见攻击。每条命令只打印 HTTP 状态码，注释中标出了预期结果：</p>
+<pre><code class="language-sh"><span class="c"># 正常请求 → 200
+</span>curl -sS -o /dev/null -w <span class="s">'%{http_code}\n'</span> <span class="o">\
+</span>  -H <span class="s">'Host: quickstart.test'</span> http://127.0.0.1/
 
-    <h2 id="prerequisites">前置条件</h2>
-    <ul>
-      <li><strong>Linux</strong> amd64 或 arm64。Windows 与 macOS 不是目标主机。</li>
-      <li>用于运行公开二进制安装器的 <strong>curl</strong>。</li>
-      <li>一个空闲的后端 —— 任何会说 HTTP 的都行。下方示例用 Python 的 <code>http.server</code>。</li>
-    </ul>
+<span class="c"># SQL 注入 → 403
+</span>curl -sS -o /dev/null -w <span class="s">'%{http_code}\n'</span> --get <span class="o">\
+</span>  -H <span class="s">'Host: quickstart.test'</span> <span class="o">\
+</span>  --data-urlencode <span class="s">'q=1 UNION SELECT password FROM users'</span> http://127.0.0.1/
 
-    <h2 id="install">1. 安装签名二进制</h2>
-    <p>使用权威公开安装器。它会选择匹配的 Linux 发行包、校验 SHA-256 manifest，并把 <code>tiyi</code> 安装到 <code>/usr/local/bin</code>：</p>
-<pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
-<span class="p">$</span> tiyi --version</code></pre>
-    <p>版本固定、安装目录覆盖与 Gitee 镜像用法见<a href="installation.html#prebuilt">安装</a>。</p>
-    <div class="callout callout-info"><div class="callout-body"><p><strong>已有安装？</strong>公开安装器用于干净主机，请先阅读<a href="upgrade-migration.html">升级与迁移</a>；v3.7.0 无法读取 v3.6.0 或更早状态，需要 purge 并重新注册远程 Agent。</p></div></div>
+<span class="c"># XSS → 403
+</span>curl -sS -o /dev/null -w <span class="s">'%{http_code}\n'</span> --get <span class="o">\
+</span>  -H <span class="s">'Host: quickstart.test'</span> <span class="o">\
+</span>  --data-urlencode <span class="s">'q=&lt;script&gt;alert(1)&lt;/script&gt;'</span> http://127.0.0.1/
 
-    <h2 id="run">2. 运行太一</h2>
-    <p>推荐路径是一条命令：<code>tiyi install --now</code> 会把太一安装为加固的 systemd 服务、设置开机自启并立即启动。服务单元以非特权用户运行（通过 <code>CAP_NET_BIND_SERVICE</code> 绑定 80/443 端口），首次安装时安装器会先创建管理员，并直接在当前终端打印一次性登录信息 - URL、用户名、密码：</p>
-<pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
-    <p>想先以前台方式评估？<strong>以 root 运行</strong>时默认值即可 -- 状态写入 <code>/var/lib/tiyi</code>，代理绑定 80/443 端口：</p>
-<pre><code><span class="p">$</span> sudo tiyi run</code></pre>
-    <p><strong>以普通用户运行</strong>（不用 sudo）时，把太一指向可写路径并使用高端口：</p>
-<pre><code><span class="p">$</span> tiyi run <span class="o">\</span>
-    --state-db /tmp/tiyi.db <span class="o">\</span>
-    --caddy-admin-socket /tmp/tiyi-caddy.sock <span class="o">\</span>
-    --admin-socket /tmp/tiyi-admin.sock <span class="o">\</span>
-    --proxy-http-addr 127.0.0.1:18080 <span class="o">\</span>
-    --proxy-https-addr 127.0.0.1:18443</code></pre>
-
-    <p>首次启动且没有用户、也未提供引导凭据时，Tiyi 会把生成的管理员密码打印一次：</p>
-<pre><code><span class="c">============================================================</span>
-<span class="c">  Tiyi — first-run administrator created</span>
-<span class="c">============================================================</span>
-<span class="c">    username:  admin</span>
-<span class="c">    password:  <span class="v">&lt;43-random-characters-shown-once&gt;</span></span></code></pre>
-
-    <p>浏览器打开 <code>http://127.0.0.1:8080/</code>，用 <code>admin</code> 与上面的密码登录。控制台会进入<strong>总览</strong>。稳定任务区为总览、应用交付、防护策略、节点、事件与日志、检测与响应、监控、系统管理；权限过滤会隐藏空分组，但不会改变深链地址。</p>
-
-    <div class="callout callout-warn">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
-      <div class="callout-body">
-        <p><strong>引导密码只显示一次。</strong>请从终端复制。若丢失，不要删除 <code>state.db</code>：在太一主机通过本地管理 socket 运行 <code>tiyi user list</code>，再运行 <code>tiyi user reset-password &lt;user-id&gt; --password &lt;new&gt;</code>。</p>
-      </div>
-    </div>
-
-    <h3 id="own-admin-password">自定义管理员密码（可选）</h3>
-    <p>用于自动化、容器镜像或 CI 时，可在首次启动前设置 <code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code> 来跳过自动生成密码。密码必须至少包含 8 个 Unicode 字符；校验通过后不打印随机密码 banner。用户名默认 <code>admin</code>；仅当尚不存在任何用户时才会自动生成密码，因此重启都是空操作。</p>
-<pre><code><span class="p">$</span> mkdir -p /tmp/waf
-<span class="p">$</span> TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
-    tiyi run <span class="o">\</span>
-    --addr 0.0.0.0:8080 <span class="o">\</span>
-    --state-db /tmp/waf/state.db <span class="o">\</span>
-    --caddy-admin-socket /tmp/waf/caddy.sock <span class="o">\</span>
-    --proxy-http-addr 0.0.0.0:8180 <span class="o">\</span>
-    --proxy-https-addr 0.0.0.0:18443 <span class="o">\</span>
-    --admin-socket /tmp/waf/admin.sock</code></pre>
-
-    <h2 id="upstream">3. 准备一个后端</h2>
-    <p>在第二个终端启动一个太一可以代理的服务。任何 HTTP 都行 —— 演示用 Python：</p>
-<pre><code><span class="p">$</span> python3 -m http.server 9000</code></pre>
-
-    <h2 id="site">4. 创建第一个站点</h2>
-    <p>UI 与 CLI 都行。CLI 使用本地管理 socket，无需 token：</p>
-<pre><code><span class="c"># 1. 创建站点并指向演示后端</span>
-<span class="p">$</span> tiyi site create <span class="o">\</span>
-    --name demo <span class="o">\</span>
-    --host demo.local <span class="o">\</span>
-    --upstream-url http://127.0.0.1:9000 <span class="o">\</span>
-    --tls none
-
-<span class="c"># 创建后站点立即生效。</span></code></pre>
-
-    <p>一步式路径会创建上游池、使用内置 Light 策略、把站点翻译成 Caddy JSON，并通过管理 socket 热重载 Caddy。Light 保持攻击与资源限制拦截，只把常见 MIME/解析器不匹配作为兼容性观察。任何失败都会保留旧配置并恢复站点行。</p>
-
-    <h2 id="verify">5. 验证 WAF 拦截攻击</h2>
-    <p>在第三个终端，向代理端口发出一次基线请求与三个经典攻击：</p>
-<pre><code><span class="c"># 基线 —— 应该通过</span>
-<span class="p">$</span> curl -sS -o /dev/null -w <span class="s">"%{http_code}\n"</span> -H <span class="s">"Host: demo.local"</span> http://127.0.0.1:18080/
-<span class="c">200</span>
-
-<span class="c"># SQL 注入</span>
-<span class="p">$</span> curl -sS -o /dev/null -w <span class="s">"%{http_code}\n"</span> -H <span class="s">"Host: demo.local"</span> <span class="o">\</span>
-    <span class="s">"http://127.0.0.1:18080/?id=1'%20OR%20'1'='1"</span>
-<span class="c">403</span>
-
-<span class="c"># XSS</span>
-<span class="p">$</span> curl -sS -o /dev/null -w <span class="s">"%{http_code}\n"</span> -H <span class="s">"Host: demo.local"</span> <span class="o">\</span>
-    <span class="s">"http://127.0.0.1:18080/?q=&lt;script&gt;alert(1)&lt;/script&gt;"</span>
-<span class="c">403</span>
-
-<span class="c"># 目录穿越</span>
-<span class="p">$</span> curl -sS -o /dev/null -w <span class="s">"%{http_code}\n"</span> -H <span class="s">"Host: demo.local"</span> <span class="o">\</span>
-    <span class="s">"http://127.0.0.1:18080/../../../../etc/passwd"</span>
-<span class="c">403</span></code></pre>
-
-    <p>在 <code>http://127.0.0.1:8080/#/logs/security</code> 的 dashboard 上，三次拦截请求会立即出现，附带 Coraza 规则 ID、严重等级、攻击标签与匹配的 CRS 消息。Dashboard 的流量曲线实时展现 1:3 基线-拦截比。</p>
-
-    <h2 id="next">下一步阅读</h2>
-    <ul>
-      <li><a href="installation.html">安装</a> —— 签名二进制安装、配置文件、运行模式，以及上线前需要显式设定的加固字段。</li>
-      <li><a href="concepts.html">领域模型</a> —— 站点、上游、证书、策略、节点、遥测、审计链各是什么。</li>
-      <li><a href="cli.html">CLI 参考</a> —— 按资源整理当前运维命令，完整 flag 以内置 help 为准。</li>
-    </ul>
-
-    <div class="docs-pager">
-      <a href="index.html">
-        <span class="label">← 上一页</span>
-        <span class="title">概览</span>
-      </a>
-      <a class="next" href="installation.html">
-        <span class="label">下一页 →</span>
-        <span class="title">安装</span>
-      </a>
-    </div>
-  </main>
+<span class="c"># 路径穿越 → 403；--path-as-is 保留原始路径，避免 curl 提前归一化
+</span>curl -sS -o /dev/null -w <span class="s">'%{http_code}\n'</span> --path-as-is <span class="o">\
+</span>  -H <span class="s">'Host: quickstart.test'</span> http://127.0.0.1/../../../../etc/passwd
+</code></pre>
+<p>再发一次正常请求，仍应返回 <strong>200</strong>。想看正文和响应头时，将 <code>-sS -o /dev/null -w '%{http_code}\n'</code> 换成 <code>-i</code>：正常请求会显示 <code>Hello from the origin</code>；攻击响应中的 <code>X-Request-Id</code> 可以用来查找对应日志。</p>
+<p>回到控制台，在总览查看流量与处理结果，在 <strong>日志 → 攻击日志</strong> 查看命中规则。明细是否保留、何时可见取决于日志和采样设置，先以实际 HTTP 响应确认拦截。
+若返回 502，先检查后端是否仍在运行；若攻击未被拦截，检查站点 WAF 开关、策略模式和例外设置，见<a href="troubleshooting.html">排障指南</a>。</p>
+<a id="其他安装方式"></a>
+<h2 id="alternatives">其他安装方式</h2>
+<p>以下方式与第一步的一行安装任选其一。完成安装并启动服务后，从<a href="#login">打开控制台</a>继续。</p>
+<a id="手动分步骤安装"></a>
+<h3 id="manual">手动分步骤安装</h3>
+<p>想先检查脚本，再分别安装二进制和启动服务，可以这样做：</p>
+<pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh -o /tmp/tiyi-install.sh
+less /tmp/tiyi-install.sh
+bash /tmp/tiyi-install.sh
+tiyi --version
+sudo tiyi doctor
+sudo tiyi install --now
+</code></pre>
+<p><code>less</code> 中按 <code>q</code> 退出；没有 less 时可用 <code>cat</code>。运行脚本只安装二进制，最后一行才启动服务并打印首次密码。
+固定版本时，将运行脚本的一行换成 <code>TIYI_VERSION=vX.Y.Z bash /tmp/tiyi-install.sh</code>，使用已发布的版本标签。
+安装目录、Gitee 镜像和校验方式见<a href="installation.html#prebuilt">安装参考</a>。</p>
+<a id="diy自定义端口"></a>
+<h3 id="custom-ports">DIY：自定义端口</h3>
+<p>如果 80、443 或 8080 已被其他服务占用，可以先写配置再启动。下面以新安装为例，将管理端口改成 <strong>8081</strong>，网站端口改成 <strong>8180 / 18443</strong>：</p>
+<pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh | bash
+sudo tiyi install
+sudo install -d -m 0750 -o root -g tiyi /etc/tiyi
+sudo tee /etc/tiyi/tiyi.yaml &gt;/dev/null <span class="s">&lt;&lt;'YAML'
+server:
+  addr: "0.0.0.0:8081"
+proxy:
+  http_addr: ":8180"
+  https_addr: ":18443"
+YAML</span>
+sudo chown root:tiyi /etc/tiyi/tiyi.yaml
+sudo chmod 0640 /etc/tiyi/tiyi.yaml
+sudo tiyi install --now
+</code></pre>
+<p>不带 <code>--now</code> 的 <code>install</code> 只准备系统服务，暂不启动。启动后，在浏览器打开 <code>http://服务器IP:8081</code>，使用太一主机的实际 IP。
+后面的测试 URL 改为 <code>http://127.0.0.1:8180/</code>，演示后端仍使用 9000。
+已有配置时保留其他字段，只修改需要的监听地址，见<a href="configuration.html#ports">端口与启动配置</a>。</p>
+<a id="离线安装"></a>
+<h3 id="offline">离线安装</h3>
+<p>在联网电脑下载与目标主机架构匹配的发行包、同版本的 <code>SHA256SUMS</code>、<code>SHA256SUMS.sig</code> 和官方 <code>release-key.pub</code>，一起复制到离线主机。
+按<a href="installation.html#offline">离线安装完整步骤</a>核验签名和校验和，再解包安装。离线主机无需运行在线 <code>install.sh</code>。</p>
+<p>安装好二进制和离线配置后，仍用同一条命令启动系统服务：</p>
+<pre><code class="language-sh">sudo tiyi install --now
+</code></pre>
+<p>需要自定义端口时，在启动前写入上面的 YAML。内置 WAF 规则可直接使用；HTTPS 使用上传的证书，公网证书申请和外部订阅需要另外准备网络连接。</p>
+<a id="下一步阅读"></a>
+<h2 id="next">下一步阅读</h2>
+<ul>
+<li><a href="practice.html">实战与进阶</a>：沿着这个演示站点，继续练观察与阻断、规则调优、API 校验和自动化。</li>
+<li><a href="operations.html">日常运维</a>：接入真实域名与 HTTPS，配置源站、路由和告警。</li>
+<li><a href="configuration.html">配置与模板</a>：复制启动配置和建站 YAML；已有站点也可<a href="site-import.html">导入与导出</a>。</li>
+<li><a href="concepts.html">工作方式</a>与 <a href="cli.html">CLI 参考</a>：理解站点、策略等概念，查找更多操作。</li>
+</ul>
+<p>体验结束后，在站点页删除 <code>quickstart</code>，并在演示后端终端按 Ctrl+C。太一服务可以保留，继续接入自己的应用。</p>
+<div class="docs-pager"><a href="index.html"><span class="label">← 上一页</span><span class="title">文档中心</span></a><a class="next" href="installation.html"><span class="label">下一页 →</span><span class="title">安装参考</span></a></div>
+</main>
 
   <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
     <h4>本页大纲</h4>
@@ -206,7 +241,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.7.2 · 2026-09-03</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
     </div>
   </div>
 </footer>

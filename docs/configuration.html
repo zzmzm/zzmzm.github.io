@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Configuration and templates — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="For v3.8.0 . Choose a file by the task you want to complete; each format has its own entry point and field names." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/configuration.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html" aria-current="page">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="configuration-and-templates">Configuration and templates</h1>
+<p class="lede">For <strong>v3.8.0</strong>. Choose a file by the task you want to complete; each format has its own entry point and field names.</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>File / download</th>
+<th>Use it with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Change listeners, state paths, or startup authentication</td>
+<td><a href="templates/tiyi.yaml">Full tiyi.yaml</a></td>
+<td><code>/etc/tiyi/tiyi.yaml</code>, then restart</td>
+</tr>
+<tr>
+<td>Create a first site or repeatedly deploy named resources</td>
+<td><a href="templates/first-site.yaml">Minimal first-site.yaml</a></td>
+<td><code>tiyi diff</code> → <code>tiyi apply</code></td>
+</tr>
+<tr>
+<td>Define a basic policy, IP list, site, and upstream</td>
+<td><a href="templates/apply.yaml">Four-kind apply.yaml</a></td>
+<td>Edit, then <code>tiyi diff</code> → <code>tiyi apply</code></td>
+</tr>
+<tr>
+<td>Import a new site with its dependencies</td>
+<td><a href="templates/site-import.json">site-import.json</a></td>
+<td><a href="site-import.html">Site import</a>; <code>tiyi site import</code> or the site page</td>
+</tr>
+<tr>
+<td>Describe your application's request fields</td>
+<td><a href="templates/orders-openapi.yaml">orders-openapi.yaml</a></td>
+<td><a href="api-protection.html">API Assets import</a>, separate from site import</td>
+</tr>
+</tbody>
+</table>
+<p>The copyable starters below work without a repository checkout. The full templates are references; new users do not need to fill every option.</p>
+<a id="1-startup-configuration-for-a-fresh-installation"></a>
+<h2 id="startup">1. Startup configuration for a fresh installation</h2>
+<p>This uses the default <code>0.0.0.0:8080</code> management listener and website ports 80/443. Open <code>http://SERVER_IP:8080</code> in your browser, using the Tiyi host's IP address.
+Run after installing the binary on a <strong>fresh host, before starting the service</strong>. For an existing installation, back up and edit your file instead of overwriting it.</p>
+<pre><code class="language-sh">sudo tiyi install
+sudo install -d -m 0750 -o root -g tiyi /etc/tiyi
+sudo tee /etc/tiyi/tiyi.yaml &gt;/dev/null <span class="s">&lt;&lt;'YAML'
+server:
+  addr: "0.0.0.0:8080"
+store:
+  state_db: "/var/lib/tiyi/state.db"
+proxy:
+  http_addr: ":80"
+  https_addr: ":443"
+  caddy_admin_socket: "/var/lib/tiyi/caddy-admin.sock"
+log:
+  level: "info"
+auth:
+  refresh_cookie_secure: false
+geo:
+  auto_update: true
+update:
+  repo: "zzmzm/tiyi"
+  channel: "stable"
+  mirror: "auto"
+YAML</span>
+sudo chown root:tiyi /etc/tiyi/tiyi.yaml
+sudo chmod 0640 /etc/tiyi/tiyi.yaml
+sudo tiyi --config /etc/tiyi/tiyi.yaml doctor --mode run
+sudo tiyi install --now
+</code></pre>
+<p><code>doctor</code> checks startup prerequisites, not website reachability. Follow with <code>sudo tiyi system health</code> and an actual request.
+For a foreground process, use <code>sudo tiyi --config /etc/tiyi/tiyi.yaml run</code>.
+After editing an existing service's YAML, run <code>sudo systemctl restart tiyi</code>.
+Sites and policies are saved through the UI/CLI/API and normally publish without restarting or editing startup YAML.</p>
+<a id="2-use-different-ports-alongside-another-web-server"></a>
+<h2 id="ports">2. Use different ports alongside another web server</h2>
+<p>Replace the corresponding sections in the starter:</p>
+<pre><code class="language-yaml"><span class="k">server</span>:
+  <span class="k">addr</span>: <span class="s">"</span><span class="s">0.0.0.0:8081</span><span class="s">"</span>
+<span class="k">proxy</span>:
+  <span class="k">http_addr</span>: <span class="s">"</span><span class="s">:8180</span><span class="s">"</span>
+  <span class="k">https_addr</span>: <span class="s">"</span><span class="s">:18443</span><span class="s">"</span>
+  <span class="k">caddy_admin_socket</span>: <span class="s">"</span><span class="s">/var/lib/tiyi/caddy-admin.sock</span><span class="s">"</span>
+</code></pre>
+<p>For an existing service, back up the startup file, edit these fields while preserving the rest, and restart:</p>
+<pre><code class="language-sh">sudo cp -a /etc/tiyi/tiyi.yaml /etc/tiyi/tiyi.yaml.before-ports
+sudoedit /etc/tiyi/tiyi.yaml
+sudo systemctl restart tiyi
+sudo systemctl status tiyi --no-pager
+sudo tiyi system health
+curl -i -H <span class="s">'Host: quickstart.test'</span> http://127.0.0.1:8180/
+</code></pre>
+<p>Choose a different backup filename if it exists. A default installation may not have YAML yet; create it using the preceding section first. For the first startup of a fresh installation, use <code>sudo tiyi install --now</code>.
+This probe requires the existing <code>quickstart.test</code> site and running origin; otherwise finish the <a href="quickstart.html">quickstart</a> first.</p>
+<p>Open <code>http://SERVER_IP:8081</code> in your browser. Management now uses 8081; website HTTP requests use 8180, while the origin port is unchanged.
+For a TLS site, test <code>curl --resolve app.example.com:18443:SERVER_IP https://app.example.com:18443/</code> with your real domain/IP and a covering certificate.</p>
+<p>Inspect the journal on failure. To undo this change, restore its <code>tiyi.yaml.before-ports</code> backup to <code>tiyi.yaml</code> and restart.
+Public ACME HTTP-01 still uses public port 80; changing the local listener does not change the CA's destination. When another web server occupies the ports, decide which service owns public ingress before moving ports or adding forwarding.</p>
+<h2 id="3-stable-secrets-and-precedence">3. Stable secrets and precedence</h2>
+<p>Defaults → YAML → supported <code>TIYI_*</code> environment variables → explicit CLI flags; later values win.
+For example, <code>TIYI_SERVER_ADDR</code> maps to <code>server.addr</code>. The <a href="templates/tiyi.yaml">annotated template</a> includes startup keys, defaults, and LDAP/RADIUS options.
+Configure the admin socket through <code>--admin-socket</code>, <code>--admin-socket-mode</code>, and <code>--admin-socket-group</code>; these are not keys in this YAML.</p>
+<p>Before first production startup, set a stable JWT secret so sessions survive restarts. For a <strong>fresh installation without this file</strong>, create a root-readable systemd environment file below.
+If <code>tiyi.env</code> already exists, add only the missing key and preserve the existing secret and settings.</p>
+<pre><code class="language-sh">sudo sh -c <span class="s">'umask 077; printf "TIYI_AUTH_JWT_SECRET=%s\n" "$(openssl rand -hex 32)" &gt; /etc/tiyi/tiyi.env'</span>
+sudo systemctl restart tiyi
+</code></pre>
+<p>The default KEK persists as <code>kek.bin</code> beside the state database. Back it up with state; encrypted certificates and secrets need it.
+Use <code>auth.refresh_cookie_secure: true</code> for an HTTPS console; keep false for the HTTP-only demo.
+The <code>auth.bootstrap_admin_*</code> settings or their environment variables provision the first user only; they do not reset an existing user's password.</p>
+<a id="4-create-a-protected-site-from-a-file"></a>
+<h2 id="apply">4. Create a protected site from a file</h2>
+<p>First make <code>http://127.0.0.1:9000</code> reachable (the <a href="quickstart.html">demo origin</a> works).
+Copy the whole block. For your own app, change the domain, origin URL, and two resource names first.
+WAF-enabled sites without <code>policyRef</code> use the built-in Light policy.</p>
+<pre><code class="language-sh">cat &gt; first-site.yaml <span class="s">&lt;&lt;'YAML'
+apiVersion: tiyi.io/v1
+kind: Upstream
+metadata:
+  name: example-origin
+spec:
+  backends:
+    - url: http://127.0.0.1:9000
+      weight: 100
+  loadBalance: round_robin
+  status: active
+---
+apiVersion: tiyi.io/v1
+kind: Site
+metadata:
+  name: example-site
+spec:
+  primaryHost: app.example.com
+  upstreamRef: example-origin
+  tls:
+    mode: none
+  waf:
+    enabled: true
+    mode: blocking
+  status: active
+YAML</span>
+sudo tiyi diff -f first-site.yaml
+sudo tiyi apply -f first-site.yaml --dry-run
+sudo tiyi apply -f first-site.yaml
+curl -i -H <span class="s">'Host: app.example.com'</span> http://127.0.0.1/
+</code></pre>
+<p>Expect the same normal response as the origin. The file has two documents separated by <code>---</code>.
+These local service commands use <code>sudo</code>; for a custom foreground instance, supply its <code>--admin-socket</code>.</p>
+<p>For a <a href="operations.html#wildcard-hosts">wildcard site</a>, use <code>primaryHost: "*.example.com"</code> in the Site document above. Quote wildcard values in YAML. The same one-subdomain-level rule applies to <code>aliases</code>; add <code>example.com</code> separately for the root domain and the exact API hosts needed by OpenAPI/Schema mappings. Prepare a covering certificate before enabling HTTPS.</p>
+<h2 id="5-how-apply-handles-existing-resources">5. How apply handles existing resources</h2>
+<ul>
+<li>Resources match by case-insensitive <code>(kind, metadata.name)</code>. Changing a name creates a resource; it does not rename the old one.</li>
+<li><code>spec</code> replaces the fields managed by apply; omitted optional fields may reset or clear. Review the diff: this is not a merge patch.</li>
+<li>Removing a resource from the file does not delete the live resource. Unknown keys are rejected.</li>
+<li><code>upstreamRef</code>, <code>policyRef</code>, and <code>certRef</code> resolve names; CRS accepts IDs or versions. Forward references within a file are supported.</li>
+<li>Optional <code>metadata.id</code> supplies a UUID only on creation. The authenticated identity determines the tenant; <code>metadata.tenant</code> is rejected.</li>
+<li>Database writes for one manifest share a transaction. Proxy publication follows commit: on publication failure the saved resources remain, while traffic uses the last valid configuration. Fix, retry, and check node results.</li>
+</ul>
+<h2 id="6-supported-kinds-and-limits">6. Supported kinds and limits</h2>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Main fields</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Upstream</code></td>
+<td><code>backends[].url/weight/healthCheckPath</code>, <code>loadBalance</code>, <code>healthCheck</code>, <code>status</code></td>
+<td><code>round_robin</code> balancing; an empty health-check <code>path</code> disables active probes</td>
+</tr>
+<tr>
+<td><code>Site</code></td>
+<td><code>primaryHost</code>, <code>aliases</code>, <code>upstreamRef</code> or <code>upstreamsInline</code>, <code>tls</code>, <code>waf</code>, <code>botProtection</code>, <code>status</code></td>
+<td>The two upstream choices are exclusive; Bot protection requires HTTPS-only; create certificates separately first</td>
+</tr>
+<tr>
+<td><code>Policy</code></td>
+<td><code>engineState</code>, <code>blockingMode</code>, <code>crsRulesetRef</code>, <code>status</code></td>
+<td>An active policy needs an existing CRS; manage advanced layers, rules, and bindings separately</td>
+</tr>
+<tr>
+<td><code>IpList</code></td>
+<td><code>description</code>, <code>entries[].cidr/description/expireAt</code></td>
+<td>Addresses alone do not enforce: add a binding; expiry is RFC 3339; <code>geo:*</code> is unsupported</td>
+</tr>
+</tbody>
+</table>
+<p>See the <a href="templates/apply.yaml">four-kind template</a> for complete fields and comments.
+Certificates, routes, rate limits, API documents, users, alerts, and SIEM are not apply kinds. Use <a href="operations.html">operations</a>, <a href="cli.html">CLI</a>, or <a href="api.html">API</a>.
+API JSON has a different schema: for example, apply <code>backends</code> corresponds to API upstream <code>endpoints</code>.</p>
+<p>Current apply rejects nonempty <code>trustedIpListRefs</code> name references. Keep it empty in the manifest and bind the list in site Bot settings after creation.</p>
+<div class="docs-pager"><a href="installation.html"><span class="label">← Previous</span><span class="title">Installation</span></a><a class="next" href="site-import.html"><span class="label">Next →</span><span class="title">Import / export sites</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

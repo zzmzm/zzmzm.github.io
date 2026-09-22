@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>upstream.proto — Upstream pools — 太一文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="upstream.proto — Upstream pools v3.8.0 完整协议参考；字段名与协议注释保留英文。可从侧栏返回中文任务指南。 Schema: tiyi.v1 · upstream.proto · English guide · 中文指南 · Full RPC index Services " />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../../../index.html#features">特性</a>
+      <a href="../../../index.html#tour">产品</a>
+      <a href="../../../index.html#pricing">价格</a>
+      <a href="../../index.html" style="color:var(--fg)">文档</a>
+      <a href="../../../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../../docs/reference/services/upstream.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="../../index.html">概览</a></li>
+        <li><a href="../../quickstart.html">快速开始</a></li>
+        <li><a href="../../installation.html">安装</a></li>
+        <li><a href="../../configuration.html">配置与模板</a></li>
+        <li><a href="../../practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="../../operations.html">日常运维</a></li>
+        <li><a href="../../troubleshooting.html">排障</a></li>
+        <li><a href="../../upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="../../site-import.html">站点导入与导出</a></li>
+        <li><a href="../../api-protection.html">API 防护</a></li>
+        <li><a href="../../responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="../../concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI 参考</a></li>
+        <li><a href="../../api.html">API 参考</a></li>
+        <li><a href="../index.html">完整参考</a></li>
+        <li><a href="../rpc-index.html">全部 RPC</a></li>
+        <li><a href="../permissions.html">权限</a></li>
+        <li><a href="../cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="../../deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="upstreamproto-upstream-pools">upstream.proto — Upstream pools</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>upstream.proto</code> · <a href="../../../../docs/api.html">English guide</a> · <a href="../../api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="upstreamservice">UpstreamService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#upstreamservicelistupstreams"><code>ListUpstreams</code></a></td>
+<td>unary</td>
+<td>(<code>upstream:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#upstreamservicegetupstream"><code>GetUpstream</code></a></td>
+<td>unary</td>
+<td>(<code>upstream:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#upstreamservicecreateupstream"><code>CreateUpstream</code></a></td>
+<td>unary</td>
+<td>(<code>upstream:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#upstreamserviceupdateupstream"><code>UpdateUpstream</code></a></td>
+<td>unary</td>
+<td>(<code>upstream:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#upstreamservicedeleteupstream"><code>DeleteUpstream</code></a></td>
+<td>unary</td>
+<td>(<code>upstream:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="#upstreamservicelistupstreamhealth"><code>ListUpstreamHealth</code></a></td>
+<td>unary</td>
+<td>(<code>upstream:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="upstreamservicelistupstreams">UpstreamService.ListUpstreams</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UpstreamService/ListUpstreams</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>upstream:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListUpstreamsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListUpstreamsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#upstream"><code>Upstream</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="upstreamservicegetupstream">UpstreamService.GetUpstream</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UpstreamService/GetUpstream</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>upstream:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetUpstreamRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetUpstreamResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>upstream</code></td>
+<td><code>upstream</code></td>
+<td><a href="#upstream"><code>Upstream</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="upstreamservicecreateupstream">UpstreamService.CreateUpstream</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UpstreamService/CreateUpstream</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>upstream:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CreateUpstreamRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>upstream</code></td>
+<td><code>upstream</code></td>
+<td><a href="#upstream"><code>Upstream</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CreateUpstreamResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>upstream</code></td>
+<td><code>upstream</code></td>
+<td><a href="#upstream"><code>Upstream</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="upstreamserviceupdateupstream">UpstreamService.UpdateUpstream</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UpstreamService/UpdateUpstream</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>upstream:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdateUpstreamRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>upstream</code></td>
+<td><code>upstream</code></td>
+<td><a href="#upstream"><code>Upstream</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>update_mask</code></td>
+<td><code>updateMask</code></td>
+<td><code>google.protobuf.FieldMask</code></td>
+<td>singular</td>
+<td><em>comma-joined field paths, e.g. <code>"name,status"</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdateUpstreamResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>upstream</code></td>
+<td><code>upstream</code></td>
+<td><a href="#upstream"><code>Upstream</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="upstreamservicedeleteupstream">UpstreamService.DeleteUpstream</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UpstreamService/DeleteUpstream</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>upstream:delete</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteUpstreamRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteUpstreamResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="upstreamservicelistupstreamhealth">UpstreamService.ListUpstreamHealth</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UpstreamService/ListUpstreamHealth</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>upstream:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListUpstreamHealthRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>upstream_ids</code></td>
+<td><code>upstreamIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>Up to 200 pools. Omit to query all pools.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListUpstreamHealthResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#upstreamhealthstate"><code>UpstreamHealthState</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expected_node_ids</code></td>
+<td><code>expectedNodeIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>The built-in node and every enrolled, non-deleted remote node, including offline nodes and nodes which have never reported health.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="upstream">Upstream</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>endpoints</code></td>
+<td><code>endpoints</code></td>
+<td><a href="common.html#upstreamendpoint"><code>UpstreamEndpoint</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="common.html#resourcestatus"><code>ResourceStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>deleted_at</code></td>
+<td><code>deletedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>health_check</code></td>
+<td><code>healthCheck</code></td>
+<td><a href="#upstreamhealthcheck"><code>UpstreamHealthCheck</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>resilience</code></td>
+<td><code>resilience</code></td>
+<td><a href="#upstreamresiliencepolicy"><code>UpstreamResiliencePolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_headers</code></td>
+<td><code>requestHeaders</code></td>
+<td>map&lt;<code>string</code>, <code>string</code>&gt;</td>
+<td>map</td>
+<td>Plaintext request headers applied to every request sent through this pool. These are ordinary portable configuration, not secret material.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="upstreamhealthcheck">UpstreamHealthCheck</h3>
+<p>UpstreamHealthCheck is the pool-level active probe contract compiled into Caddy. An empty path disables active checks. Defaults are applied server-side when optional tuning values are omitted.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>path</code></td>
+<td><code>path</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td><code>method</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expected_status</code></td>
+<td><code>expectedStatus</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>interval_seconds</code></td>
+<td><code>intervalSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>timeout_seconds</code></td>
+<td><code>timeoutSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>unhealthy_threshold</code></td>
+<td><code>unhealthyThreshold</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>healthy_threshold</code></td>
+<td><code>healthyThreshold</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>follow_redirects</code></td>
+<td><code>followRedirects</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expected_body</code></td>
+<td><code>expectedBody</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>host</code></td>
+<td><code>host</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="upstreamhealthstate">UpstreamHealthState</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_id</code></td>
+<td><code>nodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>upstream_id</code></td>
+<td><code>upstreamId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>endpoint_url</code></td>
+<td><code>endpointUrl</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>address</code></td>
+<td><code>address</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>unknown | healthy | unhealthy</td>
+</tr>
+<tr>
+<td><code>reported_at</code></td>
+<td><code>reportedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>last_transition_at</code></td>
+<td><code>lastTransitionAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>config_generation</code></td>
+<td><code>configGeneration</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>artifact_sha256</code></td>
+<td><code>artifactSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="upstreamresiliencepolicy">UpstreamResiliencePolicy</h3>
+<p>UpstreamResiliencePolicy protects real traffic independently of active probes. When this message is omitted, the server enables passive failure ejection (30 seconds / 2 failures) and safe bounded retries (5 seconds / 250 milliseconds). Explicit booleans allow either lane to be disabled without changing the active health-check contract.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>passive_health_enabled</code></td>
+<td><code>passiveHealthEnabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>passive_fail_duration_seconds</code></td>
+<td><code>passiveFailDurationSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>passive_max_fails</code></td>
+<td><code>passiveMaxFails</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>retry_enabled</code></td>
+<td><code>retryEnabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>retry_duration_seconds</code></td>
+<td><code>retryDurationSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>retry_interval_milliseconds</code></td>
+<td><code>retryIntervalMilliseconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="../rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../../assets/js/main.js" defer></script>
+</body>
+</html>

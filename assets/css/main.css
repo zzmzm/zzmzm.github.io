@@ -1207,6 +1207,8 @@ body.docs { background: var(--bg-2); }
   font-size: 15.5px;
   line-height: 1.7;
   color: var(--fg-2);
+  /* Let long RPC/type names fit the content column, including inside tables. */
+  overflow-wrap: anywhere;
 }
 .docs-content > .docs-eyebrow {
   display: inline-block;
@@ -1289,7 +1291,8 @@ body.docs { background: var(--bg-2); }
   color: var(--code-fg);
   padding: 1px 6px;
   border-radius: 5px;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .docs-content pre {
   background: var(--surface);
@@ -1309,6 +1312,7 @@ body.docs { background: var(--bg-2); }
   color: var(--fg-2);
   font-size: inherit;
   white-space: pre;
+  overflow-wrap: normal;
 }
 .docs-content pre .c { color: var(--fg-3); font-style: italic; }
 .docs-content pre .k { color: #c084fc; font-weight: 500; }
@@ -1325,15 +1329,34 @@ body.docs { background: var(--bg-2); }
 [data-theme="light"] .docs-content pre .o { color: #b45309; }
 
 /* Tables */
+.docs-table-scroll {
+  max-width: 100%;
+  margin: 18px 0;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.docs-table-scroll:focus-visible {
+  outline: 2px solid var(--brand-cyan);
+  outline-offset: 3px;
+}
 .docs-content table {
   width: 100%;
   border-collapse: collapse;
+  overflow-wrap: normal;
   margin: 18px 0;
   font-size: 14px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
 }
+.docs-table-scroll > table {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+/* Dense reference tables need readable columns even on a narrow screen. */
+.docs-table-scroll > table:has(th:nth-child(4)) { min-width: 32rem; }
 .docs-content thead { background: var(--surface-2); }
 .docs-content th, .docs-content td {
   padding: 10px 14px;

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Practice and advanced use — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="In Quickstart , we let normal requests through and blocked attacks. Now keep using that demo: switch between observe and block, investigate rules, then try API protection, a real application, automation, and daily operations." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/practice.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html" aria-current="page">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Operate</span>
+<h1 id="practice-and-advanced-use">Practice and advanced use</h1>
+<p class="lede">In <a href="quickstart.html">Quickstart</a>, we let normal requests through and blocked attacks. Now keep using that demo: switch between observe and block, investigate rules, then try API protection, a real application, automation, and daily operations.</p>
+<p>The first two exercises reuse your own <code>quickstart.test</code> site and origin on port 9000; leave the origin running. Run commands on the Tiyi host with <code>sudo</code> for the default service. If you changed port 80, use your proxy port below; a custom instance also needs <code>--admin-socket</code>.</p>
+<a id="1-observe-and-block-the-same-request"></a>
+<h2 id="observe-block">1. Observe and block the same request</h2>
+<p>Use your own demo site. Find the <code>quickstart</code> ID, then change <strong>that site's</strong> WAF mode:</p>
+<pre><code class="language-sh">sudo tiyi site list
+<span class="v">SITE_ID</span><span class="o">=</span><span class="s">'replace-with-quickstart-site-id'</span>
+sudo tiyi site update <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span> --waf-mode detection
+curl -i --get -H <span class="s">'Host: quickstart.test'</span> <span class="o">\
+</span>  --data-urlencode <span class="s">'q=1 UNION SELECT password FROM users'</span> http://127.0.0.1/
+sudo tiyi site update <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span> --waf-mode blocking
+curl -i --get -H <span class="s">'Host: quickstart.test'</span> <span class="o">\
+</span>  --data-urlencode <span class="s">'q=1 UNION SELECT password FROM users'</span> http://127.0.0.1/
+curl -i -H <span class="s">'Host: quickstart.test'</span> http://127.0.0.1/
+</code></pre>
+<p>With the unchanged quickstart configuration, expect <strong>200, 403, 200</strong>. Inspect outcomes in Overview and find the matching rules in Attack Logs by request ID.
+<code>detection</code> changes this site's WAF behavior; Bot, rate, IP, and API definition controls can still block independently. It is not a global observation switch for every protection.
+If you stop midway, run the <code>--waf-mode blocking</code> command above to restore the demo site.</p>
+<a id="2-start-tuning-from-an-actual-request"></a>
+<h2 id="tune">2. Start tuning from an actual request</h2>
+<p>Record the site, time, request ID, rule ID, matched field, and response status from Attack Logs. Confirm the request reached the intended site and determine whether it represents legitimate business input.</p>
+<p>To simulate a request without sending it to the origin, use the policy test page or obtain the site's actual policy ID and run:</p>
+<pre><code class="language-sh">sudo tiyi site get <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span>
+sudo tiyi policy list
+<span class="v">POLICY_ID</span><span class="o">=</span><span class="s">'replace-with-this-sites-policy-id'</span>
+sudo tiyi policy test <span class="s">"</span><span class="v">$POLICY_ID</span><span class="s">"</span> --site-id <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span> <span class="o">\
+</span>  --method GET --url <span class="s">'/?q=1%20UNION%20SELECT%20password%20FROM%20users'</span>
+</code></pre>
+<p>Inspect executed stages, matched rules, and the blocking outcome. Policy testing covers native IP/country rules and Coraza request inspection.
+It does not execute the full proxy path, Bot, rate limits, upload/Schema guards, or response inspection. Follow it with real request checks.</p>
+<p>To practice a precise rule, use a separate policy for your demo site. In the <strong>Custom rules</strong> visual editor, block requests whose path equals <code>/lab-denied</code>.
+Preview, save, and wait for application, then request <code>/lab-denied</code> and <code>/</code>: the former should be rejected while the latter still works.
+Delete the exercise rule or restore the original policy afterwards and confirm <code>/lab-denied</code> works again. Review all consumers before changing a shared policy.</p>
+<p>For a real false positive, use the narrowest supported exception for the site, path, parameter, and rule, then replay the legitimate request and this guide's SQL injection probe.
+<code>log_only</code> removes that rule's blocking-score contribution; other rules may still block. A global client allowlist broadens access beyond the affected request.
+Retain the previous policy version. If results are wrong, roll back through policy history, check referenced dependencies, and repeat real probes.</p>
+<a id="3-accept-valid-api-structure-and-reject-invalid-input"></a>
+<h2 id="api">3. Accept valid API structure and reject invalid input</h2>
+<p>Follow <a href="api-protection.html">API protection</a> to replace the static origin with the demo order API, import <code>orders-openapi.yaml</code>, and publish Observe mode first.
+Uploading a document alone does not enable validation. Review the capability report and endpoint scope, wait for serving-node results, then test:</p>
+<pre><code class="language-sh">curl -i -H <span class="s">'Host: quickstart.test'</span> -H <span class="s">'Content-Type: application/json'</span> <span class="o">\
+</span>  --data <span class="s">'{"sku":"BOOK-1","quantity":2}'</span> http://127.0.0.1/api/orders
+curl -i -H <span class="s">'Host: quickstart.test'</span> -H <span class="s">'Content-Type: application/json'</span> <span class="o">\
+</span>  --data <span class="s">'{"sku":"BOOK-1","quantity":"two"}'</span> http://127.0.0.1/api/orders
+</code></pre>
+<p>In the demo's Observe mode both return 200, with a type violation for the second. After publishing Enforce, expect 200 and 403 respectively.
+Check detection statistics for the same site, endpoint, time window, and coverage. Restore Observe and republish if legitimate clients are affected.</p>
+<p>Without a specification, send successful legitimate JSON through an eligible POST/PUT/PATCH endpoint. Review field names and types in <strong>Traffic learning</strong>, save a version, and export a draft.
+Complete the real field and requiredness requirements before previewing and applying it. Learning never enables enforcement automatically.
+For uploads, test valid files, wrong fields, wrong types, and oversized files. Site policies set capacity; endpoint definitions set file-field requirements.</p>
+<a id="4-move-from-the-demo-to-a-real-application"></a>
+<h2 id="publish">4. Move from the demo to a real application</h2>
+<p>Prepare a real domain, Tiyi ingress IP, origins reachable by every serving node, and a covering certificate. Follow <a href="operations.html#https">HTTPS and path routing</a>.
+Use <code>curl --resolve</code> to direct the domain to a candidate node while keeping certificate verification enabled:</p>
+<pre><code class="language-sh"><span class="c"># Replace the domain and IP with your real values
+</span>curl -i --resolve app.example.com:443:192.0.2.10 https://app.example.com/
+</code></pre>
+<p><code>192.0.2.10</code> is a documentation address. HTTP-01 issuance requires public DNS and port 80 to reach the challenge-serving ingress during validation.
+To prepare a certificate before moving application DNS, use an existing certificate or supported DNS-01.</p>
+<p>Test login, search, payment callbacks, uploads, WebSockets/long-lived connections if used, every path route, and unmatched paths.
+Configure client-IP trust first when behind a CDN. Check each node separately. Keep the old ingress and configuration until the new path is verified.
+Use your original traffic-routing mechanism to return to the old ingress if needed; DNS rollback still depends on caches and TTLs.</p>
+<a id="5-make-repeatable-changes-reviewable"></a>
+<h2 id="automation">5. Make repeatable changes reviewable</h2>
+<p>Start with the <a href="configuration.html#apply">minimal site YAML</a>. It creates a separate example site and does not replace <code>quickstart</code>.</p>
+<pre><code class="language-sh">sudo tiyi diff -f first-site.yaml
+sudo tiyi apply -f first-site.yaml --dry-run
+sudo tiyi apply -f first-site.yaml
+curl -i -H <span class="s">'Host: app.example.com'</span> http://127.0.0.1/
+sudo tiyi audit verify
+</code></pre>
+<p>Run <code>diff</code> again and check for unexpected remaining differences. <code>apply</code> replaces its managed fields; removing a resource from a file does not delete the online resource.
+Retain the prior manifest when updating existing resources and preview rollback too. At the end of a demo, explicitly delete the new site and any newly unused upstream.
+Site export is for moving sites, not full recovery. Preserve <a href="upgrade-migration.html">complete state and configuration</a> for installation backups.</p>
+<p>For remote scripts, obtain a properly scoped token through <a href="api.html#authentication">API authentication</a>. CLI login does not persist a session for later commands.
+Paginate complete lists, retain server-returned revisions, and reread/review after conflicts. Do not hard-code resource IDs or skip publication results.</p>
+<a id="6-establish-a-daily-operating-routine"></a>
+<h2 id="operate">6. Establish a daily operating routine</h2>
+<p>Start with three outcomes you can verify:</p>
+<ol>
+<li>Configure an on-call destination in <a href="operations.html#notifications">notification channels</a>, send a test, and confirm actual receipt. Then bind a useful alert rule. Testing sends a real message.</li>
+<li>Make a <a href="upgrade-migration.html">complete backup</a> and rehearse restoration on an isolated host with a matching version. Verify login, sites, certificates, and requests.</li>
+<li>Check <code>sudo tiyi system health</code>, certificate expiry, disk, node application results, and the log pipeline. Use the <a href="operations.html#prometheus">Prometheus guide</a> for external monitoring.</li>
+</ol>
+<p>Add <a href="deployment.html#nodes">remote nodes</a> when you need more ingress points. Community includes full local functionality; remote nodes require licensed capacity.
+An online node still needs configuration, origin reachability, and real request verification.
+Expand one control at a time: IP/country, rate limits, Bot, uploads, or API validation. Record a legitimate probe, an invalid probe, the outcome, and how to undo each change.</p>
+<div class="docs-pager"><a href="quickstart.html"><span class="label">← Previous</span><span class="title">Quickstart</span></a><a class="next" href="operations.html"><span class="label">Next →</span><span class="title">Operations</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

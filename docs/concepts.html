@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Domain model — Tiyi docs</title>
+<title>How Tiyi protects your application — Tiyi Docs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Sites, upstream pools, certificates, WAF policies, agents, telemetry, and the audit chain — the seven concepts every operator should know." />
+<meta name="description" content="How Tiyi protects your application Start with the request path, then configure the features your application needs. What happens to a request The client co" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -49,6 +49,8 @@
         <li><a href="index.html">Overview</a></li>
         <li><a href="quickstart.html">Quickstart</a></li>
         <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -57,12 +59,15 @@
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
         <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
       <h4>Concepts</h4>
       <ul>
-        <li><a href="concepts.html">Domain model</a></li>
+        <li><a href="concepts.html" aria-current="page">How it works</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -70,6 +75,11 @@
       <ul>
         <li><a href="cli.html">CLI reference</a></li>
         <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -81,128 +91,69 @@
   </aside>
 
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">Concepts</span>
-    <h1>Domain model</h1>
-    <p class="lede">Tiyi's domain is small on purpose. Seven first-class resources cover every operator action, every CLI command, and every UI page. Once these click, the rest of the product is obvious.</p>
-
-    <h2 id="resources">The seven resources</h2>
-    <dl class="dl-grid">
-      <dt>Site</dt>
-      <dd>An HTTP host Tiyi proxies. Carries TLS settings, an upstream pool reference, and an attached WAF policy. The smallest unit you enable or disable.</dd>
-
-      <dt>Upstream pool</dt>
-      <dd>A set of backends behind a site. Round-robin or weighted load balancing, SNI-aware health checks, and reuse across multiple sites.</dd>
-
-      <dt>Certificate</dt>
-      <dd>A TLS keypair. Either <strong>uploaded</strong> (self-signed, CA-bought, enterprise-signed) or <strong>ACME-issued</strong> (HTTP-01 or DNS-01). Encrypted at rest with the KEK.</dd>
-
-      <dt>WAF policy</dt>
-      <dd>The compiled artifact Coraza enforces per request. CRS Core layer + HTTP policy + limits + rule tuning + IP lists + custom rules + plugins + rate limits + exclusions.</dd>
-
-      <dt>Node</dt>
-      <dd>A data plane running Caddy + Coraza. Every deployment has one built-in local node; licensed deployments can add remote Agents that receive signed bundles from the Controller.</dd>
-
-      <dt>Telemetry rollup</dt>
-      <dd>Counters and Top-K samples produced by the open-bucket pipeline. Drives the dashboard, the Top-K explorer, and the Prometheus exporter.</dd>
-
-      <dt>Audit row</dt>
-      <dd>One hash-chained record per mutation, attributed to the JWT subject. The compliance surface — every change has a tamper-evident receipt.</dd>
-    </dl>
-
-    <h2 id="sites-and-upstreams">Sites and upstream pools</h2>
-    <p>A <strong>site</strong> binds a hostname to TLS settings, an upstream pool, and a WAF policy. The applier translates each enabled site into a Caddy <code>server</code> block at apply time — <em>Caddy JSON is a compile target, not a storage format</em>.</p>
-    <p>Upstream pools are detached from sites by default. One pool can back many sites; deleting a pool that's in use is rejected with <code>UPSTREAM_IN_USE</code> and a list of referencing sites. Sites can also use an <strong>inline</strong> upstream URL for ad-hoc cases that don't need pool sharing.</p>
-
-    <h3 id="recording-mode">Access log recording mode</h3>
-    <p>Each site has a <code>recording_mode</code> field that controls access-log volume:</p>
-    <ul>
-      <li><code>on</code> (default since 2026-05-26) — record every request.</li>
-      <li><code>sampled</code> — record a configurable percentage. Folds to <code>off</code> in the writer when no rate is set.</li>
-      <li><code>off</code> — no access events written.</li>
-    </ul>
-    <p>Security events (Coraza rule hits) are always written regardless of access-log mode.</p>
-
-    <h2 id="certificates">Certificates</h2>
-    <p>TLS material is a first-class resource — never inline on the site. Tiyi supports four issuance paths, all encrypted at rest with a 32-byte KEK loaded from explicit <code>crypto.kek_file</code> or the persistent <code>&lt;state-db-dir&gt;/kek.bin</code> default:</p>
-    <ul>
-      <li><strong>Upload</strong> — paste or upload a PEM keypair. Self-signed for dev, CA-bought or enterprise-signed for prod.</li>
-      <li><strong>ACME HTTP-01</strong> — multi-agent: every agent runs a loopback responder and the (token, key_authorization) pair broadcasts through the agent stream so any node can answer the challenge.</li>
-      <li><strong>ACME DNS-01</strong> — pluggable driver registry. Cloudflare is production-ready; Route53 and Aliyun are credential-validating stubs in the current baseline.</li>
-      <li><strong>Wildcard</strong> — automatically uses DNS-01 for <code>*.example.com</code> authorizations in mixed orders.</li>
-    </ul>
-    <p>The dashboard exposes <code>certs_expiring_14d</code> / <code>certs_expiring_30d</code> / <code>acme_renewals_failed_24h</code> / <code>acme_orders_pending</code> as KPIs. Two default alerts are seeded on first boot: <em>Certificates Expiring Soon</em> and <em>ACME Renewal Failures</em>.</p>
-
-    <h2 id="waf-policy">WAF policy</h2>
-    <p>A policy is a structured domain object. At apply time Tiyi compiles Coraza SecLang for CRS/custom rules plus separate native enforcement artifacts for literal IP/CIDR list bindings and structured Country Access rules. The compilers are deterministic. The 12 tunable layers (in the order they apply):</p>
-    <ol>
-      <li><strong>CRS Core</strong> — paranoia level, blocking and executing PL, inbound/outbound thresholds, sampling.</li>
-      <li><strong>HTTP Policy</strong> — methods, versions, content types, charsets, restricted extensions/headers, method override.</li>
-      <li><strong>Limits</strong> — six numeric fields: max request body, max response body, etc., with CRS-default placeholders.</li>
-      <li><strong>Rule tuning</strong> — per-rule overrides: <code>DEFAULT</code>, <code>DISABLE</code>, <code>LOG_ONLY</code>, <code>SCORE_OVERRIDE</code>, optionally scoped to a single site.</li>
-      <li><strong>IP lists and Country Access</strong> — IP-list entries are literal IPv4/IPv6 addresses or CIDRs and gain allow / deny / monitor semantics through separate bindings. Country codes are structured Country Access rules backed by the active Country MMDB; <code>geo:*</code> pseudo entries are rejected. Both paths run in native handlers ahead of Coraza and are never expanded into SecLang. Overlapping allow bindings take precedence over deny.</li>
-      <li><strong>Custom rules</strong> — operator-authored SecLang or visual-spec rules in the 8000000–8999999 ID range.</li>
-      <li><strong>Plugins</strong> — CRS rule-exclusion packages (WordPress, Drupal, Nextcloud, phpBB, phpMyAdmin, XenForo, cPanel, DokuWiki). Offline archive upload supported.</li>
-      <li><strong>Rate limits</strong> — per-endpoint and client-scope buckets with block or log actions.</li>
-      <li><strong>Exclusions</strong> — phase-1 <code>tx.crs_exclusions_&lt;slug&gt;</code> opt-ins, optionally scoped with <code>@beginsWith</code>.</li>
-      <li><strong>Preview</strong> — read-only SecLang dump for the current revision.</li>
-      <li><strong>Versions</strong> — snapshot per save, side-by-side diff between any two revisions.</li>
-      <li><strong>Test lab</strong> — fire fixture requests through the compiled bundle without touching the live data plane.</li>
-    </ol>
-    <p>Per-site overlays layer scalar fields (paranoia, thresholds, sampling) plus site-scoped rule overrides, custom rules, IP-list bindings, and rate-limit endpoints on top of an attached policy without forking it.</p>
-
-    <h2 id="agents">Local node and remote Agents</h2>
-    <p>The Controller always owns one built-in local data plane. It applies the same signed, validated configuration in-process, but it is not enrolled, persisted, heartbeated, or commanded as an Agent. The Nodes page shows it first as <strong>This machine · Local · Built in</strong>.</p>
-    <p>Remote Agents hold one long-lived ConnectRPC stream to the configured Controller URL. Each Agent verifies the bundle signature against its pinned ed25519 public key, rejects replay or reordering, applies the accepted bundle to local Caddy, and reports the result. If the Controller is unavailable, the Agent reconnects with backoff while continuing to proxy with its last accepted bundle.</p>
-
-    <div class="callout callout-info">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      </div>
-      <div class="callout-body">
-        <p><strong>One topology, no role switch.</strong> Adding or removing remote Agents changes the node count only. The Controller does not change modes or roles, and remote continuity does not make the Controller highly available.</p>
-      </div>
-    </div>
-
-    <h2 id="log-evidence-policy">Logs and evidence policy</h2>
-    <p>The global policy has three routine profiles: Recommended, Minimum storage, and Forensic coverage. Advanced sampling and byte controls stay available but collapsed. Sites inherit every field dynamically and override only fields explicitly selected by the operator. A compact health rail shows physical managed bytes, filesystem headroom, and an estimated remaining-day horizon without turning internal writer queues into product settings.</p>
-
-    <h2 id="telemetry">Telemetry</h2>
-    <p>Telemetry is an independent exact-counter plane; retained logs and evidence can be disabled without changing its totals. The path:</p>
-    <ol>
-      <li><strong>Outer request observer</strong> — every completed request updates fixed-cardinality atomics before optional detail-log admission.</li>
-      <li><strong>10-second generations</strong> — the open in-memory bucket rotates into exact metric batches; daily SQLite partitions maintain 10-second, minute, and derived hour tiers idempotently.</li>
-      <li><strong>Bounded API inventory</strong> — first-seen paths enter a 4,096-key probation cache; stable identities promote into a 10,000-key dictionary with capacity reserved for successful and confirmed APIs.</li>
-      <li><strong>Explicit aggregation</strong> — probation, native IP-list blocks, rate limits, capacity overflow, and payload compaction use separate fixed rows. These rows explain scanner traffic without creating attacker-controlled API assets.</li>
-      <li><strong>Protected assets</strong> — confirmed APIs are restored from SQLite or signed Agent bundles after restart and cannot be evicted by discovery churn.</li>
-      <li><strong>Reads</strong> — REST API at <code>/api/v1/telemetry/*</code> and a Prometheus exporter at <code>/metrics</code> on the local admin socket.</li>
-    </ol>
-
-    <h2 id="audit">Audit chain</h2>
-    <p>Every mutation (site, upstream, cert, policy, IP-list binding, rate-limit endpoint, trust-profile change, custom rule, alert rule, etc.) appends one row to <code>audit_event</code>. Each row stores:</p>
-    <ul>
-      <li><strong>Action</strong> — pinned string like <code>policy.update_layer</code>, <code>trust.update_profile</code>, <code>rule_override.create</code>.</li>
-      <li><strong>Resource type and id</strong> — the scope of the change.</li>
-      <li><strong>Actor</strong> — the JWT subject, attributable to a real user UUID (not a generic "local-admin").</li>
-      <li><strong>Before/after JSON</strong> — flat diff of the mutated row's canonical view.</li>
-      <li><strong>Hash chain</strong> — each row hashes the previous row plus its own canonical payload. A daily anchor commits the chain head.</li>
-    </ul>
-    <p>The Vben Admin <em>Verify chain</em> button walks the chain and confirms each link. A SIEM destination with <code>include_audit: true</code> forwards audit rows to your Splunk / Elastic / Sentinel pipeline.</p>
-
-    <hr />
-
-    <p>That's the whole model. Every CLI command, every UI page, every RPC operates on one of these seven resources. The rest of these docs reference them by name without re-defining.</p>
-
-    <div class="docs-pager">
-      <a href="installation.html">
-        <span class="label">← Previous</span>
-        <span class="title">Installation</span>
-      </a>
-      <a class="next" href="cli.html">
-        <span class="label">Next →</span>
-        <span class="title">CLI reference</span>
-      </a>
-    </div>
-  </main>
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="how-tiyi-protects-your-application">How Tiyi protects your application</h1>
+<p class="lede">Start with the request path, then configure the features your application needs.</p>
+<h2 id="what-happens-to-a-request">What happens to a request</h2>
+<p>The client connects to Tiyi on 80/443 → the Host selects a site → the path selects an upstream → enabled protections run → accepted traffic reaches the origin.
+Protection stages include Bot admission, rate/challenge controls, IP/country access, resource limits, and WAF/CRS. API request definitions can add structural validation.
+A request terminated by a protection stage does not continue to the origin. Normal traffic should retain the application's response.</p>
+<h2 id="what-to-configure">What to configure</h2>
+<table>
+<thead>
+<tr>
+<th>What you want to change</th>
+<th>Where to set it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Domain, TLS, default origin, path routing</td>
+<td>Application Delivery → Sites</td>
+</tr>
+<tr>
+<td>Backends, probes, request headers, retries</td>
+<td>Application Delivery → Upstream Pools</td>
+</tr>
+<tr>
+<td>Certificates and renewal</td>
+<td>Application Delivery → Certificates / DNS Providers</td>
+</tr>
+<tr>
+<td>WAF strength, exceptions, custom rules, body/upload capacity</td>
+<td>Protection policies attached to sites</td>
+</tr>
+<tr>
+<td>API catalog, parameter/body definitions, validation modes</td>
+<td>Application Delivery → API Assets</td>
+</tr>
+<tr>
+<td>Reusable IP ranges and subscriptions</td>
+<td>Protection → IP Lists, then bind an action</td>
+</tr>
+<tr>
+<td>Client addresses behind a proxy</td>
+<td>Client-IP trust settings</td>
+</tr>
+<tr>
+<td>What people and automation may do</td>
+<td>System Administration → Users / Roles / Authentication</td>
+</tr>
+</tbody>
+</table>
+<p>Startup <code>tiyi.yaml</code> sets listeners and storage. Application resources live in state and change through UI/CLI/API, not that startup file.
+Socket paths, UUIDs, and revisions matter for automation and diagnosis; routine work starts with site names, current status, and next actions.</p>
+<h2 id="how-to-know-a-change-is-active">How to know a change is active</h2>
+<p>Saving means Tiyi accepted the input. Publication results identify nodes that accepted or rejected it. Real requests verify final behavior.
+For several nodes, check every target: success on the local node does not verify remote nodes.
+Overview counters describe volume and trends; security events and attack logs support investigation; optional request evidence retains further details.
+Sampling, retention, and node gaps can make details fewer than counters. An empty view is not proof that no attack occurred.</p>
+<h2 id="boundaries">Boundaries</h2>
+<p>WAF does not replace application fixes or business authorization. Schema checks do not prove business semantics; learned JSON drafts need review; Bot challenges verify visitors.
+Community includes all local-node features; remote nodes consume licensed capacity. Each deployment has one writable Controller without built-in control-plane HA.
+Public installation supports Linux amd64/arm64. Offline operation can use local rules and state; external ACME, subscriptions, notifications, and AI still need their respective connections.</p>
+<div class="docs-pager"><a href="upgrade-migration.html"><span class="label">← Previous</span><span class="title">Upgrade &amp; migration</span></a><a class="next" href="cli.html"><span class="label">Next →</span><span class="title">CLI guide</span></a></div>
+</main>
 
   <aside class="docs-toc" id="docs-toc" aria-label="On this page">
     <h4>On this page</h4>
@@ -214,7 +165,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.7.2 · 2026-09-03</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
     </div>
   </div>
 </footer>

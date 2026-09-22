@@ -1,0 +1,1260 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>user.proto — Users, roles, and permissions — 太一文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="user.proto — Users, roles, and permissions v3.8.0 完整协议参考；字段名与协议注释保留英文。可从侧栏返回中文任务指南。 Schema: tiyi.v1 · user.proto · English guide · 中文指南 · Full RPC index Se" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../../../index.html#features">特性</a>
+      <a href="../../../index.html#tour">产品</a>
+      <a href="../../../index.html#pricing">价格</a>
+      <a href="../../index.html" style="color:var(--fg)">文档</a>
+      <a href="../../../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../../docs/reference/services/user.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="../../index.html">概览</a></li>
+        <li><a href="../../quickstart.html">快速开始</a></li>
+        <li><a href="../../installation.html">安装</a></li>
+        <li><a href="../../configuration.html">配置与模板</a></li>
+        <li><a href="../../practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="../../operations.html">日常运维</a></li>
+        <li><a href="../../troubleshooting.html">排障</a></li>
+        <li><a href="../../upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="../../site-import.html">站点导入与导出</a></li>
+        <li><a href="../../api-protection.html">API 防护</a></li>
+        <li><a href="../../responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="../../concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI 参考</a></li>
+        <li><a href="../../api.html">API 参考</a></li>
+        <li><a href="../index.html">完整参考</a></li>
+        <li><a href="../rpc-index.html">全部 RPC</a></li>
+        <li><a href="../permissions.html">权限</a></li>
+        <li><a href="../cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="../../deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="userproto-users-roles-and-permissions">user.proto — Users, roles, and permissions</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>user.proto</code> · <a href="../../../../docs/api.html">English guide</a> · <a href="../../api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="userservice">UserService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#userservicelistusers"><code>ListUsers</code></a></td>
+<td>unary</td>
+<td>(<code>user:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#userservicegetuser"><code>GetUser</code></a></td>
+<td>unary</td>
+<td>(<code>user:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#userservicecreateuser"><code>CreateUser</code></a></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#userserviceupdateuser"><code>UpdateUser</code></a></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#userservicedeleteuser"><code>DeleteUser</code></a></td>
+<td>unary</td>
+<td>(<code>user:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="#userserviceassignroles"><code>AssignRoles</code></a></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#userserviceresetpassword"><code>ResetPassword</code></a></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#userservicelockuser"><code>LockUser</code></a></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#userserviceunlockuser"><code>UnlockUser</code></a></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#userserviceresetusermfa"><code>ResetUserMFA</code></a></td>
+<td>unary</td>
+<td>(<code>user:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="roleservice">RoleService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#roleservicelistroles"><code>ListRoles</code></a></td>
+<td>unary</td>
+<td>(<code>role:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#roleservicegetrole"><code>GetRole</code></a></td>
+<td>unary</td>
+<td>(<code>role:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#roleservicecreaterole"><code>CreateRole</code></a></td>
+<td>unary</td>
+<td>(<code>role:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#roleserviceupdaterole"><code>UpdateRole</code></a></td>
+<td>unary</td>
+<td>(<code>role:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#roleservicedeleterole"><code>DeleteRole</code></a></td>
+<td>unary</td>
+<td>(<code>role:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="#roleservicelistpermissions"><code>ListPermissions</code></a></td>
+<td>unary</td>
+<td>(<code>role:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="userservicelistusers">UserService.ListUsers</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UserService/ListUsers</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>user:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListUsersRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>role_id</code></td>
+<td><code>roleId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>locked</code></td>
+<td><code>locked</code></td>
+<td><code>bool</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListUsersResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#user"><code>User</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="userservicegetuser">UserService.GetUser</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UserService/GetUser</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>user:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetUserRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetUserResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td><code>user</code></td>
+<td><a href="#user"><code>User</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="userservicecreateuser">UserService.CreateUser</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UserService/CreateUser</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>user:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CreateUserRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td><code>user</code></td>
+<td><a href="#user"><code>User</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td><code>password</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CreateUserResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td><code>user</code></td>
+<td><a href="#user"><code>User</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="userserviceupdateuser">UserService.UpdateUser</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UserService/UpdateUser</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>user:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdateUserRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td><code>user</code></td>
+<td><a href="#user"><code>User</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>update_mask</code></td>
+<td><code>updateMask</code></td>
+<td><code>google.protobuf.FieldMask</code></td>
+<td>singular</td>
+<td><em>comma-joined field paths, e.g. <code>"name,status"</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdateUserResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td><code>user</code></td>
+<td><a href="#user"><code>User</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="userservicedeleteuser">UserService.DeleteUser</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UserService/DeleteUser</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>user:delete</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteUserRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteUserResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="userserviceassignroles">UserService.AssignRoles</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UserService/AssignRoles</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>user:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.AssignRolesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user_id</code></td>
+<td><code>userId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>role_ids</code></td>
+<td><code>roleIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.AssignRolesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td><code>user</code></td>
+<td><a href="#user"><code>User</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="userserviceresetpassword">UserService.ResetPassword</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UserService/ResetPassword</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>user:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ResetPasswordRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user_id</code></td>
+<td><code>userId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td><code>password</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ResetPasswordResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>changed</code></td>
+<td><code>changed</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="userservicelockuser">UserService.LockUser</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UserService/LockUser</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>user:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.LockUserRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user_id</code></td>
+<td><code>userId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.LockUserResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td><code>user</code></td>
+<td><a href="#user"><code>User</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="userserviceunlockuser">UserService.UnlockUser</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UserService/UnlockUser</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>user:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UnlockUserRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user_id</code></td>
+<td><code>userId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UnlockUserResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td><code>user</code></td>
+<td><a href="#user"><code>User</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="userserviceresetusermfa">UserService.ResetUserMFA</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.UserService/ResetUserMFA</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>user:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ResetUserMFARequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user_id</code></td>
+<td><code>userId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ResetUserMFAResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mfa_reset</code></td>
+<td><code>mfaReset</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="roleservicelistroles">RoleService.ListRoles</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RoleService/ListRoles</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>role:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListRolesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListRolesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#role"><code>Role</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="roleservicegetrole">RoleService.GetRole</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RoleService/GetRole</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>role:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetRoleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetRoleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>role</code></td>
+<td><code>role</code></td>
+<td><a href="#role"><code>Role</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="roleservicecreaterole">RoleService.CreateRole</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RoleService/CreateRole</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>role:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CreateRoleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>role</code></td>
+<td><code>role</code></td>
+<td><a href="#role"><code>Role</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CreateRoleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>role</code></td>
+<td><code>role</code></td>
+<td><a href="#role"><code>Role</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="roleserviceupdaterole">RoleService.UpdateRole</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RoleService/UpdateRole</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>role:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdateRoleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>role</code></td>
+<td><code>role</code></td>
+<td><a href="#role"><code>Role</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>update_mask</code></td>
+<td><code>updateMask</code></td>
+<td><code>google.protobuf.FieldMask</code></td>
+<td>singular</td>
+<td><em>comma-joined field paths, e.g. <code>"name,status"</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdateRoleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>role</code></td>
+<td><code>role</code></td>
+<td><a href="#role"><code>Role</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="roleservicedeleterole">RoleService.DeleteRole</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RoleService/DeleteRole</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>role:delete</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteRoleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteRoleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="roleservicelistpermissions">RoleService.ListPermissions</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RoleService/ListPermissions</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>role:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListPermissionsRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.ListPermissionsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>permissions</code></td>
+<td><code>permissions</code></td>
+<td><a href="#permission"><code>Permission</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="permission">Permission</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code</code></td>
+<td><code>code</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="role">Role</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>builtin</code></td>
+<td><code>builtin</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td><code>permissions</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>member_count</code></td>
+<td><code>memberCount</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="user">User</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>username</code></td>
+<td><code>username</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>email</code></td>
+<td><code>email</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td><code>displayName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>roles</code></td>
+<td><code>roles</code></td>
+<td><a href="#role"><code>Role</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>locked</code></td>
+<td><code>locked</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>last_login_at</code></td>
+<td><code>lastLoginAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>deleted_at</code></td>
+<td><code>deletedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>totp_enabled</code></td>
+<td><code>totpEnabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>external_providers</code></td>
+<td><code>externalProviders</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="../rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../../assets/js/main.js" defer></script>
+</body>
+</html>

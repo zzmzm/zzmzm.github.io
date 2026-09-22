@@ -1,15 +1,18 @@
 # Tiyi declarative resource template
-# Replace the example values, verify `crsRulesetRef` with `tiyi crs list`, then:
-#   tiyi diff -f apply.yaml
-#   tiyi apply -f apply.yaml
-# Specs replace all apply-managed fields; they are not merge patches.
+#
+# Replace the example hosts/backend, verify the CRS version with `tiyi crs
+# list`, preview with `tiyi diff -f apply.yaml`, then run
+# `tiyi apply -f apply.yaml`.
+#
+# A spec is a full replacement of the apply-managed fields, not a merge patch.
+# Removing a document does not delete the corresponding resource.
 
 apiVersion: tiyi.io/v1
 kind: Policy
 metadata:
   name: app-baseline
 spec:
-  engineState: on          # on | detection_only | off
+  engineState: "on"          # on | detection_only | off
   blockingMode: anomaly    # anomaly | self_contained
   crsRulesetRef: "4.25.1" # existing CRS ID or version
   status: active           # draft | active | archived
@@ -23,8 +26,10 @@ spec:
     - url: http://127.0.0.1:9000
       weight: 100
   loadBalance: round_robin
+  # Empty path disables active probes. When enabled, every backend must pass
+  # the Controller's submit-time preflight.
   healthCheck:
-    path: "" # empty disables active probes
+    path: ""
     method: GET
     expectedStatus: 200
     intervalSeconds: 30
@@ -34,7 +39,7 @@ spec:
     followRedirects: false
     expectedBody: ""
     host: ""
-  status: active
+  status: active           # active | disabled
 ---
 apiVersion: tiyi.io/v1
 kind: Site
@@ -42,15 +47,28 @@ metadata:
   name: app-example
 spec:
   primaryHost: app.example.com
-  aliases: [www.app.example.com]
-  upstreamRef: app-pool # or upstreamsInline; never both
+  aliases:
+    - www.app.example.com
+  upstreamRef: app-pool
+  # Use upstreamRef or upstreamsInline, never both.
   tls:
-    mode: none # none | uploaded | managed_acme
+    mode: none             # none | uploaded | managed_acme
+    # For TLS, add certRef/minVersion and httpBehavior. Certificates are
+    # created separately with `tiyi cert upload` or `tiyi cert issue`.
   waf:
     enabled: true
     policyRef: app-baseline
     mode: blocking
-  status: active
+  botProtection:
+    mode: "off"               # off | browser_check | human_verification
+    challengeTtlSeconds: 120
+    clearanceTtlSeconds: 3600
+    proofDifficulty: 16
+    bindNetwork: true
+    exemptPaths:
+      - /healthz
+    trustedIpListRefs: []
+  status: active           # active | disabled
 ---
 apiVersion: tiyi.io/v1
 kind: IpList
@@ -65,5 +83,7 @@ spec:
       description: Primary office IPv6
       expireAt: 2026-12-31T00:00:00Z
 
-# Applying an IpList does not enforce it; create a separate binding. geo:* is
-# rejected—use Protection > Country Access for country enforcement.
+# IpList apply manages addresses only. Create a separate IP-list binding to
+# enforce allow/deny/monitor behavior. geo:* is rejected; use Country Access.
+
+# Current apply cannot resolve Bot trusted lists by name. Create the list, then bind it in the site Bot settings.

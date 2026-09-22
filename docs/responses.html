@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Customize protection responses — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Customize protection responses For v3.8.0 . Give visitors a useful explanation and request ID, and API clients a parseable JSON error. Open System Administ" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/responses.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html" aria-current="page">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="customize-protection-responses">Customize protection responses</h1>
+<p class="lede">For <strong>v3.8.0</strong>. Give visitors a useful explanation and request ID, and API clients a parseable JSON error.
+Open <strong>System Administration → Settings → Protection responses</strong>. These settings apply across all sites. Edit a scenario in <strong>Protection scenarios</strong>, review the separate draft preview, and select <strong>Save all changes</strong>.</p>
+<h2 id="1-choose-format-and-scenario">1. Edit scenario content and shared templates</h2>
+<p>The scenario list shows each status and marks unsaved changes. Selecting a scenario only changes which public title, message and status you edit. The change applies to that scenario across all sites.</p>
+<p>Open <strong>Response templates</strong> to choose the global response mode and edit templates shared by all six scenarios. The top row places the <strong>Shared templates</strong> heading and description on the left and <strong>Response mode</strong> on the right. The all-site scope follows the format explanation below the selector. Both headings and descriptions use matching typography. A horizontal rule separates this row from template selection, editing and preview, which occupy the full width below. The custom template displays its actual output format. Preview selectors only change the preview; unused templates are labeled. Insert public variables at the cursor, and check field hints if a template does not use the title or message.</p>
+<p>The title and description share the top row with <strong>Save all changes</strong>; <strong>More actions</strong> is last. The two tabs use the standard size and sit immediately below, with the current response mode beside them. Save stays visible while scrolling. Open <strong>Changes</strong> to review edits from both tabs, or the status entry to inspect application results, errors and retry. One save submits both tabs together. <strong>Discard all changes</strong> restores the last saved values. Scenario and template restore buttons affect only their named scope; <strong>More actions → Restore all defaults</strong> replaces the entire draft after confirmation. Every restore requires Save. A failed save keeps your draft, while pending/failed application results offer a retry of the saved submission without discarding newer edits. Inactive-template errors are included and link directly to their field.</p>
+<p>One HTML/JSON/plain/custom template set serves six scenarios selected by the actual protection stage:</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Default status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WAF block <code>waf_block</code></td>
+<td>403</td>
+</tr>
+<tr>
+<td>IP access denial <code>ip_deny</code></td>
+<td>403</td>
+</tr>
+<tr>
+<td>Country access denial <code>country_deny</code></td>
+<td>403</td>
+</tr>
+<tr>
+<td>Rate limit / CC <code>rate_limit</code></td>
+<td>429</td>
+</tr>
+<tr>
+<td>Bot terminal denial <code>bot_block</code></td>
+<td>403</td>
+</tr>
+<tr>
+<td>Service protection <code>service_unavailable</code></td>
+<td>503</td>
+</tr>
+</tbody>
+</table>
+<p><code>auto</code> returns HTML when Accept includes <code>text/html</code>, JSON otherwise. You can also select <code>html</code>, <code>json</code>, <code>plain</code>, or <code>custom</code>.
+Scenario statuses range from 400–599. API validation and resource guards retain their required HTTP statuses; changing scenario defaults does not override those protocol decisions.
+Ordinary origin 403 responses are unchanged. Interactive challenges, machine verification, and protocol/body resource errors retain their own behavior.</p>
+<h2 id="2-copy-a-complete-configuration">2. Copy a complete configuration</h2>
+<p>This keeps default statuses while changing public wording and shared templates. It needs jq.
+Save current settings, inspect the backup, then apply during your chosen change window. Download: <a href="templates/security-responses.json">security-responses.json</a>.</p>
+<pre><code class="language-sh">umask 077
+cat &gt; security-responses.json &lt;&lt;'JSON'
+{
+  "security.responses.config": {
+    "templates": {
+      "active": "auto",
+      "html": {
+        "body": "&lt;h1&gt;{response.title}&lt;/h1&gt;&lt;p&gt;{response.message}&lt;/p&gt;&lt;p&gt;{request.id}&lt;/p&gt;",
+        "contentType": "text/html; charset=utf-8"
+      },
+      "json": {
+        "body": "{\"status\":{response.status_code},\"title\":\"{response.title}\",\"message\":\"{response.message}\",\"request_id\":\"{request.id}\"}",
+        "contentType": "application/problem+json"
+      },
+      "plain": {
+        "body": "{response.title}. {response.message} Request ID: {request.id}",
+        "contentType": "text/plain; charset=utf-8"
+      },
+      "custom": {
+        "body": "{response.title}. {response.message}",
+        "contentType": "text/plain; charset=utf-8"
+      }
+    },
+    "scenarios": {
+      "waf_block": {
+        "statusCode": 403,
+        "title": "Request blocked",
+        "message": "Contact the site owner with the request ID."
+      },
+      "ip_deny": {
+        "statusCode": 403,
+        "title": "Access denied",
+        "message": "Access is not allowed."
+      },
+      "country_deny": {
+        "statusCode": 403,
+        "title": "Access denied",
+        "message": "Access is not allowed."
+      },
+      "rate_limit": {
+        "statusCode": 429,
+        "title": "Too many requests",
+        "message": "Please try again later."
+      },
+      "bot_block": {
+        "statusCode": 403,
+        "title": "Browser verification required",
+        "message": "Use a browser over HTTPS or contact the site owner for API access."
+      },
+      "service_unavailable": {
+        "statusCode": 503,
+        "title": "Service unavailable",
+        "message": "Please try again later."
+      }
+    }
+  }
+}
+JSON
+sudo tiyi system settings get &gt; settings-before.json
+jq '{"security.responses.config": .settings.values["security.responses.config"]}' \
+  settings-before.json &gt; responses-before.json
+sudo tiyi system settings update --values-json "$(cat security-responses.json)"
+</code></pre>
+<p>Only <code>security.responses.config</code> is updated. The object must contain every format and all six scenarios, including inactive formats.
+Do not use the old separate WAF/rate-response keys. IP/country bindings no longer have their own status-code setting.</p>
+<h2 id="3-verify-and-restore">3. Verify and restore</h2>
+<p>Request HTML and JSON from your own demo site:</p>
+<pre><code class="language-sh">curl -i --get -H 'Host: quickstart.test' -H 'Accept: text/html' \
+  --data-urlencode 'q=1 UNION SELECT password FROM users' http://127.0.0.1/
+curl -i --get -H 'Host: quickstart.test' -H 'Accept: application/json' \
+  --data-urlencode 'q=1 UNION SELECT password FROM users' http://127.0.0.1/
+</code></pre>
+<p>Both should return the configured WAF status with matching body/Content-Type and a Tiyi-generated request ID.
+Normal traffic should still reach the origin. For multiple nodes, check each serving node's publication result.
+To restore, first confirm the saved value in <code>responses-before.json</code> is a complete object rather than null, then run:</p>
+<pre><code class="language-sh">sudo tiyi system settings update --values-json "$(cat responses-before.json)"
+</code></pre>
+<p>If no configuration had been explicitly saved and the backup contains null, reset defaults in the console and Save.
+Resetting the editor alone does not apply the change.</p>
+<h2 id="4-variables-and-boundaries">4. Variables and boundaries</h2>
+<p>Templates support only <code>{response.status_code}</code>, <code>{response.kind}</code>, <code>{response.source}</code>, <code>{response.title}</code>,
+<code>{response.message}</code>, <code>{request.id}</code>, and <code>{request.time}</code>. Source is a fixed broad class; ID/time are generated by Tiyi.
+Cookies, request bodies, client IPs, paths, rule IDs, thresholds, internal errors, and remaining ban time are unavailable.
+Unknown variables and invalid JSON reject save/apply, preserving the last valid runtime configuration.
+Templates cannot run JavaScript: terminal responses have a script-blocking CSP. Avoid pages that depend on scripts.
+Tiyi does not automatically emit <code>Retry-After</code>; clients should use their own bounded retry strategy.</p>
+<div class="docs-pager"><a href="api-protection.html"><span class="label">← Previous</span><span class="title">Protect APIs</span></a><a class="next" href="operations.html"><span class="label">Next →</span><span class="title">Daily operations</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

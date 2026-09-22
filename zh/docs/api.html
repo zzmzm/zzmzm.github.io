@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<title>API 参考 — 太一文档</title>
+<title>API 接入与完整参考 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="驱动太一 UI、CLI 与节点流的 ConnectRPC 契约：传输、鉴权、请求约定、错误码、RBAC、流式调用与 23 个服务目录。" />
+<meta name="description" content="API 接入与完整参考 适用版本： v3.8.0 。要用脚本完成控制台操作，最容易的入口是 ConnectRPC 的 HTTP JSON 请求： POST /tiyi.v1.服务名/方法名 ，不需要 SDK。应用自身的 OpenAPI 文件用于 API 请求防护 ， 本页讲的是 管理太一的 API 。 完整目" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -42,216 +42,451 @@
 <div class="docs-layout">
 
   <aside class="docs-sidebar" aria-label="文档导航">
-    <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-migration.html">升级与迁移</a></li></ul></div>
-    <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
-    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
-    <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html" aria-current="page">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
   </aside>
 
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">参考</span>
-    <h1>API 参考</h1>
-    <p class="lede">太一只暴露一份 ConnectRPC API。同一份契约同时服务内置管理 UI（HTTP 上的 JSON）、<code>tiyi</code> CLI（HTTP 上的 JSON）与节点流（gRPC 双向）—— UI 能做的事，脚本同样能做。共 <strong>23 个服务、255 个 RPC</strong>，另有一小组非 RPC 的 HTTP 端点。</p>
-
-    <h2 id="transport">传输</h2>
-    <p>每个过程都是对 <code>/{package}.{Service}/{Method}</code> 的 <code>POST</code>，例如 <code>POST /tiyi.v1.SiteService/ListSites</code>。同一批路由上支持三种线上协议：</p>
-    <table>
-      <thead><tr><th>协议</th><th><code>Content-Type</code></th><th>适用场景</th></tr></thead>
-      <tbody>
-        <tr><td>Connect（一元）</td><td><code>application/json</code></td><td>curl、脚本、CI —— 无需帧封装，也无需生成代码。</td></tr>
-        <tr><td>Connect（流式）</td><td><code>application/connect+json</code></td><td>非 gRPC 客户端调用服务端流与双向流。</td></tr>
-        <tr><td>gRPC / gRPC-Web</td><td><code>application/grpc</code></td><td>生成的 gRPC 客户端；节点流。</td></tr>
-      </tbody>
-    </table>
-    <p>API 同时监听管理地址（<code>--addr</code>，默认 <code>0.0.0.0:8080</code>）与本地 Unix socket（<code>--admin-socket</code>，默认 <code>/run/tiyi/admin.sock</code>）。</p>
-
-    <h2 id="auth">鉴权</h2>
-    <p>三种鉴权面，按部署上下文选用：</p>
-
-    <table>
-      <thead>
-        <tr><th>鉴权面</th><th>机制</th><th>使用方</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>本地管理 socket</td>
-          <td><code>admin.sock</code> 上的 OS 文件权限</td>
-          <td>与服务端同主机的 <code>tiyi</code> CLI。请求以合成的超级管理员身份运行 —— 这正是无凭据也能重置密码的原因。</td>
-        </tr>
-        <tr>
-          <td>HS256 JWT</td>
-          <td>HTTP 上的 <code>Authorization: Bearer &lt;jwt&gt;</code></td>
-          <td>管理 UI、远程 CLI、任何从主机外驱动 API 的客户端。由 <code>AuthService.Login</code> 签发，<code>AuthService.Refresh</code> 续期。</td>
-        </tr>
-        <tr>
-          <td>节点流 token</td>
-          <td>一次性入网 token → 长期流 token</td>
-          <td><code>AgentStreamService.Connect</code> 上的节点。token 由 <code>AgentService.IssueEnrollmentToken</code> 签发。</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h3 id="login-example">登录</h3>
-<pre><code><span class="p">$</span> curl -sS http://tiyi:8080/tiyi.v1.AuthService/Login <span class="o">\</span>
-    -H <span class="s">"Content-Type: application/json"</span> <span class="o">\</span>
-    -d <span class="s">'{"username":"admin","password":"..."}'</span>
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="api-接入与完整参考">API 接入与完整参考</h1>
+<p class="lede">适用版本：<strong>v3.8.0</strong>。要用脚本完成控制台操作，最容易的入口是 ConnectRPC 的 HTTP JSON 请求：
+<code>POST /tiyi.v1.服务名/方法名</code>，不需要 SDK。应用自身的 OpenAPI 文件用于<a href="api-protection.html">API 请求防护</a>，
+本页讲的是<strong>管理太一的 API</strong>。</p>
+<p>完整目录：<a href="reference/rpc-index.html">309 个 RPC / 26 个服务</a> · <a href="reference/index.html">请求/响应字段</a> ·
+<a href="reference/permissions.html">权限目录</a>。每个 RPC 页给出准确路径、请求、响应、枚举和权限，英文协议字段保持原名。</p>
+<a id="1-选择认证方式"></a>
+<h2 id="authentication">1. 选择认证方式</h2>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>入口</th>
+<th>凭据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>在太一主机本地维护</td>
+<td><code>/run/tiyi/admin.sock</code></td>
+<td>Unix 文件权限，通常使用 sudo；相当于本地管理员</td>
+</tr>
+<tr>
+<td>自己的电脑、CI、其他服务</td>
+<td>管理 URL，生产使用 HTTPS</td>
+<td><code>Authorization: Bearer JWT</code>，权限来自登录用户</td>
+</tr>
+<tr>
+<td>远端 Agent</td>
+<td>生成的节点安装流程</td>
+<td>有有效期和节点数上限的注册 token 与节点身份；不是管理员 JWT</td>
+</tr>
+</tbody>
+</table>
+<p>本机免登录读取示例：</p>
+<pre><code class="language-sh">sudo curl --fail-with-body -sS --unix-socket /run/tiyi/admin.sock <span class="o">\
+</span>  http://localhost/tiyi.v1.SiteService/ListSites <span class="o">\
+</span>  -H <span class="s">'Content-Type: application/json'</span> -d <span class="s">'{"page":{"page":1,"pageSize":20}}'</span>
+</code></pre>
+<p>不要把整个管理 socket 转发到公开 TCP 端口。远程自动化应创建满足任务所需权限的用户和角色。</p>
+<h2 id="2-登录并取得-token">2. 登录并取得 token</h2>
+<p>下例使用 Bash、curl、Python 3、jq。将下面的 <code>SERVER_IP</code> 换成太一主机的实际 IP；已配置 HTTPS 管理域名时，使用对应 URL。
+代码里的用户名默认 <code>admin</code>，需要时改成自动化账号。
+密码在终端隐藏输入，不写到命令历史；登录材料放在临时私有目录。</p>
+<pre><code class="language-sh">export <span class="v">TIYI_API</span><span class="o">=</span><span class="s">'http://SERVER_IP:8080'</span>
+umask 077
+<span class="v">SESSION_DIR</span><span class="o">=</span><span class="k">$(</span>mktemp -d<span class="k">)</span>
+python3 - <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/login.json</span><span class="s">"</span> <span class="s">&lt;&lt;'PY'
+import getpass, json, pathlib, sys
+pathlib.Path(sys.argv[1]).write_text(json.dumps({
+    "username": "admin", "password": getpass.getpass("Tiyi password: ")
+}))
+PY</span>
+curl --fail-with-body -sS -c <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/cookies</span><span class="s">"</span> <span class="o">\
+</span>  -H <span class="s">'Content-Type: application/json'</span> <span class="o">\
+</span>  --data-binary @<span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/login.json</span><span class="s">"</span> <span class="o">\
+</span>  <span class="s">"</span><span class="v">$TIYI_API</span><span class="s">/tiyi.v1.AuthService/Login</span><span class="s">"</span> -o <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/session.json</span><span class="s">"</span>
+rm <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/login.json</span><span class="s">"</span>
+<span class="k">while</span> jq -e <span class="s">'.challengeRequired == true'</span> <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/session.json</span><span class="s">"</span> &gt;/dev/null; <span class="k">do</span>
+  python3 - <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/challenge.json</span><span class="s">"</span> <span class="s">&lt;&lt;'PY'
+import getpass, json, pathlib, sys
+pathlib.Path(sys.argv[1]).write_text(json.dumps({"code": getpass.getpass("MFA / RADIUS code: ")}))
+PY</span>
+  curl --fail-with-body -sS -b <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/cookies</span><span class="s">"</span> -c <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/cookies</span><span class="s">"</span> <span class="o">\
+</span>    -H <span class="s">'Content-Type: application/json'</span> --data-binary @<span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/challenge.json</span><span class="s">"</span> <span class="o">\
+</span>    <span class="s">"</span><span class="v">$TIYI_API</span><span class="s">/tiyi.v1.AuthService/CompleteAuthenticationChallenge</span><span class="s">"</span> <span class="o">\
+</span>    -o <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/session.json</span><span class="s">"</span> <span class="o">||</span> <span class="k">break</span>
+  rm -f <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/challenge.json</span><span class="s">"</span>
+<span class="k">done</span>
+<span class="v">TIYI_TOKEN</span><span class="o">=</span><span class="k">$(</span>jq -er <span class="s">'.accessToken | select(length &gt; 0)'</span> <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/session.json</span><span class="s">"</span><span class="k">)</span>
+export TIYI_TOKEN
+tiyi auth user
+</code></pre>
+<p><code>auth user</code> 成功返回当前用户，说明 token 可用。若登录失败，先处理错误再继续，不能把空 token 当成功。
+启用 TOTP 或 RADIUS 挑战时，<code>challengeRequired</code> 为 true；需要携带登录返回的挑战 cookie 完成挑战。
+OIDC/SAML 使用浏览器跳转流程，不是把身份提供商 token 当作太一 JWT。</p>
+<p>CLI 不会自动把 <code>auth login</code> 输出存成登录会话。这里通过 <code>TIYI_API</code> 和 <code>TIYI_TOKEN</code> 为后续 CLI 调用提供身份。
+默认 access token 有效期 8 小时，refresh 为 7 天，可由管理员调整。</p>
+<h2 id="3-查询与创建站点">3. 查询与创建站点</h2>
+<p>先定义一个可重复使用的调用函数，再查询第一页：</p>
+<pre><code class="language-sh">tiyi_rpc<span class="o">(</span><span class="o">)</span> <span class="o">{</span>
+  curl --fail-with-body -sS <span class="s">"</span><span class="v">$TIYI_API</span><span class="s">/tiyi.v1.</span><span class="v">$1</span><span class="s">"</span> <span class="o">\
+</span>    -H <span class="s">"</span><span class="s">Authorization: Bearer </span><span class="v">$TIYI_TOKEN</span><span class="s">"</span> <span class="o">\
+</span>    -H <span class="s">'Content-Type: application/json'</span> -H <span class="s">'Connect-Protocol-Version: 1'</span> <span class="o">\
+</span>    --data-binary <span class="s">"</span><span class="v">$2</span><span class="s">"</span>
+<span class="o">}</span>
+tiyi_rpc SiteService/ListSites <span class="s">'{"page":{"page":1,"pageSize":20}}'</span>
+</code></pre>
+<p>结果的 <code>items</code> 是当前页，<code>page.total</code> 是总数（64 位整数用字符串）。增加 <code>page.page</code> 继续获取，不能假设第一页就是全部资源。</p>
+<p>以下会创建一个<strong>立即启用</strong>的演示站点。先准备快速开始的源站，替换已被使用的示例域名/名称后再执行：</p>
+<pre><code class="language-sh">cat &gt; api-site.json <span class="s">&lt;&lt;'JSON'
 {
-  <span class="s">"accessToken"</span>: <span class="s">"&lt;jwt&gt;"</span>,
-  <span class="s">"expiresAt"</span>: <span class="s">"2026-07-26T21:13:41Z"</span>,
-  <span class="s">"user"</span>: {
-    <span class="s">"id"</span>: <span class="s">"&lt;uuid&gt;"</span>,
-    <span class="s">"tenantId"</span>: <span class="s">"&lt;uuid&gt;"</span>,
-    <span class="s">"username"</span>: <span class="s">"admin"</span>,
-    <span class="s">"roles"</span>: [<span class="s">"Administrator"</span>],
-    <span class="s">"accessCodes"</span>: [<span class="s">"site:read"</span>, <span class="s">"site:write"</span>, <span class="s">"..."</span>]
+  "site": {
+    "name": "api-example",
+    "primaryHost": "api.example.com",
+    "upstreams": [{"inline": {"url": "http://127.0.0.1:9000", "weight": 100}}],
+    "tls": {"mode": "TLS_MODE_NONE"},
+    "waf": {"enabled": true, "mode": "WAF_MODE_BLOCKING"},
+    "status": "RESOURCE_STATUS_ACTIVE"
   }
-}</code></pre>
-
-    <p>三个容易踩的点：</p>
-    <ul>
-      <li>登录请求体是<strong>扁平</strong>的 —— <code>{"username":…,"password":…}</code>，不要再包一层凭据对象。</li>
-      <li><strong>refresh token 不在响应体里</strong>。它以 <code>HttpOnly</code>、<code>SameSite=Strict</code> 的 cookie <code>tiyi_refresh</code> 下发，作用域为 <code>Path=/tiyi.v1.AuthService/</code>。浏览器会自动回带；脚本需要自己保存（<code>curl -c</code>），或在调用 <code>Refresh</code> 时显式传 <code>{"refreshToken":"…"}</code>。</li>
-      <li><code>Refresh</code> 会<strong>轮换</strong> refresh token；重放已消费的 token 会被当作凭据泄露处理：调用返回 <code>unauthenticated</code> 并清除会话。请始终保存最新值。</li>
-    </ul>
-    <p>默认有效期：access token 8 小时（<code>auth.access_token_ttl</code>），refresh token 7 天（<code>auth.refresh_token_ttl</code>）。配置了 LDAP 或 RADIUS 时，同一个 <code>Login</code> 调用会按顺序回退尝试。</p>
-
-    <h3 id="local-socket">本地管理 socket</h3>
-<pre><code><span class="p">$</span> curl -sS --unix-socket /run/tiyi/admin.sock <span class="o">\</span>
-    http://tiyi.local/tiyi.v1.SystemService/GetSystemSettings <span class="o">\</span>
-    -H <span class="s">"Content-Type: application/json"</span> -d <span class="s">'{}'</span></code></pre>
-    <p><code>http://tiyi.local</code> 只是占位符 —— 真正决定去向的是 socket 路径。socket 默认权限 <code>0600</code>；<code>--admin-socket-mode 0660 --admin-socket-group tiyi-admin</code> 可以共享给一个 Unix 组。能打开该 socket 就等于拥有完全控制权，请把该组视同 root。</p>
-
-    <h3 id="cli-config">CLI</h3>
-<pre><code><span class="p">$</span> export TIYI_API=https://tiyi.example.com   <span class="c"># 不设置则走本地 socket</span>
-<span class="p">$</span> export TIYI_TOKEN=<span class="s">"$TOKEN"</span>
-<span class="p">$</span> tiyi site list</code></pre>
-    <p>命令级参数 <code>--api</code>、<code>--token</code>、<code>--admin-socket</code> 会覆盖环境变量。</p>
-
-    <h2 id="conventions">请求约定</h2>
-    <ul>
-      <li><strong>响应使用 camelCase</strong>（<code>primaryHost</code>）；请求同时接受 camelCase 与原始 snake_case（<code>primary_host</code>）。</li>
-      <li><strong>64 位整数是 JSON 字符串</strong> —— <code>"revision": "2"</code>，发送时同样要加引号。</li>
-      <li><strong>枚举是带前缀的字符串</strong> —— <code>"RESOURCE_STATUS_ACTIVE"</code>、<code>"WAF_MODE_BLOCKING"</code>，零值恒为 <code>*_UNSPECIFIED</code>。</li>
-      <li><strong>时间戳是 RFC 3339 UTC</strong> —— <code>"2026-07-26T13:15:08.217701748Z"</code>。</li>
-      <li><strong>写操作要包一层资源字段</strong>：<code>CreateSite</code> 收的是 <code>{"site": {…}}</code>，不是把字段平铺在顶层。平铺会返回 <code>invalid_argument: site is required</code>。</li>
-      <li><strong>field mask 是逗号连接的字符串</strong>，不是数组：<code>"updateMask": "name,status"</code>。不传 mask 会整体覆盖。</li>
-      <li><strong>未知请求字段会被拒绝。</strong>已删除字段或拼错的 key 会直接失败，不会被静默丢弃。</li>
-      <li><strong>每个请求都按调用方 token 的租户隔离</strong>，绝不取请求体里的租户字段。</li>
-    </ul>
-
-    <h3 id="revisions">revision 与乐观并发</h3>
-    <p>带版本的资源都有 <code>revision</code>，每次写入自增。提交时带上你读到的 revision；若已被他人抢先写入，调用会返回 <code>failed_precondition: revision conflict</code>。重新读取、重放改动、再重试即可。省略 <code>revision</code> 则跳过该检查。</p>
-    <p>路由与站点级策略覆盖有各自独立的 RPC（<code>UpdateSiteRouting</code>、<code>UpsertSitePolicyOverride</code>），正是为了避免不理解路由的客户端用一次普通 <code>UpdateSite</code> 把它们抹掉。</p>
-
-    <h3 id="pagination">分页</h3>
-    <p>有界列表（站点、用户、证书、策略）用偏移分页：<code>{"page":{"page":1,"pageSize":50}}</code>，页码从 1 开始，默认每页 50，上限 200。日志与事件查询用游标：把上一次的 <code>nextCursor</code> 传回，直到 <code>hasMore</code> 为 false。需要直接跳页时用 <code>offset</code> 代替 <code>cursor</code>，上限 10 万行，超出应改为收窄时间范围。</p>
-
-    <h2 id="services">23 个服务</h2>
-    <table>
-      <thead>
-        <tr><th>服务</th><th>范围</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>AuthService</code></td><td>登录、登出、刷新、当前用户、access code、修改密码。</td></tr>
-        <tr><td><code>SystemService</code></td><td>健康、设置、Dashboard 汇总、声明式 apply、CRS/GeoIP/二进制发布、升级批次。</td></tr>
-        <tr><td><code>MenuService</code></td><td>按权限过滤的管理界面导航。</td></tr>
-        <tr><td><code>UserService</code></td><td>用户 CRUD、角色分配、锁定/解锁、密码重置。</td></tr>
-        <tr><td><code>RoleService</code></td><td>角色 CRUD 与权限目录。</td></tr>
-        <tr><td><code>SiteService</code></td><td>站点 CRUD、启用/停用、编译配置预览、路径路由、站点级策略覆盖。</td></tr>
-        <tr><td><code>UpstreamService</code></td><td>上游池 CRUD；被引用时拒绝删除。</td></tr>
-        <tr><td><code>CertService</code></td><td>上传、ACME 签发/续期、下载、DNS provider CRUD。</td></tr>
-        <tr><td><code>PolicyService</code></td><td>WAF 策略 CRUD、分层更新、版本快照与回滚、SecLang 预览、测试台。</td></tr>
-        <tr><td><code>RuleOverrideService</code></td><td>单条 CRS 规则的行为与范围化覆盖生命周期。</td></tr>
-        <tr><td><code>CustomRuleService</code></td><td>自定义 SecLang 与可视化规则的生命周期、排序、模板。</td></tr>
-        <tr><td><code>IpListService</code></td><td>可复用 IP 数据、分层绑定、CSV 导入导出、查询与优先级。</td></tr>
-        <tr><td><code>RateLimitService</code></td><td>端点与客户端范围的限速资源。</td></tr>
-        <tr><td><code>CrsService</code></td><td>CRS 目录浏览、导入、排除包安装与挂载。</td></tr>
-        <tr><td><code>AgentService</code></td><td>节点 CRUD、入网 token、安装脚本、命令、配置 bundle、指标采样。</td></tr>
-        <tr><td><code>AgentGroupService</code></td><td>基于标签与显式列表的节点分组及匹配预览。</td></tr>
-        <tr><td><code>AgentStreamService</code></td><td>带鉴权的节点双向会话流。</td></tr>
-        <tr><td><code>EvidenceUploadService</code></td><td>请求证据上传独占一条流，避免大请求体阻塞控制面流量。</td></tr>
-        <tr><td><code>TrustService</code></td><td>客户端 IP 信任配置（租户 + 站点覆盖）、CDN 快照、explain。</td></tr>
-        <tr><td><code>AlertService</code></td><td>告警规则与通道 CRUD、ack/resolve、静默、备注、通道测试发送。</td></tr>
-        <tr><td><code>LogService</code></td><td>安全/访问/错误事件查询、保留证据、导出、日志策略、实时 tail。</td></tr>
-        <tr><td><code>AuditService</code></td><td>防篡改审计查询、链状态与校验。</td></tr>
-        <tr><td><code>AIService</code></td><td>可选且默认关闭的建议、Copilot 分析与 Chat。</td></tr>
-      </tbody>
-    </table>
-    <p>逐 RPC 的完整参考 —— 每个请求/响应字段以及所需权限 —— 由 schema 自动生成，随源码树发布在 <code>docs/api/</code>，protobuf 定义在 <code>proto/tiyi/v1/</code>。</p>
-
-    <h2 id="errors">错误</h2>
-    <p>错误返回标准码、给人看的 message，有时还带类型化 details。请基于 <code>code</code>（以及 <code>details[].debug.reason</code>）分支，不要基于 <code>message</code>。</p>
-<pre><code>{
-  <span class="s">"code"</span>: <span class="s">"unauthenticated"</span>,
-  <span class="s">"message"</span>: <span class="s">"invalid session"</span>,
-  <span class="s">"details"</span>: [{ <span class="s">"type"</span>: <span class="s">"google.rpc.ErrorInfo"</span>,
-               <span class="s">"debug"</span>: { <span class="s">"reason"</span>: <span class="s">"TOKEN_INVALID"</span>, <span class="s">"domain"</span>: <span class="s">"tiyi.io"</span> } }]
-}</code></pre>
-    <table>
-      <thead><tr><th>码</th><th>HTTP</th><th>常见原因</th><th>可重试？</th></tr></thead>
-      <tbody>
-        <tr><td><code>invalid_argument</code></td><td>400</td><td>参数被验证器拒绝。</td><td>否 —— 先改请求。</td></tr>
-        <tr><td><code>failed_precondition</code></td><td>400</td><td>revision 冲突、资源被引用或其他状态保护。</td><td>重新读取后重试。</td></tr>
-        <tr><td><code>unauthenticated</code></td><td>401</td><td>token 缺失、格式错误或过期。</td><td>刷新后重试一次。</td></tr>
-        <tr><td><code>permission_denied</code></td><td>403</td><td>会话有效但缺少所需权限；也用于 <code>ACCOUNT_LOCKED</code>。</td><td>否。</td></tr>
-        <tr><td><code>not_found</code></td><td>404</td><td>ID 不存在或已软删除。</td><td>否。</td></tr>
-        <tr><td><code>already_exists</code></td><td>409</td><td>违反唯一性约束。</td><td>否。</td></tr>
-        <tr><td><code>resource_exhausted</code></td><td>429</td><td>写入准入队列已满。</td><td>是 —— 遵守 <code>Retry-After</code>。</td></tr>
-        <tr><td><code>unimplemented</code></td><td>501</td><td>schema 中已声明但尚未接线。</td><td>否。</td></tr>
-        <tr><td><code>unavailable</code></td><td>503</td><td>SQLite 繁忙或依赖不可用。</td><td>是 —— 退避重试。</td></tr>
-        <tr><td><code>deadline_exceeded</code></td><td>504</td><td>服务端超时。</td><td>收窄查询范围。</td></tr>
-        <tr><td><code>internal</code></td><td>500</td><td>未处理的服务端故障。</td><td>否 —— 请反馈。</td></tr>
-      </tbody>
-    </table>
-    <p>已知的 <code>ErrorInfo</code> reason：<code>BAD_CREDENTIALS</code>、<code>TOKEN_INVALID</code>、<code>ACCOUNT_LOCKED</code>。</p>
-
-    <h3 id="backpressure">写入准入</h3>
-    <p>写类 RPC 会经过写入准入闸门排队，避免并发写入压垮内嵌 SQLite。队列满时返回 <code>resource_exhausted</code>，并带上以秒为单位的 <code>Retry-After</code> 头。读取从不排队。批量导入应限制写并发并遵守该响应头。</p>
-
-    <h2 id="rbac">RBAC</h2>
-    <p>每个 RPC 声明所需权限 —— <code>site:read</code>、<code>policy:write</code>、<code>log:export</code>、<code>system:apply</code> 等，共 56 项。服务端将 JWT subject 的角色与权限表比对；持有 <code>tiyi:superadmin</code> 的角色通过所有检查。内置角色只有 <code>Administrator</code> 且拥有全部权限，因此请用 <code>tiyi role</code> 或角色页面创建最小权限角色，并用 <code>RoleService.ListPermissions</code> 查看实时目录，而不是依赖固定清单。</p>
-    <p>九个过程无需会话即可访问：<code>SystemService.Health</code>、<code>AuthService.GetLoginOptions</code> / <code>Login</code> / <code>CompleteAuthenticationChallenge</code> / <code>Refresh</code> / <code>Logout</code>、<code>AgentService.Enroll</code>、<code>AgentStreamService.Connect</code>、<code>EvidenceUploadService.Upload</code>。入网与流过程校验专用 token；挑战完成过程校验签名状态。</p>
-
-    <h2 id="streaming">流式 RPC</h2>
-    <p>流式调用可走 gRPC，也可走 Connect 流式协议。使用 Connect 时设置 <code>Content-Type: application/connect+json</code>，并给每条消息加 5 字节信封：1 字节标志位 + 大端 <code>uint32</code> 长度。<strong>流失败时 HTTP 状态码仍是 200</strong> —— 真正的状态在结尾帧（标志位 <code>0x02</code>）里，只看 HTTP 码的客户端会漏掉错误。</p>
-    <ul>
-      <li><strong><code>AgentStreamService.Connect</code></strong> —— 双向。节点会话：hello、状态上报、事件、apply 结果、观测批次；服务端下发 welcome、配置更新、命令、challenge。</li>
-      <li><strong><code>EvidenceUploadService.Upload</code></strong> —— 双向。请求证据体，与控制流隔离。</li>
-      <li><strong><code>AgentService.StreamAgentEvents</code></strong> —— 服务端流。节点在线/离线与指标。</li>
-      <li><strong><code>LogService.TailSecurityEvents</code></strong> —— 服务端流。实时安全事件流。</li>
-      <li><strong><code>LogService.StreamRequestEvidenceBody</code></strong> / <strong><code>DownloadRequestEvidenceBody</code></strong> —— 服务端流。分块下发保留的请求体。</li>
-      <li><strong><code>AlertService.StreamAlerts</code></strong> —— 服务端流。告警生命周期事件。</li>
-      <li><strong><code>SystemService.StreamUpgradeRun</code></strong> —— 服务端流。按节点的升级进度。</li>
-      <li><strong><code>AIService.StreamAnalysis</code></strong> / <strong><code>StreamChat</code></strong> —— 服务端流。Copilot 增量输出。</li>
-    </ul>
-    <p>断线请退避重连。这些流都不会重放历史，断连期间遗漏的数据需要另行查询补齐。</p>
-
-    <h2 id="http">非 RPC 的 HTTP 端点</h2>
-    <table>
-      <thead><tr><th>端点</th><th>监听面</th><th>鉴权</th><th>用途</th></tr></thead>
-      <tbody>
-        <tr><td><code>GET /healthz</code></td><td>两者</td><td>无</td><td>存活/就绪探针：健康 200，否则 503，两种情况都返回 JSON。</td></tr>
-        <tr><td><code>GET /download/tiyi</code></td><td>两者</td><td>无</td><td>下发当前二进制，供尚无凭据的新节点自举。</td></tr>
-        <tr><td><code>/api/v1/telemetry/*</code></td><td>两者</td><td>JWT + <code>telemetry:read</code></td><td>精确计数：<code>qps</code>、<code>series</code>、<code>topk</code>、<code>apitree</code> 以及 API 资产处置路由。</td></tr>
-        <tr><td><code>GET /metrics</code></td><td>仅 socket</td><td>socket 权限</td><td>观测管线的 Prometheus/OpenMetrics 抓取端点。</td></tr>
-        <tr><td><code>GET /debug/*</code></td><td>仅 socket</td><td>socket 权限</td><td>logsink、告警、AI、许可的诊断计数器。非稳定契约。</td></tr>
-      </tbody>
-    </table>
-    <p>管理监听同时提供管理 UI，未知路径会回落到 SPA 并返回 HTTP 200 —— 所以对「仅 socket」路径 <code>curl</code> 成功，拿到的其实是 HTML 而非数据。请检查 <code>Content-Type</code>。</p>
-
-    <h2 id="clients">生成客户端</h2>
-    <p>把代码生成器指向源码树中的 <code>proto/tiyi/v1</code>。已验证的组合：<code>connect-go</code>（CLI 使用）、<code>connect-es</code> / <code>@connectrpc/connect-web</code>（管理 UI 使用），以及任意标准 gRPC 客户端（适合流式为主的集成）。由于一元 Connect 就是 HTTP 上的普通 JSON，一个简单的 <code>fetch</code> 或 <code>requests</code> 封装同样够用。</p>
-    <p>包名是 <code>tiyi.v1</code>；删除的字段号和字段名保留为 <code>reserved</code>，防止它们被赋予另一种含义。客户端与服务端必须使用当前契约；保留编号是协议安全措施，不代表支持旧客户端。</p>
-
-    <h2 id="canonical-spec">API 契约</h2>
-    <p>本文档覆盖面向运维的 API 表面，并应与已安装二进制保持一致 —— 不一致请提 issue。</p>
-
-    <div class="docs-pager">
-      <a href="cli.html"><span class="label">← 上一页</span><span class="title">CLI 参考</span></a>
-      <a class="next" href="deployment.html"><span class="label">下一页 →</span><span class="title">部署</span></a>
-    </div>
-  </main>
+}
+JSON</span>
+tiyi_rpc SiteService/CreateSite @api-site.json &gt; created-site.json
+<span class="v">SITE_ID</span><span class="o">=</span><span class="k">$(</span>jq -er <span class="s">'.site.id'</span> created-site.json<span class="k">)</span>
+curl -i -H <span class="s">'Host: api.example.com'</span> http://127.0.0.1/
+</code></pre>
+<p>应看到源站正常响应。WAF 已开启，没有指定策略时使用 Light。实际接入应再验证攻击请求及节点发布结果。</p>
+<h2 id="4-只修改一个字段并检测并发变更">4. 只修改一个字段，并检测并发变更</h2>
+<p>读取最新站点，带上返回的 revision 和字段掩码只改名称：</p>
+<pre><code class="language-sh">jq -n --arg id <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span> <span class="s">'{id:$id}'</span> &gt; get-site.json
+tiyi_rpc SiteService/GetSite @get-site.json &gt; current-site.json
+jq <span class="s">'{site:{id:.site.id,name:"api-renamed"},
+     revision:.site.revision,updateMask:"name"}'</span> current-site.json &gt; update-site.json
+tiyi_rpc SiteService/UpdateSite @update-site.json
+</code></pre>
+<p><code>updateMask</code> 是逗号分隔的 JSON 字段路径字符串，不是数组。保留 <code>revision</code> 原有十进制字符串，避免 JavaScript 精度损失。
+遇到 <code>aborted</code> 或 revision 冲突，应重新读取、比较差异并重新决定变更，不能盲目覆盖。
+每个服务的更新规则不同，以完整接口定义为准；策略层写入等接口可能是完整替换。</p>
+<h2 id="5-续期退出与脚本约定">5. 续期、退出与脚本约定</h2>
+<p>refresh token 默认在 HttpOnly cookie 中，不在登录 JSON 里。以下使用最新 cookie 续期：</p>
+<pre><code class="language-sh">curl --fail-with-body -sS -b <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/cookies</span><span class="s">"</span> -c <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/cookies</span><span class="s">"</span> <span class="o">\
+</span>  -H <span class="s">'Content-Type: application/json'</span> -d <span class="s">'{}'</span> <span class="o">\
+</span>  <span class="s">"</span><span class="v">$TIYI_API</span><span class="s">/tiyi.v1.AuthService/Refresh</span><span class="s">"</span> -o <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/session.json</span><span class="s">"</span>
+<span class="v">TIYI_TOKEN</span><span class="o">=</span><span class="k">$(</span>jq -er <span class="s">'.accessToken | select(length &gt; 0)'</span> <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/session.json</span><span class="s">"</span><span class="k">)</span>
+export TIYI_TOKEN
+</code></pre>
+<p>Refresh 会轮换 token；不要并发用同一个旧 refresh cookie，也不要反复重放旧值。
+完成任务后调用 Logout 并清理本次临时凭据：</p>
+<pre><code class="language-sh">curl --fail-with-body -sS -b <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">/cookies</span><span class="s">"</span> <span class="o">\
+</span>  -H <span class="s">'Content-Type: application/json'</span> -d <span class="s">'{}'</span> <span class="s">"</span><span class="v">$TIYI_API</span><span class="s">/tiyi.v1.AuthService/Logout</span><span class="s">"</span>
+unset TIYI_TOKEN
+rm -rf -- <span class="s">"</span><span class="v">$SESSION_DIR</span><span class="s">"</span>
+unset SESSION_DIR
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>约定</th>
+<th>正确处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JSON 字段</td>
+<td>用接口表中的 lowerCamelCase，如 <code>siteId</code>；不要沿用 apply YAML 的字段别名</td>
+</tr>
+<tr>
+<td>64 位整数</td>
+<td>revision、计数、总数保留十进制字符串；只在确认范围后转换数值</td>
+</tr>
+<tr>
+<td><code>bytes</code></td>
+<td>base64 字符串；例如 <code>source</code>、<code>reportJson</code>、证书 PEM 字段</td>
+</tr>
+<tr>
+<td>枚举</td>
+<td>使用完整符号名，如 <code>RESOURCE_STATUS_ACTIVE</code>；<code>TLS_MODE_MANAGED_ACME</code></td>
+</tr>
+<tr>
+<td>时间</td>
+<td>RFC 3339，建议 UTC；例如 <code>2026-09-17T08:00:00Z</code></td>
+</tr>
+<tr>
+<td>租户</td>
+<td>来自调用身份；不要通过伪造 <code>tenantId</code> 跨租户</td>
+</tr>
+<tr>
+<td>幂等</td>
+<td>只有声明支持的接口才传 <code>idempotencyKey</code>；精确重试复用同 key/同请求，修改内容用新 key</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-错误与权限">6. 错误与权限</h2>
+<p>Connect 错误通常为 <code>{"code":"permission_denied","message":"..."}</code>。保留响应体和 HTTP 状态，
+不要只判断网络请求是否完成。</p>
+<table>
+<thead>
+<tr>
+<th>错误</th>
+<th>下一步</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>unauthenticated</code> / 401</td>
+<td>核对 token、期限、时钟；需要时刷新或重新登录</td>
+</tr>
+<tr>
+<td><code>permission_denied</code> / 403</td>
+<td>检查用户角色与该 RPC 所需的全部权限</td>
+</tr>
+<tr>
+<td><code>invalid_argument</code> / 400</td>
+<td>按字段表检查名称、类型、枚举、上限、必填值</td>
+</tr>
+<tr>
+<td><code>already_exists</code> / 409</td>
+<td>查询同名/同域名资源；不要重复创建</td>
+</tr>
+<tr>
+<td><code>aborted</code> / 409</td>
+<td>版本或预览已变化；重新读取与预览</td>
+</tr>
+<tr>
+<td><code>failed_precondition</code></td>
+<td>检查证书、策略、依赖、节点能力与当前状态</td>
+</tr>
+<tr>
+<td><code>resource_exhausted</code> / <code>unavailable</code></td>
+<td>有界退避；写入先核对是否已成功，按接口幂等规则重试</td>
+</tr>
+<tr>
+<td><code>unimplemented</code> / 501</td>
+<td>当前入口不可执行，不能用重试或伪造参数绕过</td>
+</tr>
+</tbody>
+</table>
+<p><code>SystemService.Health</code> 需要 <code>system:read</code>；匿名存活探针用 <code>/healthz</code>。声明字段不是权限授权。</p>
+<a id="7-api-文档与校验发布流程"></a>
+<h2 id="api-documents">7. API 文档与校验发布流程</h2>
+<p>先运行<a href="api-protection.html#7-cli-与-api-自动化">可复制的上传与预览</a>。自动化按下面依赖顺序调用
+<a href="reference/services/api_schema.html">ApiSchemaService</a>；资源 ID、哈希和 approval 都取自真实响应：</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>方法 / CLI</th>
+<th>需要交给下一步的结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>上传文件</td>
+<td><code>StageSchemaSource</code> / <code>api-document upload</code></td>
+<td><code>source.id</code>；<code>source</code> 输入是文件的 base64</td>
+</tr>
+<tr>
+<td>审核地址与已有接口匹配</td>
+<td><code>PreviewApiDeclaration</code> / <code>declaration-preview</code></td>
+<td><code>reportSha256</code>、<code>catalogSha256</code>、解码后的报告与匹配结果</td>
+</tr>
+<tr>
+<td>保存审核后的声明</td>
+<td><code>StageApiDeclaration</code> / <code>declaration-stage</code></td>
+<td><code>contract.id</code>；匹配冲突时明确填写 decisions；覆盖范围独立审核</td>
+</tr>
+<tr>
+<td>编译可执行检查</td>
+<td><code>StageSchemaProfile</code> / <code>profile-stage</code></td>
+<td><code>profile.id</code>、能力/诊断报告；不支持项不能当作已执行</td>
+</tr>
+<tr>
+<td>选择校验接口</td>
+<td><code>StageSchemaBindings</code> / <code>bindings-stage</code></td>
+<td><code>bindings.id</code>；<code>operationKeys</code> 选检查接口，<code>enforceOperationKeys</code> 是其中强制执行的子集</td>
+</tr>
+<tr>
+<td>预览发布影响</td>
+<td><code>PreviewSchemaControl</code> / <code>preview</code></td>
+<td>完整 <code>approval</code>、变更/资源报告、<code>executionSupported</code></td>
+</tr>
+<tr>
+<td>提交审核结果</td>
+<td><code>ChangeSchemaControl</code> / <code>publish</code></td>
+<td><code>intent</code> 和状态；提交原 approval、原因、幂等键及实际已审核的确认项</td>
+</tr>
+<tr>
+<td>检查应用与请求</td>
+<td><code>OperationControlService.GetOperationControlState</code>、<code>GetSchemaValidation</code>、<code>GetSchemaDetection</code></td>
+<td>服务节点结果、配置状态、检测统计</td>
+</tr>
+</tbody>
+</table>
+<p>只发布接口清单时可省略校验绑定；这不会启用请求校验。根地址映射为 <code>basePath: ""</code>。
+学习、请求规范编辑、文档版本、停用与回滚同样有各自 RPC，见<a href="reference/services/api_schema.html">字段参考</a>。
+API 资产行的隐藏/恢复不会开启拦截；清单成员变化使用 <code>StageApiCatalogChange</code> 并完成相同发布流程。</p>
+<h3 id="可复制流程把演示订单接口发布为仅观察">可复制流程：把演示订单接口发布为仅观察</h3>
+<p>以下接续 <a href="api-protection.html#7-cli-与-api-自动化">API 防护教程</a>产生的 <code>source-result.json</code>、
+<code>declaration-preview.json</code> 和 <code>preview-result.json</code>，在同一目录、同一终端运行，需要 jq。
+只用于已经审核的单接口演示；真实文档出现歧义、接口冲突或不支持项时，先解决报告中的问题，不能自动全选确认。</p>
+<p><strong>保存声明并编译检查。</strong> 已审核映射和匹配结果后执行：</p>
+<pre><code class="language-sh">jq -s <span class="s">'.[0] + {reportSha256:.[1].reportSha256,
+  catalogSha256:.[1].catalogSha256,idempotencyKey:"orders-declaration-v1"}'</span> <span class="o">\
+</span>  declaration-preview.json preview-result.json &gt; declaration-stage.json
+sudo tiyi api-document declaration-stage -f declaration-stage.json &gt; declaration-result.json
+jq <span class="s">'. + {idempotencyKey:"orders-profile-v1"}'</span> declaration-preview.json &gt; profile-stage.json
+sudo tiyi api-document profile-stage -f profile-stage.json &gt; profile-result.json
+jq <span class="s">'{siteId:.contract.siteId,contractId:.contract.id}'</span> declaration-result.json &gt; contract-request.json
+sudo tiyi api-document declaration -f contract-request.json &gt; contract-result.json
+jq -r <span class="s">'.contractJson'</span> contract-result.json | base64 -d &gt; contract.json
+jq <span class="s">'.operations'</span> contract.json
+</code></pre>
+<p>应只看到演示的 <code>POST /api/orders</code>。核对 profile 的报告；这里的操作仍没有发布到在线流量。</p>
+<p><strong>选择观察并预览影响。</strong> 下面选择该演示文档里的全部接口；自己的文档请把 <code>operationKeys</code> 缩小到已审核接口：</p>
+<pre><code class="language-sh">jq -n --slurpfile c declaration-result.json --slurpfile p profile-result.json <span class="o">\
+</span>  --slurpfile d contract.json <span class="s">'{siteId:$c[0].contract.siteId,
+    declarationId:$c[0].contract.id,profileId:$p[0].profile.id,
+    operationKeys:[$d[0].operations[].key],idempotencyKey:"orders-bindings-observe-v1"}'</span> <span class="o">\
+</span>  &gt; bindings-stage.json
+sudo tiyi api-document bindings-stage -f bindings-stage.json &gt; bindings-result.json
+jq -n --slurpfile c declaration-result.json --slurpfile b bindings-result.json <span class="o">\
+</span>  <span class="s">'{siteId:$c[0].contract.siteId,action:"activate",contractId:$c[0].contract.id,
+    bindingId:$b[0].bindings.id,undeclaredAction:"allow"}'</span> &gt; control-preview.json
+sudo tiyi api-document preview -f control-preview.json &gt; control-preview-result.json
+jq <span class="s">'{executionSupported,approval}'</span> control-preview-result.json
+jq -r <span class="s">'.changesJson'</span> control-preview-result.json | base64 -d
+jq -r <span class="s">'.resourcesJson'</span> control-preview-result.json | base64 -d
+</code></pre>
+<p>确认 <code>executionSupported</code> 为 true，查看影响范围、能力及资源报告。若预览显示无法执行或需要接受部分能力，先解决原因，不添加跳过检查的参数。</p>
+<p><strong>提交审核并检查节点。</strong> 以下确认项表示你已完成上一段审核；提交后查询对应的实际 intent，而非只查最近一次发布：</p>
+<pre><code class="language-sh">jq -e <span class="s">'select(.executionSupported == true) | {approval:.approval,
+  idempotencyKey:"orders-publish-observe-v1",reason:"Reviewed demo orders API",
+  impactAcknowledged:true,resourceAcknowledged:true,typeOnlyAcknowledged:true}'</span> <span class="o">\
+</span>  control-preview-result.json &gt; publish-request.json
+sudo tiyi api-document publish -f publish-request.json &gt; publication-result.json
+jq <span class="s">'{siteId:.intent.siteId,intentId:.intent.id}'</span> publication-result.json &gt; state-request.json
+sudo curl --fail-with-body -sS --unix-socket /run/tiyi/admin.sock <span class="o">\
+</span>  http://localhost/tiyi.v1.OperationControlService/GetOperationControlState <span class="o">\
+</span>  -H <span class="s">'Content-Type: application/json'</span> --data-binary @state-request.json
+</code></pre>
+<p>重复最后的只读查询直到目标节点应用完成，再发送教程中的合法/类型错误请求，观察模式应均为 200（其他独立规则除外）。
+幂等键仅供这个演示的一次版本使用；内容改变要换新 key，精确重试保留相同 key 和请求。</p>
+<h3 id="从观察切换到强制校验">从观察切换到强制校验</h3>
+<p>验证通过且愿意对该演示接口阻断类型错误时，新建强制绑定：</p>
+<pre><code class="language-sh">jq <span class="s">'.enforceOperationKeys = .operationKeys |
+    .idempotencyKey = "orders-bindings-enforce-v1"'</span> <span class="o">\
+</span>  bindings-stage.json &gt; bindings-enforce.json
+sudo tiyi api-document bindings-stage -f bindings-enforce.json &gt; bindings-result.json
+</code></pre>
+<p>然后重新执行上面的 control-preview 构造、preview 与报告审核，使用新的 <code>bindings-result.json</code>。
+提交时将幂等键改为 <code>orders-publish-enforce-v1</code>、原因改为这次变更的真实理由；<strong>不能复用观察模式的 approval</strong>。
+检查该次 intent 的节点结果后重放两类请求：合法 200，类型错误 403。回退时可重新选择观察绑定并走同样预览/发布流程，
+或在控制台历史中选择已审核版本恢复。不会因为本地 JSON 文件改了就自动改变线上。</p>
+<a id="8-http-探针遥测和指标"></a>
+<h2 id="http">8. HTTP 探针、遥测和指标</h2>
+<table>
+<thead>
+<tr>
+<th>端点</th>
+<th>方法与认证</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/healthz</code></td>
+<td>GET，管理地址或 socket，匿名</td>
+<td>只表示进程响应，正常为 <code>{"status":"ok"}</code></td>
+</tr>
+<tr>
+<td><code>/readyz</code></td>
+<td>GET，仅本地 socket</td>
+<td>存储与内置代理/配置就绪；不就绪返回 503，网络管理地址返回 404</td>
+</tr>
+<tr>
+<td><code>/metrics</code></td>
+<td>GET，仅本地 socket</td>
+<td>OpenMetrics；<a href="operations.html#prometheus">Prometheus 接入</a></td>
+</tr>
+<tr>
+<td><code>/download/tiyi</code></td>
+<td>GET，匿名</td>
+<td>当前 Controller 二进制，供相同平台 Agent 安装</td>
+</tr>
+<tr>
+<td><code>/api/v1/telemetry/qps</code></td>
+<td>GET，JWT + <code>telemetry:read</code></td>
+<td><code>site</code> 可选，<code>window</code> 例如 <code>1m</code></td>
+</tr>
+<tr>
+<td><code>/api/v1/telemetry/series</code>、<code>topk</code></td>
+<td>GET，JWT + <code>telemetry:read</code></td>
+<td>时间区间、维度与聚合数据</td>
+</tr>
+<tr>
+<td><code>/api/v1/telemetry/apitree</code></td>
+<td>GET，JWT + <code>telemetry:read</code></td>
+<td>必填 <code>site</code>，可加 <code>base=/</code>、<code>depth=128</code>、起止时间</td>
+</tr>
+<tr>
+<td><code>/api/v1/telemetry/apitree/action</code></td>
+<td>POST，<code>api_inventory:write</code> + <code>site:read</code></td>
+<td><code>hide</code>、<code>restore</code>、<code>retire</code>；必须附当前 <code>expected_revision</code> 字符串</td>
+</tr>
+<tr>
+<td><code>/debug/*</code></td>
+<td>GET，仅本地 socket</td>
+<td>诊断信息，字段可能随版本变化</td>
+</tr>
+</tbody>
+</table>
+<p>telemetry HTTP JSON 使用该接口自己的 snake_case 字段，错误格式为 <code>{"error":{"code":...,"message":...}}</code>。
+资产动作的 <code>block</code> / <code>apply_body_suggestion</code> 是保留入口，返回 501；旧 <code>confirm</code> 动作不再支持。
+未知管理 URL 可能返回控制台 HTML 和 200，检查 <code>Content-Type</code>，不能把它当作 API 成功。</p>
+<div class="docs-pager"><a href="cli.html"><span class="label">← 上一页</span><span class="title">CLI 指南</span></a><a class="next" href="deployment.html"><span class="label">下一页 →</span><span class="title">生产部署</span></a></div>
+</main>
 
   <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
     <h4>本页大纲</h4>
@@ -263,7 +498,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.7.2 · 2026-09-03</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
     </div>
   </div>
 </footer>

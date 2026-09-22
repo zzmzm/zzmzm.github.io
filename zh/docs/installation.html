@@ -2,9 +2,10 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<title>安装 — 太一文档</title>
+<title>安装与服务管理 — 太一文档</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="安装太一签名二进制，写 YAML 配置，并选择运行模式。" />
+<meta name="description" content="本页解决如何安装、校验下载、离线部署和管理服务。第一次使用可跟随 快速开始 继续登录、建站与验证。
+适用 Linux amd64/arm64。安装脚本用于新主机；已有安装请走 升级与迁移 。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -47,171 +48,399 @@
       <ul>
         <li><a href="index.html">概览</a></li>
         <li><a href="quickstart.html">快速开始</a></li>
-        <li><a href="installation.html">安装</a></li>
+        <li><a href="installation.html" aria-current="page">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
       </ul>
     </div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-migration.html">升级与迁移</a></li></ul></div>
-    <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
-    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
-    <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
   </aside>
 
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">开始使用</span>
-    <h1>安装</h1>
-    <p class="lede">太一以签名 Linux 二进制形式分发。从公开发行渠道安装，写一份小 YAML 配置，然后运行完整 Controller 或入网一个远程 Agent。</p>
-
-    <div class="callout callout-info"><div class="callout-body"><p><strong>安装器用于干净主机。</strong>已有二进制、状态、配置或 unit 时，请按<a href="upgrade-migration.html">升级与迁移</a>操作。v3.7.0 无法读取 v3.6.0 或更早版本创建的状态，需要 purge 并重新注册远程 Agent。</p></div></div>
-
-    <h2 id="prebuilt">安装签名二进制</h2>
-    <p>太一是单一签名二进制 —— 在单节点上免费且功能完整。权威安装脚本发布在 <code>https://www.tiyisec.com/install.sh</code>：</p>
-<pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
-<span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.7.2 linux/amd64</span></code></pre>
-    <p>脚本会下载与平台匹配的二进制，比对 SHA-256 manifest，并放到 <code>/usr/local/bin/tiyi</code>。默认先尝试 GitHub，失败或过慢时回退到 Gitee Release 镜像；必要时可用 <code>TIYI_MIRROR=gitee</code> 强制使用 Gitee：</p>
-<pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>安装器环境变量：<code>TIYI_MIRROR=auto|github|gitee</code>、<code>TIYI_REPO=zzmzm/tiyi</code>、<code>TIYI_GITEE_REPO=tiyisec/tiyi</code>、<code>TIYI_VERSION=v3.7.2</code> 与 <code>TIYI_PREFIX=/usr/local/bin</code>。</p>
-    <p>公开分发仓库：<a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> 与 <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>。</p>
-    <p><code>linux/amd64</code> 与 <code>linux/arm64</code> 是一等目标。请在 Controller、远程 Agent 与独立 dashboard 主机上安装同一个签名版本。</p>
-
-    <h2 id="config-file">配置文件</h2>
-    <p><code>tiyi.yaml</code> 控制进程启动，包括监听、状态路径、认证、更新与 Geo 设置；它不创建站点或策略。可从下面的最小配置起步，也可以<a href="templates/tiyi.yaml" download>下载包含全部进程配置键的完整注释模板</a>。</p>
-<pre><code><span class="c"># /etc/tiyi/tiyi.yaml</span>
-<span class="k">server</span>:
-  <span class="k">addr</span>: <span class="s">"0.0.0.0:8080"</span>
-
-<span class="k">store</span>:
-  <span class="k">state_db</span>: <span class="s">"/var/lib/tiyi/state.db"</span>
-
-<span class="k">crypto</span>:
-  <span class="k">kek_file</span>: <span class="s">""</span>                       <span class="c"># 使用持久化的 /var/lib/tiyi/kek.bin</span>
-
-<span class="k">auth</span>:
-  <span class="k">jwt_secret</span>: <span class="s">""</span>                       <span class="c"># 生产环境设置私密的 32+ 字节值</span>
-
-<span class="k">proxy</span>:
-  <span class="k">http_addr</span>:  <span class="s">":80"</span>
-  <span class="k">https_addr</span>: <span class="s">":443"</span>
-  <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
-    <p>用 <code>--config</code> 传入。这份配置使用 <code>/var/lib/tiyi</code> 与 80/443 端口，因此请以 root 运行（或用下面的 systemd unit）：</p>
-<pre><code><span class="p">$</span> sudo tiyi run --config /etc/tiyi/tiyi.yaml || sudo /usr/local/bin/tiyi run --config /etc/tiyi/tiyi.yaml</code></pre>
-    <p>启动前先执行只读配置/启动检查：<code>sudo tiyi --config /etc/tiyi/tiyi.yaml doctor --mode run</code>。需要把站点变更纳入版本控制时，请使用另一份<a href="templates/apply.yaml" download>四类资源声明式清单模板</a>，先用 <code>tiyi diff -f</code> 预览，再用 <code>tiyi apply -f</code> 应用。</p>
-    <p>若想以普通用户、不用 <code>sudo</code> 试用，可以不走配置文件，而是在命令行上传入可写路径与高端口 —— 见<a href="quickstart.html#run">快速开始</a>。</p>
-
-    <div class="callout callout-warn">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
-      <div class="callout-body">
-        <p><strong>上线前设置稳定 JWT secret，并保护好 KEK。</strong><code>auth.jwt_secret</code> 留空时是临时值，重启会使会话失效；<code>crypto.kek_file</code> 留空的行为不同：太一会创建并复用 <code>&lt;state-db 所在目录&gt;/kek.bin</code>，必须与 <code>state.db</code> 一起备份，外部 KEK 路径并非必填。详见<a href="deployment.html#hardening">部署 → 生产加固</a>。</p>
-      </div>
-    </div>
-
-    <h2 id="environment">配置环境变量</h2>
-    <p>持久化服务配置优先写入 <code>/etc/tiyi/tiyi.yaml</code>。只有当 service manager、容器运行时或密钥管理器需要在运行时注入配置时，才使用环境变量。优先级是：内置默认值、<code>tiyi.yaml</code>、配置环境变量、显式 CLI 参数。</p>
-    <p>环境变量名与配置键一一对应：加 <code>TIYI_</code> 前缀，转为大写，并把点替换为下划线。例如 <code>auth.jwt_secret</code> 对应 <code>TIYI_AUTH_JWT_SECRET</code>。</p>
-
-    <h3>常用配置覆盖</h3>
-    <table>
-      <thead><tr><th>变量</th><th>配置键</th><th>适用场景</th></tr></thead>
-      <tbody>
-        <tr><td><code>TIYI_SERVER_ADDR</code></td><td><code>server.addr</code></td><td>把 API / 控制台绑定到不同地址。</td></tr>
-        <tr><td><code>TIYI_STORE_STATE_DB</code></td><td><code>store.state_db</code></td><td>移动 SQLite 状态数据库。</td></tr>
-        <tr><td><code>TIYI_LOG_LEVEL</code></td><td><code>log.level</code></td><td>临时调整进程日志级别。</td></tr>
-        <tr><td><code>TIYI_PROXY_HTTP_ADDR</code></td><td><code>proxy.http_addr</code></td><td>修改 HTTP 数据面监听地址。</td></tr>
-        <tr><td><code>TIYI_PROXY_HTTPS_ADDR</code></td><td><code>proxy.https_addr</code></td><td>修改 HTTPS 数据面监听地址。</td></tr>
-        <tr><td><code>TIYI_PROXY_CADDY_ADMIN_SOCKET</code></td><td><code>proxy.caddy_admin_socket</code></td><td>移动内嵌 Caddy admin socket。</td></tr>
-        <tr><td><code>TIYI_CRYPTO_KEK_FILE</code></td><td><code>crypto.kek_file</code></td><td>为生产环境固定静态加密 KEK 路径。</td></tr>
-        <tr><td><code>TIYI_AUTH_JWT_SECRET</code></td><td><code>auth.jwt_secret</code></td><td>为生产环境设置稳定 JWT 签名密钥。</td></tr>
-        <tr><td><code>TIYI_AUTH_BOOTSTRAP_ADMIN_USERNAME</code></td><td><code>auth.bootstrap_admin_username</code></td><td>指定首个管理员用户名。</td></tr>
-        <tr><td><code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code></td><td><code>auth.bootstrap_admin_password</code></td><td>为自动化指定首个管理员密码（至少 8 个 Unicode 字符）。</td></tr>
-        <tr><td><code>TIYI_LICENSE_KEY_PATH</code></td><td><code>license.key_path</code></td><td>启动时加载签名 license 文件。</td></tr>
-        <tr><td><code>TIYI_UPDATE_REPO</code></td><td><code>update.repo</code></td><td>覆盖更新检查使用的 GitHub release 仓库。</td></tr>
-        <tr><td><code>TIYI_UPDATE_CHANNEL</code></td><td><code>update.channel</code></td><td>为 <code>tiyi update</code> 使用 <code>stable</code> 或 <code>prerelease</code>。</td></tr>
-        <tr><td><code>TIYI_UPDATE_MIRROR</code></td><td><code>update.mirror</code></td><td>更新检查/下载使用 <code>auto</code>、<code>github</code> 或 <code>gitee</code>。</td></tr>
-      </tbody>
-    </table>
-    <p>较少使用的配置键也遵循同一规则，包括 <code>auth.access_token_ttl</code>、<code>auth.refresh_token_ttl</code>、<code>auth.refresh_cookie_secure</code>、<code>auth.bootstrap_admin_email</code>、<code>auth.bootstrap_admin_name</code>、<code>auth.provider</code>、<code>auth.ldap.*</code>、<code>auth.radius.*</code> 与 <code>update.api_base_url</code>。除非部署平台必须通过环境变量注入，否则这些项优先写 YAML。</p>
-
-    <h2 id="modes">运行命令</h2>
-    <p>同一个二进制提供一个完整运行时与两个专用进程：</p>
-
-    <dl class="dl-grid">
-      <dt><code>run</code></dt>
-      <dd>一个始终可写的 Controller，包含本机数据平面、API 与管理界面。这是默认安装与五分钟路径。</dd>
-
-      <dt><code>agent</code></dt>
-      <dd>远程数据平面：Caddy + Coraza，通过一条 ConnectRPC 长连接从唯一的 Controller URL 接收已签名 bundle。</dd>
-
-      <dt><code>dashboard</code></dt>
-      <dd>仅 UI 的专用进程，不持有状态也不代理流量。</dd>
-    </dl>
-
-    <h2 id="enrollment">入网一个节点</h2>
-    <p>打开<strong>节点 → 安装远端节点</strong>签发 Token，再按页面分别显示的二进制下载和 systemd 步骤操作。页面也会显示原始 Token、前台命令和完整下载启动脚本：</p>
-<pre><code><span class="p">$</span> sudo curl -fsSL -o /usr/local/bin/tiyi <span class="s">'https://tiyi.example.com/download/tiyi'</span>
-<span class="p">$</span> sudo chmod 0755 /usr/local/bin/tiyi
-<span class="p">$</span> sudo mkdir -p /etc/tiyi
-<span class="p">$</span> printf <span class="s">'TIYI_CONTROLLER_URL=https://tiyi.example.com\nTIYI_AGENT_ENROLLMENT_TOKEN=&lt;一次性Token&gt;\n'</span> <span class="o">|</span> sudo tee /etc/tiyi/tiyi-agent.env &gt;/dev/null
-<span class="p">$</span> sudo chmod 0600 /etc/tiyi/tiyi-agent.env
-<span class="p">$</span> sudo tiyi install --mode agent --unit-name tiyi-agent --now</code></pre>
-    <p>丢失 state 目录后，需要重新签发 Token 入网。</p>
-
-    <h2 id="systemd">以 systemd 服务运行</h2>
-    <p>长期运行的部署，让太一把自己装成一个加固过的 systemd 服务。<code>tiyi install</code> 会创建 <code>tiyi</code> 服务用户与 <code>tiyi-admin</code> 套接字组、写入 unit，加上 <code>--now</code> 则同时开机自启并立即启动：</p>
-<pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
-    <div class="callout callout-tip"><div class="callout-body"><p>不带 <code>--now</code> 执行 <code>sudo tiyi install</code> 时，安装器会按设计只写入并 reload unit，保持未启用、未启动，方便先完成各运行模式的配置。首次启动 <strong>Controller</strong> 时，请在原安装命令上补上 <code>--now</code> 后重新执行，不要直接用 <code>systemctl</code> 启动 unit。这样安装器能先创建管理员，并把一次性登录信息打印在当前终端，而不是把密码写入 system journal。</p></div></div>
-    <p>该服务以非 root 身份运行，通过 <code>CAP_NET_BIND_SERVICE</code> 绑定 80/443 端口。每次启动前，unit 会先用 root-only 的 pre-start 钩子把配置里的状态目录和 KEK 文件重新交给服务用户；之前 sudo 前台运行留下的 CRS 缓存、上传、排除包、release 暂存、日志、trust 快照或内嵌 agent 状态目录不会再阻塞运行期写入。首次安装时，<code>--now</code> 会预先创建管理员，并在启动服务后直接打印一次性登录信息（URL、用户名、密码）——无需再去 journal 里捞：</p>
-<pre><code><span class="c">tiyi is enabled and running as tiyi.service.</span>
-
-<span class="c">  Tiyi administrator created</span>
-<span class="c">    URL:       http://127.0.0.1:8080</span>
-<span class="c">    username:  admin</span>
-<span class="c">    password:  &lt;生成的密码&gt;</span>
-
-<span class="c">  This password is shown once; change it after signing in.</span></code></pre>
-    <p>用 <code>tiyi install --print</code> 可在不改动系统的前提下预览生成的 unit。其关键指令：</p>
-<pre><code><span class="c"># /etc/systemd/system/tiyi.service</span>
-<span class="k">[Service]</span>
-<span class="k">Type</span>=simple
-<span class="k">User</span>=tiyi
-<span class="k">Group</span>=tiyi
-<span class="k">PermissionsStartOnly</span>=true
-<span class="k">ExecStartPre</span>=/usr/local/bin/tiyi systemd-prestart --config /etc/tiyi/tiyi.yaml --user tiyi --group tiyi
-<span class="k">ExecStart</span>=/usr/local/bin/tiyi run --config /etc/tiyi/tiyi.yaml --admin-socket /run/tiyi/admin.sock --admin-socket-group tiyi-admin --admin-socket-mode 0660 --caddy-admin-socket /run/tiyi/caddy.sock
-<span class="k">Restart</span>=on-failure
-<span class="k">AmbientCapabilities</span>=CAP_NET_BIND_SERVICE
-<span class="k">CapabilityBoundingSet</span>=CAP_NET_BIND_SERVICE
-<span class="k">StateDirectory</span>=tiyi
-<span class="k">RuntimeDirectory</span>=tiyi
-<span class="k">ConfigurationDirectory</span>=tiyi
-<span class="k">NoNewPrivileges</span>=yes
-<span class="k">ProtectSystem</span>=strict
-<span class="k">ProtectHome</span>=yes
-<span class="k">PrivateTmp</span>=yes
-
-<span class="k">[Install]</span>
-<span class="k">WantedBy</span>=multi-user.target</code></pre>
-    <p>用 <code>tiyi doctor</code> 检查 sudo PATH、systemd、配置加载、已安装服务的状态目录所有权，以及 80/443/8080 端口监听者。如果还没有安装 systemd unit,状态目录所有权检查会跳过,除非传入 <code>--service-user</code>/<code>--service-group</code> 或显式请求修复。如果它提示 sudo 找不到 <code>tiyi</code>，使用输出里的完整路径命令，或把 <code>/usr/local/bin</code> 加入 sudo <code>secure_path</code>。如果它提示状态目录里有 root 拥有的路径，显式运行 <code>sudo tiyi doctor --fix-state-ownership</code> 修复。如果它提示端口冲突，可以停止占用端口的服务，或通过 <code>proxy.http_addr</code>、<code>proxy.https_addr</code>、<code>server.addr</code> 修改太一端口。用 <code>--mode run</code> 检查 Controller，或用 <code>--mode agent</code> 检查远程 Agent。用 <code>sudo tiyi uninstall</code> 移除该服务：除非加上 <code>--purge</code>，否则 <code>/var/lib/tiyi</code> 下的状态、<code>/etc/tiyi</code> 下的配置以及服务用户都会保留。</p>
-
-    <h2 id="next">下一步阅读</h2>
-    <ul>
-      <li><a href="concepts.html">领域模型</a> —— 站点、上游、证书、策略、节点各是什么。</li>
-      <li><a href="cli.html">CLI 参考</a> —— 按资源整理当前运维命令。</li>
-      <li><a href="deployment.html">部署</a> —— 生产加固、远程 Agent 连续运行、Controller 中断边界与 SIEM 转发。</li>
-    </ul>
-
-    <div class="docs-pager">
-      <a href="quickstart.html">
-        <span class="label">← 上一页</span>
-        <span class="title">快速开始</span>
-      </a>
-      <a class="next" href="upgrade-migration.html">
-        <span class="label">下一页 →</span>
-        <span class="title">升级与迁移</span>
-      </a>
-    </div>
-  </main>
+<span class="docs-eyebrow">开始使用</span>
+<h1 id="安装与服务管理">安装与服务管理</h1>
+<p class="lede">本页解决如何安装、校验下载、离线部署和管理服务。第一次使用可跟随<a href="quickstart.html">快速开始</a>继续登录、建站与验证。
+适用 Linux amd64/arm64。安装脚本用于新主机；已有安装请走<a href="upgrade-migration.html">升级与迁移</a>。</p>
+<a id="1-默认安装系统服务与-804438080"></a>
+<h2 id="prebuilt">1. 默认安装：系统服务与 80/443/8080</h2>
+<pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh | bash <span class="o">&amp;&amp;</span> sudo tiyi install --now
+</code></pre>
+<p>需要 curl、tar、sha256sum；默认安装到 <code>/usr/local/bin</code> 需要 root 或 sudo，服务方式需要 systemd。
+脚本下载二进制并检查环境；<code>tiyi install --now</code> 创建非 root 服务账号、启动服务并设为开机自启。
+首次管理员密码显示在执行安装命令的终端。若 sudo 的 PATH 不含 <code>/usr/local/bin</code>，用完整路径执行。
+已是 root 且没有 sudo 时省略 sudo。无 systemd 或无 root 的环境见<a href="#foreground">前台运行</a>。</p>
+<table>
+<thead>
+<tr>
+<th>默认入口</th>
+<th>用途</th>
+<th>安装后要做什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0.0.0.0:8080</code></td>
+<td>控制台与管理 API</td>
+<td>浏览器访问 <code>http://服务器IP:8080</code>，向管理网络放行 8080</td>
+</tr>
+<tr>
+<td><code>:80</code></td>
+<td>网站 HTTP / ACME HTTP-01</td>
+<td>添加站点和源站；按域名访问</td>
+</tr>
+<tr>
+<td><code>:443</code></td>
+<td>网站 HTTPS</td>
+<td>配置 TLS 站点和覆盖域名的证书后提供 HTTPS</td>
+</tr>
+</tbody>
+</table>
+<p>安装器不会修改防火墙、云安全组或 DNS，也不会接管已有 Nginx/Apache 的端口。
+没有 TLS 站点时 443 可能尚未监听；打开控制台不代表业务已受保护。</p>
+<h2 id="2-手动分步骤与自定义安装">2. 手动分步骤与自定义安装</h2>
+<pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh -o /tmp/tiyi-install.sh
+less /tmp/tiyi-install.sh
+bash /tmp/tiyi-install.sh
+/usr/local/bin/tiyi --version
+sudo /usr/local/bin/tiyi doctor
+sudo /usr/local/bin/tiyi install --now
+</code></pre>
+<p><code>less</code> 按 <code>q</code> 退出，也可用 <code>cat</code> 阅读。希望修改端口时先停在最后一步之前，按<a href="quickstart.html#custom-ports">DIY 安装</a>写入 YAML 再启动。
+<code>sudo tiyi install</code> 不带 <code>--now</code> 只创建 unit，不启动也不设为开机启动；首次启动仍执行 <code>install --now</code>，让密码显示在当前终端。</p>
+<a id="镜像指定版本与安装目录"></a>
+<h3 id="mirrors">镜像、指定版本与安装目录</h3>
+<p>中国大陆可使用 Gitee：</p>
+<pre><code class="language-sh">curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh -o /tmp/tiyi-install.sh
+<span class="v">TIYI_MIRROR</span><span class="o">=</span>gitee bash /tmp/tiyi-install.sh
+sudo /usr/local/bin/tiyi install --now
+</code></pre>
+<p>默认下载先尝试 GitHub，失败或过慢时回退到 Gitee。同一脚本也在 GitHub 分发仓库的 <code>install.sh</code>。
+要固定版本或装到用户目录，先下载脚本，再运行下面的替代命令；将版本换为选定的已发布标签：</p>
+<pre><code class="language-sh">mkdir -p <span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/bin</span><span class="s">"</span>
+<span class="v">TIYI_VERSION</span><span class="o">=</span>vX.Y.Z <span class="v">TIYI_PREFIX</span><span class="o">=</span><span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/bin</span><span class="s">"</span> bash /tmp/tiyi-install.sh
+export <span class="v">PATH</span><span class="o">=</span><span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/bin:</span><span class="v">$PATH</span><span class="s">"</span>
+</code></pre>
+<p>用户目录适合前台试用。systemd 服务启用了 <code>ProtectHome</code>，正式服务使用 <code>/usr/local/bin/tiyi</code>。</p>
+<table>
+<thead>
+<tr>
+<th>安装器变量</th>
+<th>默认值</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TIYI_MIRROR</code></td>
+<td><code>auto</code></td>
+<td><code>auto</code>、<code>github</code> 或 <code>gitee</code></td>
+</tr>
+<tr>
+<td><code>TIYI_VERSION</code></td>
+<td>最新稳定版</td>
+<td>选择已发布发行标签</td>
+</tr>
+<tr>
+<td><code>TIYI_PREFIX</code></td>
+<td><code>/usr/local/bin</code></td>
+<td>二进制安装目录，先确保目录存在</td>
+</tr>
+<tr>
+<td><code>TIYI_REPO</code></td>
+<td><code>zzmzm/tiyi</code></td>
+<td>GitHub 分发仓库</td>
+</tr>
+<tr>
+<td><code>TIYI_GITEE_REPO</code></td>
+<td><code>tiyisec/tiyi</code></td>
+<td>Gitee 分发仓库</td>
+</tr>
+</tbody>
+</table>
+<p>安装器<strong>必做 SHA-256 校验</strong>；具备支持 <code>pkeyutl -rawin</code> 的 OpenSSL、xxd 和签名文件时还会验证 Ed25519。
+缺少签名验证条件会明确提示跳过，不能把 SHA-256 通过当作签名验证通过。要求完整核验时使用下方流程。</p>
+<a id="3-离线安装下载核验安装启动"></a>
+<h2 id="offline">3. 离线安装：下载、核验、安装、启动</h2>
+<h3 id="在联网电脑准备文件">在联网电脑准备文件</h3>
+<p>从 <a href="https://github.com/zzmzm/tiyi/releases">GitHub Releases</a> 或 <a href="https://gitee.com/tiyisec/tiyi/releases">Gitee Releases</a>
+选择已发布且计划安装的版本。在<strong>目标离线主机</strong>执行 <code>uname -m</code> 确认架构：<code>x86_64</code> 用 amd64，<code>aarch64</code> 用 arm64。
+下面在联网电脑下载；先替换 <code>vX.Y.Z</code> 和架构：</p>
+<pre><code class="language-sh"><span class="c"># 先替换为已发布版本，并选择离线目标主机的架构
+</span><span class="v">TIYI_RELEASE</span><span class="o">=</span><span class="s">'vX.Y.Z'</span>
+<span class="v">TIYI_ARCH</span><span class="o">=</span><span class="s">'amd64'</span>  <span class="c"># x86_64 用 amd64；aarch64 用 arm64
+</span><span class="v">TIYI_ARCHIVE</span><span class="o">=</span><span class="s">"</span><span class="s">tiyi_</span><span class="s">${</span><span class="v">TIYI_RELEASE</span>#v<span class="s">}</span><span class="s">_linux_</span><span class="s">${</span><span class="v">TIYI_ARCH</span><span class="s">}</span><span class="s">.tar.gz</span><span class="s">"</span>
+mkdir -p tiyi-offline
+cd tiyi-offline
+<span class="v">TIYI_RELEASE_URL</span><span class="o">=</span><span class="s">"</span><span class="s">https://github.com/zzmzm/tiyi/releases/download/</span><span class="s">${</span><span class="v">TIYI_RELEASE</span><span class="s">}</span><span class="s">"</span>
+curl -fL <span class="s">"</span><span class="v">$TIYI_RELEASE_URL</span><span class="s">/</span><span class="v">$TIYI_ARCHIVE</span><span class="s">"</span> -o <span class="s">"</span><span class="v">$TIYI_ARCHIVE</span><span class="s">"</span>
+curl -fL <span class="s">"</span><span class="v">$TIYI_RELEASE_URL</span><span class="s">/SHA256SUMS</span><span class="s">"</span> -o SHA256SUMS
+curl -fL <span class="s">"</span><span class="v">$TIYI_RELEASE_URL</span><span class="s">/SHA256SUMS.sig</span><span class="s">"</span> -o SHA256SUMS.sig
+curl -fsSL https://raw.githubusercontent.com/zzmzm/tiyi/main/release-key.pub -o release-key.pub
+</code></pre>
+<p>也可在发行页面手动下载这四个文件。Gitee 下载前缀为
+<code>https://gitee.com/tiyisec/tiyi/releases/download/所选标签</code>，公钥在分发仓库根目录。
+把整个目录通过可信介质复制到离线主机；包、清单、签名必须来自同一版本。
+目标机预先准备 tar、sha256sum、base64、xxd 和支持 Ed25519 / <code>pkeyutl -rawin</code> 的 OpenSSL，可通过发行版的离线软件包安装。</p>
+<a id="在离线主机核验并安装二进制"></a>
+<h3 id="verify-download">在离线主机核验并安装二进制</h3>
+<p>进入刚复制的目录，将压缩包名称替换为实际文件名后执行整段。先验证官方公钥与清单签名，再检查该压缩包的 SHA-256；任一步失败都停止安装。
+此流程也适用于联网环境的手工下载校验。</p>
+<pre><code class="language-sh"><span class="c"># 替换为复制到本机的准确压缩包文件名
+</span><span class="v">TIYI_ARCHIVE</span><span class="o">=</span><span class="s">'tiyi_X.Y.Z_linux_amd64.tar.gz'</span>
+<span class="o">(</span>
+  set -eu
+  <span class="c"># 核对官方 Ed25519 公钥，不接受压缩包附带的其他公钥
+</span>  test <span class="s">"</span><span class="k">$(</span>tr -d <span class="s">'\r\n'</span> &lt; release-key.pub<span class="k">)</span><span class="s">"</span> <span class="o">=</span> <span class="s">'RIH4Xm2V8NjU4byn/xq+36xQG38dWQ9eQB39Bk+Aze4='</span>
+  <span class="o">{</span> printf <span class="s">'302a300506032b6570032100'</span>; base64 -d release-key.pub | xxd -p -c 256; <span class="o">}</span> <span class="o">\
+</span>    | xxd -r -p | base64 &gt; release-key.der.b64
+  <span class="o">{</span> echo <span class="s">'-----BEGIN PUBLIC KEY-----'</span>; cat release-key.der.b64; echo <span class="s">'-----END PUBLIC KEY-----'</span>; <span class="o">}</span> <span class="o">\
+</span>    &gt; release-key.pem
+  base64 -d SHA256SUMS.sig &gt; SHA256SUMS.sig.bin
+  openssl pkeyutl -verify -pubin -inkey release-key.pem -rawin <span class="o">\
+</span>    -in SHA256SUMS -sigfile SHA256SUMS.sig.bin
+  <span class="c"># 校验清单必须恰好包含一个目标压缩包条目
+</span>  awk -v <span class="v">file</span><span class="o">=</span><span class="s">"</span><span class="v">$TIYI_ARCHIVE</span><span class="s">"</span> <span class="s">'$2 == file || $2 == "*" file'</span> SHA256SUMS &gt; selected.sha256
+  test <span class="s">"</span><span class="k">$(</span>wc -l &lt; selected.sha256<span class="k">)</span><span class="s">"</span> -eq 1
+  sha256sum --check selected.sha256
+  mkdir -p tiyi-release
+  tar -xzf <span class="s">"</span><span class="v">$TIYI_ARCHIVE</span><span class="s">"</span> -C tiyi-release tiyi
+  sudo install -m 0755 tiyi-release/tiyi /usr/local/bin/tiyi
+<span class="o">)</span>
+</code></pre>
+<p>预期看到 <code>Signature Verified Successfully</code> 和目标压缩包的 <code>OK</code>，且整段命令成功退出。
+若公钥不匹配、签名失败、文件缺失或校验和不符，重新核对下载版本与官方文件，不继续执行服务安装。</p>
+<h3 id="配置离线运行并启动">配置离线运行并启动</h3>
+<p>核验安装成功后，在新主机创建服务但先不启动：</p>
+<pre><code class="language-sh">sudo tiyi install
+sudo install -d -m 0750 -o root -g tiyi /etc/tiyi
+sudo tee /etc/tiyi/tiyi.yaml &gt;/dev/null <span class="s">&lt;&lt;'YAML'
+server:
+  addr: "0.0.0.0:8080"
+geo:
+  auto_update: false
+YAML</span>
+sudo chown root:tiyi /etc/tiyi/tiyi.yaml
+sudo chmod 0640 /etc/tiyi/tiyi.yaml
+sudo tiyi install --now
+sudo tiyi system health
+</code></pre>
+<p>需要其他端口时，在启动前加上<a href="configuration.html#ports">代理端口配置</a>。浏览器访问 <code>http://服务器IP:8080</code> 登录，使用离线主机在当前网络可达的 IP。
+内置 CRS 和本地源站无需联网。HTTPS 使用上传证书；需要国家/ASN 数据时从系统设置上传 MMDB。
+ACME、外部 IP 订阅、通知和 AI 仍需各自的外部连接；按实际网络配置这些功能。
+继续<a href="quickstart.html">快速开始的源站与建站步骤</a>，完成正常请求和拦截验证。</p>
+<a id="4-前台或无-root-试用"></a>
+<h2 id="foreground">4. 前台或无 root 试用</h2>
+<p>先将二进制安装在自己的可写目录。状态用持久磁盘目录；控制台使用 8080，本机网站测试使用高端口：</p>
+<pre><code class="language-sh">mkdir -p <span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/share/tiyi-demo</span><span class="s">"</span>
+<span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/bin/tiyi</span><span class="s">"</span> run --addr 0.0.0.0:8080 <span class="o">\
+</span>  --state-db <span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/share/tiyi-demo/state.db</span><span class="s">"</span> <span class="o">\
+</span>  --admin-socket <span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/share/tiyi-demo/admin.sock</span><span class="s">"</span> <span class="o">\
+</span>  --caddy-admin-socket <span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/share/tiyi-demo/caddy.sock</span><span class="s">"</span> <span class="o">\
+</span>  --proxy-http-addr 127.0.0.1:8180 <span class="o">\
+</span>  --proxy-https-addr 127.0.0.1:18443
+</code></pre>
+<p>保持终端运行；首次密码在这里显示。Ctrl+C 停止进程，数据仍保留；重新运行同一命令恢复。
+另开终端执行 CLI 时传入实际 socket：</p>
+<pre><code class="language-sh"><span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/bin/tiyi</span><span class="s">"</span> --admin-socket <span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/share/tiyi-demo/admin.sock</span><span class="s">"</span> system health
+</code></pre>
+<p>浏览器访问 <code>http://服务器IP:8080</code>，使用太一主机的实际 IP。网站测试在太一主机执行，请求 <code>http://127.0.0.1:8180/</code>。
+无 systemd 的正式部署可由已有进程管理器管理 <code>tiyi run</code>，自行配置运行账号、开机启动和重启策略。</p>
+<a id="5-日常服务管理与文件位置"></a>
+<h2 id="service">5. 日常服务管理与文件位置</h2>
+<table>
+<thead>
+<tr>
+<th>要做什么</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>查看开机启动与进程</td>
+<td><code>sudo systemctl is-enabled tiyi</code> · <code>sudo systemctl status tiyi --no-pager</code></td>
+</tr>
+<tr>
+<td>查看最近启动错误</td>
+<td><code>sudo journalctl -u tiyi -n 100 --no-pager</code></td>
+</tr>
+<tr>
+<td>暂停 / 恢复已有服务</td>
+<td><code>sudo systemctl stop tiyi</code> · <code>sudo systemctl start tiyi</code></td>
+</tr>
+<tr>
+<td>修改启动配置后重启</td>
+<td><code>sudo systemctl restart tiyi</code></td>
+</tr>
+<tr>
+<td>查看应用健康</td>
+<td><code>sudo tiyi system health</code></td>
+</tr>
+<tr>
+<td>移除服务，保留数据</td>
+<td><code>sudo tiyi uninstall</code></td>
+</tr>
+</tbody>
+</table>
+<p>停止单节点服务会中断该节点承载的业务；先安排切流或维护窗口。站点、策略等 UI/CLI/API 变更通常直接发布，无需重启。</p>
+<table>
+<thead>
+<tr>
+<th>路径</th>
+<th>内容 / 备份要求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/usr/local/bin/tiyi</code></td>
+<td>二进制；备份时记录版本，保留匹配的旧二进制</td>
+</tr>
+<tr>
+<td><code>/etc/tiyi/tiyi.yaml</code></td>
+<td>可选启动配置；未创建时使用内置默认值</td>
+</tr>
+<tr>
+<td><code>/etc/tiyi/tiyi.env</code></td>
+<td>可选 systemd 环境变量和秘密；限制读取并纳入备份</td>
+</tr>
+<tr>
+<td><code>/var/lib/tiyi/</code></td>
+<td>完整持久状态、证书、默认 KEK 和数据；一致备份整个目录</td>
+</tr>
+<tr>
+<td><code>/run/tiyi/</code></td>
+<td>运行时 socket；进程启动时重建，不作为恢复数据</td>
+</tr>
+</tbody>
+</table>
+<p><code>tiyi update</code> 只替换二进制，不重启服务或转换不兼容状态。<a href="upgrade-migration.html">升级与迁移</a>包含备份与恢复步骤。
+<code>uninstall --purge</code> 会删除状态和配置；它不是日常重启、升级或找回密码的方法。</p>
+<h2 id="6-运行时环境变量">6. 运行时环境变量</h2>
+<p>持久化服务配置优先写入 <code>tiyi.yaml</code>。只有当 service manager、容器运行时或
+密钥管理器需要在运行时注入配置时，才使用环境变量。环境变量名与配置键一一对应：
+加 <code>TIYI_</code> 前缀，转为大写，并把点替换为下划线。例如 <code>auth.jwt_secret</code>
+对应 <code>TIYI_AUTH_JWT_SECRET</code>。</p>
+<p>文件配置请从<a href="templates/tiyi.yaml">完整注释版 <code>tiyi.yaml</code> 模板</a>开始；其中包含
+当前全部进程配置键、安全文件说明，以及配套的<a href="configuration.html">安装/校验步骤</a>。</p>
+<p>常用配置覆盖：</p>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>配置键</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TIYI_SERVER_ADDR</code></td>
+<td><code>server.addr</code></td>
+<td>把 API / 控制台绑定到不同地址。</td>
+</tr>
+<tr>
+<td><code>TIYI_STORE_STATE_DB</code></td>
+<td><code>store.state_db</code></td>
+<td>移动 SQLite 状态数据库。</td>
+</tr>
+<tr>
+<td><code>TIYI_LOG_LEVEL</code></td>
+<td><code>log.level</code></td>
+<td>临时调整进程日志级别。</td>
+</tr>
+<tr>
+<td><code>TIYI_PROXY_HTTP_ADDR</code></td>
+<td><code>proxy.http_addr</code></td>
+<td>修改 HTTP 数据面监听地址。</td>
+</tr>
+<tr>
+<td><code>TIYI_PROXY_HTTPS_ADDR</code></td>
+<td><code>proxy.https_addr</code></td>
+<td>修改 HTTPS 数据面监听地址。</td>
+</tr>
+<tr>
+<td><code>TIYI_PROXY_CADDY_ADMIN_SOCKET</code></td>
+<td><code>proxy.caddy_admin_socket</code></td>
+<td>移动内嵌 Caddy admin socket。</td>
+</tr>
+<tr>
+<td><code>TIYI_CRYPTO_KEK_FILE</code></td>
+<td><code>crypto.kek_file</code></td>
+<td>为生产环境固定静态加密 KEK 路径。</td>
+</tr>
+<tr>
+<td><code>TIYI_AUTH_JWT_SECRET</code></td>
+<td><code>auth.jwt_secret</code></td>
+<td>为生产环境设置稳定 JWT 签名密钥。</td>
+</tr>
+<tr>
+<td><code>TIYI_AUTH_BOOTSTRAP_ADMIN_USERNAME</code></td>
+<td><code>auth.bootstrap_admin_username</code></td>
+<td>指定首个管理员用户名。</td>
+</tr>
+<tr>
+<td><code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code></td>
+<td><code>auth.bootstrap_admin_password</code></td>
+<td>为自动化指定首个管理员密码。</td>
+</tr>
+<tr>
+<td><code>TIYI_LICENSE_KEY_PATH</code></td>
+<td><code>license.key_path</code></td>
+<td>启动时加载签名 license 文件。</td>
+</tr>
+<tr>
+<td><code>TIYI_UPDATE_REPO</code></td>
+<td><code>update.repo</code></td>
+<td>覆盖更新检查使用的 GitHub release 仓库。</td>
+</tr>
+<tr>
+<td><code>TIYI_UPDATE_CHANNEL</code></td>
+<td><code>update.channel</code></td>
+<td>为 <code>tiyi update</code> 使用 <code>stable</code> 或 <code>prerelease</code>。</td>
+</tr>
+<tr>
+<td><code>TIYI_UPDATE_MIRROR</code></td>
+<td><code>update.mirror</code></td>
+<td>更新检查/下载使用 <code>auto</code>、<code>github</code> 或 <code>gitee</code>。</td>
+</tr>
+</tbody>
+</table>
+<p>较少使用的配置键也遵循同一规则。LDAP/RADIUS、token 生命周期、cookie 设置与
+认证后端细项优先写 YAML，除非部署平台必须通过环境变量注入。</p>
+<div class="docs-pager"><a href="quickstart.html"><span class="label">← 上一页</span><span class="title">第一个受保护站点</span></a><a class="next" href="configuration.html"><span class="label">下一页 →</span><span class="title">配置与模板</span></a></div>
+</main>
 
   <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
     <h4>本页大纲</h4>
@@ -223,7 +452,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.7.2 · 2026-09-03</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
     </div>
   </div>
 </footer>

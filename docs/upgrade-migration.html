@@ -2,97 +2,300 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Upgrade and migration — Tiyi docs</title>
+<title>Upgrade and migrate Tiyi — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Update a Tiyi binary, handle incompatible state, or move a complete Controller installation to another host." />
+<meta name="description" content="Use the workflow that matches the change:" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
 <link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
 <script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
 </head>
-<body class="docs" data-assets-base="../assets/img/"><div class="bg-field" aria-hidden="true"></div>
-<header class="nav"><div class="container nav-inner"><a class="brand" href="../index.html"><img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" /><span>Tiyi</span></a><nav class="nav-links" aria-label="Main navigation"><a href="../index.html#features">Features</a><a href="../index.html#tour">Product</a><a href="../index.html#pricing">Pricing</a><a href="index.html" style="color:var(--fg)">Docs</a><a href="../changelog.html">Changelog</a><button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button><a class="nav-toggle nav-lang" href="../zh/docs/upgrade-migration.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a><a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a></nav></div></header>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/upgrade-migration.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
 <div class="docs-layout">
-  <aside class="docs-sidebar" aria-label="Docs navigation"><div class="docs-nav-group"><h4>Get started</h4><ul><li><a href="index.html">Overview</a></li><li><a href="quickstart.html">Quickstart</a></li><li><a href="installation.html">Installation</a></li></ul></div><div class="docs-nav-group"><h4>Operate</h4><ul><li><a href="operations.html">Operations guide</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="upgrade-migration.html">Upgrade and migration</a></li></ul></div><div class="docs-nav-group"><h4>Concepts</h4><ul><li><a href="concepts.html">Domain model</a></li></ul></div><div class="docs-nav-group"><h4>Reference</h4><ul><li><a href="cli.html">CLI reference</a></li><li><a href="api.html">API reference</a></li></ul></div><div class="docs-nav-group"><h4>Run in production</h4><ul><li><a href="deployment.html">Deployment</a></li></ul></div></aside>
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html" aria-current="page">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">Operations</span><h1>Upgrade and migrate Tiyi</h1>
-    <p class="lede">Update a compatible signed binary in place, reset state when a release is incompatible, or move a complete Controller installation to another host.</p>
-
-    <h2 id="choose-path">Choose the workflow</h2>
-    <table><thead><tr><th>Goal</th><th>Workflow</th></tr></thead><tbody><tr><td>Compatible update on the same host</td><td>Back up → update → restart → verify</td></tr><tr><td>Move a Controller</td><td>Stop source → copy complete state and config → start the same version on the destination</td></tr><tr><td>Incompatible-state update</td><td>Back up → purge → update retained binary → install → reconfigure</td></tr></tbody></table>
-    <p>The updater validates release metadata, checksums, and signatures. It has no hard-coded minimum release and does not determine stored-data compatibility; read the target release notes first.</p>
-
-    <h2 id="routine-update">Routine signed update</h2>
-<pre><code>sudo tiyi update --check
-sudo tiyi update --yes                 # GitHub, with Gitee fallback
-sudo tiyi update --yes --mirror gitee # force Gitee
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="upgrade-and-migrate-tiyi">Upgrade and migrate Tiyi</h1>
+<p class="lede">Use the workflow that matches the change:</p>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Workflow</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Install a compatible signed release on the same host</td>
+<td>Back up → <code>tiyi update --yes</code> → restart → verify</td>
+</tr>
+<tr>
+<td>Move a Controller without changing its state format</td>
+<td>Stop source → copy the complete state/config set → start the same version on the destination</td>
+</tr>
+<tr>
+<td>Install a release that cannot open the current state</td>
+<td>Back up → <code>uninstall --purge</code> → update the retained binary → <code>install --now</code> → reconfigure</td>
+</tr>
+</tbody>
+</table>
+<p>The updater validates release metadata, checksums, and signatures. It has no
+hard-coded minimum version and does not decide whether stored data is
+compatible. Read the target release notes and preserve a rollback copy first.</p>
+<p><a id="backup"></a></p>
+<h2 id="prepare-a-backup-you-can-restore">Prepare a backup you can restore</h2>
+<p>Use this section for routine backups without proceeding to upgrade or purge. These commands assume the default systemd installation.
+Include actual custom database paths, external KEK, certificates, license, and other persistent directories when configured.
+The backup briefly stops this node's traffic: schedule maintenance or move traffic first and check free disk space.</p>
+<pre><code class="language-sh">tiyi --version
+sudo systemctl cat tiyi
+TIYI_BACKUP_ID=$(date -u +%Y%m%dT%H%M%SZ)
+sudo install -d -m 0700 /var/backups/tiyi
+sudo systemctl stop tiyi
+sudo tar --xattrs --acls -C / \
+  -czf &quot;/var/backups/tiyi/tiyi-${TIYI_BACKUP_ID}.tar.gz&quot; \
+  var/lib/tiyi etc/tiyi etc/systemd/system/tiyi.service usr/local/bin/tiyi
+sudo tar -tzf &quot;/var/backups/tiyi/tiyi-${TIYI_BACKUP_ID}.tar.gz&quot; &gt;/dev/null
+sudo systemctl start tiyi
+sudo tiyi system health
+</code></pre>
+<p>Both archive commands should succeed. After the service is healthy, copy the archive to separate restricted storage and record the actual binary version, configuration paths, and time.
+It contains private keys and account data; keep it out of ordinary support attachments. If archiving fails, resume the original service, fix disk/path problems, and stop the upgrade.
+Rehearse <a href="#restore">restoration on another host</a> with the matching binary and complete state; verify login, sites, certificates, and requests.
+Do not run two independently restored Controllers on the same application ingress. A site JSON export or a live copy of <code>state.db</code> alone is not this backup.</p>
+<h2 id="routine-signed-update">Routine signed update</h2>
+<p>Complete the <a href="#backup">backup</a> first and review target state/Agent compatibility. Run one update command; replace the default with <code>sudo tiyi update --yes --mirror gitee</code> to force Gitee.</p>
+<p>For a release whose state and Agent protocol are compatible:</p>
+<pre><code class="language-sh">tiyi --version
+sudo tiyi update --check
+sudo tiyi update --yes  # GitHub, with Gitee fallback
 sudo systemctl restart tiyi
 tiyi --version
 sudo tiyi system health
-sudo journalctl -u tiyi -b -n 200 --no-pager</code></pre>
-    <p><code>update</code> atomically replaces the verified executable but does not restart the running process.</p>
+sudo journalctl -u tiyi -b -n 200 --no-pager
+</code></pre>
+<p><code>update</code> atomically replaces <code>/usr/local/bin/tiyi</code> after verification. It does
+not restart the running process.</p>
+<h2 id="incompatible-state-update">Incompatible-state update</h2>
+<p>Run <code>sudo tiyi update --check</code> first to inspect the target. <code>update</code> selects
+the latest release in the current channel; it has no <code>--version</code> option.
+Use the update below only when that target is the version you reviewed. To pin
+v3.8.0 after a newer release exists, first follow the <a href="installation.html">offline download and
+signature verification steps</a> for the correct architecture.
+After backup/purge, replace <code>update --yes</code> below with
+<code>sudo install -m 0755 tiyi-release/tiyi /usr/local/bin/tiyi</code>, verify the version,
+then install the service.</p>
+<p>v3.8.0 cannot open state created by v3.7.2 or earlier releases. For this
+transition, keep the old installation as an offline rollback archive and start
+with empty state and configuration. Do not import the old archive into the new
+live paths, and re-enroll every remote Agent after rebuilding the Controller.</p>
+<h3 id="1-stop-and-archive">1. Stop and archive</h3>
+<pre><code class="language-sh">tiyi --version
+systemctl cat tiyi
+sudo systemctl stop tiyi
 
-    <h2 id="incompatible-update">Incompatible-state update</h2>
-    <p>v3.7.0 cannot open state created by v3.6.0 or earlier releases. Preserve an offline rollback archive, purge the old state/config, update the retained binary, then install a new service and re-enroll every remote Agent. Do not import the old database, identity, spool, or bundle cache.</p>
-<pre><code>sudo systemctl stop tiyi
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 sudo install -d -m 0700 /var/backups/tiyi
 sudo tar --xattrs --acls -C / \
-  -czf "/var/backups/tiyi/tiyi-before-update-${stamp}.tar.gz" \
-  var/lib/tiyi etc/tiyi etc/systemd/system/tiyi.service usr/local/bin/tiyi
-sudo sha256sum "/var/backups/tiyi/tiyi-before-update-${stamp}.tar.gz"
-
-sudo /usr/local/bin/tiyi uninstall --purge
+  -czf &quot;/var/backups/tiyi/tiyi-before-update-${stamp}.tar.gz&quot; \
+  var/lib/tiyi \
+  etc/tiyi \
+  etc/systemd/system/tiyi.service \
+  usr/local/bin/tiyi
+sudo sha256sum &quot;/var/backups/tiyi/tiyi-before-update-${stamp}.tar.gz&quot;
+sudo tar -tzf &quot;/var/backups/tiyi/tiyi-before-update-${stamp}.tar.gz&quot; | head
+</code></pre>
+<p>Add customized binary, state, config, license, certificate, and secret paths.
+Store the archive and checksum outside the live Tiyi directories. Treat the
+archive as a secret: it may contain private keys, passwords, tokens, request
+evidence, and personal data.</p>
+<h3 id="2-purge-update-and-install">2. Purge, update, and install</h3>
+<p><code>uninstall --purge</code> removes the service unit, <code>/var/lib/tiyi</code>, <code>/etc/tiyi</code>, and
+service identities. It intentionally keeps <code>/usr/local/bin/tiyi</code>, so the old
+binary can replace that same file with a verified release:</p>
+<pre><code class="language-sh">sudo /usr/local/bin/tiyi uninstall --purge
 sudo /usr/local/bin/tiyi update --yes --mirror gitee
+/usr/local/bin/tiyi --version
 sudo /usr/local/bin/tiyi doctor --mode run
 sudo /usr/local/bin/tiyi install --now
 sudo systemctl status tiyi --no-pager
-sudo journalctl -u tiyi -b -n 200 --no-pager</code></pre>
-    <p><code>uninstall --purge</code> removes the unit, state/config, and service identities but deliberately keeps <code>/usr/local/bin/tiyi</code>; <code>update</code> overwrites that file. If the retained binary has no update command, verify the archive, remove only that binary, and use the public installer. Save the new administrator password and re-enroll Agents when required.</p>
-
-    <h2 id="host-migration">Move a Controller to another host</h2>
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>Use the exact same version where possible and never run both Controllers at once.</strong> They share deployment identity, signing keys, and Agent trust.</p></div></div>
-    <p>Stop the source and copy the complete <code>/var/lib/tiyi</code> directory, not only <code>state.db</code>. It may include WAL files, KEK, log/detail partitions, request evidence, CRS data, releases, bundles, and identity. Also copy <code>/etc/tiyi</code> and every externally referenced KEK, license, certificate, or secret file.</p>
-<pre><code># Source
-tiyi --version
+sudo journalctl -u tiyi -b -n 200 --no-pager
+sudo /usr/local/bin/tiyi system health
+</code></pre>
+<p>If the retained binary has no <code>update</code> command, verify the archive, remove only
+that exact binary path, then run the public installer. Save the new one-time
+administrator password and recreate reviewed sites, policies, certificates,
+authentication, trust, SIEM, and alert settings. Re-enroll every remote Agent;
+do not restore its previous identity, spool, or bundle cache into v3.8.0.</p>
+<p><a id="restore"></a></p>
+<h2 id="move-a-controller-to-another-host">Move a Controller to another host</h2>
+<p>Use the exact same Tiyi version on both hosts where possible. A newer version
+is safe only when its release notes explicitly state that the stored state is
+compatible. Test a copy in isolation before a one-way schema change.</p>
+<p>Copy the <strong>whole state directory</strong>, not only <code>state.db</code>. <code>/var/lib/tiyi</code> may
+also contain SQLite WAL files, the default KEK, log/detail partitions, request
+evidence, CRS data, release artifacts, generated bundles, and embedded-Agent
+identity. Copy <code>/etc/tiyi</code> and every externally referenced KEK, license,
+certificate, or secret file as well.</p>
+<h3 id="1-capture-a-consistent-source">1. Capture a consistent source</h3>
+<pre><code class="language-sh">tiyi --version
 systemctl cat tiyi
 sudo systemctl stop tiyi
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 sudo install -d -m 0700 /var/backups/tiyi
 sudo tar --xattrs --acls -C / \
-  -czf "/var/backups/tiyi/tiyi-migrate-${stamp}.tar.gz" \
+  -czf &quot;/var/backups/tiyi/tiyi-migrate-${stamp}.tar.gz&quot; \
   var/lib/tiyi etc/tiyi
-sudo sha256sum "/var/backups/tiyi/tiyi-migrate-${stamp}.tar.gz"
-
-# Clean destination: replace vX.Y.Z and the archive name.
-source_tag=vX.Y.Z
+sudo sha256sum &quot;/var/backups/tiyi/tiyi-migrate-${stamp}.tar.gz&quot;
+</code></pre>
+<p>Do not restart the source after taking the final archive. Record custom unit
+options, drop-ins, and injected environment, then transfer the archive and
+checksum over an authenticated channel.</p>
+<h3 id="2-restore-on-a-clean-destination">2. Restore on a clean destination</h3>
+<p>Install the same signed binary and create the service identities without
+starting the service. Replace <code>vX.Y.Z</code> and the archive name with the exact
+source values:</p>
+<pre><code class="language-sh">source_tag=vX.Y.Z
 archive=/secure/path/tiyi-migrate-YYYYMMDDTHHMMSSZ.tar.gz
 curl -fsSL https://www.tiyisec.com/install.sh \
-  | TIYI_VERSION="$source_tag" bash
+  | TIYI_VERSION=&quot;$source_tag&quot; bash
 sudo /usr/local/bin/tiyi install
-sudo sha256sum "$archive"
-sudo tar --xattrs --acls -C / -xzf "$archive"
+
+sudo sha256sum &quot;$archive&quot;
+sudo tar --xattrs --acls -C / -xzf &quot;$archive&quot;
 sudo chown -R tiyi:tiyi /var/lib/tiyi
 sudo chgrp -R tiyi /etc/tiyi
 sudo chmod -R g+rX /etc/tiyi
-sudo /usr/local/bin/tiyi doctor --mode run --fix-state-ownership
-sudo /usr/local/bin/tiyi install --now</code></pre>
-    <p>Verify the checksum before extraction; recreate reviewed unit options, drop-ins, injected environment, and external files before <code>doctor</code>. Check health, sites, certificates, remote Agents, bundle revision, <code>tiyi audit verify</code>, logs, and <code>/metrics</code>. For rollback, stop the destination before restarting the unchanged source; never merge two state trees that both accepted writes.</p>
 
-    <h2 id="diagnose">Diagnose failures</h2>
-<pre><code>sudo /usr/local/bin/tiyi doctor --mode run
+sudo /usr/local/bin/tiyi doctor --mode run --fix-state-ownership
+sudo /usr/local/bin/tiyi install --now
+sudo systemctl status tiyi --no-pager
+sudo journalctl -u tiyi -b -n 200 --no-pager
+sudo /usr/local/bin/tiyi system health
+</code></pre>
+<p>Compare the destination checksum with the recorded source value before
+extracting. Recreate reviewed unit customizations and restore external files
+before <code>doctor</code>; ensure the <code>tiyi</code> service user can read them. Then verify
+sites, certificates, remote-Agent status, active bundle
+revision, <code>tiyi audit verify</code>, and the local <code>/metrics</code> endpoint.</p>
+<p>Never run the source and cloned Controller at the same time: they share the
+deployment identity, signing keys, and Agent trust. To roll back, stop the
+destination before restarting the unchanged source. Never merge two state
+trees after both have accepted writes.</p>
+<h2 id="diagnose-failures">Diagnose failures</h2>
+<pre><code class="language-sh">sudo /usr/local/bin/tiyi doctor --mode run
 systemctl status tiyi --no-pager
 journalctl -u tiyi -b -n 200 --no-pager
 journalctl -u tiyi -f
-ss -ltnp</code></pre>
-    <ul><li>Installer refusal means the new-host installer found an existing binary, state, config, or unit; use the appropriate upgrade or migration workflow.</li><li>An incompatible-schema error means the target binary cannot open that state; use the matching binary or restore/reset the intended state.</li><li>Use the full binary path when sudo <code>secure_path</code> cannot find <code>tiyi</code>.</li><li>An update error leaves the current binary untouched; fix mirror/network, disk, or permissions and retry.</li></ul>
-    <p>See <a href="operations.html#prometheus">Prometheus integration</a> and <a href="troubleshooting.html">general troubleshooting</a>.</p>
+ss -ltnp
+</code></pre>
+<ul>
+<li>An installer refusal means the new-host installer found an existing binary,
+  state, config, or unit. Use an upgrade or migration workflow instead.</li>
+<li>An incompatible-schema error means the target binary cannot open that state.
+  Stop it; use the matching binary or restore/reset the intended state.</li>
+<li><code>command not found</code> under <code>sudo</code> usually means <code>secure_path</code> omits the install
+  directory. Use <code>/usr/local/bin/tiyi</code> explicitly.</li>
+<li>A failed update leaves the existing binary untouched. Fix mirror, network,
+  disk-space, or permissions errors and retry.</li>
+</ul>
+<p>For Prometheus setup, see <a href="operations.html#7-connect-prometheus">Operations: Connect Prometheus</a>.
+For general diagnostics, see <a href="troubleshooting.html">Troubleshooting</a>.</p>
+<div class="docs-pager"><a href="troubleshooting.html"><span class="label">← Previous</span><span class="title">Troubleshooting</span></a><a class="next" href="concepts.html"><span class="label">Next →</span><span class="title">How Tiyi works</span></a></div>
+</main>
 
-    <div class="docs-pager"><a href="installation.html"><span class="label">← Previous</span><span class="title">Installation</span></a><a class="next" href="operations.html"><span class="label">Next →</span><span class="title">Operations guide</span></a></div>
-  </main><aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4></aside>
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.7.2 · 2026-09-03</span></div></div></footer><script src="../assets/js/main.js" defer></script>
-</body></html>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

@@ -2,9 +2,10 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<title>部署 — 太一文档</title>
+<title>生产部署与日常管理 — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="在生产环境运行太一：加固、远程 Agent 连续运行、Controller 中断边界、SIEM 转发、可观测性与升级。" />
+<meta name="description" content="适用版本： v3.8.0 。把演示换成真实业务前，先确定流量入口、管理入口、数据保留与恢复方式。
+太一部署在客户端与源站之间；域名指向太一，太一把允许的请求代理到源站。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -42,147 +43,149 @@
 <div class="docs-layout">
 
   <aside class="docs-sidebar" aria-label="文档导航">
-    <div class="docs-nav-group"><h4>开始使用</h4><ul><li><a href="index.html">概览</a></li><li><a href="quickstart.html">快速开始</a></li><li><a href="installation.html">安装</a></li></ul></div>
-    <div class="docs-nav-group"><h4>运维</h4><ul><li><a href="operations.html">日常运维</a></li><li><a href="troubleshooting.html">排障</a></li><li><a href="upgrade-migration.html">升级与迁移</a></li></ul></div>
-    <div class="docs-nav-group"><h4>核心概念</h4><ul><li><a href="concepts.html">领域模型</a></li></ul></div>
-    <div class="docs-nav-group"><h4>参考</h4><ul><li><a href="cli.html">CLI 参考</a></li><li><a href="api.html">API 参考</a></li></ul></div>
-    <div class="docs-nav-group"><h4>生产环境</h4><ul><li><a href="deployment.html">部署</a></li></ul></div>
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html" aria-current="page">部署</a></li>
+      </ul>
+    </div>
   </aside>
 
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">生产环境</span>
-    <h1>部署</h1>
-    <p class="lede">把太一 Controller 投入生产，需要决定密钥放在哪、需要哪些远程数据平面、日志去哪，以及如何备份恢复和升级。</p>
-
-    <h2 id="hardening">生产加固</h2>
-    <p>JWT 的回退是临时值；KEK 的回退会持久化在 <code>state.db</code> 旁边。上线前应设置稳定 JWT secret，并把状态数据库与 KEK 作为一个整体做经过恢复验证的备份；外部 KEK 路径是可选项。</p>
-
-    <h3 id="kek">KEK —— 静态加密密钥</h3>
-<pre><code><span class="k">crypto</span>:
-  <span class="k">kek_file</span>: <span class="s">"/etc/tiyi/kek.bin"</span>     <span class="c"># 32 字节静态密钥</span></code></pre>
-    <p>所有信封加密的 blob（TLS 私钥、ACME 账户密钥、ACME DNS provider 凭据、bundle 签名密钥）用这个 KEK 解密。生成一次并备份到 state 数据库旁边：</p>
-<pre><code><span class="p">$</span> openssl rand 32 | sudo tee /etc/tiyi/kek.bin &gt;/dev/null
-<span class="p">$</span> sudo chown tiyi:tiyi /etc/tiyi/kek.bin
-<span class="p">$</span> sudo chmod 0600 /etc/tiyi/kek.bin</code></pre>
-
-    <div class="callout callout-danger">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
-      <div class="callout-body">
-        <p><strong>丢失 KEK 等于丢失所有加密 blob。</strong>把它与 <code>state.db</code> 一起备份。当前基线不支持 KEK 轮换，因为这需要重包所有加密 blob。</p>
-        <p>不设置 <code>crypto.kek_file</code> 时，太一会自动生成并持续复用 <code>&lt;state-db 所在目录&gt;/kek.bin</code>。只要完整状态目录是持久的并纳入备份，这就是有效的单节点布局；仅当密钥存储或备份设计需要时才设置外部路径。</p>
-      </div>
-    </div>
-
-    <h3 id="jwt-secret">JWT 签名密钥</h3>
-<pre><code><span class="k">auth</span>:
-  <span class="k">jwt_secret</span>: <span class="s">"<span class="v">&lt;32+ 字节随机&gt;</span>"</span>     <span class="c"># 或通过 TIYI_AUTH_JWT_SECRET 环境变量</span></code></pre>
-    <p>Access token 的 HS256 签名密钥。字段为空时，太一在每次重启时生成 32 字节临时密钥并打印 <code>WARNING</code>；已有会话会在重启时失效。</p>
-
-    <h3 id="bundle-key">Bundle 签名密钥</h3>
-    <p>服务端的 ed25519 配置签名密钥落在 <code>bundle_signing_key</code> 单例行,使用 KEK 信封加密。节点首次接入时固定公钥(TOFU),之后拒绝重新固定。<strong>轮换需要重新入网</strong> —— 用 <code>tiyi agents issue-token</code> 签新 token,把节点重新拉起。</p>
-
-    <h2 id="nodes">一个 Controller，可选远程 Agent</h2>
-    <p>只运行一个 <code>tiyi run</code> Controller。它始终拥有可写 SQLite 状态、API、管理界面与一个本机内置数据平面。需要流量扩展或不同位置时添加远程 Agent；节点数量变化不会改变 Controller 的运行模式。</p>
-
-    <h3 id="agent-systemd">安装远程 Agent</h3>
-    <p>打开<strong>节点 → 安装远端节点</strong>，选择 URL、标签和 Token 有效期，再签发 Token。页面会分别显示二进制下载、原始 Token、推荐 systemd 步骤、前台命令和完整脚本：</p>
-<pre><code><span class="p">$</span> sudo curl -fsSL -o /usr/local/bin/tiyi <span class="s">'https://tiyi.example.com/download/tiyi'</span>
-<span class="p">$</span> sudo chmod 0755 /usr/local/bin/tiyi
-<span class="p">$</span> sudo mkdir -p /etc/tiyi
-<span class="p">$</span> printf <span class="s">'TIYI_CONTROLLER_URL=https://tiyi.example.com\nTIYI_AGENT_ENROLLMENT_TOKEN=&lt;一次性Token&gt;\n'</span> <span class="o">|</span> sudo tee /etc/tiyi/tiyi-agent.env &gt;/dev/null
-<span class="p">$</span> sudo chmod 0600 /etc/tiyi/tiyi-agent.env
-<span class="p">$</span> sudo tiyi install --mode agent --unit-name tiyi-agent --now</code></pre>
-    <p>节点页随后固定先显示本机，再显示已入网的远程 Agent。</p>
-
-    <h3 id="controller-outage">Controller 中断边界</h3>
-    <p>Controller 停止后，远程 Agent 继续使用最后一次已接受的签名 bundle 代理和执行 WAF。配置变更、入网、中央管理界面和汇总视图会不可用，直到同一个逻辑 Controller 地址恢复。Agent 按退避重连并恢复收敛，不存在备用 Controller URL 或自动角色切换。</p>
-
-    <div class="callout callout-warn">
-      <div class="callout-body">
-        <p><strong>远程数据平面连续运行不等于 Controller 高可用。</strong>太一不提供备用 Controller 或可写状态复制。请用运维侧备份恢复流程保护 <code>state.db</code>、<code>kek.bin</code> 与配置。</p>
-      </div>
-    </div>
-
-    <h2 id="trust-profile">客户端 IP 信任配置</h2>
-    <p>太一在 CDN 或 L4 LB 后时,到达 WAF 的客户端 IP 不是真实 IP —— 那是前面的代理。信任配置告诉太一哪些代理可信、哪个 header 携带真实 IP。</p>
-    <p>从 UI(设置 → 信任配置标签)或 CLI 设置一次:</p>
-<pre><code><span class="p">$</span> tiyi trust set <span class="o">\</span>
-    --proxy 10.0.0.0/8 <span class="o">\</span>
-    --proxy 172.16.0.0/12 <span class="o">\</span>
-    --cdn cloudflare <span class="o">\</span>
-    --header CF-Connecting-IP <span class="o">\</span>
-    --header X-Forwarded-For
-
-<span class="c"># 自动拉取 CDN 段:</span>
-<span class="p">$</span> tiyi trust show
-<span class="p">$</span> tiyi trust refresh cloudflare
-<span class="p">$</span> tiyi trust refresh fastly
-
-<span class="c"># 把任意 (peer, headers) 元组回溯到解析后的客户端 IP:</span>
-<span class="p">$</span> tiyi trust test --peer 10.0.0.5 --header <span class="s">"X-Forwarded-For: 1.2.3.4, 10.0.0.5"</span></code></pre>
-    <p>默认开启的 <em>Origin Bypass Attempt</em> 告警在请求通过 XFF 声称客户端 IP 但 peer 不是受信任代理时触发。</p>
-
-    <h2 id="siem">SIEM 转发</h2>
-    <p>太一把安全、访问、错误、(可选)审计事件以 RFC 5424、CEF 或 LEEF 通过尽力的 TCP / UDP / unixgram 转发出去。从 设置 → SIEM 标签 或 CLI 配置一次:</p>
-<pre><code><span class="p">$</span> tiyi system settings update --values-json <span class="s">'{"siem.destinations":[{"id":"soc-primary","name":"SOC primary","enabled":true,"endpoint":"tls://siem.internal:6514","transport":"tls","format":"RFC5424","framing":"octet_counted","sources":["tiyi_formatted","raw_security"],"include_security":true,"include_access":true,"include_error":true,"include_audit":true,"min_severity":"info","blocked_only":false,"timeout_millis":1000,"queue_events":1024,"queue_bytes":8388608,"tls_server_name":"siem.internal"}]}'</span></code></pre>
-    <p>SIEM 转发是有意尽力的。接收端健康、可靠投递、回放属于 SIEM 管道,而不是太一。转发器为每个 dispatcher 缓存一条 <code>net.Conn</code>,出错时重连。</p>
-
-    <h2 id="observability">可观测性</h2>
-    <ul>
-      <li><strong>Prometheus 导出器</strong>位于本地管理 socket 的 <code>/metrics</code>。从 sidecar 抓取；<code>tiyi_api_inventory_value{site_id,field}</code> 报告已学习/受保护/试用容量与聚合请求数，不导出原始扫描路径。</li>
-      <li><strong><code>/healthz</code></strong> 报告 Controller 身份、数据库、代理、配置、站点与远程 Agent 事实。可用于服务健康检查。</li>
-      <li><strong><code>/debug/logsink/stats</code></strong> 在本地管理 socket 暴露每种类别的 <code>attempted</code>/<code>written</code>/<code>dropped_full</code>/<code>panicked</code>/<code>queue_depth</code>/<code>last_error</code> 计数。<code>panicked</code> 计数是边界 <code>defer recover</code> 处理器的跨层金丝雀。</li>
-      <li><strong>遥测深度视图 UI</strong> 位于 <code>/telemetry/explorer</code>，用于 Top-K 与 API 资产浏览；容量轨道和只读聚合行把真实 API 与试用流量、原生阻断、限速、溢出和载荷压缩区分开。</li>
-      <li><strong>托管日志存储健康</strong>位于设置 → 日志与证据，报告已管理字节、文件系统余量和预计剩余天数。日常用户只需选择推荐、最小存储或完整取证；高存储占用组合必须明确确认。</li>
-    </ul>
-
-    <h2 id="upgrades">远程 Agent 滚动升级</h2>
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>签名有效不代表协议一定兼容。</strong>应阅读目标版本说明；需要重置状态或 Agent 身份时，按<a href="upgrade-migration.html">升级与迁移</a>处理。</p></div></div>
-    <p>导入 release 后，<code>tiyi release apply</code> 会把 <code>APPLY_BINARY</code> 命令发给 OS/arch 匹配的 Agent。导入和应用会校验元数据、SHA-256 与 Ed25519 签名，但没有硬编码版本门槛。每个 Agent 原子安装替换后退出，由 supervisor 重启。</p>
-<pre><code><span class="p">$</span> tiyi release import --tarball ./tiyi_3.6.0_linux_amd64.tar.gz
-<span class="p">$</span> tiyi release list
-<span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span>             <span class="c"># 所有匹配节点</span>
-<span class="p">$</span> tiyi release apply <span class="v">&lt;release-id&gt;</span> --agent-id <span class="v">A</span>  <span class="c"># 灰度部署</span>
-<span class="p">$</span> tiyi release runs                          <span class="c"># 进行中的滚动</span>
-<span class="p">$</span> tiyi release rollback                      <span class="c"># 回滚到上一个二进制</span></code></pre>
-
-    <h2 id="backup">备份与恢复</h2>
-    <p>把以下内容作为一组耦合恢复集：</p>
-    <ul>
-      <li><strong>完整状态目录</strong> —— <code>/var/lib/tiyi</code>，包括 <code>state.db</code>、可能存在的 WAL、KEK、日志/明细、证据、CRS 数据、bundle 与身份。</li>
-      <li><strong>配置</strong> —— <code>/etc/tiyi</code>、自定义 unit/drop-in 与注入的环境变量。</li>
-      <li><strong>外部文件</strong> —— 配置引用的 KEK、license、证书源、JWT secret 与 provider 密钥。</li>
-    </ul>
-    <p><code>sqlite3 state.db ".backup '/path/to/backup.db'"</code> 可生成在线数据库副本，但不是完整 Controller 恢复集。主机迁移或灾备时应停止 Controller 并复制整组内容；不能通过网络文件系统复制运行中的 WAL 目录。按<a href="upgrade-migration.html#host-migration">主机迁移</a>操作，并在隔离主机测试恢复。</p>
-
-    <h2 id="checklist">上线检查表</h2>
-    <div class="callout callout-tip">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-      <div class="callout-body">
-        <ul>
-          <li>把 <code>crypto.kek_file</code> 设为已备份的文件</li>
-          <li>把 <code>auth.jwt_secret</code> 设为 32+ 字节随机值</li>
-          <li>用真实账号替换引导管理员密码</li>
-          <li>如果太一在 CDN/LB 后,配置信任配置</li>
-          <li>选定一个 SIEM 目的地并验证测试事件能落地</li>
-          <li>把 <code>/healthz</code> 接到 L4/L7 LB</li>
-          <li>从 Prometheus 抓取 <code>/metrics</code></li>
-          <li>把完整状态、配置和外部密钥集加入备份管道</li>
-          <li>在隔离主机验证同版本恢复</li>
-          <li>校验审计链：<code>tiyi audit verify</code> 退出 0</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="docs-pager">
-      <a href="api.html"><span class="label">← 上一页</span><span class="title">API 参考</span></a>
-      <a class="next" href="../index.html"><span class="label">→ 完成</span><span class="title">返回首页</span></a>
-    </div>
-  </main>
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="生产部署与日常管理">生产部署与日常管理</h1>
+<p class="lede">适用版本：<strong>v3.8.0</strong>。把演示换成真实业务前，先确定流量入口、管理入口、数据保留与恢复方式。
+太一部署在客户端与源站之间；域名指向太一，太一把允许的请求代理到源站。</p>
+<h2 id="1-选择拓扑与访问边界">1. 选择拓扑与访问边界</h2>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>部署方式</th>
+<th>要准备什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一个网站或小团队</td>
+<td>一台 <code>tiyi run</code>，含控制台和本机数据面</td>
+<td>Linux、持久磁盘、域名/证书、可达源站；Community 免费完整</td>
+</tr>
+<tr>
+<td>CDN/负载均衡后保护应用</td>
+<td>CDN/LB → 太一 → 源站</td>
+<td>精确的代理信任链；只从预期入口接收流量</td>
+</tr>
+<tr>
+<td>多地域或多台入口</td>
+<td>一个 Controller + 远端 Agents</td>
+<td>可达的 HTTPS 管理地址、远端节点配额 license、同版本节点</td>
+</tr>
+<tr>
+<td>离线或内网</td>
+<td>签名文件离线安装</td>
+<td>上传证书、离线 Geo 数据、可达内部源站和备份位置</td>
+</tr>
+</tbody>
+</table>
+<p>仅有一个可写 Controller，没有内置主备选举或自动控制面故障切换。远端 Agent 在 Controller 中断时继续使用最后接受的配置，
+但无法接收新配置；管理、注册和集中视图会中断。备份恢复方案应覆盖这一点。
+CPU、内存、磁盘需求取决于流量、规则、正文/上传上限和证据保留。用自己的请求进行容量测试，不把演示结果当容量承诺。</p>
+<h2 id="2-保护管理入口与状态">2. 保护管理入口与状态</h2>
+<p>从<a href="configuration.html#startup">完整配置起点</a>开始：管理监听为 <code>0.0.0.0:8080</code>，网站监听 80/443。
+首次管理在浏览器打开 <code>http://服务器IP:8080</code>。需要团队 HTTPS 入口时，可通过已有 HTTPS 反向代理转发到管理监听，
+或把专用管理域名作为太一 HTTPS 站点，源站设为 <code>http://127.0.0.1:8080</code>。
+先申请覆盖该域名的证书，验证登录、刷新与长连接，再开放给指定管理网络；启用 <code>auth.refresh_cookie_secure: true</code>。
+对外 TLS 配置见<a href="operations.html#https">HTTPS 操作</a>。保留 SSH 与本地 socket 作为恢复入口。</p>
+<p>将 <code>/var/lib/tiyi</code> 放在持久磁盘；上传暂存需要可写的磁盘目录，不能用 tmpfs 代替所有持久存储。
+固定 JWT 密钥，保留数据库配套的 <code>kek.bin</code>；不要重建或丢失 KEK。systemd 的 <code>tiyi</code> 用户必须能读配置和密钥、写状态目录。
+不要直接改 SQLite、生成的 Caddy 配置或 Agent 身份文件。</p>
+<a id="3-位于-cdn-代理之后"></a>
+<h2 id="client-ip">3. 位于 CDN / 代理之后</h2>
+<p>直接接入时默认以连接对端为客户端。经过 CDN/LB 时，在 <strong>防护策略 → 客户端 IP</strong> 配置真实的代理链：
+先创建/启用可信代理出口的 IP 列表，再选择需要验证的转发头；不要信任来自任意来源的 <code>X-Forwarded-For</code>。
+手工地址列表可从以下格式开始，在 IP 列表编辑器粘贴，或通过 CLI replace 文件导入：</p>
+<pre><code class="language-text"><span class="c"># Replace with the actual proxy egress networks
+192.0.2.10/32
+2001:db8:10::/48
+</span></code></pre>
+<p>示例地址只是文档保留网段，必须替换为真实代理出口。代理信任列表必须非空且使用永久条目；不支持带 TTL 的条目。
+Cloudflare 等订阅初始暂停，先检查来源与解析结果再启用。订阅失败时保留最后接受的快照，需处理“更新受保护”的原因。
+用 <code>sudo tiyi trust show</code> 检查，并用 <code>tiyi trust test --help</code> 构造代理 peer 与转发头测试。
+再发送真实请求，在日志里核对解析客户端 IP；IP、国家、限速都会依赖这个值。</p>
+<a id="4-添加远端节点"></a>
+<h2 id="nodes">4. 添加远端节点</h2>
+<p>Community 包含本机节点，远端节点数为 0。先在 <strong>系统管理 → 关于</strong> 导入合法签名许可，或配置 <code>license.key_path</code>。
+确保远端机器到 Controller 的 HTTPS URL 可达，节点与 Controller 使用同一个 v3.8.0 构建；各节点都必须能访问其源站。
+Controller 的 <code>/download/tiyi</code> 返回自身平台二进制，生成脚本的主机应与其 OS/架构匹配。</p>
+<p>在 <strong>节点 → 安装远端节点</strong> 输入可达地址、标签、有效期与节点数，生成安装命令。
+复制页面推荐的 systemd 命令到目标主机执行；页面自动追踪这次注册与配置结果，不需要手写 token 文件。
+CLI 可直接生成安装命令（在 Controller 主机执行）：</p>
+<pre><code class="language-sh">sudo tiyi agents install-command --controller-url https://tiyi.example.com <span class="o">\
+</span>  --tag edge --ttl-seconds 3600 --max-nodes 1
+</code></pre>
+<p>复制输出的命令，到目标节点执行；不要在 Controller 上执行。命令包含短期安装凭据，勿公开粘贴。
+需要审核完整脚本和有效期时，在同一命令后加 <code>--json</code>；需要前台方式则加 <code>--foreground</code>。
+注册后执行 <code>sudo tiyi agents list</code>，核对节点在线、配置已应用、源站健康，并向该节点发送真实站点请求。
+仅在线不代表已服务；离线与在线但应用失败分别排查。
+不同架构的节点应先准备同版本正确平台二进制，按前台/服务高级说明接入。
+跨旧版本升级至 v3.8.0 需要<a href="upgrade-migration.html">重建状态并重新注册</a>，不是普通滚动更新。</p>
+<p>保存站点会向内置节点及全部已注册节点下发配置，离线节点在重连后接收。节点分组用于组织节点和相关运维操作，不会把站点自动限制在某一组；所有接收配置的节点都要具备对应源站可达性。</p>
+<h2 id="5-用户角色与单点登录">5. 用户、角色与单点登录</h2>
+<p>在 <strong>系统管理 → 用户 / 角色 / 认证</strong> 管理账号、权限、LDAP/AD、RADIUS、OIDC、SAML 和 TOTP MFA。
+先保留可验证的本地管理员恢复路径；外部认证证明身份，不自动赋予任意角色，先准备匹配用户与权限。
+LDAP/RADIUS 的进程配置完整示例见<a href="templates/tiyi.yaml">tiyi.yaml</a>；浏览器型 OIDC/SAML 在认证设置填写提供商给出的 issuer/metadata、client 与回调信息。
+精确复用控制台显示的回调 URL，在身份提供商登记后测试新浏览器会话；不要凭示例猜 URL。
+分配日常运维或只读角色，API 自动化权限参见<a href="reference/permissions.html">完整权限表</a>。MFA 恢复码离线保管。</p>
+<h2 id="6-日志告警外部系统与备份">6. 日志、告警、外部系统与备份</h2>
+<p>先在总览核对请求/阻断计数，在日志中检查样本和证据；明细并不保证为每一个请求永久保留。
+在 <strong>系统管理 → 设置 → 日志与证据</strong> 选择保留与采样策略，设置实际可承担的磁盘配额。
+请求证据可能包含原始 Cookie、Authorization 与正文，限制读取权限和保留时间。
+从<a href="operations.html">告警与通知</a>配置真实接收通道；SIEM 从处理流量的节点发出，检查各节点到目的端的连通性。
+Prometheus 使用<a href="operations.html#prometheus">仅导出指标的接入步骤</a>；<code>/healthz</code> 只做存活检查，深层健康用 <code>sudo tiyi system health</code> 或本地 <code>/readyz</code>。</p>
+<p>AI Copilot 默认关闭，按需配置服务提供商并明确哪些调查数据允许发送；输出是建议，不自动修改策略。
+备份必须包含完整状态目录、配置/环境文件、KEK、证书、license 和可恢复的旧二进制；按<a href="upgrade-migration.html">备份与迁移</a>进行一致冷备并实际演练恢复。</p>
+<div class="docs-pager"><a href="api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="release-3.8.0.html"><span class="label">下一页 →</span><span class="title">v3.8.0 说明</span></a></div>
+</main>
 
   <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
     <h4>本页大纲</h4>
@@ -194,7 +197,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.7.2 · 2026-09-03</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
     </div>
   </div>
 </footer>

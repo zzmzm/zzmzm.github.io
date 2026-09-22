@@ -1,0 +1,908 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>common.proto — Shared types — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="common.proto — Shared types Complete v3.8.0 reference. Use the task guides in the sidebar for working examples. Schema: tiyi.v1 · common.proto · English gu" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../../../index.html#features">Features</a>
+      <a href="../../../index.html#tour">Product</a>
+      <a href="../../../index.html#pricing">Pricing</a>
+      <a href="../../index.html" style="color:var(--fg)">Docs</a>
+      <a href="../../../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../zh/docs/reference/services/common.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="../../index.html">Overview</a></li>
+        <li><a href="../../quickstart.html">Quickstart</a></li>
+        <li><a href="../../installation.html">Installation</a></li>
+        <li><a href="../../configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="../../practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="../../operations.html">Operations guide</a></li>
+        <li><a href="../../troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="../../upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="../../site-import.html">Import / export sites</a></li>
+        <li><a href="../../api-protection.html">API protection</a></li>
+        <li><a href="../../responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="../../concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI reference</a></li>
+        <li><a href="../../api.html">API reference</a></li>
+        <li><a href="../index.html">Full reference</a></li>
+        <li><a href="../rpc-index.html">All RPCs</a></li>
+        <li><a href="../permissions.html">Permissions</a></li>
+        <li><a href="../cli-options.html">All CLI flags</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="../../deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="commonproto-shared-types">common.proto — Shared types</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>common.proto</code> · <a href="../../api.html">English guide</a> · <a href="../../../zh/docs/api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="messages">Messages</h2>
+<h3 id="buildinfo">BuildInfo</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>commit</code></td>
+<td><code>commit</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>build_date</code></td>
+<td><code>buildDate</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cursorrequest">CursorRequest</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cursor</code></td>
+<td><code>cursor</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page_size</code></td>
+<td><code>pageSize</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>offset</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>offset enables direct page jumps without a forward cursor walk. When &gt; 0 the server skips the first <code>offset</code> matching rows and returns the next <code>page_size</code>-sized window. Mutually exclusive with <code>cursor</code> — setting both is rejected with InvalidArgument. The server caps offset at an implementation-defined ceiling (currently 100_000 on log queries) and returns InvalidArgument past it; clients should narrow the time range instead. Cursor remains the streaming/export path; offset is the page-jump path.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cursorresponse">CursorResponse</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>next_cursor</code></td>
+<td><code>nextCursor</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>has_more</code></td>
+<td><code>hasMore</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="jsonpatch">JsonPatch</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>before</code></td>
+<td><code>before</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>after</code></td>
+<td><code>after</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>changed_paths</code></td>
+<td><code>changedPaths</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="mutationresult">MutationResult</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>changed</code></td>
+<td><code>changed</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="networkgeo">NetworkGeo</h3>
+<p>NetworkGeo is best-effort context for an observed network exit. It is intentionally descriptive only: callers must not treat it as an attacker identity or use it as an enforcement/correlation key.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>country_code</code></td>
+<td><code>countryCode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>country_name</code></td>
+<td><code>countryName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>region</code></td>
+<td><code>region</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>city</code></td>
+<td><code>city</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>asn</code></td>
+<td><code>asn</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>asn_org</code></td>
+<td><code>asnOrg</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="observationcoverage">ObservationCoverage</h3>
+<p>Current delivery coverage of remote observation streams. Counts returned by data read surfaces are known lower bounds while incomplete is true.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>incomplete</code></td>
+<td><code>incomplete</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>affected_nodes</code></td>
+<td><code>affectedNodes</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>worst_node_id</code></td>
+<td><code>worstNodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>worst_node_name</code></td>
+<td><code>worstNodeName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>worst_state</code></td>
+<td><code>worstState</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>backlog | coverage_gap | quarantined</td>
+</tr>
+<tr>
+<td><code>quarantined_streams</code></td>
+<td><code>quarantinedStreams</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>pending_batches</code></td>
+<td><code>pendingBatches</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>pending_bytes</code></td>
+<td><code>pendingBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>evicted_batches</code></td>
+<td><code>evictedBatches</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>gap_notices</code></td>
+<td><code>gapNotices</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="pagerequest">PageRequest</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page_size</code></td>
+<td><code>pageSize</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pageresponse">PageResponse</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page_size</code></td>
+<td><code>pageSize</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>total</code></td>
+<td><code>total</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="resourceref">ResourceRef</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="timerange">TimeRange</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>start</code></td>
+<td><code>start</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>end</code></td>
+<td><code>end</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="tlsconfig">TlsConfig</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mode</code></td>
+<td><code>mode</code></td>
+<td><a href="#tlsmode"><code>TlsMode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>cert_id</code></td>
+<td><code>certId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>min_version</code></td>
+<td><code>minVersion</code></td>
+<td><a href="#tlsversion"><code>TlsVersion</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>http_behavior</code></td>
+<td><code>httpBehavior</code></td>
+<td><a href="#tlshttpbehavior"><code>TlsHttpBehavior</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="upstreamendpoint">UpstreamEndpoint</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>url</code></td>
+<td><code>url</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>weight</code></td>
+<td><code>weight</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>health_check_path</code></td>
+<td><code>healthCheckPath</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="wafconfig">WafConfig</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enabled</code></td>
+<td><code>enabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>mode</code></td>
+<td><code>mode</code></td>
+<td><a href="#wafmode"><code>WafMode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="enums">Enums</h2>
+<h3 id="blockingmode">BlockingMode</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BLOCKING_MODE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>BLOCKING_MODE_ANOMALY</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>BLOCKING_MODE_SELF_CONTAINED</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="enginestate">EngineState</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ENGINE_STATE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ENGINE_STATE_ON</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ENGINE_STATE_DETECTION_ONLY</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ENGINE_STATE_OFF</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="resourcestatus">ResourceStatus</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RESOURCE_STATUS_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>RESOURCE_STATUS_ACTIVE</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>RESOURCE_STATUS_DISABLED</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>RESOURCE_STATUS_DELETED</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>RESOURCE_STATUS_ERROR</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="securityeventoutcome">SecurityEventOutcome</h3>
+<p>SecurityEventOutcome is the canonical transaction-result filter used by SecurityFact queries. UNSPECIFIED is invalid on requests.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SECURITY_EVENT_OUTCOME_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>SECURITY_EVENT_OUTCOME_ANY</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>SECURITY_EVENT_OUTCOME_BLOCKED</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>SECURITY_EVENT_OUTCOME_PASSED</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tlshttpbehavior">TlsHttpBehavior</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TLS_HTTP_BEHAVIOR_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>TLS_HTTP_BEHAVIOR_REDIRECT_TO_HTTPS</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>TLS_HTTP_BEHAVIOR_ACME_ONLY</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>TLS_HTTP_BEHAVIOR_SERVE_BOTH</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tlsmode">TlsMode</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TLS_MODE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>TLS_MODE_NONE</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>TLS_MODE_MANAGED_ACME</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>TLS_MODE_UPLOADED</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tlsversion">TlsVersion</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TLS_VERSION_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>TLS_VERSION_1_2</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>TLS_VERSION_1_3</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="wafmode">WafMode</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WAF_MODE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>WAF_MODE_BLOCKING</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>WAF_MODE_DETECTION</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← Previous</span><span class="title">API integration</span></a><a class="next" href="../rpc-index.html"><span class="label">Next →</span><span class="title">All RPCs</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

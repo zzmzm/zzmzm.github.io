@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Permission catalog — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Tiyi ships 59 permissions . Roles are sets of permissions; a JWT carries the union of its user&#x27;s roles. tiyi:superadmin satisfies every check." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../../index.html#features">Features</a>
+      <a href="../../index.html#tour">Product</a>
+      <a href="../../index.html#pricing">Pricing</a>
+      <a href="../index.html" style="color:var(--fg)">Docs</a>
+      <a href="../../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../zh/docs/reference/permissions.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="../index.html">Overview</a></li>
+        <li><a href="../quickstart.html">Quickstart</a></li>
+        <li><a href="../installation.html">Installation</a></li>
+        <li><a href="../configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="../practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="../operations.html">Operations guide</a></li>
+        <li><a href="../troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="../upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="../site-import.html">Import / export sites</a></li>
+        <li><a href="../api-protection.html">API protection</a></li>
+        <li><a href="../responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="../concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="../cli.html">CLI reference</a></li>
+        <li><a href="../api.html">API reference</a></li>
+        <li><a href="index.html">Full reference</a></li>
+        <li><a href="rpc-index.html">All RPCs</a></li>
+        <li><a href="permissions.html" aria-current="page">Permissions</a></li>
+        <li><a href="cli-options.html">All CLI flags</a></li>
+        <li><a href="../release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="../deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="permission-catalog">Permission catalog</h1>
+<p>Tiyi ships <strong>59 permissions</strong>. Roles are sets of permissions; a JWT carries the union of its user's roles. <code>tiyi:superadmin</code> satisfies every check.</p>
+<p>Read the live catalog from a running server with <code>tiyi role permissions</code> or <code>RoleService.ListPermissions</code> — this page is generated from the same seed data (<code>permissionSeeds()</code> in <code>internal/store/bootstrap.go</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Grants</th>
+<th>RPCs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site:read</code></td>
+<td>Read sites and compiled config previews.</td>
+<td><a href="services/log.html#logservicegetsitelogpolicy"><code>LogService.GetSiteLogPolicy</code></a>, <a href="services/operation_control.html#operationcontrolservicegetrequestinspection"><code>OperationControlService.GetRequestInspection</code></a>, <a href="services/operation_control.html#operationcontrolservicegetoperationcontrolstate"><code>OperationControlService.GetOperationControlState</code></a>, <a href="services/operation_control.html#operationcontrolservicelistoperationcontrolhistory"><code>OperationControlService.ListOperationControlHistory</code></a> <em>+27 more</em></td>
+</tr>
+<tr>
+<td><code>site:write</code></td>
+<td>Create, update, enable, and disable sites.</td>
+<td><a href="services/log.html#logserviceupsertsitelogpolicyoverride"><code>LogService.UpsertSiteLogPolicyOverride</code></a>, <a href="services/log.html#logservicedeletesitelogpolicyoverride"><code>LogService.DeleteSiteLogPolicyOverride</code></a>, <a href="services/operation_control.html#operationcontrolservicepreviewbodycontrol"><code>OperationControlService.PreviewBodyControl</code></a>, <a href="services/operation_control.html#operationcontrolserviceapplybodycontrol"><code>OperationControlService.ApplyBodyControl</code></a> <em>+23 more</em></td>
+</tr>
+<tr>
+<td><code>site:delete</code></td>
+<td>Delete sites.</td>
+<td><a href="services/site.html#siteservicedeletesite"><code>SiteService.DeleteSite</code></a></td>
+</tr>
+<tr>
+<td><code>site:preview</code></td>
+<td>Preview compiled Caddy JSON.</td>
+<td><a href="services/site.html#siteservicepreviewcompiledconfig"><code>SiteService.PreviewCompiledConfig</code></a></td>
+</tr>
+<tr>
+<td><code>upstream:read</code></td>
+<td>Read upstream pools.</td>
+<td><a href="services/upstream.html#upstreamservicelistupstreams"><code>UpstreamService.ListUpstreams</code></a>, <a href="services/upstream.html#upstreamservicegetupstream"><code>UpstreamService.GetUpstream</code></a>, <a href="services/upstream.html#upstreamservicelistupstreamhealth"><code>UpstreamService.ListUpstreamHealth</code></a>, <a href="services/site.html#siteserviceexportsite"><code>SiteService.ExportSite</code></a> <em>+1 more</em></td>
+</tr>
+<tr>
+<td><code>upstream:write</code></td>
+<td>Create and update upstream pools.</td>
+<td><a href="services/upstream.html#upstreamservicecreateupstream"><code>UpstreamService.CreateUpstream</code></a>, <a href="services/upstream.html#upstreamserviceupdateupstream"><code>UpstreamService.UpdateUpstream</code></a>, <a href="services/site.html#siteserviceimportsite"><code>SiteService.ImportSite</code></a></td>
+</tr>
+<tr>
+<td><code>upstream:delete</code></td>
+<td>Delete upstream pools.</td>
+<td><a href="services/upstream.html#upstreamservicedeleteupstream"><code>UpstreamService.DeleteUpstream</code></a></td>
+</tr>
+<tr>
+<td><code>policy:read</code></td>
+<td>Read WAF policies, templates, versions, rules, lists, and plugins.</td>
+<td><a href="services/policy.html#policyservicelistpolicies"><code>PolicyService.ListPolicies</code></a>, <a href="services/policy.html#policyservicegetpolicy"><code>PolicyService.GetPolicy</code></a>, <a href="services/policy.html#policyservicelistpolicytemplates"><code>PolicyService.ListPolicyTemplates</code></a>, <a href="services/policy.html#policyservicelistpolicyversions"><code>PolicyService.ListPolicyVersions</code></a> <em>+35 more</em></td>
+</tr>
+<tr>
+<td><code>policy:write</code></td>
+<td>Create, update, rollback, and change policy engine state.</td>
+<td><a href="services/policy.html#policyservicecreatepolicy"><code>PolicyService.CreatePolicy</code></a>, <a href="services/policy.html#policyservicecreatepolicyfromtemplate"><code>PolicyService.CreatePolicyFromTemplate</code></a>, <a href="services/policy.html#policyserviceupdatepolicy"><code>PolicyService.UpdatePolicy</code></a>, <a href="services/policy.html#policyserviceupdatepolicylayer"><code>PolicyService.UpdatePolicyLayer</code></a> <em>+9 more</em></td>
+</tr>
+<tr>
+<td><code>policy:delete</code></td>
+<td>Delete WAF policies.</td>
+<td><a href="services/policy.html#policyservicedeletepolicy"><code>PolicyService.DeletePolicy</code></a></td>
+</tr>
+<tr>
+<td><code>policy:preview</code></td>
+<td>Preview SecLang and CRS impact.</td>
+<td><a href="services/policy.html#policyservicepreviewseclang"><code>PolicyService.PreviewSecLang</code></a>, <a href="services/policy.html#policyservicepreviewcrsimpact"><code>PolicyService.PreviewCrsImpact</code></a>, <a href="services/rule.html#customruleservicepreviewcustomrule"><code>CustomRuleService.PreviewCustomRule</code></a></td>
+</tr>
+<tr>
+<td><code>policy:test</code></td>
+<td>Run synthetic policy tests.</td>
+<td><a href="services/policy.html#policyservicetestpolicy"><code>PolicyService.TestPolicy</code></a></td>
+</tr>
+<tr>
+<td><code>policy:crs:write</code></td>
+<td>Switch active CRS rulesets.</td>
+<td><a href="services/policy.html#policyservicesetactivecrsruleset"><code>PolicyService.SetActiveCrsRuleset</code></a></td>
+</tr>
+<tr>
+<td><code>policy:rule:override</code></td>
+<td>Manage per-CRS-rule overrides.</td>
+<td><a href="services/rule.html#ruleoverrideserviceupsertruleoverride"><code>RuleOverrideService.UpsertRuleOverride</code></a>, <a href="services/rule.html#ruleoverrideservicedeleteruleoverride"><code>RuleOverrideService.DeleteRuleOverride</code></a>, <a href="services/rule.html#ruleoverrideservicebulkupsertruleoverrides"><code>RuleOverrideService.BulkUpsertRuleOverrides</code></a></td>
+</tr>
+<tr>
+<td><code>policy:custom:write</code></td>
+<td>Manage custom visual rules.</td>
+<td><a href="services/rule.html#customruleservicecreatecustomrule"><code>CustomRuleService.CreateCustomRule</code></a>, <a href="services/rule.html#customruleserviceupdatecustomrule"><code>CustomRuleService.UpdateCustomRule</code></a>, <a href="services/rule.html#customruleservicedeletecustomrule"><code>CustomRuleService.DeleteCustomRule</code></a>, <a href="services/rule.html#customruleservicereordercustomrules"><code>CustomRuleService.ReorderCustomRules</code></a> <em>+1 more</em></td>
+</tr>
+<tr>
+<td><code>policy:custom:seclang</code></td>
+<td>Author or import raw SecLang custom rules.</td>
+<td><em>enforced in-handler or reserved</em></td>
+</tr>
+<tr>
+<td><code>policy:iplist:write</code></td>
+<td>Manage IP lists and entries.</td>
+<td><a href="services/rule.html#iplistservicecreateiplist"><code>IpListService.CreateIpList</code></a>, <a href="services/rule.html#iplistserviceupdateiplist"><code>IpListService.UpdateIpList</code></a>, <a href="services/rule.html#iplistservicedeleteiplist"><code>IpListService.DeleteIpList</code></a>, <a href="services/rule.html#iplistservicereplaceiplistentries"><code>IpListService.ReplaceIpListEntries</code></a> <em>+8 more</em></td>
+</tr>
+<tr>
+<td><code>policy:iplist:source:write</code></td>
+<td>Manage IP-list subscription sources and write-only request headers.</td>
+<td><a href="services/rule.html#iplistservicecreateiplistsubscription"><code>IpListService.CreateIpListSubscription</code></a>, <a href="services/rule.html#iplistserviceupdateiplistsubscription"><code>IpListService.UpdateIpListSubscription</code></a>, <a href="services/rule.html#iplistservicetestiplistsource"><code>IpListService.TestIpListSource</code></a></td>
+</tr>
+<tr>
+<td><code>policy:iplist:sync</code></td>
+<td>Test, synchronize, pause, and resume IP-list subscriptions.</td>
+<td><a href="services/rule.html#iplistservicesynciplistnow"><code>IpListService.SyncIpListNow</code></a>, <a href="services/rule.html#iplistservicepauseiplistsync"><code>IpListService.PauseIpListSync</code></a>, <a href="services/rule.html#iplistserviceresumeiplistsync"><code>IpListService.ResumeIpListSync</code></a>, <a href="services/rule.html#iplistserviceacceptheldiplistupdate"><code>IpListService.AcceptHeldIpListUpdate</code></a> <em>+1 more</em></td>
+</tr>
+<tr>
+<td><code>policy:country:write</code></td>
+<td>Create, update, and delete country access rules.</td>
+<td><a href="services/rule.html#countryaccessserviceupsertcountryaccessrule"><code>CountryAccessService.UpsertCountryAccessRule</code></a>, <a href="services/rule.html#countryaccessservicedeletecountryaccessrule"><code>CountryAccessService.DeleteCountryAccessRule</code></a></td>
+</tr>
+<tr>
+<td><code>cert:read</code></td>
+<td>Read certificates and public certificate material.</td>
+<td><a href="services/cert.html#certservicelistcerts"><code>CertService.ListCerts</code></a>, <a href="services/cert.html#certservicegetcert"><code>CertService.GetCert</code></a>, <a href="services/cert.html#certservicelistdnsproviders"><code>CertService.ListDNSProviders</code></a>, <a href="services/cert.html#certservicegetdnsprovider"><code>CertService.GetDNSProvider</code></a> <em>+1 more</em></td>
+</tr>
+<tr>
+<td><code>cert:write</code></td>
+<td>Upload certificate PEM material.</td>
+<td><a href="services/cert.html#certserviceuploadcert"><code>CertService.UploadCert</code></a>, <a href="services/cert.html#certservicecreatednsprovider"><code>CertService.CreateDNSProvider</code></a>, <a href="services/cert.html#certserviceupdatednsprovider"><code>CertService.UpdateDNSProvider</code></a>, <a href="services/site.html#siteserviceimportsite"><code>SiteService.ImportSite</code></a></td>
+</tr>
+<tr>
+<td><code>cert:issue</code></td>
+<td>Issue and renew ACME certificates.</td>
+<td><a href="services/cert.html#certserviceissueacmecert"><code>CertService.IssueACMECert</code></a>, <a href="services/cert.html#certservicerenewcert"><code>CertService.RenewCert</code></a></td>
+</tr>
+<tr>
+<td><code>cert:export</code></td>
+<td>Export certificates with private keys.</td>
+<td><a href="services/cert.html#certservicedownloadcert"><code>CertService.DownloadCert</code></a>, <a href="services/site.html#siteserviceexportsite"><code>SiteService.ExportSite</code></a>, <a href="services/site.html#siteserviceexportsites"><code>SiteService.ExportSites</code></a></td>
+</tr>
+<tr>
+<td><code>cert:delete</code></td>
+<td>Delete certificates.</td>
+<td><a href="services/cert.html#certservicedeletecert"><code>CertService.DeleteCert</code></a>, <a href="services/cert.html#certservicedeletednsprovider"><code>CertService.DeleteDNSProvider</code></a></td>
+</tr>
+<tr>
+<td><code>agent:read</code></td>
+<td>Read nodes, events, metrics, and config bundles.</td>
+<td><a href="services/agent.html#agentservicelistnodes"><code>AgentService.ListNodes</code></a>, <a href="services/agent.html#agentservicelistagents"><code>AgentService.ListAgents</code></a>, <a href="services/agent.html#agentservicegetagent"><code>AgentService.GetAgent</code></a>, <a href="services/agent.html#agentservicegetnodecapabilities"><code>AgentService.GetNodeCapabilities</code></a> <em>+5 more</em></td>
+</tr>
+<tr>
+<td><code>agent:write</code></td>
+<td>Update remote-agent metadata and retry node config.</td>
+<td><a href="services/agent.html#agentserviceupdateagent"><code>AgentService.UpdateAgent</code></a>, <a href="services/agent.html#agentserviceretrynodeconfig"><code>AgentService.RetryNodeConfig</code></a></td>
+</tr>
+<tr>
+<td><code>agent:delete</code></td>
+<td>Delete agents and revoke certificates.</td>
+<td><a href="services/agent.html#agentservicedeleteagent"><code>AgentService.DeleteAgent</code></a></td>
+</tr>
+<tr>
+<td><code>agent:install</code></td>
+<td>Issue enrollment tokens and install scripts.</td>
+<td><a href="services/agent.html#agentserviceissueenrollmenttoken"><code>AgentService.IssueEnrollmentToken</code></a>, <a href="services/agent.html#agentservicecreatenodeinstallation"><code>AgentService.CreateNodeInstallation</code></a>, <a href="services/agent.html#agentservicegetnodeinstallstatus"><code>AgentService.GetNodeInstallStatus</code></a></td>
+</tr>
+<tr>
+<td><code>agent_group:read</code></td>
+<td>Read agent groups.</td>
+<td><a href="services/agent.html#agentgroupservicelistagentgroups"><code>AgentGroupService.ListAgentGroups</code></a>, <a href="services/agent.html#agentgroupservicegetagentgroup"><code>AgentGroupService.GetAgentGroup</code></a>, <a href="services/agent.html#agentgroupserviceresolveagentgroup"><code>AgentGroupService.ResolveAgentGroup</code></a></td>
+</tr>
+<tr>
+<td><code>agent_group:write</code></td>
+<td>Create and update agent groups.</td>
+<td><a href="services/agent.html#agentgroupservicecreateagentgroup"><code>AgentGroupService.CreateAgentGroup</code></a>, <a href="services/agent.html#agentgroupserviceupdateagentgroup"><code>AgentGroupService.UpdateAgentGroup</code></a></td>
+</tr>
+<tr>
+<td><code>agent_group:delete</code></td>
+<td>Delete agent groups.</td>
+<td><a href="services/agent.html#agentgroupservicedeleteagentgroup"><code>AgentGroupService.DeleteAgentGroup</code></a></td>
+</tr>
+<tr>
+<td><code>log:read</code></td>
+<td>Query and tail logs.</td>
+<td><a href="services/log.html#logservicequerysecurityevents"><code>LogService.QuerySecurityEvents</code></a>, <a href="services/log.html#logservicequeryaccessevents"><code>LogService.QueryAccessEvents</code></a>, <a href="services/log.html#logservicequeryerrorevents"><code>LogService.QueryErrorEvents</code></a>, <a href="services/log.html#logservicegetsecurityevent"><code>LogService.GetSecurityEvent</code></a> <em>+12 more</em></td>
+</tr>
+<tr>
+<td><code>log:export</code></td>
+<td>Export logs.</td>
+<td><a href="services/log.html#logserviceexportsecurityevents"><code>LogService.ExportSecurityEvents</code></a>, <a href="services/log.html#logserviceexportaccessevents"><code>LogService.ExportAccessEvents</code></a>, <a href="services/log.html#logserviceexporterrorevents"><code>LogService.ExportErrorEvents</code></a></td>
+</tr>
+<tr>
+<td><code>telemetry:read</code></td>
+<td>Read exact telemetry and API inventory counters.</td>
+<td><a href="services/operation_control.html#operationcontrolservicegetrequestinspection"><code>OperationControlService.GetRequestInspection</code></a>, <a href="services/operation_control.html#operationcontrolservicegetoperationcontrolstate"><code>OperationControlService.GetOperationControlState</code></a>, <a href="services/operation_control.html#operationcontrolservicelistoperationcontrolhistory"><code>OperationControlService.ListOperationControlHistory</code></a>, <a href="services/api_schema.html#apischemaservicegetschemavalidation"><code>ApiSchemaService.GetSchemaValidation</code></a> <em>+16 more</em></td>
+</tr>
+<tr>
+<td><code>api_inventory:write</code></td>
+<td>Confirm API assets and stage site-owned body or Schema candidates; staging also requires site:write.</td>
+<td><a href="services/operation_control.html#operationcontrolservicepreviewbodycontrol"><code>OperationControlService.PreviewBodyControl</code></a>, <a href="services/operation_control.html#operationcontrolserviceapplybodycontrol"><code>OperationControlService.ApplyBodyControl</code></a>, <a href="services/operation_control.html#operationcontrolservicepreviewbodychange"><code>OperationControlService.PreviewBodyChange</code></a>, <a href="services/operation_control.html#operationcontrolservicechangebodycontrol"><code>OperationControlService.ChangeBodyControl</code></a> <em>+13 more</em></td>
+</tr>
+<tr>
+<td><code>api_inventory:block</code></td>
+<td>Approve new blocking API controls; runtime changes also require inventory, site, and policy write permissions.</td>
+<td><em>enforced in-handler or reserved</em></td>
+</tr>
+<tr>
+<td><code>alert:read</code></td>
+<td>Read and stream alerts.</td>
+<td><a href="services/alert.html#alertservicelistalerts"><code>AlertService.ListAlerts</code></a>, <a href="services/alert.html#alertservicegetalert"><code>AlertService.GetAlert</code></a>, <a href="services/alert.html#alertservicelistalertrules"><code>AlertService.ListAlertRules</code></a>, <a href="services/alert.html#alertservicegetalertrule"><code>AlertService.GetAlertRule</code></a> <em>+4 more</em></td>
+</tr>
+<tr>
+<td><code>alert:ack</code></td>
+<td>Acknowledge alerts.</td>
+<td><a href="services/alert.html#alertserviceackalert"><code>AlertService.AckAlert</code></a></td>
+</tr>
+<tr>
+<td><code>alert:resolve</code></td>
+<td>Resolve alerts.</td>
+<td><a href="services/alert.html#alertserviceresolvealert"><code>AlertService.ResolveAlert</code></a></td>
+</tr>
+<tr>
+<td><code>alert:write</code></td>
+<td>Manage alert rules and channels.</td>
+<td><a href="services/alert.html#alertserviceupsertalertrule"><code>AlertService.UpsertAlertRule</code></a>, <a href="services/alert.html#alertservicereplayalertrule"><code>AlertService.ReplayAlertRule</code></a>, <a href="services/alert.html#alertservicedeletealertrule"><code>AlertService.DeleteAlertRule</code></a>, <a href="services/alert.html#alertserviceupsertalertchannel"><code>AlertService.UpsertAlertChannel</code></a> <em>+7 more</em></td>
+</tr>
+<tr>
+<td><code>ai:read</code></td>
+<td>Use AI log analysis, chat, and read advisory proposals.</td>
+<td><a href="services/ai.html#aiservicelistaiproposals"><code>AIService.ListAIProposals</code></a>, <a href="services/ai.html#aiservicegetaiproposal"><code>AIService.GetAIProposal</code></a>, <a href="services/ai.html#aiservicegetaistatus"><code>AIService.GetAIStatus</code></a>, <a href="services/ai.html#aiservicetranslatelogquery"><code>AIService.TranslateLogQuery</code></a> <em>+2 more</em></td>
+</tr>
+<tr>
+<td><code>ai:propose</code></td>
+<td>Generate AI advisory proposals (drafts; mutates nothing).</td>
+<td><a href="services/ai.html#aiservicedraftcustomrule"><code>AIService.DraftCustomRule</code></a>, <a href="services/ai.html#aiservicerejectaiproposal"><code>AIService.RejectAIProposal</code></a></td>
+</tr>
+<tr>
+<td><code>ai:apply</code></td>
+<td>Apply an AI proposal through the audited mutation path (also requires the target permission).</td>
+<td><a href="services/ai.html#aiserviceapplyaiproposal"><code>AIService.ApplyAIProposal</code></a></td>
+</tr>
+<tr>
+<td><code>audit:read</code></td>
+<td>Query audit log and chain status.</td>
+<td><a href="services/audit.html#auditservicequeryaudit"><code>AuditService.QueryAudit</code></a>, <a href="services/audit.html#auditservicegetauditentry"><code>AuditService.GetAuditEntry</code></a>, <a href="services/audit.html#auditservicegetchainstatus"><code>AuditService.GetChainStatus</code></a></td>
+</tr>
+<tr>
+<td><code>audit:verify</code></td>
+<td>Trigger audit chain verification.</td>
+<td><a href="services/audit.html#auditserviceverifychain"><code>AuditService.VerifyChain</code></a></td>
+</tr>
+<tr>
+<td><code>user:read</code></td>
+<td>Read users.</td>
+<td><a href="services/user.html#userservicelistusers"><code>UserService.ListUsers</code></a>, <a href="services/user.html#userservicegetuser"><code>UserService.GetUser</code></a></td>
+</tr>
+<tr>
+<td><code>user:write</code></td>
+<td>Create, update, and assign user roles.</td>
+<td><a href="services/user.html#userservicecreateuser"><code>UserService.CreateUser</code></a>, <a href="services/user.html#userserviceupdateuser"><code>UserService.UpdateUser</code></a>, <a href="services/user.html#userserviceassignroles"><code>UserService.AssignRoles</code></a>, <a href="services/user.html#userserviceresetpassword"><code>UserService.ResetPassword</code></a> <em>+3 more</em></td>
+</tr>
+<tr>
+<td><code>user:delete</code></td>
+<td>Delete users.</td>
+<td><a href="services/user.html#userservicedeleteuser"><code>UserService.DeleteUser</code></a></td>
+</tr>
+<tr>
+<td><code>role:read</code></td>
+<td>Read roles and permissions.</td>
+<td><a href="services/user.html#roleservicelistroles"><code>RoleService.ListRoles</code></a>, <a href="services/user.html#roleservicegetrole"><code>RoleService.GetRole</code></a>, <a href="services/user.html#roleservicelistpermissions"><code>RoleService.ListPermissions</code></a></td>
+</tr>
+<tr>
+<td><code>role:write</code></td>
+<td>Create and update roles.</td>
+<td><a href="services/user.html#roleservicecreaterole"><code>RoleService.CreateRole</code></a>, <a href="services/user.html#roleserviceupdaterole"><code>RoleService.UpdateRole</code></a></td>
+</tr>
+<tr>
+<td><code>role:delete</code></td>
+<td>Delete roles.</td>
+<td><a href="services/user.html#roleservicedeleterole"><code>RoleService.DeleteRole</code></a></td>
+</tr>
+<tr>
+<td><code>system:read</code></td>
+<td>Read system settings, health, and dashboard statistics.</td>
+<td><a href="services/log.html#logservicegetgloballogpolicy"><code>LogService.GetGlobalLogPolicy</code></a>, <a href="services/system.html#systemservicehealth"><code>SystemService.Health</code></a>, <a href="services/system.html#systemservicegetsystemsettings"><code>SystemService.GetSystemSettings</code></a>, <a href="services/system.html#systemservicegetobservationpipelinestats"><code>SystemService.GetObservationPipelineStats</code></a> <em>+4 more</em></td>
+</tr>
+<tr>
+<td><code>system:write</code></td>
+<td>Update system settings.</td>
+<td><a href="services/log.html#logserviceupdategloballogpolicy"><code>LogService.UpdateGlobalLogPolicy</code></a>, <a href="services/ai.html#aiservicesetaiprovidersecret"><code>AIService.SetAIProviderSecret</code></a>, <a href="services/system.html#systemserviceupdatesystemsettings"><code>SystemService.UpdateSystemSettings</code></a>, <a href="services/system.html#systemserviceimportlicense"><code>SystemService.ImportLicense</code></a> <em>+5 more</em></td>
+</tr>
+<tr>
+<td><code>system:apply</code></td>
+<td>Preview and apply declarative manifests.</td>
+<td><a href="services/system.html#systemservicepreviewapply"><code>SystemService.PreviewApply</code></a>, <a href="services/system.html#systemserviceapply"><code>SystemService.Apply</code></a></td>
+</tr>
+<tr>
+<td><code>system:update:read</code></td>
+<td>Read releases, CRS rulesets, and upgrade runs.</td>
+<td><a href="services/rule.html#crsservicelistupstreamcrsexclusionpluginreleases"><code>CrsService.ListUpstreamCrsExclusionPluginReleases</code></a>, <a href="services/system.html#systemservicelistbinaryreleases"><code>SystemService.ListBinaryReleases</code></a>, <a href="services/system.html#systemservicegetbinaryrelease"><code>SystemService.GetBinaryRelease</code></a>, <a href="services/system.html#systemservicelistsystemcrsrulesets"><code>SystemService.ListSystemCrsRulesets</code></a> <em>+7 more</em></td>
+</tr>
+<tr>
+<td><code>system:update:write</code></td>
+<td>Import and delete releases and CRS rulesets.</td>
+<td><a href="services/rule.html#crsserviceimportcrsexclusionplugin"><code>CrsService.ImportCrsExclusionPlugin</code></a>, <a href="services/system.html#systemserviceimportbinaryrelease"><code>SystemService.ImportBinaryRelease</code></a>, <a href="services/system.html#systemservicedeletebinaryrelease"><code>SystemService.DeleteBinaryRelease</code></a>, <a href="services/system.html#systemserviceimportcrsruleset"><code>SystemService.ImportCrsRuleset</code></a> <em>+4 more</em></td>
+</tr>
+<tr>
+<td><code>system:update:apply</code></td>
+<td>Apply, rollback, and cancel upgrades.</td>
+<td><a href="services/system.html#systemserviceapplybinaryrelease"><code>SystemService.ApplyBinaryRelease</code></a>, <a href="services/system.html#systemservicerollbackbinaryrelease"><code>SystemService.RollbackBinaryRelease</code></a>, <a href="services/system.html#systemservicecancelupgraderun"><code>SystemService.CancelUpgradeRun</code></a></td>
+</tr>
+<tr>
+<td><code>tiyi:superadmin</code></td>
+<td>Reserved cross-tenant platform access.</td>
+<td><em>enforced in-handler or reserved</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="public-procedures">Public procedures</h2>
+<p>These RPCs are reachable without a token. Everything else requires a bearer JWT (or the local admin socket).</p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Why it is public</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="services/agent.html#agentserviceenroll"><code>AgentService.Enroll</code></a></td>
+<td>gated by a one-use enrollment token, not a session</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#agentstreamserviceconnect"><code>AgentStreamService.Connect</code></a></td>
+<td>gated by the agent stream token</td>
+</tr>
+<tr>
+<td><a href="services/agent.html#evidenceuploadserviceupload"><code>EvidenceUploadService.Upload</code></a></td>
+<td>gated by the agent stream token</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicecompleteauthenticationchallenge"><code>AuthService.CompleteAuthenticationChallenge</code></a></td>
+<td>finishes a short-lived cookie-bound MFA/RADIUS challenge before any token exists</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicegetloginoptions"><code>AuthService.GetLoginOptions</code></a></td>
+<td>discovers enabled interactive sign-in methods</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicelogin"><code>AuthService.Login</code></a></td>
+<td>issues the first token</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicelogout"><code>AuthService.Logout</code></a></td>
+<td>must succeed even with a stale token</td>
+</tr>
+<tr>
+<td><a href="services/auth.html#authservicerefresh"><code>AuthService.Refresh</code></a></td>
+<td>renews a token that has already expired</td>
+</tr>
+</tbody>
+</table>
+<h2 id="permissions-without-a-static-rpc-binding">Permissions without a static RPC binding</h2>
+<p>A few permissions are checked inside handlers or on the REST telemetry surface in addition to the generated RPC contract:</p>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Checked by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>telemetry:read</code></td>
+<td>every <code>/api/v1/telemetry/*</code> route (see <a href="../api.html#http">HTTP endpoints</a>)</td>
+</tr>
+<tr>
+<td><code>api_inventory:write</code></td>
+<td><code>POST /api/v1/telemetry/apitree/action</code> — required for every action (<code>confirm</code>, <code>hide</code>, <code>restore</code>, <code>block</code>)</td>
+</tr>
+<tr>
+<td><code>api_inventory:block</code></td>
+<td>the <code>block</code> action on the same route, <strong>and</strong> <code>policy:write</code>, because it writes a custom rule</td>
+</tr>
+<tr>
+<td><code>log:read</code></td>
+<td>declared as an all-of requirement by <code>AIService.StreamAnalysis</code> and <code>AIService.StreamChat</code></td>
+</tr>
+<tr>
+<td><code>policy:custom:seclang</code></td>
+<td><code>CustomRuleService.CreateCustomRule</code> / <code>UpdateCustomRule</code> when the rule carries raw SecLang instead of a visual spec</td>
+</tr>
+</tbody>
+</table>
+<p><code>policy:rule:override</code>, <code>policy:custom:write</code>, and <code>policy:iplist:write</code> are the required granular mutation permissions for their respective resources.</p>
+<p>Tiyi seeds three built-in roles: <strong>Administrator</strong> (all permissions), <strong>Auditor</strong> (read-only), and <strong>WAF Operator</strong> (daily WAF tuning without raw SecLang, alert-channel, identity, or platform administration). Create narrower roles with <code>RoleService.CreateRole</code> (<code>tiyi role create</code>) and assign them with <code>UserService.AssignRoles</code>.</p>
+<div class="docs-pager"><a href="../api.html"><span class="label">← Previous</span><span class="title">API integration</span></a><a class="next" href="rpc-index.html"><span class="label">Next →</span><span class="title">All RPCs</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

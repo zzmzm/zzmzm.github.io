@@ -54,8 +54,8 @@
 <!-- ============= HERO ============= -->
 <section class="hero container">
   <span class="hero-eyebrow">
-    <span class="tag">v3.7.2</span>
-    Protection chain + Bot Analytics
+    <span class="tag">v3.8.0 · released</span>
+    API discovery, learning + request validation
   </span>
 
   <h1>
@@ -81,6 +81,8 @@
     <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && sudo tiyi install --now" aria-label="Copy command">copy</button>
   </div>
 
+  <div class="hero-repos" aria-label="Installation methods"><a href="docs/quickstart.html#manual">Manual steps</a> · <a href="docs/quickstart.html#custom-ports">Custom ports</a> · <a href="docs/quickstart.html#offline">Offline installation</a></div>
+
   <div class="hero-repos" aria-label="Public distribution repositories">
     <span>Public repos:</span>
     <a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a>
@@ -105,7 +107,7 @@
           <span>01:16 · no audio</span>
         </div>
         <h2 id="demo-title">From install command to blocked SQL injection.</h2>
-        <p id="demo-summary">Watch the complete workflow in the real Tiyi admin, or jump straight to any step.</p>
+        <p id="demo-summary">Watch the complete workflow in the real Tiyi admin, or jump straight to any step. This original recording preserves the complete getting-started flow; see the product tour and docs below for the current interface and new capabilities.</p>
       </div>
       <ol class="demo-chapters" aria-label="Video chapters">
         <li><button type="button" data-video-seek="4" aria-controls="tiyi-product-demo" aria-current="step"><span class="chapter-step">01</span><span class="chapter-label">Install</span><span class="chapter-time">00:04</span></button></li>
@@ -267,7 +269,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-7"/></svg>
         </div>
         <h3>Built-in observability</h3>
-        <p>Overview's protection chain shows whether each request stage acted before any traffic chart. Exact counters, client-fair bounded SecurityFact samples, retained logs, Enforcement, and Logs → Bot Analytics join admission and terminal actions to the responsible layer. API Inventory, WAF-pressure and coverage signals, pipeline diagnostics, and a Prometheus exporter stay available on the protected local admin socket.</p>
+        <p>Overview, Enforcement and threshold alerts use security counters collected before sampling. Event Analysis keeps sampled relationship pivots, while Logs → Bot Analytics shows admission outcomes. Coverage gaps stay visible alongside API Inventory, WAF pressure, retained evidence and protected local Prometheus metrics.</p>
       </div>
 
       <div class="feature reveal">
@@ -321,7 +323,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
         </div>
         <h3>SecurityFacts + reviewed response</h3>
-        <p>Every blocked or suspicious request writes an immutable, partitioned <span class="mono">SecurityFact</span>. From Attack Logs, operators draft by intent: block the exact method/path, tune a CRS false positive, or confirm a high-risk CRS-only skip that keeps Tiyi custom and IP controls active. Global IP actions stay separate. Nothing applies without review.</p>
+        <p>Admitted samples of blocked or suspicious requests write immutable, partitioned <span class="mono">SecurityFact</span>. From Attack Logs, operators draft by intent: block the exact method/path, tune a CRS false positive, or confirm a high-risk CRS-only skip that keeps Tiyi custom and IP controls active. Global IP actions stay separate. Nothing applies without review.</p>
       </div>
 
       <div class="feature reveal">
@@ -330,7 +332,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.6L18 9.4l-4.2 1.8L12 16l-1.8-4.8L6 9.4l4.2-1.8z"/><path d="M19 14l.7 1.9 1.9.7-1.9.7L19 20l-.7-1.7-1.9-.7 1.9-.7z"/></svg>
         </div>
         <h3>AI Copilot — advisory, never autonomous</h3>
-        <p>An optional, default-off LLM layer beside the deterministic WAF — never in the request path. Explain any incident or log event, translate plain-English questions into log queries, and get policy-tuning or custom-rule drafts you approve by hand. Provider-agnostic (OpenAI-compatible, Azure, Ollama, vLLM); every prompt redacted, dual-RBAC gated, and rate-limited.</p>
+        <p>An optional, default-off LLM layer beside the deterministic WAF — never in the request path. Explain a security event or log entry, translate plain-English questions into log queries, and get policy-tuning or custom-rule drafts you approve by hand. Provider-agnostic (OpenAI-compatible, Azure, Ollama, vLLM); every prompt redacted, dual-RBAC gated, and rate-limited.</p>
       </div>
 
       <div class="feature reveal">
@@ -348,9 +350,36 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M9 17h6M9 13h4"/></svg>
         </div>
         <h3>Declarative apply</h3>
-        <p><span class="mono">tiyi apply -f site.yaml</span> previews the change set, shows a per-resource diff, and produces the same audit row a UI save would. Same validator, same mutator — by construction.</p>
+        <p><span class="mono">tiyi apply -f site.yaml</span> applies a reviewed manifest and produces an audit receipt for each changed resource. Use <span class="mono">--dry-run</span> and <span class="mono">tiyi diff</span> to inspect changes first. Same validator, same mutator — by construction.</p>
       </div>
-    </div>
+    
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="11" width="8" height="10" rx="2"/></svg>
+        </div>
+        <h3>API discovery + reviewed catalogs</h3>
+        <p>Discover the APIs your application actually serves. Compare observed traffic with your reviewed catalog, inspect request counts and response codes, and keep catalog membership independent of validation.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-icon">
+<!-- shield -->
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+</div>
+        <h3>OpenAPI validation + JSON learning</h3>
+        <p>Import OpenAPI or Swagger, review address mappings, or learn JSON field names and types from supported requests. Review and export an OpenAPI draft, then choose Off, Observe or Enforce per endpoint. Learning never enables enforcement automatically.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-icon">
+<!-- yaml -->
+<svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><path d="M14 3v6h6"></path><path d="M9 17h6M9 13h4"></path></svg>
+</div>
+        <h3>Request and upload controls</h3>
+        <p>Keep body and upload capacities in the site policy, and define allowed file formats per endpoint and file field. Inspect supported file and container structures, review violations, and confirm application on each serving node. File checks do not perform antivirus scanning.</p>
+      </div>
+
+</div>
   </div>
 </section>
 
@@ -380,7 +409,7 @@
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/sites/all</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/sites.png" data-shot="sites" alt="Site overview tracing hostname, TLS, WAF, routing, and upstream status" width="1440" height="900" loading="lazy" />
+        <img alt="Site overview tracing hostname, TLS, WAF, routing, and upstream status" data-shot="sites" height="1000" loading="lazy" src="assets/img/screenshots/en-dark/sites.png" width="1440"/>
       </div>
     </div>
 
@@ -401,7 +430,7 @@
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/security/events</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/security-analysis.png" data-shot="security-analysis" alt="SecurityFact analysis grouped by attack class with related sources, sites, targets, and rules" width="1440" height="900" loading="lazy" />
+        <img alt="SecurityFact analysis grouped by attack class with related sources, sites, targets, and rules" data-shot="security-analysis" height="1000" loading="lazy" src="assets/img/screenshots/en-dark/security-analysis.png" width="1440"/>
       </div>
     </div>
 
@@ -422,50 +451,77 @@
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/logs/security</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/security-log.png" data-shot="security-log" alt="Blocked RCE request detail with CRS rule matches, evidence, and scoped response actions" width="1440" height="900" loading="lazy" />
+        <img alt="Blocked request details with actual attack evidence and response actions" data-shot="security-log" height="1000" loading="lazy" src="assets/img/screenshots/en-dark/security-log.png" width="1440"/>
       </div>
     </div>
 
     <!-- Tour 4: Policies -->
     <div class="tour-row reveal">
-      <div class="tour-text">
-        <span class="tour-eyebrow">WAF policies</span>
-        <h3>Tune CRS without forking it.</h3>
-        <p>The focused tuning workspace makes each protection layer explicit, then compiles the structured policy into deterministic SecLang on save.</p>
-        <ul>
-          <li>Built-in Light is the new-site default; Standard retains strict CRS MIME/parser enforcement for explicitly bound sites</li>
-          <li>12 focused tabs: Overview · CRS Protection · HTTP Protection · Request Limits · Rule Exceptions · IP Access · Custom Rules · Plugins · Rate Limits · Exclusions · Preview &amp; Test · Versions</li>
-          <li>Focused custom-rule drafts and inline endpoint-limit rows protect unsaved work with explicit discard</li>
-          <li>Unique per-scope paths and explicit create/update semantics compile site limits before inherited policy limits and CRS</li>
-        </ul>
-      </div>
+      <div class="tour-text"><span class="tour-eyebrow">WAF policies</span>
+<h3>Tune CRS without forking it.</h3>
+<p>
+                The focused tuning workspace makes each protection layer
+                explicit, then compiles the structured policy into deterministic
+                SecLang on save.
+              </p>
+<ul>
+<li>
+                  Built-in Light is the new-site default; Standard retains
+                  strict CRS MIME/parser enforcement for explicitly bound sites
+                </li>
+<li>
+                  Request inspection unifies parsing, body limits and upload
+                  capacity; endpoint definitions own API validation
+                </li>
+<li>
+                  Focused custom-rule drafts and inline endpoint-limit rows
+                  protect unsaved work with explicit discard
+                </li>
+<li>
+                  Unique per-scope paths and explicit create/update semantics
+                  compile site limits before inherited policy limits and CRS
+                </li>
+</ul>
+</div>
       <div class="frame">
         <div class="frame-tabs">
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/waf/policies/:id</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/policies.png" data-shot="policies" alt="WAF policy tuning workspace with twelve focused protection and validation modules" width="1440" height="900" loading="lazy" />
+        <img alt="WAF policy tuning workspace with focused protection and validation modules" data-shot="policies" height="1000" loading="lazy" src="assets/img/screenshots/en-dark/policies.png" width="1440"/>
       </div>
     </div>
 
     <!-- Tour 5: Telemetry and API inventory -->
     <div class="tour-row reveal">
-      <div class="tour-text">
-        <span class="tour-eyebrow">Telemetry + API inventory</span>
-        <h3>Know the traffic — and the API surface behind it.</h3>
-        <p>Real-time QPS and exact dimension rankings share a page with a per-site API tree that separates durable confirmed assets from traffic-derived candidates.</p>
-        <ul>
-          <li>Exact request and status-code counts beside the live QPS crosshair</li>
-          <li>Searchable method, host, and normalized path inventory scoped by site</li>
-          <li>Bounded open buckets and daily SQLite partitions — no external TSDB required</li>
-        </ul>
-      </div>
+      <div class="tour-text"><span class="tour-eyebrow">Telemetry + API inventory</span>
+<h3>Know the traffic — and the API surface behind it.</h3>
+<p>
+                Traffic analysis shows live QPS and exact rankings. API Assets
+                has its own site workspace for discovered endpoints, explicit
+                catalog membership, request definitions and validation.
+              </p>
+<ul>
+<li>
+                  Exact request and status-code counts beside the live QPS
+                  crosshair
+                </li>
+<li>
+                  Search by method, host and path; review catalog membership and
+                  learned request structures
+                </li>
+<li>
+                  Bounded open buckets and daily SQLite partitions — no external
+                  TSDB required
+                </li>
+</ul>
+</div>
       <div class="frame">
         <div class="frame-tabs">
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/telemetry/explorer</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/telemetry.png" data-shot="telemetry" alt="Real-time request telemetry with exact rankings and a per-site API inventory tree" width="1440" height="900" loading="lazy" />
+        <img alt="Real-time request telemetry with exact rankings and a per-site API inventory tree" data-shot="telemetry" height="1000" loading="lazy" src="assets/img/screenshots/en-dark/telemetry.png" width="1440"/>
       </div>
     </div>
 
@@ -486,7 +542,7 @@
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/alerts/active</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/alerts.png" data-shot="alerts" alt="Active alert detail with evidence snapshot, response controls, and investigation links" width="1440" height="900" loading="lazy" />
+        <img alt="Active alert detail with evidence snapshot, response controls, and investigation links" data-shot="alerts" height="1000" loading="lazy" src="assets/img/screenshots/en-dark/alerts.png" width="1440"/>
       </div>
     </div>
 
@@ -507,7 +563,7 @@
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/agents/all</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/agents.png" data-shot="agents" alt="Multi-node fleet with local built-in plane and remote Agent online metrics" width="1440" height="900" loading="lazy" />
+        <img alt="Multi-node fleet with local built-in plane and remote Agent online metrics" data-shot="agents" height="1000" loading="lazy" src="assets/img/screenshots/en-dark/agents.png" width="1440"/>
       </div>
     </div>
 
@@ -528,11 +584,141 @@
           <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
           <span class="url">/logs/audit</span>
         </div>
-        <img src="assets/img/screenshots/en-dark/audit.png" data-shot="audit" alt="Hash-chain audit log with Verify chain and per-row View diff" width="1440" height="900" loading="lazy" />
+        <img alt="Hash-chain audit log with Verify chain and per-row View diff" data-shot="audit" height="1000" loading="lazy" src="assets/img/screenshots/en-dark/audit.png" width="1440"/>
       </div>
     </div>
 
-  </div>
+  
+    <div class="tour-row reveal" id="tour-api-assets">
+      <div class="tour-text">
+        <span class="tour-eyebrow">Discover APIs</span>
+        <h3>Find the interfaces your application actually serves.</h3>
+        <p>See observed and documented APIs together, with request counts,
+              response codes and validation status. Find interfaces that have
+              not yet joined your reviewed catalog.</p>
+        
+        <p><a href="docs/api-protection.html">Read the guide</a></p>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">Discover APIs</span>
+        </div>
+        <img src="assets/img/screenshots/en-dark/api-assets.png" data-shot="api-assets" alt="API inventory for Demo Store with real endpoint traffic and catalog coverage" width="1440" height="1000" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="tour-row reveal" id="tour-schema-learning">
+      <div class="tour-text">
+        <span class="tour-eyebrow">Learn from traffic</span>
+        <h3>No document yet? Start with the requests you already receive.</h3>
+        <p>For supported JSON requests, Tiyi learns field names and types
+              without retaining field values in the learning model. Review the
+              result, save a version and download an OpenAPI draft.</p>
+        
+        <p><a href="docs/api-protection.html">Read the guide</a></p>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">Learn from traffic</span>
+        </div>
+        <img src="assets/img/screenshots/en-dark/schema-learning.png" data-shot="schema-learning" alt="Learned JSON request fields and sample counts for the checkout endpoint" width="1440" height="1000" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="tour-row reveal" id="tour-api-import">
+      <div class="tour-text">
+        <span class="tour-eyebrow">Import a document</span>
+        <h3>Put your existing OpenAPI document to work.</h3>
+        <p>Import OpenAPI 3.0, 3.1, 3.2 or Swagger 2.0 in JSON or YAML.
+              Review the interfaces and address mappings before applying the
+              document.</p>
+        
+        <p><a href="docs/api-protection.html">Read the guide</a></p>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">Import a document</span>
+        </div>
+        <img src="assets/img/screenshots/en-dark/api-import.png" data-shot="api-import" alt="Real OpenAPI import preview with detected interfaces and their mappings" width="1440" height="1000" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="tour-row reveal" id="tour-api-validation">
+      <div class="tour-text">
+        <span class="tour-eyebrow">Choose validation</span>
+        <h3>Observe first. Enforce when the request definition is ready.</h3>
+        <p>Choose off, observe only or enforce for each interface.
+              Enforcement is available for fully supported request definitions;
+              the console shows whether the serving node has applied the change.</p>
+        
+        <p><a href="docs/api-protection.html">Read the guide</a></p>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">Choose validation</span>
+        </div>
+        <img src="assets/img/screenshots/en-dark/api-validation.png" data-shot="api-validation" alt="Order request definition with required fields, validation mode and node application state" width="1440" height="1000" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="tour-row reveal" id="tour-schema-results">
+      <div class="tour-text">
+        <span class="tour-eyebrow">Review results</span>
+        <h3>See which requests fit the definition—and which do not.</h3>
+        <p>Review conforming requests, violations and requests that could not
+              be evaluated. Follow the evidence for the selected interface and
+              time range.</p>
+        
+        <p><a href="docs/api-protection.html">Read the guide</a></p>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">Review results</span>
+        </div>
+        <img src="assets/img/screenshots/en-dark/schema-results.png" data-shot="schema-results" alt="API validation results produced by actual conforming and invalid requests" width="1440" height="1000" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="tour-row reveal" id="tour-dashboard">
+      <div class="tour-text">
+        <span class="tour-eyebrow">Protection overview</span>
+        <h3>Know whether your protection is working.</h3>
+        <p>Follow the protection chain to see where a request was stopped, then open enforcement records for the details. Traffic and runtime health stay in the same overview.</p>
+        <ul><li>See protection outcomes alongside traffic trends</li><li>Review sites, requests and policies together</li><li>Counters describe real requests through the proxy</li></ul>
+        <p><a href="docs/operations.html">Read the guide</a></p>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">Protection overview</span>
+        </div>
+        <img src="assets/img/screenshots/en-dark/dashboard.png" data-shot="dashboard" alt="Tiyi protection overview with real demo traffic" width="1440" height="1000" loading="lazy" />
+      </div>
+    </div>
+
+    <div class="tour-row reveal" id="tour-upload-control">
+      <div class="tour-text">
+        <span class="tour-eyebrow">File upload protection</span>
+        <h3>Give file uploads rules that fit your application.</h3>
+        <p>Choose allowed file formats per endpoint while site policy owns upload capacity. Avatar uploads and document attachments can have different file requirements.</p>
+        <ul><li>Define requirements for each file field</li><li>Observe or block uploads that do not meet the definition</li><li>Review inherited site capacities; supported format checks are separate from antivirus scanning</li></ul>
+        <p><a href="docs/api-protection.html">Read the guide</a></p>
+      </div>
+      <div class="frame">
+        <div class="frame-tabs">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="url">File upload protection</span>
+        </div>
+        <img src="assets/img/screenshots/en-dark/upload-control.png" data-shot="upload-control" alt="Configured avatar upload requirements for real file fields" width="1440" height="1000" loading="lazy" />
+      </div>
+    </div>
+
+</div>
 </section>
 
 <!-- ============= PRICING ============= -->
@@ -670,6 +856,13 @@
     </div>
 
     <div class="timeline reveal">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head"><span class="tl-version">v3.8.0</span><span class="tl-date">2026-09-22</span><span class="tl-tag shipped">Shipped</span></div>
+        <div class="tl-title">API protection, exact security statistics and reliable operations</div>
+        <div class="tl-body"><p>Reviewed OpenAPI catalogs, per-endpoint validation, automatic JSON learning and site-owned upload controls. Exact security counters, scoped IP remediation, shared protection responses and bounded console/runtime recovery complete this release.</p><ul><li>Review, publish and restore API definitions; learning never enables blocking automatically.</li><li>Count security observations before sampling; retain Event Analysis for sampled relationships.</li><li>Recover sessions, DNS renewals, node application and settings edits with explicit results.</li></ul><p><strong>Upgrade:</strong> v3.8.0 requires fresh state; back up, rebuild and re-enroll Agents. <a href="docs/release-3.8.0.html">Release notes</a> · <a href="docs/upgrade-migration.html">Upgrade steps</a>.</p></div>
+      </div>
+
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -1130,6 +1323,10 @@
 
     <div style="text-align:center; margin-top:36px;">
       <a class="btn btn-ghost" href="changelog.html">Read the full changelog →</a>
+      <div class="feature reveal"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H9l-5 4z"/><path d="M8 8h8M8 12h5"/></svg></div><h3>Clear protection responses</h3><p>Configure six terminal scenarios with shared HTML, JSON, text and XML templates. Give visitors a useful message and request ID; keep saved drafts while switching settings groups.</p></div>
+
+      <div class="feature reveal"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H9l-5 4z"/><path d="M8 8h8M8 12h5"/></svg></div><h3>Recoverable operations</h3><p>Retry temporary session failures, DNS renewal and node application with explicit results. Bounded diagnostics and health probes keep slow consumers from holding up normal request handling.</p></div>
+
     </div>
   </div>
 </section>
@@ -1144,6 +1341,13 @@
     </div>
 
     <div class="timeline reveal">
+      <div class="tl-item shipped">
+        <span class="tl-dot"></span>
+        <div class="tl-head"><span class="tl-version">v3.8.0</span><span class="tl-date">2026-09-22</span><span class="tl-tag shipped">Shipped</span></div>
+        <div class="tl-title">API protection, exact security statistics and reliable operations</div>
+        <div class="tl-body"><p>Reviewed OpenAPI catalogs, per-endpoint validation, automatic JSON learning and site-owned upload controls. Exact security counters, scoped IP remediation, shared protection responses and bounded console/runtime recovery complete this release.</p><ul><li>Review, publish and restore API definitions; learning never enables blocking automatically.</li><li>Count security observations before sampling; retain Event Analysis for sampled relationships.</li><li>Recover sessions, DNS renewals, node application and settings edits with explicit results.</li></ul><p><strong>Upgrade:</strong> v3.8.0 requires fresh state; back up, rebuild and re-enroll Agents. <a href="docs/release-3.8.0.html">Release notes</a> · <a href="docs/upgrade-migration.html">Upgrade steps</a>.</p></div>
+      </div>
+
       <div class="tl-item shipped">
         <span class="tl-dot"></span>
         <div class="tl-head">
@@ -1430,7 +1634,7 @@
 
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> Tiyi · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · proprietary · Apache-2.0 upstreams</span>
-      <span class="build">build v3.7.2 · 2026-09-03</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
     </div>
   </div>
 </footer>

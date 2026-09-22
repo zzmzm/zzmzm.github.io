@@ -1,0 +1,2260 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>policy.proto — WAF policies, rule overrides, custom rules, IP lists, rate limits, CRS — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Schema: tiyi.v1 · policy.proto · English guide · 中文指南 · Full RPC index" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../../../index.html#features">特性</a>
+      <a href="../../../index.html#tour">产品</a>
+      <a href="../../../index.html#pricing">价格</a>
+      <a href="../../index.html" style="color:var(--fg)">文档</a>
+      <a href="../../../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../../docs/reference/services/policy.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="../../index.html">概览</a></li>
+        <li><a href="../../quickstart.html">快速开始</a></li>
+        <li><a href="../../installation.html">安装</a></li>
+        <li><a href="../../configuration.html">配置与模板</a></li>
+        <li><a href="../../practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="../../operations.html">日常运维</a></li>
+        <li><a href="../../troubleshooting.html">排障</a></li>
+        <li><a href="../../upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="../../site-import.html">站点导入与导出</a></li>
+        <li><a href="../../api-protection.html">API 防护</a></li>
+        <li><a href="../../responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="../../concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI 参考</a></li>
+        <li><a href="../../api.html">API 参考</a></li>
+        <li><a href="../index.html">完整参考</a></li>
+        <li><a href="../rpc-index.html">全部 RPC</a></li>
+        <li><a href="../permissions.html">权限</a></li>
+        <li><a href="../cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="../../deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="policyproto-waf-policies-rule-overrides-custom-rules-ip-lists-rate-limits-crs">policy.proto — WAF policies, rule overrides, custom rules, IP lists, rate limits, CRS</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>policy.proto</code> · <a href="../../../../docs/api.html">English guide</a> · <a href="../../api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="policyservice">PolicyService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#policyservicelistpolicies"><code>ListPolicies</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicegetpolicy"><code>GetPolicy</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicecreatepolicy"><code>CreatePolicy</code></a></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicecreatepolicyfromtemplate"><code>CreatePolicyFromTemplate</code></a></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyserviceupdatepolicy"><code>UpdatePolicy</code></a></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyserviceupdatepolicylayer"><code>UpdatePolicyLayer</code></a></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicedeletepolicy"><code>DeletePolicy</code></a></td>
+<td>unary</td>
+<td>(<code>policy:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicesetenginestate"><code>SetEngineState</code></a></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicesetactivecrsruleset"><code>SetActiveCrsRuleset</code></a></td>
+<td>unary</td>
+<td>(<code>policy:crs:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicepreviewseclang"><code>PreviewSecLang</code></a></td>
+<td>unary</td>
+<td>(<code>policy:preview</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicepreviewcrsimpact"><code>PreviewCrsImpact</code></a></td>
+<td>unary</td>
+<td>(<code>policy:preview</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicetestpolicy"><code>TestPolicy</code></a></td>
+<td>unary</td>
+<td>(<code>policy:test</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicelistpolicytemplates"><code>ListPolicyTemplates</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicelistpolicyversions"><code>ListPolicyVersions</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicegetpolicyversion"><code>GetPolicyVersion</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicerollbackpolicy"><code>RollbackPolicy</code></a></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#policyservicediffpolicyversions"><code>DiffPolicyVersions</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="policyservicelistpolicies">PolicyService.ListPolicies</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/ListPolicies</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListPoliciesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>templates_only</code></td>
+<td><code>templatesOnly</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListPoliciesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicegetpolicy">PolicyService.GetPolicy</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/GetPolicy</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetPolicyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetPolicyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicecreatepolicy">PolicyService.CreatePolicy</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/CreatePolicy</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CreatePolicyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CreatePolicyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicecreatepolicyfromtemplate">PolicyService.CreatePolicyFromTemplate</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/CreatePolicyFromTemplate</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CreatePolicyFromTemplateRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>template_id</code></td>
+<td><code>templateId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CreatePolicyFromTemplateResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyserviceupdatepolicy">PolicyService.UpdatePolicy</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/UpdatePolicy</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdatePolicyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>update_mask</code></td>
+<td><code>updateMask</code></td>
+<td><code>google.protobuf.FieldMask</code></td>
+<td>singular</td>
+<td>Inspection saves accept crs_core or individual crs_core fields, http_policy, and arg_limits. The selected fields are compiled and persisted atomically as one version using a positive expected revision. An absent optional field named in the mask resets to inheritance. Metadata/plugins cannot be mixed into an inspection save; unselected fields are preserved. <em>comma-joined field paths, e.g. <code>"name,status"</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdatePolicyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyserviceupdatepolicylayer">PolicyService.UpdatePolicyLayer</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/UpdatePolicyLayer</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdatePolicyLayerRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>layer</code></td>
+<td><code>layer</code></td>
+<td><a href="#policylayerkind"><code>PolicyLayerKind</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>config</code></td>
+<td><code>config</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdatePolicyLayerResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicedeletepolicy">PolicyService.DeletePolicy</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/DeletePolicy</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:delete</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeletePolicyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeletePolicyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicesetenginestate">PolicyService.SetEngineState</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/SetEngineState</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.SetEngineStateRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>engine_state</code></td>
+<td><code>engineState</code></td>
+<td><a href="common.html#enginestate"><code>EngineState</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.SetEngineStateResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicesetactivecrsruleset">PolicyService.SetActiveCrsRuleset</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/SetActiveCrsRuleset</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:crs:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.SetActiveCrsRulesetRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>crs_ruleset_id</code></td>
+<td><code>crsRulesetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.SetActiveCrsRulesetResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicepreviewseclang">PolicyService.PreviewSecLang</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/PreviewSecLang</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:preview</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.PreviewSecLangRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>candidate</code></td>
+<td><code>candidate</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional site id: when set, the compiler layers the site's site_policy_override (if any) on top of the policy before rendering the SecLang bundle. Used by the "preview effective policy for this site" UI. See WAF_POLICY_DESIGN.md § 3.2.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.PreviewSecLangResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>seclang</code></td>
+<td><code>seclang</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td><code>warnings</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicepreviewcrsimpact">PolicyService.PreviewCrsImpact</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/PreviewCrsImpact</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:preview</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.PreviewCrsImpactRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>crs_ruleset_id</code></td>
+<td><code>crsRulesetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.PreviewCrsImpactResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enabled_rule_count</code></td>
+<td><code>enabledRuleCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>disabled_rule_count</code></td>
+<td><code>disabledRuleCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td><code>warnings</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>added_rule_ids</code></td>
+<td><code>addedRuleIds</code></td>
+<td><code>int32</code></td>
+<td>repeated</td>
+<td>Rule ids present in the candidate ruleset but not in the currently bound one. Sorted ascending.</td>
+</tr>
+<tr>
+<td><code>removed_rule_ids</code></td>
+<td><code>removedRuleIds</code></td>
+<td><code>int32</code></td>
+<td>repeated</td>
+<td>Rule ids present in the currently bound ruleset but not in the candidate. Sorted ascending.</td>
+</tr>
+<tr>
+<td><code>orphaned_overrides</code></td>
+<td><code>orphanedOverrides</code></td>
+<td><a href="#previewcrsimpactorphanedoverride"><code>PreviewCrsImpactOrphanedOverride</code></a></td>
+<td>repeated</td>
+<td>Overrides whose CRS rule id no longer exists in the candidate ruleset. Sorted by crs_rule_id.</td>
+</tr>
+<tr>
+<td><code>changed_rules</code></td>
+<td><code>changedRules</code></td>
+<td><a href="#previewcrschangedrule"><code>PreviewCrsChangedRule</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicetestpolicy">PolicyService.TestPolicy</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/TestPolicy</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:test</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.TestPolicyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>method</code></td>
+<td><code>method</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td><code>url</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td><code>headers</code></td>
+<td>map&lt;<code>string</code>, <code>string</code>&gt;</td>
+<td>map</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td><code>body</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>protocol</code></td>
+<td><code>protocol</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional site overlay. Must reference this policy and have WAF enabled.</td>
+</tr>
+<tr>
+<td><code>client_ip</code></td>
+<td><code>clientIp</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Explicit simulation inputs; no trusted-proxy resolution is performed.</td>
+</tr>
+<tr>
+<td><code>peer_ip</code></td>
+<td><code>peerIp</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.TestPolicyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>blocked</code></td>
+<td><code>blocked</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>matched_rule_ids</code></td>
+<td><code>matchedRuleIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>transaction</code></td>
+<td><code>transaction</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>matched_rules</code></td>
+<td><code>matchedRules</code></td>
+<td><a href="#testpolicymatchedrule"><code>TestPolicyMatchedRule</code></a></td>
+<td>repeated</td>
+<td>Detailed per-rule breakdown including score contributions. Sorted by phase, then rule_id ascending for stable output.</td>
+</tr>
+<tr>
+<td><code>total_inbound_score</code></td>
+<td><code>totalInboundScore</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Actual CRS blocking_inbound_anomaly_score from this transaction. Zero if evaluation did not reach the CRS blocking-score aggregation.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicelistpolicytemplates">PolicyService.ListPolicyTemplates</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/ListPolicyTemplates</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListPolicyTemplatesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListPolicyTemplatesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicelistpolicyversions">PolicyService.ListPolicyVersions</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/ListPolicyVersions</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListPolicyVersionsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListPolicyVersionsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#policyversion"><code>PolicyVersion</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicegetpolicyversion">PolicyService.GetPolicyVersion</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/GetPolicyVersion</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetPolicyVersionRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetPolicyVersionResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><a href="#policyversion"><code>PolicyVersion</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicerollbackpolicy">PolicyService.RollbackPolicy</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/RollbackPolicy</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.RollbackPolicyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>version_id</code></td>
+<td><code>versionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.RollbackPolicyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy</code></td>
+<td><code>policy</code></td>
+<td><a href="#policy"><code>Policy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyservicediffpolicyversions">PolicyService.DiffPolicyVersions</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.PolicyService/DiffPolicyVersions</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DiffPolicyVersionsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>left_version_id</code></td>
+<td><code>leftVersionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>right_version_id</code></td>
+<td><code>rightVersionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DiffPolicyVersionsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>diff</code></td>
+<td><code>diff</code></td>
+<td><a href="common.html#jsonpatch"><code>JsonPatch</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="arglimits">ArgLimits</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>max_num_args</code></td>
+<td><code>maxNumArgs</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>arg_name_length</code></td>
+<td><code>argNameLength</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>arg_length</code></td>
+<td><code>argLength</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>total_arg_length</code></td>
+<td><code>totalArgLength</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>max_file_size</code></td>
+<td><code>maxFileSize</code></td>
+<td><code>int64</code></td>
+<td>optional (explicit)</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>combined_file_sizes</code></td>
+<td><code>combinedFileSizes</code></td>
+<td><code>int64</code></td>
+<td>optional (explicit)</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>argument_limit_action</code></td>
+<td><code>argumentLimitAction</code></td>
+<td><a href="#argumentlimitaction"><code>ArgumentLimitAction</code></a></td>
+<td>singular</td>
+<td>Ordinary argument count/name/value/total excess: BLOCK returns 413; OBSERVE logs without blocking or contributing anomaly score. Unspecified selects BLOCK; the built-in Light template selects OBSERVE. Native multipart field and file limits always reject independently of this action.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bodyprocessoroverride">BodyProcessorOverride</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>content_type_prefix</code></td>
+<td><code>contentTypePrefix</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Historical field name: the value is an exact media type. Matching accepts optional parameters after ';' but never adjacent subtype text.</td>
+</tr>
+<tr>
+<td><code>processor</code></td>
+<td><code>processor</code></td>
+<td><a href="#bodyprocessor"><code>BodyProcessor</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crscoresettings">CrsCoreSettings</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>blocking_paranoia_level</code></td>
+<td><code>blockingParanoiaLevel</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>detection_paranoia_level</code></td>
+<td><code>detectionParanoiaLevel</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>critical_anomaly_score</code></td>
+<td><code>criticalAnomalyScore</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>error_anomaly_score</code></td>
+<td><code>errorAnomalyScore</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>warning_anomaly_score</code></td>
+<td><code>warningAnomalyScore</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>notice_anomaly_score</code></td>
+<td><code>noticeAnomalyScore</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>inbound_anomaly_score_threshold</code></td>
+<td><code>inboundAnomalyScoreThreshold</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>outbound_anomaly_score_threshold</code></td>
+<td><code>outboundAnomalyScoreThreshold</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>reporting_level</code></td>
+<td><code>reportingLevel</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>Presence is required because 0 is a valid value ("reporting disabled"), while an omitted field inherits the CRS default of 4.</td>
+</tr>
+<tr>
+<td><code>early_blocking</code></td>
+<td><code>earlyBlocking</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>enforce_bodyproc_urlencoded</code></td>
+<td><code>enforceBodyprocUrlencoded</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>crs_validate_utf8_encoding</code></td>
+<td><code>crsValidateUtf8Encoding</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>crs_skip_response_analysis</code></td>
+<td><code>crsSkipResponseAnalysis</code></td>
+<td><code>bool</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>enable_default_collections</code></td>
+<td><code>enableDefaultCollections</code></td>
+<td><code>bool</code></td>
+<td>optional (explicit)</td>
+<td>Tri-state: unset = inherit the CRS default (off), explicit true/false = force tx.enable_default_collections=1|0. Presence tracking (proto3 optional) is required so an explicit "off" survives protojson's EmitUnpopulated=false round-trip.</td>
+</tr>
+<tr>
+<td><code>sampling_percentage</code></td>
+<td><code>samplingPercentage</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>Presence is required because 0% is a valid emergency bypass value, while an omitted field inherits the CRS default of 100%.</td>
+</tr>
+<tr>
+<td><code>response_body_access</code></td>
+<td><code>responseBodyAccess</code></td>
+<td><code>bool</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>response_body_limit</code></td>
+<td><code>responseBodyLimit</code></td>
+<td><code>int64</code></td>
+<td>optional (explicit)</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>response_body_mime_types</code></td>
+<td><code>responseBodyMimeTypes</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_body_limit</code></td>
+<td><code>requestBodyLimit</code></td>
+<td><code>int64</code></td>
+<td>optional (explicit)</td>
+<td>Ordinary body inspection budget: 1..4194304 bytes (default 64 KiB). Multipart uploads use independent limits. request_body_limit_action controls excess. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>request_body_limit_enabled</code></td>
+<td><code>requestBodyLimitEnabled</code></td>
+<td><code>bool</code></td>
+<td>optional (explicit)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>crs_xml_attribute_inspection</code></td>
+<td><code>crsXmlAttributeInspection</code></td>
+<td><code>bool</code></td>
+<td>optional (explicit)</td>
+<td>Enables CRS XML attribute inspection and avoids CRS 901181's expensive per-request dynamic target removals when enabled.</td>
+</tr>
+<tr>
+<td><code>request_body_limit_action</code></td>
+<td><code>requestBodyLimitAction</code></td>
+<td><a href="#requestbodylimitaction"><code>RequestBodyLimitAction</code></a></td>
+<td>singular</td>
+<td>BLOCK rejects excess with 413. OBSERVE records excess, inspects at most the configured prefix and forwards the full body unless another rule blocks. Unspecified selects BLOCK; the built-in Light template selects OBSERVE.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="httppolicy">HttpPolicy</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>allowed_methods</code></td>
+<td><code>allowedMethods</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>allowed_request_content_types</code></td>
+<td><code>allowedRequestContentTypes</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>allowed_request_content_charsets</code></td>
+<td><code>allowedRequestContentCharsets</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>allowed_http_versions</code></td>
+<td><code>allowedHttpVersions</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>Canonical values: HTTP/1.0, HTTP/1.1, HTTP/2, HTTP/3.</td>
+</tr>
+<tr>
+<td><code>restricted_extensions</code></td>
+<td><code>restrictedExtensions</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>restricted_headers_basic</code></td>
+<td><code>restrictedHeadersBasic</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>restricted_headers_extended</code></td>
+<td><code>restrictedHeadersExtended</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>body_processor_overrides</code></td>
+<td><code>bodyProcessorOverrides</code></td>
+<td><a href="#bodyprocessoroverride"><code>BodyProcessorOverride</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>allow_method_override_parameter</code></td>
+<td><code>allowMethodOverrideParameter</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>disallowed_content_type_action</code></td>
+<td><code>disallowedContentTypeAction</code></td>
+<td><a href="#httppolicyviolationaction"><code>HttpPolicyViolationAction</code></a></td>
+<td>singular</td>
+<td>Controls CRS 920420 when a syntactically valid Content-Type is outside allowed_request_content_types. Unspecified preserves the blocking CRS default so existing policies do not change during upgrades.</td>
+</tr>
+<tr>
+<td><code>request_body_parse_failure_action</code></td>
+<td><code>requestBodyParseFailureAction</code></td>
+<td><a href="#httppolicyviolationaction"><code>HttpPolicyViolationAction</code></a></td>
+<td>singular</td>
+<td>Controls the generated REQBODY_ERROR guard after a selected JSON/XML parser rejects the body. Multipart strict validation and resource limits remain hard failures regardless of this compatibility setting.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policy">Policy</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>crs_ruleset_id</code></td>
+<td><code>crsRulesetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>engine_state</code></td>
+<td><code>engineState</code></td>
+<td><a href="common.html#enginestate"><code>EngineState</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>blocking_mode</code></td>
+<td><code>blockingMode</code></td>
+<td><a href="common.html#blockingmode"><code>BlockingMode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>is_template</code></td>
+<td><code>isTemplate</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>is_default</code></td>
+<td><code>isDefault</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>builtin</code></td>
+<td><code>builtin</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>bundle_sha256</code></td>
+<td><code>bundleSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>crs_core</code></td>
+<td><code>crsCore</code></td>
+<td><a href="#crscoresettings"><code>CrsCoreSettings</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>http_policy</code></td>
+<td><code>httpPolicy</code></td>
+<td><a href="#httppolicy"><code>HttpPolicy</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>arg_limits</code></td>
+<td><code>argLimits</code></td>
+<td><a href="#arglimits"><code>ArgLimits</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>plugins</code></td>
+<td><code>plugins</code></td>
+<td><a href="#policyplugin"><code>PolicyPlugin</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyplugin">PolicyPlugin</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plugin_id</code></td>
+<td><code>pluginId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td><code>enabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>config</code></td>
+<td><code>config</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="policyversion">PolicyVersion</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>bundle_sha256</code></td>
+<td><code>bundleSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>snapshot</code></td>
+<td><code>snapshot</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>created_by</code></td>
+<td><code>createdBy</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="previewcrschangedrule">PreviewCrsChangedRule</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule_id</code></td>
+<td><code>ruleId</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>changes</code></td>
+<td><code>changes</code></td>
+<td><a href="#previewcrsrulechange"><code>PreviewCrsRuleChange</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="previewcrsimpactorphanedoverride">PreviewCrsImpactOrphanedOverride</h3>
+<p>PreviewCrsImpactOrphanedOverride describes a policy override that references a CRS rule id which does not exist in the candidate ruleset. These are the entries the operator must address (remove, remap, or convert to a custom rule) before promoting the ruleset.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>override_id</code></td>
+<td><code>overrideId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>The override's own id in policy storage (rule_override.id).</td>
+</tr>
+<tr>
+<td><code>crs_rule_id</code></td>
+<td><code>crsRuleId</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>The CRS rule id the override targets.</td>
+</tr>
+<tr>
+<td><code>summary</code></td>
+<td><code>summary</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Short human-readable description, e.g. "disable rule 942100".</td>
+</tr>
+</tbody>
+</table>
+<h3 id="previewcrsrulechange">PreviewCrsRuleChange</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>field</code></td>
+<td><code>field</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>phase | targets | condition | transforms | score | action | severity | paranoia | order | source</td>
+</tr>
+<tr>
+<td><code>before</code></td>
+<td><code>before</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>after</code></td>
+<td><code>after</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="testpolicymatchedrule">TestPolicyMatchedRule</h3>
+<p>TestPolicyMatchedRule breaks down one rule that matched during a policy test. Closes WAF_POLICY_DESIGN § 7.14 / deep-review item #12 — operators can now see WHICH rules contributed to a block, their score contribution, and their tags (so they know whether the match was CRS critical/error/warning).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule_id</code></td>
+<td><code>ruleId</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>The SecLang rule id.</td>
+</tr>
+<tr>
+<td><code>phase</code></td>
+<td><code>phase</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>CRS phase the rule ran in (1..5).</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code>message</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Macro-expanded message (first MatchData message, or the rule's own message line).</td>
+</tr>
+<tr>
+<td><code>severity</code></td>
+<td><code>severity</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>CRS severity ("CRITICAL", "ERROR", "WARNING", "NOTICE", …).</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td><code>tags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>Rule tags, if any (e.g. "attack-sqli", "language-sql").</td>
+</tr>
+<tr>
+<td><code>severity_score</code></td>
+<td><code>severityScore</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Severity-based reference value, not the rule's measured contribution. The authoritative aggregate is TestPolicyResponse.total_inbound_score.</td>
+</tr>
+<tr>
+<td><code>disruptive</code></td>
+<td><code>disruptive</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Whether this rule produced the transaction's final interruption.</td>
+</tr>
+<tr>
+<td><code>file</code></td>
+<td><code>file</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Source file + line for debugging.</td>
+</tr>
+<tr>
+<td><code>line</code></td>
+<td><code>line</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="enums">Enums</h2>
+<h3 id="argumentlimitaction">ArgumentLimitAction</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ARGUMENT_LIMIT_ACTION_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ARGUMENT_LIMIT_ACTION_BLOCK</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ARGUMENT_LIMIT_ACTION_OBSERVE</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bodyprocessor">BodyProcessor</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>BODY_PROCESSOR_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>BODY_PROCESSOR_JSON</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>BODY_PROCESSOR_XML</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>BODY_PROCESSOR_URLENCODED</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>BODY_PROCESSOR_RAW</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="httppolicyviolationaction">HttpPolicyViolationAction</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HTTP_POLICY_VIOLATION_ACTION_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>HTTP_POLICY_VIOLATION_ACTION_BLOCK</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>HTTP_POLICY_VIOLATION_ACTION_OBSERVE</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policylayerkind">PolicyLayerKind</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>POLICY_LAYER_KIND_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>POLICY_LAYER_KIND_CRS_CORE</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>POLICY_LAYER_KIND_HTTP_POLICY</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>POLICY_LAYER_KIND_ARG_LIMITS</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>POLICY_LAYER_KIND_IP_LIST_BINDINGS</code></td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>POLICY_LAYER_KIND_PLUGINS</code></td>
+<td>6</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="requestbodylimitaction">RequestBodyLimitAction</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>REQUEST_BODY_LIMIT_ACTION_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>REQUEST_BODY_LIMIT_ACTION_BLOCK</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>REQUEST_BODY_LIMIT_ACTION_OBSERVE</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="../rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../../assets/js/main.js" defer></script>
+</body>
+</html>

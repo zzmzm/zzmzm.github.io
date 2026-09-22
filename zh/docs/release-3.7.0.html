@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>太一 v3.7.0 发行说明 — 太一文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="太一 v3.7.0 发行说明 发布日期：2026-08-31。v3.7.0 是自适应防护与信任拓扑版本。 主要变化 站点级 Bot 防护： 仅 HTTPS 站点可保持关闭、运行静默浏览器工作量证明，或在 浏览器证明后要求私密 WebAuthn 设备确认。运维人员可控制窄范围路径豁免、可信 IP 列表引用、cl" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/release-3.7.0.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="太一-v370-发行说明">太一 v3.7.0 发行说明</h1>
+<p class="lede">发布日期：2026-08-31。v3.7.0 是自适应防护与信任拓扑版本。</p>
+<h2 id="主要变化">主要变化</h2>
+<ul>
+<li><strong>站点级 Bot 防护：</strong>仅 HTTPS 站点可保持关闭、运行静默浏览器工作量证明，或在
+  浏览器证明后要求私密 WebAuthn 设备确认。运维人员可控制窄范围路径豁免、可信 IP
+  列表引用、clearance TTL、证明难度与网络绑定。</li>
+<li><strong>因果 WAF 过载处理：</strong>每个节点把归一化太一进程 CPU 与实测 Coraza 需求关联。
+  默认继续完整检查；明确配置后可快速返回带原因标记的 503，或只绕过 CRS，同时保留
+  原生 IP、国家、限速与 body 控制。执行遥测记录准确结果。</li>
+<li><strong>IP Lists v2 与 Country Access：</strong>手动列表、文件导入、provider feed、自定义订阅、
+  JSONPath 提取、原子快照、删除比例 hold 与 last-good 消费者编译统一到一个列表模型。
+  国家策略改用由 active Country 数据库支撑的独立资源，拒绝 <code>geo:*</code> 伪条目。</li>
+<li><strong>滚动窗口滥用控制：</strong>端点与客户端类别限速获得确定性滚动窗口、站点/全局临时封禁
+  和独立浏览器挑战 profile。WAF 与限速拦截响应改为互相独立的模板。</li>
+<li><strong>通用客户端 IP 信任拓扑：</strong>命名代理节点使用普通手动或订阅 IP 列表，并表达
+  Header-first 信任边。拓扑分析生成待审核草案，不会静默信任 provider feed。</li>
+<li><strong>压力下的有界观测：</strong>客户端公平的 SecurityFact 采样、分离的过载/覆盖信号、
+  持久 Country 激活状态与完整 CRS 文件清单，让高输入量和外部数据变化下的执行与
+  诊断仍可解释。</li>
+</ul>
+<h2 id="必须执行干净状态过渡">必须执行干净状态过渡</h2>
+<p>v3.7.0 无法读取 v3.6.0 或更早版本创建的状态。本版本没有为替换后的站点、限速、
+信任与观测契约提供原地数据库迁移。</p>
+<p>更新前先停止写入并归档完整安装：状态目录、配置、unit、二进制、外部
+KEK/license/证书与审核过的声明式源文件。然后按文档执行 <code>uninstall --purge</code>，用
+保留的签名更新器安装 v3.7.0，安装全新服务，按审核结果重建资源，并重新注册每一个
+远程 Agent。不要把旧数据库、Agent 身份、spool 或 bundle 缓存导入 v3.7.0。</p>
+<p>准确命令与回滚边界见<a href="upgrade-migration.html">升级与迁移</a>。</p>
+<h2 id="安装后检查">安装后检查</h2>
+<ol>
+<li>确认 <code>tiyi --version</code> 输出 <code>v3.7.0</code>，运行 <code>tiyi system health</code>，并确认本机节点已有
+   active bundle。</li>
+<li>启用 Country Access 前先激活 Country 数据库。provider IP 订阅初始为暂停且为空；
+   只对确实需要信任或执行的 feed 检查后显式 resume。</li>
+<li>在可用性负责人选择拒绝或 CRS-bypass 并于<strong>日志 → 执行分析</strong>验证前，WAF 过载保持
+   <strong>继续完整检查</strong>。</li>
+<li>站点成为仅 HTTPS 后再启用 Bot 防护；测试合法浏览器、不支持的客户端、健康检查
+   与必需的登录回调。</li>
+<li>按审核过的意图重建限速行与响应 profile，不要机械还原旧行。</li>
+</ol>
+<p>二进制、<code>SHA256SUMS</code>、Ed25519 签名与发行清单见
+<a href="https://github.com/zzmzm/tiyi/releases/tag/v3.7.0">GitHub Release</a> 与
+<a href="https://gitee.com/tiyisec/tiyi/releases/tag/v3.7.0">Gitee 镜像</a>。</p>
+<div class="docs-pager"><a href="api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="reference/rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

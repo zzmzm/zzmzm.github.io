@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>导入、导出与迁移站点 — 太一文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="导入、导出与迁移站点 适用版本： v3.8.0 。想从文件创建站点，使用下方模板；想搬迁已有站点，优先让太一导出完整配置。 只迁移站点无需拷贝数据库。要搬迁整个 Controller，使用 完整备份与恢复 。 1. 可以直接编辑的导入模板 准备可访问的源站 http://127.0.0.1:9000 ，或替换" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/site-import.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html" aria-current="page">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="导入导出与迁移站点">导入、导出与迁移站点</h1>
+<p class="lede">适用版本：<strong>v3.8.0</strong>。想从文件创建站点，使用下方模板；想搬迁已有站点，优先让太一导出完整配置。
+只迁移站点无需拷贝数据库。要搬迁整个 Controller，使用<a href="upgrade-migration.html">完整备份与恢复</a>。</p>
+<h2 id="1-可以直接编辑的导入模板">1. 可以直接编辑的导入模板</h2>
+<p>准备可访问的源站 <code>http://127.0.0.1:9000</code>，或替换为你的地址。为避免意外接管流量，模板把新站点设为<strong>停用</strong>。
+<code>imported.example.com</code>、站点名称、上游名称需要在目标实例中未被使用。下载版：<a href="templates/site-import.json">site-import.json</a>。</p>
+<pre><code class="language-sh">umask 077
+cat &gt; site-import.json <span class="s">&lt;&lt;'JSON'
+{
+  "apiVersion": "tiyi.io/v1",
+  "kind": "SiteConfiguration",
+  "site": {
+    "name": "imported-app",
+    "primaryHost": "imported.example.com",
+    "upstreams": [
+      {
+        "upstreamId": "00000000-0000-4000-8000-000000000010"
+      }
+    ],
+    "tls": {
+      "mode": "TLS_MODE_NONE"
+    },
+    "waf": {
+      "enabled": true,
+      "mode": "WAF_MODE_BLOCKING"
+    },
+    "status": "RESOURCE_STATUS_DISABLED"
+  },
+  "upstreams": [
+    {
+      "id": "00000000-0000-4000-8000-000000000010",
+      "name": "imported-origin",
+      "endpoints": [
+        {
+          "url": "http://127.0.0.1:9000",
+          "weight": 100
+        }
+      ],
+      "status": "RESOURCE_STATUS_ACTIVE"
+    }
+  ],
+  "routing": {
+    "unmatchedAction": "UNMATCHED_PATH_ACTION_DEFAULT_UPSTREAM"
+  },
+  "containsSecrets": false
+}
+JSON</span>
+sudo tiyi site import site-import.json
+sudo tiyi site list
+</code></pre>
+<p>控制台等价操作：<strong>应用交付 → 站点 → 导入</strong>，上传同一 JSON 文件。
+导入成功会返回新 <code>site.id</code>、创建的上游数量及警告。复制返回的 ID：</p>
+<pre><code class="language-sh"><span class="v">SITE_ID</span><span class="o">=</span><span class="s">'替换为导入返回的 site.id'</span>
+sudo tiyi site get <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span>
+sudo tiyi site enable <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span>
+curl -i -H <span class="s">'Host: imported.example.com'</span> http://127.0.0.1/
+</code></pre>
+<p>预期正常源站响应。测试 HTTPS 站点时使用 <code>curl --resolve 域名:443:太一IP https://域名/</code>，不要用 <code>-k</code> 跳过证书校验。</p>
+<h2 id="2-哪些字段需要修改">2. 哪些字段需要修改</h2>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>如何填写</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>apiVersion</code>、<code>kind</code></td>
+<td>保持 <code>tiyi.io/v1</code>、<code>SiteConfiguration</code></td>
+</tr>
+<tr>
+<td><code>site.name</code> / <code>primaryHost</code> / <code>aliases</code></td>
+<td>新站点名称、主域名和可选别名；域名不带协议、端口或路径，主域名和别名均支持<a href="operations.html#wildcard-hosts">一级通配域名</a></td>
+</tr>
+<tr>
+<td><code>upstreams[].id</code> 与 <code>site.upstreams[].upstreamId</code></td>
+<td>文件内引用，两个值必须一致；导入后自动分配新 ID，示例 UUID 可以保留</td>
+</tr>
+<tr>
+<td><code>upstreams[].endpoints[].url</code></td>
+<td>从服务节点可访问的完整源站 URL，包含 <code>http://</code> 或 <code>https://</code> 和必要端口</td>
+</tr>
+<tr>
+<td><code>site.waf</code></td>
+<td>本例启用阻断并省略 <code>policyId</code>，自动用内置 Light；自定义策略需先在目标实例存在</td>
+</tr>
+<tr>
+<td><code>site.status</code></td>
+<td><code>RESOURCE_STATUS_DISABLED</code> 先检查后启用；<code>RESOURCE_STATUS_ACTIVE</code> 会直接发布</td>
+</tr>
+<tr>
+<td><code>routing</code></td>
+<td>本例走默认上游；实际多路径站点请导出其路由配置后修改</td>
+</tr>
+</tbody>
+</table>
+<p>通配站点可将 <code>primaryHost</code> 填为 <code>"*.example.com"</code>；接入根域名时在 <code>aliases</code> 中另加 <code>"example.com"</code>，使用 OpenAPI/Schema 映射时另加 <code>"api.example.com"</code> 等具体 API 域名。<code>a.b.example.com</code> 等更深层级需要单独的具体域名或通配模式。HTTPS 证书须覆盖全部已配置域名。</p>
+<p>这里的枚举是 API 格式，与 <code>tiyi apply</code> 的 <code>active</code>、<code>none</code> 等短值不同。
+此文件属于<strong>站点配置包</strong>，不能给 <code>tiyi apply</code>，OpenAPI 文档也不能给 <code>site import</code>。</p>
+<h2 id="3-导出已有站点">3. 导出已有站点</h2>
+<p>在源端查询 ID，然后执行：</p>
+<pre><code class="language-sh">sudo tiyi site list
+sudo tiyi site export SITE_ID -o site-backup.json
+sudo tiyi site export -o all-sites.json
+</code></pre>
+<p>无 ID 导出全部未删除站点为 <code>SiteConfigurationArchive</code>；单站点是 <code>SiteConfiguration</code>。
+两种文件都可用 <code>sudo tiyi site import FILE</code> 导入。导出默认创建权限 0600 的文件，已存在时拒绝覆盖，
+只有明确需要替换才用 <code>--force</code>。传输与编辑应保持文件私密。</p>
+<p>配置包包含站点、引用的上游池、路径路由、站点策略标量覆盖、上游请求头，以及选定的 TLS 证书和私钥。
+<strong>它不是完整安装备份</strong>：WAF 策略仍为外部引用；自定义规则、共享 IP 列表、API 文档与学习版本、
+告警、账号、ACME 账号等应在目标端单独核对/重建。Bot 引用的 IP 列表也须存在。
+即使 <code>containsSecrets</code> 为 false，上游请求头仍可能含敏感信息，不能据此公开文件。</p>
+<h2 id="4-迁移前后要核对什么">4. 迁移前后要核对什么</h2>
+<ol>
+<li>在目标端先准备被引用的 WAF 策略、列表及依赖；跨版本先核对兼容性。</li>
+<li>检查新主机到每个源站的连通性、域名冲突和证书范围；需要时将导出文件内站点改为停用后导入。</li>
+<li>导入会创建新 ID，<strong>不会覆盖</strong>目标资源；相同域名、上游名或证书指纹冲突会明确报错。</li>
+<li>ACME 托管证书导入后成为上传证书，不会继承自动续期账号。需要自动续期时在目标端重新签发并绑定托管证书。</li>
+<li>启用后验证所有域名、路由、TLS、正常请求和 WAF，再切换 DNS。记录旧实例作为回退点。</li>
+</ol>
+<p>批量归档逐站点导入；中间失败会保留前面成功的站点，并报告进度，失败站点创建的资源会清理。
+修正后只重试未成功的条目，直接重复整个归档可能碰到已存在冲突。不要假设全归档是一个事务。</p>
+<div class="docs-pager"><a href="configuration.html"><span class="label">← 上一页</span><span class="title">配置与模板</span></a><a class="next" href="api-protection.html"><span class="label">下一页 →</span><span class="title">API 防护</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

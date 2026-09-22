@@ -1,0 +1,1890 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>operation_control.proto — operation_control — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Schema: tiyi.v1 · operation_control.proto · English guide · 中文指南 · Full RPC index" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../../../index.html#features">特性</a>
+      <a href="../../../index.html#tour">产品</a>
+      <a href="../../../index.html#pricing">价格</a>
+      <a href="../../index.html" style="color:var(--fg)">文档</a>
+      <a href="../../../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../../docs/reference/services/operation_control.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="../../index.html">概览</a></li>
+        <li><a href="../../quickstart.html">快速开始</a></li>
+        <li><a href="../../installation.html">安装</a></li>
+        <li><a href="../../configuration.html">配置与模板</a></li>
+        <li><a href="../../practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="../../operations.html">日常运维</a></li>
+        <li><a href="../../troubleshooting.html">排障</a></li>
+        <li><a href="../../upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="../../site-import.html">站点导入与导出</a></li>
+        <li><a href="../../api-protection.html">API 防护</a></li>
+        <li><a href="../../responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="../../concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI 参考</a></li>
+        <li><a href="../../api.html">API 参考</a></li>
+        <li><a href="../index.html">完整参考</a></li>
+        <li><a href="../rpc-index.html">全部 RPC</a></li>
+        <li><a href="../permissions.html">权限</a></li>
+        <li><a href="../cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="../../deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="operation_controlproto-operation_control">operation_control.proto — operation_control</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>operation_control.proto</code> · <a href="../../../../docs/api.html">English guide</a> · <a href="../../api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="operationcontrolservice">OperationControlService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#operationcontrolservicegetrequestinspection"><code>GetRequestInspection</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code> and <code>policy:read</code></td>
+</tr>
+<tr>
+<td><a href="#operationcontrolservicepreviewbodycontrol"><code>PreviewBodyControl</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#operationcontrolserviceapplybodycontrol"><code>ApplyBodyControl</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#operationcontrolservicepreviewbodychange"><code>PreviewBodyChange</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#operationcontrolservicechangebodycontrol"><code>ChangeBodyControl</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#operationcontrolservicegetoperationcontrolstate"><code>GetOperationControlState</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#operationcontrolservicelistoperationcontrolhistory"><code>ListOperationControlHistory</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#operationcontrolservicereplaceoperationcontrols"><code>ReplaceOperationControls</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code> and <code>policy:write</code></td>
+</tr>
+<tr>
+<td><a href="#operationcontrolservicerollbackoperationcontrols"><code>RollbackOperationControls</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code> and <code>policy:write</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="operationcontrolservicegetrequestinspection">OperationControlService.GetRequestInspection</h3>
+<p>Saved site policy and API validation requirements from one read snapshot; not a node ACK.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.OperationControlService/GetRequestInspection</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code> and <code>policy:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetRequestInspectionRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>api_asset_id</code></td>
+<td><code>apiAssetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetRequestInspectionResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_name</code></td>
+<td><code>policyName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_revision</code></td>
+<td><code>policyRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>crs_core</code></td>
+<td><code>crsCore</code></td>
+<td><a href="policy.html#crscoresettings"><code>CrsCoreSettings</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>waf_enabled</code></td>
+<td><code>wafEnabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>engine_state</code></td>
+<td><code>engineState</code></td>
+<td><a href="common.html#enginestate"><code>EngineState</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>allowed_families</code></td>
+<td><code>allowedFamilies</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>mismatch_action</code></td>
+<td><code>mismatchAction</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>mismatch_body_limit</code></td>
+<td><code>mismatchBodyLimit</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>operation_path</code></td>
+<td><code>operationPath</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>candidate_present</code></td>
+<td><code>candidatePresent</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>control_snapshot_sha256</code></td>
+<td><code>controlSnapshotSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>schema_body_limit</code></td>
+<td><code>schemaBodyLimit</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>arg_limits</code></td>
+<td><code>argLimits</code></td>
+<td><a href="policy.html#arglimits"><code>ArgLimits</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>effective_spec_json</code></td>
+<td><code>effectiveSpecJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>candidate_spec_json</code></td>
+<td><code>candidateSpecJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>effective_scope_json</code></td>
+<td><code>effectiveScopeJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>candidate_scope_json</code></td>
+<td><code>candidateScopeJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>default_upload_json</code></td>
+<td><code>defaultUploadJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>effective_upload_json</code></td>
+<td><code>effectiveUploadJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>schema_parameter_limit</code></td>
+<td><code>schemaParameterLimit</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolservicepreviewbodycontrol">OperationControlService.PreviewBodyControl</h3>
+<p>Preview authored settings without depending on traffic evidence.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.OperationControlService/PreviewBodyControl</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.PreviewBodyControlRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>draft</code></td>
+<td><code>draft</code></td>
+<td><a href="#bodycontroldraft"><code>BodyControlDraft</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.PreviewBodyControlResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>approval</code></td>
+<td><code>approval</code></td>
+<td><a href="#bodycontrolapproval"><code>BodyControlApproval</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>spec_json</code></td>
+<td><code>specJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>snapshot_json</code></td>
+<td><code>snapshotJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>resources_json</code></td>
+<td><code>resourcesJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>execution_supported</code></td>
+<td><code>executionSupported</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolserviceapplybodycontrol">OperationControlService.ApplyBodyControl</h3>
+<p>Enforcing changes additionally require api_inventory:block and policy:write.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.OperationControlService/ApplyBodyControl</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ApplyBodyControlRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>approval</code></td>
+<td><code>approval</code></td>
+<td><a href="#bodycontrolapproval"><code>BodyControlApproval</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code>reason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ApplyBodyControlResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>intent</code></td>
+<td><code>intent</code></td>
+<td><a href="#operationcontrolintent"><code>OperationControlIntent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code>state</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Pending or superseded, never a fabricated node application acknowledgement.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolservicepreviewbodychange">OperationControlService.PreviewBodyChange</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.OperationControlService/PreviewBodyChange</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><a id="previewbodychangerequest"></a>
+<strong>Request</strong> — <code>tiyi.v1.PreviewBodyChangeRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>api_asset_id</code></td>
+<td><code>apiAssetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td><code>action</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>discard_candidate, remove_effective or rollback_effective. Only one body slot changes; other controls and a replacement candidate are preserved.</td>
+</tr>
+<tr>
+<td><code>source_intent_id</code></td>
+<td><code>sourceIntentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Required only for historical rollback; removal restores current defaults.</td>
+</tr>
+<tr>
+<td><code>source_config_revision_id</code></td>
+<td><code>sourceConfigRevisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>approval_intent_id</code></td>
+<td><code>approvalIntentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Original authored approval of the historical effective body.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.PreviewBodyChangeResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>approval</code></td>
+<td><code>approval</code></td>
+<td><a href="#bodychangeapproval"><code>BodyChangeApproval</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>before_snapshot_json</code></td>
+<td><code>beforeSnapshotJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>after_snapshot_json</code></td>
+<td><code>afterSnapshotJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>selected_spec_json</code></td>
+<td><code>selectedSpecJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>execution_supported</code></td>
+<td><code>executionSupported</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>recovery_eligible</code></td>
+<td><code>recoveryEligible</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>current_impact_unverified</code></td>
+<td><code>currentImpactUnverified</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Recovery uses retained approval; no new complete impact window is claimed.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolservicechangebodycontrol">OperationControlService.ChangeBodyControl</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.OperationControlService/ChangeBodyControl</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ChangeBodyControlRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>approval</code></td>
+<td><code>approval</code></td>
+<td><a href="#bodychangeapproval"><code>BodyChangeApproval</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code>reason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ChangeBodyControlResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>intent</code></td>
+<td><code>intent</code></td>
+<td><a href="#operationcontrolintent"><code>OperationControlIntent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code>state</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolservicegetoperationcontrolstate">OperationControlService.GetOperationControlState</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.OperationControlService/GetOperationControlState</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetOperationControlStateRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>intent_id</code></td>
+<td><code>intentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Empty selects the desired intent. Non-empty reads retained site history.</td>
+</tr>
+<tr>
+<td><code>config_revision_id</code></td>
+<td><code>configRevisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional exact historical attempt. Requires intent_id; it cannot borrow a newer attempt's receipts or a different intent's artifact.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetOperationControlStateResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>review</code></td>
+<td><code>review</code></td>
+<td><a href="#operationcontrolreview"><code>OperationControlReview</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>intent</code></td>
+<td><code>intent</code></td>
+<td><a href="#operationcontrolintent"><code>OperationControlIntent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>controller_active</code></td>
+<td><code>controllerActive</code></td>
+<td><a href="#operationcontrolattempt"><code>OperationControlAttempt</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>controller_active_manifest</code></td>
+<td><code>controllerActiveManifest</code></td>
+<td><a href="#operationcontrolmanifestentry"><code>OperationControlManifestEntry</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>latest_intent_attempt</code></td>
+<td><code>latestIntentAttempt</code></td>
+<td><a href="#operationcontrolattempt"><code>OperationControlAttempt</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>deployment_state</code></td>
+<td><code>deploymentState</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Exact durable receipt convergence, NOT live reachability or traffic health.</td>
+</tr>
+<tr>
+<td><code>required_targets</code></td>
+<td><code>requiredTargets</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>applied_targets</code></td>
+<td><code>appliedTargets</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>failed_targets</code></td>
+<td><code>failedTargets</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>targets_current</code></td>
+<td><code>targetsCurrent</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>review_current</code></td>
+<td><code>reviewCurrent</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolservicelistoperationcontrolhistory">OperationControlService.ListOperationControlHistory</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.OperationControlService/ListOperationControlHistory</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListOperationControlHistoryRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>before_revision</code></td>
+<td><code>beforeRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>Exclusive site control revision; zero selects the newest 50 intents. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListOperationControlHistoryResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#operationcontrolhistoryitem"><code>OperationControlHistoryItem</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>next_before_revision</code></td>
+<td><code>nextBeforeRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolservicereplaceoperationcontrols">OperationControlService.ReplaceOperationControls</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.OperationControlService/ReplaceOperationControls</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code> and <code>policy:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ReplaceOperationControlsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>review</code></td>
+<td><code>review</code></td>
+<td><a href="#operationcontrolreview"><code>OperationControlReview</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code>reason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>snapshot_json</code></td>
+<td><code>snapshotJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>Complete reference-only snapshot, including explicit removals. Populated body/schema slots remain unsupported until their separate runtime gates. <em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ReplaceOperationControlsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>intent</code></td>
+<td><code>intent</code></td>
+<td><a href="#operationcontrolintent"><code>OperationControlIntent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code>state</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Mutation is durable. This is not an applied/converged acknowledgement.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolservicerollbackoperationcontrols">OperationControlService.RollbackOperationControls</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.OperationControlService/RollbackOperationControls</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code> and <code>policy:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.RollbackOperationControlsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>review</code></td>
+<td><code>review</code></td>
+<td><a href="#operationcontrolreview"><code>OperationControlReview</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code>reason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_intent_id</code></td>
+<td><code>sourceIntentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_config_revision_id</code></td>
+<td><code>sourceConfigRevisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.RollbackOperationControlsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>intent</code></td>
+<td><code>intent</code></td>
+<td><a href="#operationcontrolintent"><code>OperationControlIntent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code>state</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="bodychangeapproval">BodyChangeApproval</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>selection</code></td>
+<td><code>selection</code></td>
+<td><a href="#previewbodychangerequest"><code>PreviewBodyChangeRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>review</code></td>
+<td><code>review</code></td>
+<td><a href="#operationcontrolreview"><code>OperationControlReview</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>asset_revision</code></td>
+<td><code>assetRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>previous_intent_id</code></td>
+<td><code>previousIntentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>before_snapshot_sha256</code></td>
+<td><code>beforeSnapshotSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>after_snapshot_sha256</code></td>
+<td><code>afterSnapshotSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>baseline_sha256</code></td>
+<td><code>baselineSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>serving_targets_sha256</code></td>
+<td><code>servingTargetsSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_files_sha256</code></td>
+<td><code>policyFilesSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>change_fingerprint</code></td>
+<td><code>changeFingerprint</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Binds the reviewed transition; this is not a detection-evidence claim.</td>
+</tr>
+<tr>
+<td><code>before_raw_reservation_bytes</code></td>
+<td><code>beforeRawReservationBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>after_raw_reservation_bytes</code></td>
+<td><code>afterRawReservationBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>baseline_waf_enabled</code></td>
+<td><code>baselineWafEnabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>baseline_request_body_limit</code></td>
+<td><code>baselineRequestBodyLimit</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>WAF policy threshold only; removal restores this baseline without a native per-operation hard cap. WAF mode/rules may process only part of the body. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>recovery_approval_sha256</code></td>
+<td><code>recoveryApprovalSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>recovery_artifact_sha256</code></td>
+<td><code>recoveryArtifactSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>recovery_artifact_generation</code></td>
+<td><code>recoveryArtifactGeneration</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>recovery_applied_targets_sha256</code></td>
+<td><code>recoveryAppliedTargetsSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>recovery_applied_targets</code></td>
+<td><code>recoveryAppliedTargets</code></td>
+<td><a href="#operationcontroltarget"><code>OperationControlTarget</code></a></td>
+<td>repeated</td>
+<td>Historical applied targets only, never the new recovery's convergence.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bodycontrolapproval">BodyControlApproval</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>draft</code></td>
+<td><code>draft</code></td>
+<td><a href="#bodycontroldraft"><code>BodyControlDraft</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>review</code></td>
+<td><code>review</code></td>
+<td><a href="#operationcontrolreview"><code>OperationControlReview</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>asset_revision</code></td>
+<td><code>assetRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>spec_sha256</code></td>
+<td><code>specSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>before_snapshot_sha256</code></td>
+<td><code>beforeSnapshotSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>after_snapshot_sha256</code></td>
+<td><code>afterSnapshotSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_files_sha256</code></td>
+<td><code>policyFilesSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>preview_runtime_sha256</code></td>
+<td><code>previewRuntimeSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>raw_reservation_bytes</code></td>
+<td><code>rawReservationBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="bodycontroldraft">BodyControlDraft</h3>
+<p>Authored input; scope, executable support and resources are verified server-side.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>api_asset_id</code></td>
+<td><code>apiAssetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>spec_revision</code></td>
+<td><code>specRevision</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Empty only on initial preview; apply returns this exact reviewed UUID.</td>
+</tr>
+<tr>
+<td><code>profile</code></td>
+<td><code>profile</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>mismatch_action</code></td>
+<td><code>mismatchAction</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>allowed_families</code></td>
+<td><code>allowedFamilies</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>scope_json</code></td>
+<td><code>scopeJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>control_mode</code></td>
+<td><code>controlMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>observe leaves effective settings unchanged; enforce applies immediately.</td>
+</tr>
+<tr>
+<td><code>schema_mode</code></td>
+<td><code>schemaMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Empty preserves this operation's current Schema mode.</td>
+</tr>
+<tr>
+<td><code>upload_requirements_json</code></td>
+<td><code>uploadRequirementsJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>File requirements only; upload capacity is inherited from the site policy. <em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>body_action</code></td>
+<td><code>bodyAction</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>set (default), keep, or inherit. Keep/inherit do not require body input.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolattempt">OperationControlAttempt</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config_revision_id</code></td>
+<td><code>configRevisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>generation</code></td>
+<td><code>generation</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>artifact_sha256</code></td>
+<td><code>artifactSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>targets</code></td>
+<td><code>targets</code></td>
+<td><a href="#operationcontroltarget"><code>OperationControlTarget</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolhistoryitem">OperationControlHistoryItem</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>intent_id</code></td>
+<td><code>intentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>control_revision</code></td>
+<td><code>controlRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>snapshot_sha256</code></td>
+<td><code>snapshotSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code>reason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>superseded_by_intent_id</code></td>
+<td><code>supersededByIntentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>domain</code></td>
+<td><code>domain</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Immutable review ownership, not runtime convergence.</td>
+</tr>
+<tr>
+<td><code>contract_id</code></td>
+<td><code>contractId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>latest_config_revision_id</code></td>
+<td><code>latestConfigRevisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>latest_status</code></td>
+<td><code>latestStatus</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>activated_config_revision_id</code></td>
+<td><code>activatedConfigRevisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Latest historically activated attempt. Rollback preview independently verifies its signature, manifest, approval and exact application records.</td>
+</tr>
+<tr>
+<td><code>activated_generation</code></td>
+<td><code>activatedGeneration</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>activated_artifact_sha256</code></td>
+<td><code>activatedArtifactSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>activated_at</code></td>
+<td><code>activatedAt</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolintent">OperationControlIntent</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>control_revision</code></td>
+<td><code>controlRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>snapshot_sha256</code></td>
+<td><code>snapshotSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>snapshot_json</code></td>
+<td><code>snapshotJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>Canonical tiyi.site_controls.v2 reference-only snapshot, not executable IR. <em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>superseded_by_intent_id</code></td>
+<td><code>supersededByIntentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>apply_claimed</code></td>
+<td><code>applyClaimed</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rollback_source_intent_id</code></td>
+<td><code>rollbackSourceIntentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rollback_source_config_revision_id</code></td>
+<td><code>rollbackSourceConfigRevisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>reviewed</code></td>
+<td><code>reviewed</code></td>
+<td><a href="#operationcontrolreview"><code>OperationControlReview</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>required_targets</code></td>
+<td><code>requiredTargets</code></td>
+<td><a href="#operationcontrolrequiredtarget"><code>OperationControlRequiredTarget</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>dependencies_json</code></td>
+<td><code>dependenciesJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>Value-free per-resource fingerprint vector, retained as reviewed. <em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>body_review_json</code></td>
+<td><code>bodyReviewJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>Immutable, value-free domain review; absent for reference-only intents. <em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolmanifestentry">OperationControlManifestEntry</h3>
+<p>Shared identity contract, not a Schema IR. A manifest entry associates an immutable site snapshot with an exact compiled artifact.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>control_revision</code></td>
+<td><code>controlRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>control_snapshot_sha256</code></td>
+<td><code>controlSnapshotSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>intent_id</code></td>
+<td><code>intentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolrequiredtarget">OperationControlRequiredTarget</h3>
+<p>Immutable reviewed target identity; unrelated tenant and bootstrap nodes do not enter the site's required ACK denominator.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_id</code></td>
+<td><code>nodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>capability_revision</code></td>
+<td><code>capabilityRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>capabilities_sha256</code></td>
+<td><code>capabilitiesSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontrolreview">OperationControlReview</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>control_revision</code></td>
+<td><code>controlRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>base_generation</code></td>
+<td><code>baseGeneration</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>input_revision</code></td>
+<td><code>inputRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>topology_revision</code></td>
+<td><code>topologyRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>targets_sha256</code></td>
+<td><code>targetsSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>target_local</code></td>
+<td><code>targetLocal</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Server-derived local runtime membership, not a client-selected target set.</td>
+</tr>
+<tr>
+<td><code>dependencies_sha256</code></td>
+<td><code>dependenciesSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operationcontroltarget">OperationControlTarget</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_id</code></td>
+<td><code>nodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>purpose</code></td>
+<td><code>purpose</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>deployment_id</code></td>
+<td><code>deploymentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>bundle_id</code></td>
+<td><code>bundleId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>target_revision</code></td>
+<td><code>targetRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>superseded_by_revision_id</code></td>
+<td><code>supersededByRevisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>applied_at</code></td>
+<td><code>appliedAt</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="../rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../../assets/js/main.js" defer></script>
+</body>
+</html>

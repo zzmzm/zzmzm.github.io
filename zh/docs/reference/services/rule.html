@@ -1,0 +1,7052 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>rule.proto — Rule primitives shared by policy services — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Schema: tiyi.v1 · rule.proto · English guide · 中文指南 · Full RPC index" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../../../index.html#features">特性</a>
+      <a href="../../../index.html#tour">产品</a>
+      <a href="../../../index.html#pricing">价格</a>
+      <a href="../../index.html" style="color:var(--fg)">文档</a>
+      <a href="../../../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../../docs/reference/services/rule.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="../../index.html">概览</a></li>
+        <li><a href="../../quickstart.html">快速开始</a></li>
+        <li><a href="../../installation.html">安装</a></li>
+        <li><a href="../../configuration.html">配置与模板</a></li>
+        <li><a href="../../practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="../../operations.html">日常运维</a></li>
+        <li><a href="../../troubleshooting.html">排障</a></li>
+        <li><a href="../../upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="../../site-import.html">站点导入与导出</a></li>
+        <li><a href="../../api-protection.html">API 防护</a></li>
+        <li><a href="../../responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="../../concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI 参考</a></li>
+        <li><a href="../../api.html">API 参考</a></li>
+        <li><a href="../index.html">完整参考</a></li>
+        <li><a href="../rpc-index.html">全部 RPC</a></li>
+        <li><a href="../permissions.html">权限</a></li>
+        <li><a href="../cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="../../deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="ruleproto-rule-primitives-shared-by-policy-services">rule.proto — Rule primitives shared by policy services</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>rule.proto</code> · <a href="../../../../docs/api.html">English guide</a> · <a href="../../api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="ruleoverrideservice">RuleOverrideService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#ruleoverrideservicelistruleoverrides"><code>ListRuleOverrides</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#ruleoverrideservicegetruleoverride"><code>GetRuleOverride</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#ruleoverrideserviceupsertruleoverride"><code>UpsertRuleOverride</code></a></td>
+<td>unary</td>
+<td>(<code>policy:rule:override</code>)</td>
+</tr>
+<tr>
+<td><a href="#ruleoverrideservicedeleteruleoverride"><code>DeleteRuleOverride</code></a></td>
+<td>unary</td>
+<td>(<code>policy:rule:override</code>)</td>
+</tr>
+<tr>
+<td><a href="#ruleoverrideservicebulkupsertruleoverrides"><code>BulkUpsertRuleOverrides</code></a></td>
+<td>unary</td>
+<td>(<code>policy:rule:override</code>)</td>
+</tr>
+<tr>
+<td><a href="#ruleoverrideservicelistcrsrulesforpolicy"><code>ListCrsRulesForPolicy</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customruleservice">CustomRuleService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#customruleservicelistcustomrules"><code>ListCustomRules</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#customruleservicegetcustomrule"><code>GetCustomRule</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#customruleservicecreatecustomrule"><code>CreateCustomRule</code></a></td>
+<td>unary</td>
+<td>(<code>policy:custom:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#customruleserviceupdatecustomrule"><code>UpdateCustomRule</code></a></td>
+<td>unary</td>
+<td>(<code>policy:custom:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#customruleservicedeletecustomrule"><code>DeleteCustomRule</code></a></td>
+<td>unary</td>
+<td>(<code>policy:custom:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#customruleservicereordercustomrules"><code>ReorderCustomRules</code></a></td>
+<td>unary</td>
+<td>(<code>policy:custom:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#customruleservicepreviewcustomrule"><code>PreviewCustomRule</code></a></td>
+<td>unary</td>
+<td>(<code>policy:preview</code>)</td>
+</tr>
+<tr>
+<td><a href="#customruleservicelistcustomruletemplates"><code>ListCustomRuleTemplates</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#customruleservicecreatefromtemplate"><code>CreateFromTemplate</code></a></td>
+<td>unary</td>
+<td>(<code>policy:custom:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservice">IpListService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#iplistservicelistiplists"><code>ListIpLists</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicegetiplist"><code>GetIpList</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicelistiplistentries"><code>ListIpListEntries</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicecreateiplist"><code>CreateIpList</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistserviceupdateiplist"><code>UpdateIpList</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicedeleteiplist"><code>DeleteIpList</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicereplaceiplistentries"><code>ReplaceIpListEntries</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicecloneiplist"><code>CloneIpList</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicegetiplisteditimpact"><code>GetIpListEditImpact</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicecreateiplistsubscription"><code>CreateIpListSubscription</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:source:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistserviceupdateiplistsubscription"><code>UpdateIpListSubscription</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:source:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicetestiplistsource"><code>TestIpListSource</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:source:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicesynciplistnow"><code>SyncIpListNow</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:sync</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicepauseiplistsync"><code>PauseIpListSync</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:sync</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistserviceresumeiplistsync"><code>ResumeIpListSync</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:sync</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicelistiplistsyncruns"><code>ListIpListSyncRuns</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistserviceacceptheldiplistupdate"><code>AcceptHeldIpListUpdate</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:sync</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicediscardheldiplistupdate"><code>DiscardHeldIpListUpdate</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:sync</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistserviceaddentries"><code>AddEntries</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistserviceremoveentries"><code>RemoveEntries</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistserviceexportcsv"><code>ExportCsv</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicelookupip"><code>LookupIp</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicelookupipscopes"><code>LookupIpScopes</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicelistiplistbindings"><code>ListIpListBindings</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistserviceupsertiplistbinding"><code>UpsertIpListBinding</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicedeleteiplistbinding"><code>DeleteIpListBinding</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicelistglobaliplistbindings"><code>ListGlobalIpListBindings</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistserviceupsertglobaliplistbinding"><code>UpsertGlobalIpListBinding</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicedeleteglobaliplistbinding"><code>DeleteGlobalIpListBinding</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistservicelistiplistreferences"><code>ListIpListReferences</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#iplistserviceapplyiplist"><code>ApplyIpList</code></a></td>
+<td>unary</td>
+<td>(<code>policy:iplist:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="countryaccessservice">CountryAccessService</h3>
+<p>CountryAccessService owns jurisdiction-aware access decisions. Country codes are structured ISO values backed by the active Country MMDB; they are never encoded as synthetic IP-list entries.</p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#countryaccessservicelistcountryaccessrules"><code>ListCountryAccessRules</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#countryaccessservicegetcountryaccessrule"><code>GetCountryAccessRule</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#countryaccessservicegetcountrycatalog"><code>GetCountryCatalog</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#countryaccessserviceupsertcountryaccessrule"><code>UpsertCountryAccessRule</code></a></td>
+<td>unary</td>
+<td>(<code>policy:country:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#countryaccessservicedeletecountryaccessrule"><code>DeleteCountryAccessRule</code></a></td>
+<td>unary</td>
+<td>(<code>policy:country:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ratelimitservice">RateLimitService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#ratelimitservicelistratelimitendpoints"><code>ListRateLimitEndpoints</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#ratelimitserviceupsertratelimitendpoint"><code>UpsertRateLimitEndpoint</code></a></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#ratelimitservicedeleteratelimitendpoint"><code>DeleteRateLimitEndpoint</code></a></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservice">CrsService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#crsservicelistcrsrulesets"><code>ListCrsRulesets</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsservicegetcrsruleset"><code>GetCrsRuleset</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsservicelistcrsrules"><code>ListCrsRules</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsservicegetcrsrule"><code>GetCrsRule</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsservicelistcrscategories"><code>ListCrsCategories</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsservicelistcrstags"><code>ListCrsTags</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsservicelistcrsplugins"><code>ListCrsPlugins</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsservicegetcrspluginconfigschema"><code>GetCrsPluginConfigSchema</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsservicelistcrsexclusionplugins"><code>ListCrsExclusionPlugins</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsservicegetcrsexclusionplugin"><code>GetCrsExclusionPlugin</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsserviceimportcrsexclusionplugin"><code>ImportCrsExclusionPlugin</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsservicelistupstreamcrsexclusionpluginreleases"><code>ListUpstreamCrsExclusionPluginReleases</code></a></td>
+<td>unary</td>
+<td>(<code>system:update:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsservicelistpolicyexclusionplugins"><code>ListPolicyExclusionPlugins</code></a></td>
+<td>unary</td>
+<td>(<code>policy:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsserviceupsertpolicyexclusionplugin"><code>UpsertPolicyExclusionPlugin</code></a></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#crsservicedeletepolicyexclusionplugin"><code>DeletePolicyExclusionPlugin</code></a></td>
+<td>unary</td>
+<td>(<code>policy:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="ruleoverrideservicelistruleoverrides">RuleOverrideService.ListRuleOverrides</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RuleOverrideService/ListRuleOverrides</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListRuleOverridesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListRuleOverridesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#ruleoverride"><code>RuleOverride</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ruleoverrideservicegetruleoverride">RuleOverrideService.GetRuleOverride</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RuleOverrideService/GetRuleOverride</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetRuleOverrideRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetRuleOverrideResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>override</code></td>
+<td><code>override</code></td>
+<td><a href="#ruleoverride"><code>RuleOverride</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ruleoverrideserviceupsertruleoverride">RuleOverrideService.UpsertRuleOverride</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RuleOverrideService/UpsertRuleOverride</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:rule:override</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpsertRuleOverrideRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>override</code></td>
+<td><code>override</code></td>
+<td><a href="#ruleoverride"><code>RuleOverride</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpsertRuleOverrideResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>override</code></td>
+<td><code>override</code></td>
+<td><a href="#ruleoverride"><code>RuleOverride</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ruleoverrideservicedeleteruleoverride">RuleOverrideService.DeleteRuleOverride</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RuleOverrideService/DeleteRuleOverride</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:rule:override</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteRuleOverrideRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteRuleOverrideResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ruleoverrideservicebulkupsertruleoverrides">RuleOverrideService.BulkUpsertRuleOverrides</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RuleOverrideService/BulkUpsertRuleOverrides</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:rule:override</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.BulkUpsertRuleOverridesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>overrides</code></td>
+<td><code>overrides</code></td>
+<td><a href="#ruleoverride"><code>RuleOverride</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.BulkUpsertRuleOverridesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>overrides</code></td>
+<td><code>overrides</code></td>
+<td><a href="#ruleoverride"><code>RuleOverride</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ruleoverrideservicelistcrsrulesforpolicy">RuleOverrideService.ListCrsRulesForPolicy</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RuleOverrideService/ListCrsRulesForPolicy</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListCrsRulesForPolicyRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListCrsRulesForPolicyResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#crsrule"><code>CrsRule</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customruleservicelistcustomrules">CustomRuleService.ListCustomRules</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CustomRuleService/ListCustomRules</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListCustomRulesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListCustomRulesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#customrule"><code>CustomRule</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customruleservicegetcustomrule">CustomRuleService.GetCustomRule</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CustomRuleService/GetCustomRule</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetCustomRuleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetCustomRuleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule</code></td>
+<td><code>rule</code></td>
+<td><a href="#customrule"><code>CustomRule</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customruleservicecreatecustomrule">CustomRuleService.CreateCustomRule</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CustomRuleService/CreateCustomRule</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:custom:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CreateCustomRuleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule</code></td>
+<td><code>rule</code></td>
+<td><a href="#customrule"><code>CustomRule</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CreateCustomRuleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule</code></td>
+<td><code>rule</code></td>
+<td><a href="#customrule"><code>CustomRule</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customruleserviceupdatecustomrule">CustomRuleService.UpdateCustomRule</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CustomRuleService/UpdateCustomRule</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:custom:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdateCustomRuleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule</code></td>
+<td><code>rule</code></td>
+<td><a href="#customrule"><code>CustomRule</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>update_mask</code></td>
+<td><code>updateMask</code></td>
+<td><code>google.protobuf.FieldMask</code></td>
+<td>singular</td>
+<td><em>comma-joined field paths, e.g. <code>"name,status"</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdateCustomRuleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule</code></td>
+<td><code>rule</code></td>
+<td><a href="#customrule"><code>CustomRule</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customruleservicedeletecustomrule">CustomRuleService.DeleteCustomRule</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CustomRuleService/DeleteCustomRule</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:custom:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteCustomRuleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteCustomRuleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customruleservicereordercustomrules">CustomRuleService.ReorderCustomRules</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CustomRuleService/ReorderCustomRules</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:custom:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ReorderCustomRulesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rule_ids</code></td>
+<td><code>ruleIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ReorderCustomRulesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rules</code></td>
+<td><code>rules</code></td>
+<td><a href="#customrule"><code>CustomRule</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customruleservicepreviewcustomrule">CustomRuleService.PreviewCustomRule</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CustomRuleService/PreviewCustomRule</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:preview</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.PreviewCustomRuleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule</code></td>
+<td><code>rule</code></td>
+<td><a href="#customrule"><code>CustomRule</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.PreviewCustomRuleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>seclang</code></td>
+<td><code>seclang</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td><code>warnings</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customruleservicelistcustomruletemplates">CustomRuleService.ListCustomRuleTemplates</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CustomRuleService/ListCustomRuleTemplates</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListCustomRuleTemplatesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListCustomRuleTemplatesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#customruletemplate"><code>CustomRuleTemplate</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customruleservicecreatefromtemplate">CustomRuleService.CreateFromTemplate</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CustomRuleService/CreateFromTemplate</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:custom:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CreateFromTemplateRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>template_id</code></td>
+<td><code>templateId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>parameters</code></td>
+<td><code>parameters</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional site id. When empty the rule is policy-wide; when set the resulting custom_rule row is scoped to that site. Matches CustomRule.site_id semantics (WAF_POLICY_DESIGN § 3.2).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CreateFromTemplateResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule</code></td>
+<td><code>rule</code></td>
+<td><a href="#customrule"><code>CustomRule</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicelistiplists">IpListService.ListIpLists</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/ListIpLists</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListIpListsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>management_mode</code></td>
+<td><code>managementMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListIpListsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicegetiplist">IpListService.GetIpList</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/GetIpList</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetIpListRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetIpListResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicelistiplistentries">IpListService.ListIpListEntries</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/ListIpListEntries</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListIpListEntriesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list_id</code></td>
+<td><code>ipListId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>address_family</code></td>
+<td><code>addressFamily</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>all | ipv4 | ipv6. Empty keeps both address families.</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional case-insensitive CIDR substring search.</td>
+</tr>
+<tr>
+<td><code>etag</code></td>
+<td><code>etag</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional concurrency token returned by a prior page. When current content changes between pages the server rejects the stale token.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListIpListEntriesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#iplistentry"><code>IpListEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ipv4_count</code></td>
+<td><code>ipv4Count</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ipv6_count</code></td>
+<td><code>ipv6Count</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>etag</code></td>
+<td><code>etag</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicecreateiplist">IpListService.CreateIpList</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/CreateIpList</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CreateIpListRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CreateIpListResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistserviceupdateiplist">IpListService.UpdateIpList</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/UpdateIpList</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdateIpListRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>update_mask</code></td>
+<td><code>updateMask</code></td>
+<td><code>google.protobuf.FieldMask</code></td>
+<td>singular</td>
+<td><em>comma-joined field paths, e.g. <code>"name,status"</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdateIpListResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicedeleteiplist">IpListService.DeleteIpList</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/DeleteIpList</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteIpListRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteIpListResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicereplaceiplistentries">IpListService.ReplaceIpListEntries</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/ReplaceIpListEntries</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ReplaceIpListEntriesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>entries</code></td>
+<td><code>entries</code></td>
+<td><a href="#iplistentry"><code>IpListEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>etag</code></td>
+<td><code>etag</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>exclusive_global_kind</code></td>
+<td><code>exclusiveGlobalKind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>For withdrawal of a dedicated quick action: requires empty replacement content and at most one global access-control reference of this kind. Checked in the content transaction so concurrent new references abort.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ReplaceIpListEntriesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>affected_consumers</code></td>
+<td><code>affectedConsumers</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rollout</code></td>
+<td><code>rollout</code></td>
+<td><a href="#iplistrollout"><code>IpListRollout</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicecloneiplist">IpListService.CloneIpList</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/CloneIpList</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CloneIpListRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CloneIpListResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicegetiplisteditimpact">IpListService.GetIpListEditImpact</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/GetIpListEditImpact</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetIpListEditImpactRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetIpListEditImpactResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>references</code></td>
+<td><code>references</code></td>
+<td><a href="#iplistreference"><code>IpListReference</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>affected_consumers</code></td>
+<td><code>affectedConsumers</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicecreateiplistsubscription">IpListService.CreateIpListSubscription</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/CreateIpListSubscription</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:source:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CreateIpListSubscriptionRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><a href="#iplistsourceinput"><code>IpListSourceInput</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sync_now</code></td>
+<td><code>syncNow</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CreateIpListSubscriptionResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sync_run</code></td>
+<td><code>syncRun</code></td>
+<td><a href="#iplistsyncrun"><code>IpListSyncRun</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistserviceupdateiplistsubscription">IpListService.UpdateIpListSubscription</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/UpdateIpListSubscription</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:source:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdateIpListSubscriptionRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><a href="#iplistsourceinput"><code>IpListSourceInput</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sync_now</code></td>
+<td><code>syncNow</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdateIpListSubscriptionResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sync_run</code></td>
+<td><code>syncRun</code></td>
+<td><a href="#iplistsyncrun"><code>IpListSyncRun</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicetestiplistsource">IpListService.TestIpListSource</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/TestIpListSource</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:source:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.TestIpListSourceRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list_id</code></td>
+<td><code>ipListId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><a href="#iplistsourceinput"><code>IpListSourceInput</code></a></td>
+<td>singular</td>
+<td>optional draft source; omitted tests saved config</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.TestIpListSourceResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>http_status</code></td>
+<td><code>httpStatus</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>entry_count</code></td>
+<td><code>entryCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ipv4_count</code></td>
+<td><code>ipv4Count</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ipv6_count</code></td>
+<td><code>ipv6Count</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>digest</code></td>
+<td><code>digest</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>not_modified</code></td>
+<td><code>notModified</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicesynciplistnow">IpListService.SyncIpListNow</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/SyncIpListNow</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:sync</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.SyncIpListNowRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.SyncIpListNowResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sync_run</code></td>
+<td><code>syncRun</code></td>
+<td><a href="#iplistsyncrun"><code>IpListSyncRun</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicepauseiplistsync">IpListService.PauseIpListSync</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/PauseIpListSync</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:sync</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.PauseIpListSyncRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.PauseIpListSyncResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistserviceresumeiplistsync">IpListService.ResumeIpListSync</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/ResumeIpListSync</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:sync</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ResumeIpListSyncRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sync_now</code></td>
+<td><code>syncNow</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ResumeIpListSyncResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sync_run</code></td>
+<td><code>syncRun</code></td>
+<td><a href="#iplistsyncrun"><code>IpListSyncRun</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicelistiplistsyncruns">IpListService.ListIpListSyncRuns</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/ListIpListSyncRuns</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListIpListSyncRunsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td><code>limit</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListIpListSyncRunsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#iplistsyncrun"><code>IpListSyncRun</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistserviceacceptheldiplistupdate">IpListService.AcceptHeldIpListUpdate</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/AcceptHeldIpListUpdate</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:sync</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.AcceptHeldIpListUpdateRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.AcceptHeldIpListUpdateResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sync_run</code></td>
+<td><code>syncRun</code></td>
+<td><a href="#iplistsyncrun"><code>IpListSyncRun</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicediscardheldiplistupdate">IpListService.DiscardHeldIpListUpdate</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/DiscardHeldIpListUpdate</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:sync</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DiscardHeldIpListUpdateRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DiscardHeldIpListUpdateResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistserviceaddentries">IpListService.AddEntries</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/AddEntries</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.AddEntriesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list_id</code></td>
+<td><code>ipListId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>entries</code></td>
+<td><code>entries</code></td>
+<td><a href="#iplistentry"><code>IpListEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.AddEntriesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistserviceremoveentries">IpListService.RemoveEntries</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/RemoveEntries</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.RemoveEntriesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list_id</code></td>
+<td><code>ipListId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>values</code></td>
+<td><code>values</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.RemoveEntriesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list</code></td>
+<td><code>ipList</code></td>
+<td><a href="#iplist"><code>IpList</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistserviceexportcsv">IpListService.ExportCsv</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/ExportCsv</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ExportCsvRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list_id</code></td>
+<td><code>ipListId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ExportCsvResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>csv</code></td>
+<td><code>csv</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>filename</code></td>
+<td><code>filename</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicelookupip">IpListService.LookupIp</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/LookupIp</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.LookupIpRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list_id</code></td>
+<td><code>ipListId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ip</code></td>
+<td><code>ip</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.LookupIpResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>matched</code></td>
+<td><code>matched</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>entries</code></td>
+<td><code>entries</code></td>
+<td><a href="#iplistentry"><code>IpListEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>decision</code></td>
+<td><code>decision</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicelookupipscopes">IpListService.LookupIpScopes</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/LookupIpScopes</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.LookupIpScopesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip</code></td>
+<td><code>ip</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>One client IP, not a CIDR range.</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>peer_ip</code></td>
+<td><code>peerIp</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Required for a complete decision when applicable bindings use peer_ip.</td>
+</tr>
+<tr>
+<td><code>request_path</code></td>
+<td><code>requestPath</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>URL path, default /. Percent escapes are decoded before path matching.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.LookupIpScopesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hits</code></td>
+<td><code>hits</code></td>
+<td><a href="#iplistscopehit"><code>IpListScopeHit</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>decision</code></td>
+<td><code>decision</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>IP-list bindings only; empty unless decision_status is evaluated.</td>
+</tr>
+<tr>
+<td><code>decision_status</code></td>
+<td><code>decisionStatus</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>evaluated | site_required | peer_required</td>
+</tr>
+<tr>
+<td><code>decision_binding_id</code></td>
+<td><code>decisionBindingId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicelistiplistbindings">IpListService.ListIpListBindings</h3>
+<p>Bindings — attach an IP list to a policy. See WAF_POLICY_DESIGN.md § 3.2 / § 4.1 for the path_prefix + site_id semantics.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/ListIpListBindings</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListIpListBindingsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>When set, filter to bindings for this site plus policy-wide bindings.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListIpListBindingsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#iplistbindingrecord"><code>IpListBindingRecord</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistserviceupsertiplistbinding">IpListService.UpsertIpListBinding</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/UpsertIpListBinding</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpsertIpListBindingRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>binding</code></td>
+<td><code>binding</code></td>
+<td><a href="#iplistbindingrecord"><code>IpListBindingRecord</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpsertIpListBindingResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>binding</code></td>
+<td><code>binding</code></td>
+<td><a href="#iplistbindingrecord"><code>IpListBindingRecord</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicedeleteiplistbinding">IpListService.DeleteIpListBinding</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/DeleteIpListBinding</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteIpListBindingRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteIpListBindingResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicelistglobaliplistbindings">IpListService.ListGlobalIpListBindings</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/ListGlobalIpListBindings</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListGlobalIpListBindingsRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.ListGlobalIpListBindingsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#iplistbindingrecord"><code>IpListBindingRecord</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistserviceupsertglobaliplistbinding">IpListService.UpsertGlobalIpListBinding</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/UpsertGlobalIpListBinding</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpsertGlobalIpListBindingRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>binding</code></td>
+<td><code>binding</code></td>
+<td><a href="#iplistbindingrecord"><code>IpListBindingRecord</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpsertGlobalIpListBindingResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>binding</code></td>
+<td><code>binding</code></td>
+<td><a href="#iplistbindingrecord"><code>IpListBindingRecord</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicedeleteglobaliplistbinding">IpListService.DeleteGlobalIpListBinding</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/DeleteGlobalIpListBinding</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteGlobalIpListBindingRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteGlobalIpListBindingResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistservicelistiplistreferences">IpListService.ListIpListReferences</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/ListIpListReferences</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListIpListReferencesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list_id</code></td>
+<td><code>ipListId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListIpListReferencesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#iplistreference"><code>IpListReference</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistserviceapplyiplist">IpListService.ApplyIpList</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.IpListService/ApplyIpList</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:iplist:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ApplyIpListRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip_list_id</code></td>
+<td><code>ipListId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>targets</code></td>
+<td><code>targets</code></td>
+<td><a href="#iplistapplytarget"><code>IpListApplyTarget</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Required action: allow | deny | monitor.</td>
+</tr>
+<tr>
+<td><code>bypass_mode</code></td>
+<td><code>bypassMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>address_source</code></td>
+<td><code>addressSource</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>client_ip | peer_ip</td>
+</tr>
+<tr>
+<td><code>match_mode</code></td>
+<td><code>matchMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>in_list | not_in_list</td>
+</tr>
+<tr>
+<td><code>etag</code></td>
+<td><code>etag</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional optimistic guard for a previously saved operation receipt.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ApplyIpListResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>references</code></td>
+<td><code>references</code></td>
+<td><a href="#iplistreference"><code>IpListReference</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>saved</code></td>
+<td><code>saved</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Bindings and compiled policy hashes committed atomically.</td>
+</tr>
+<tr>
+<td><code>applied</code></td>
+<td><code>applied</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Controller apply completed; individual remote nodes may still be pending.</td>
+</tr>
+<tr>
+<td><code>apply_error</code></td>
+<td><code>applyError</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="countryaccessservicelistcountryaccessrules">CountryAccessService.ListCountryAccessRules</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CountryAccessService/ListCountryAccessRules</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListCountryAccessRulesRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.ListCountryAccessRulesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#countryaccessrule"><code>CountryAccessRule</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="countryaccessservicegetcountryaccessrule">CountryAccessService.GetCountryAccessRule</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CountryAccessService/GetCountryAccessRule</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetCountryAccessRuleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetCountryAccessRuleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule</code></td>
+<td><code>rule</code></td>
+<td><a href="#countryaccessrule"><code>CountryAccessRule</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="countryaccessservicegetcountrycatalog">CountryAccessService.GetCountryCatalog</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CountryAccessService/GetCountryCatalog</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetCountryCatalogRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.GetCountryCatalogResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>catalog</code></td>
+<td><code>catalog</code></td>
+<td><a href="#countrycatalog"><code>CountryCatalog</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="countryaccessserviceupsertcountryaccessrule">CountryAccessService.UpsertCountryAccessRule</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CountryAccessService/UpsertCountryAccessRule</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:country:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpsertCountryAccessRuleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule</code></td>
+<td><code>rule</code></td>
+<td><a href="#countryaccessrule"><code>CountryAccessRule</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpsertCountryAccessRuleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule</code></td>
+<td><code>rule</code></td>
+<td><a href="#countryaccessrule"><code>CountryAccessRule</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="countryaccessservicedeletecountryaccessrule">CountryAccessService.DeleteCountryAccessRule</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CountryAccessService/DeleteCountryAccessRule</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:country:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteCountryAccessRuleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteCountryAccessRuleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ratelimitservicelistratelimitendpoints">RateLimitService.ListRateLimitEndpoints</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RateLimitService/ListRateLimitEndpoints</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListRateLimitEndpointsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListRateLimitEndpointsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#ratelimitendpointrecord"><code>RateLimitEndpointRecord</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ratelimitserviceupsertratelimitendpoint">RateLimitService.UpsertRateLimitEndpoint</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RateLimitService/UpsertRateLimitEndpoint</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpsertRateLimitEndpointRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>endpoint</code></td>
+<td><code>endpoint</code></td>
+<td><a href="#ratelimitendpointrecord"><code>RateLimitEndpointRecord</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpsertRateLimitEndpointResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>endpoint</code></td>
+<td><code>endpoint</code></td>
+<td><a href="#ratelimitendpointrecord"><code>RateLimitEndpointRecord</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ratelimitservicedeleteratelimitendpoint">RateLimitService.DeleteRateLimitEndpoint</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.RateLimitService/DeleteRateLimitEndpoint</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteRateLimitEndpointRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteRateLimitEndpointResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicelistcrsrulesets">CrsService.ListCrsRulesets</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/ListCrsRulesets</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListCrsRulesetsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListCrsRulesetsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#crsruleset"><code>CrsRuleset</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicegetcrsruleset">CrsService.GetCrsRuleset</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/GetCrsRuleset</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetCrsRulesetRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetCrsRulesetResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ruleset</code></td>
+<td><code>ruleset</code></td>
+<td><a href="#crsruleset"><code>CrsRuleset</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicelistcrsrules">CrsService.ListCrsRules</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/ListCrsRules</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListCrsRulesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ruleset_id</code></td>
+<td><code>rulesetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td><code>tags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>category</code></td>
+<td><code>category</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>paranoia_level</code></td>
+<td><code>paranoiaLevel</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>phase</code></td>
+<td><code>phase</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>severity</code></td>
+<td><code>severity</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListCrsRulesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#crsrule"><code>CrsRule</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicegetcrsrule">CrsService.GetCrsRule</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/GetCrsRule</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetCrsRuleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ruleset_id</code></td>
+<td><code>rulesetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rule_id</code></td>
+<td><code>ruleId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetCrsRuleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule</code></td>
+<td><code>rule</code></td>
+<td><a href="#crsrule"><code>CrsRule</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicelistcrscategories">CrsService.ListCrsCategories</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/ListCrsCategories</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListCrsCategoriesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ruleset_id</code></td>
+<td><code>rulesetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListCrsCategoriesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>categories</code></td>
+<td><code>categories</code></td>
+<td><a href="#crscategory"><code>CrsCategory</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicelistcrstags">CrsService.ListCrsTags</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/ListCrsTags</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListCrsTagsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ruleset_id</code></td>
+<td><code>rulesetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListCrsTagsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tags</code></td>
+<td><code>tags</code></td>
+<td><a href="#crstag"><code>CrsTag</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicelistcrsplugins">CrsService.ListCrsPlugins</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/ListCrsPlugins</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListCrsPluginsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ruleset_id</code></td>
+<td><code>rulesetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListCrsPluginsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plugins</code></td>
+<td><code>plugins</code></td>
+<td><a href="#crsplugin"><code>CrsPlugin</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicegetcrspluginconfigschema">CrsService.GetCrsPluginConfigSchema</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/GetCrsPluginConfigSchema</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetCrsPluginConfigSchemaRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plugin_id</code></td>
+<td><code>pluginId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetCrsPluginConfigSchemaResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>schema</code></td>
+<td><code>schema</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicelistcrsexclusionplugins">CrsService.ListCrsExclusionPlugins</h3>
+<p>CRS rule-exclusion package catalog and bindings. See WAF_POLICY_DESIGN.md § 1.3 and CRS docs § 2-3 "Rule Exclusion Packages".</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/ListCrsExclusionPlugins</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListCrsExclusionPluginsRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.ListCrsExclusionPluginsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#crsexclusionplugin"><code>CrsExclusionPlugin</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicegetcrsexclusionplugin">CrsService.GetCrsExclusionPlugin</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/GetCrsExclusionPlugin</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetCrsExclusionPluginRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id_or_slug</code></td>
+<td><code>idOrSlug</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Accepts either id or slug.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetCrsExclusionPluginResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plugin</code></td>
+<td><code>plugin</code></td>
+<td><a href="#crsexclusionplugin"><code>CrsExclusionPlugin</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsserviceimportcrsexclusionplugin">CrsService.ImportCrsExclusionPlugin</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/ImportCrsExclusionPlugin</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ImportCrsExclusionPluginRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id_or_slug</code></td>
+<td><code>idOrSlug</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Plugin id or slug identifying which catalog row to populate.</td>
+</tr>
+<tr>
+<td><code>github_tag</code></td>
+<td><code>githubTag</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>When set, fetch from github.com/coreruleset/<slug>-rule-exclusions-plugin at this release tag. Takes precedence over archive when both are set.</slug></td>
+</tr>
+<tr>
+<td><code>archive</code></td>
+<td><code>archive</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>Alternatively, the archive bytes (tar.gz or zip) for offline installs where the server has no outbound internet access. <em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ImportCrsExclusionPluginResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plugin</code></td>
+<td><code>plugin</code></td>
+<td><a href="#crsexclusionplugin"><code>CrsExclusionPlugin</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicelistupstreamcrsexclusionpluginreleases">CrsService.ListUpstreamCrsExclusionPluginReleases</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/ListUpstreamCrsExclusionPluginReleases</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:update:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListUpstreamCrsExclusionPluginReleasesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>slug</code></td>
+<td><code>slug</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td><code>limit</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>include_prerelease</code></td>
+<td><code>includePrerelease</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListUpstreamCrsExclusionPluginReleasesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>releases</code></td>
+<td><code>releases</code></td>
+<td><a href="#upstreamcrsexclusionpluginrelease"><code>UpstreamCrsExclusionPluginRelease</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicelistpolicyexclusionplugins">CrsService.ListPolicyExclusionPlugins</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/ListPolicyExclusionPlugins</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListPolicyExclusionPluginsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListPolicyExclusionPluginsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#policycrsexclusionplugin"><code>PolicyCrsExclusionPlugin</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsserviceupsertpolicyexclusionplugin">CrsService.UpsertPolicyExclusionPlugin</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/UpsertPolicyExclusionPlugin</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpsertPolicyExclusionPluginRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>binding</code></td>
+<td><code>binding</code></td>
+<td><a href="#policycrsexclusionplugin"><code>PolicyCrsExclusionPlugin</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpsertPolicyExclusionPluginResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>binding</code></td>
+<td><code>binding</code></td>
+<td><a href="#policycrsexclusionplugin"><code>PolicyCrsExclusionPlugin</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsservicedeletepolicyexclusionplugin">CrsService.DeletePolicyExclusionPlugin</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.CrsService/DeletePolicyExclusionPlugin</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>policy:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeletePolicyExclusionPluginRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeletePolicyExclusionPluginResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="countryaccessrule">CountryAccessRule</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>country_codes</code></td>
+<td><code>countryCodes</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>canonical ISO 3166-1 alpha-2</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>allow | deny | monitor</td>
+</tr>
+<tr>
+<td><code>bypass_mode</code></td>
+<td><code>bypassMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>all_waf | ip_lists_only</td>
+</tr>
+<tr>
+<td><code>address_source</code></td>
+<td><code>addressSource</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>client_ip | peer_ip</td>
+</tr>
+<tr>
+<td><code>match_mode</code></td>
+<td><code>matchMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>in_list | not_in_list</td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td><code>enabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td><code>sortOrder</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>etag</code></td>
+<td><code>etag</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>required on update</td>
+</tr>
+<tr>
+<td><code>targets</code></td>
+<td><code>targets</code></td>
+<td><a href="#countryaccesstarget"><code>CountryAccessTarget</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="countryaccesstarget">CountryAccessTarget</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scope</code></td>
+<td><code>scope</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>global | policy | site</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_name</code></td>
+<td><code>policyName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_name</code></td>
+<td><code>siteName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="countrycatalog">CountryCatalog</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>available</code></td>
+<td><code>available</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>dataset_version</code></td>
+<td><code>datasetVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>dataset_source</code></td>
+<td><code>datasetSource</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>dataset_sha256</code></td>
+<td><code>datasetSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>countries</code></td>
+<td><code>countries</code></td>
+<td><a href="#countrycatalogentry"><code>CountryCatalogEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>activation_status</code></td>
+<td><code>activationStatus</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>last_activation_error</code></td>
+<td><code>lastActivationError</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>activated_at</code></td>
+<td><code>activatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="countrycatalogentry">CountryCatalogEntry</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code</code></td>
+<td><code>code</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>prefix_count</code></td>
+<td><code>prefixCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crscategory">CrsCategory</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>code</code></td>
+<td><code>code</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td><code>label</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rule_count</code></td>
+<td><code>ruleCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsexclusionplugin">CrsExclusionPlugin</h3>
+<p>CrsExclusionPlugin is a single curated rule-exclusion-package row in the tenant-wide catalog. Slugs identify upstream packages for common web applications (WordPress, Drupal, Nextcloud, …). The compiler uses each package's tx.<slug>-rule-exclusions-plugin_enabled gate for path scoping.</slug></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>slug</code></td>
+<td><code>slug</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>display_name</code></td>
+<td><code>displayName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>homepage_url</code></td>
+<td><code>homepageUrl</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>repo_url</code></td>
+<td><code>repoUrl</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tx_variable</code></td>
+<td><code>txVariable</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>installed</code></td>
+<td><code>installed</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>"github:<tag>" or "uploaded"</tag></td>
+</tr>
+<tr>
+<td><code>source_version</code></td>
+<td><code>sourceVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>artifact_path</code></td>
+<td><code>artifactPath</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>curated</code></td>
+<td><code>curated</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>imported_at</code></td>
+<td><code>importedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsplugin">CrsPlugin</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ruleset_id</code></td>
+<td><code>rulesetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>config_schema</code></td>
+<td><code>configSchema</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>files</code></td>
+<td><code>files</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>curated</code></td>
+<td><code>curated</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>has_before</code></td>
+<td><code>hasBefore</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>has_after</code></td>
+<td><code>hasAfter</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>has_config</code></td>
+<td><code>hasConfig</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsrule">CrsRule</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>rule_id</code></td>
+<td><code>ruleId</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>file</code></td>
+<td><code>file</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>category</code></td>
+<td><code>category</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>category_label</code></td>
+<td><code>categoryLabel</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>paranoia_level</code></td>
+<td><code>paranoiaLevel</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>severity</code></td>
+<td><code>severity</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>default_action</code></td>
+<td><code>defaultAction</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>default_score</code></td>
+<td><code>defaultScore</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>msg</code></td>
+<td><code>msg</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td><code>tags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>phase</code></td>
+<td><code>phase</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>is_initialization</code></td>
+<td><code>isInitialization</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>is_evaluation</code></td>
+<td><code>isEvaluation</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rule_kind</code></td>
+<td><code>ruleKind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>score_variable</code></td>
+<td><code>scoreVariable</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>raw_sha256</code></td>
+<td><code>rawSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>score_expression</code></td>
+<td><code>scoreExpression</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>line</code></td>
+<td><code>line</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>targets</code></td>
+<td><code>targets</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>operator</code></td>
+<td><code>operator</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>transform_chain</code></td>
+<td><code>transformChain</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ruleset_id</code></td>
+<td><code>rulesetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>raw</code></td>
+<td><code>raw</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Exact SecLang directive as imported, including original line continuations. Populated by GetCrsRule; list responses omit it to keep catalog pages small.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crsruleset">CrsRuleset</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>vendor | uploaded</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="common.html#resourcestatus"><code>ResourceStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>fingerprint</code></td>
+<td><code>fingerprint</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rule_count</code></td>
+<td><code>ruleCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>plugin_count</code></td>
+<td><code>pluginCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ingested_at</code></td>
+<td><code>ingestedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>activated_at</code></td>
+<td><code>activatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>crs_setup_version</code></td>
+<td><code>crsSetupVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rule_file_count</code></td>
+<td><code>ruleFileCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="crstag">CrsTag</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tag</code></td>
+<td><code>tag</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rule_count</code></td>
+<td><code>ruleCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="customrule">CustomRule</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rule_id</code></td>
+<td><code>ruleId</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>phase</code></td>
+<td><code>phase</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td><code>sortOrder</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td><code>enabled</code></td>
+<td><code>bool</code></td>
+<td>optional (explicit)</td>
+<td>Presence is required on the JSON wire so an explicit disabled state is distinct from an invalid write that omitted the operator's choice.</td>
+</tr>
+<tr>
+<td><code>seclang</code></td>
+<td><code>seclang</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional site id. When empty the rule is policy-wide; when set it only runs when the matching site is being compiled. WAF_POLICY_DESIGN § 3.2.</td>
+</tr>
+<tr>
+<td><code>placement</code></td>
+<td><code>placement</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>"before_crs" | "after_crs" | "request_before_blocking" | "response_before_blocking".</td>
+</tr>
+<tr>
+<td><code>visual_spec</code></td>
+<td><code>visualSpec</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td>Optional visual-builder spec. When set the server compiles this into SecLang; when absent the <code>seclang</code> field is treated as raw. See internal/waf/visualrule for the schema. <em>free-form JSON object.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="customruletemplate">CustomRuleTemplate</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>defaults</code></td>
+<td><code>defaults</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>category</code></td>
+<td><code>category</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Grouping key for the catalog card: access | observability | privacy | …</td>
+</tr>
+<tr>
+<td><code>builtin</code></td>
+<td><code>builtin</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>True for builtin/seeded recipes; false for tenant-authored ones.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplist">IpList</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>entries</code></td>
+<td><code>entries</code></td>
+<td><a href="#iplistentry"><code>IpListEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>deleted_at</code></td>
+<td><code>deletedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>global_ref_count</code></td>
+<td><code>globalRefCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_ref_count</code></td>
+<td><code>policyRefCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_ref_count</code></td>
+<td><code>siteRefCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>management_mode</code></td>
+<td><code>managementMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>manual | subscription</td>
+</tr>
+<tr>
+<td><code>etag</code></td>
+<td><code>etag</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>opaque concurrency token; required by UpdateIpList</td>
+</tr>
+<tr>
+<td><code>entry_count</code></td>
+<td><code>entryCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ipv4_count</code></td>
+<td><code>ipv4Count</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ipv6_count</code></td>
+<td><code>ipv6Count</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>content_status</code></td>
+<td><code>contentStatus</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>available | empty</td>
+</tr>
+<tr>
+<td><code>deployment_status</code></td>
+<td><code>deploymentStatus</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>not_in_use | config_pending | config_applying | config_failed | config_receipts_complete | unverified</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><a href="#iplistsource"><code>IpListSource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sync_status</code></td>
+<td><code>syncStatus</code></td>
+<td><a href="#iplistsyncstatus"><code>IpListSyncStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>held_update</code></td>
+<td><code>heldUpdate</code></td>
+<td><a href="#iplistheldupdate"><code>IpListHeldUpdate</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>reference_preview</code></td>
+<td><code>referencePreview</code></td>
+<td><a href="#iplistreference"><code>IpListReference</code></a></td>
+<td>repeated</td>
+<td>First two effective references, ordered exactly like ListIpListReferences. The catalog uses this bounded preview to show action + scope without hydrating every relationship for every row.</td>
+</tr>
+<tr>
+<td><code>deployment</code></td>
+<td><code>deployment</code></td>
+<td><a href="#iplistdeployment"><code>IpListDeployment</code></a></td>
+<td>singular</td>
+<td>Exact list identity and required node receipts; hydrated by List/Get.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistapplytarget">IpListApplyTarget</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scope</code></td>
+<td><code>scope</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>"global" | "policy" | "site".</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistbindingrecord">IpListBindingRecord</h3>
+<p>IpListBindingRecord is the sole authored enforcement use of an IP list. The list owns addresses only; this record owns identity, membership and action semantics.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ip_list_id</code></td>
+<td><code>ipListId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ip_list_name</code></td>
+<td><code>ipListName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Cached IP list name for display; set by the server on reads.</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>"allow" | "deny" | "monitor".</td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td><code>sortOrder</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>path_prefix</code></td>
+<td><code>pathPrefix</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Scope the binding to requests whose URI begins with this prefix. Empty = applies to every request the policy sees.</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional site id. Empty = policy-wide binding; set = site-scoped extra that only runs when the matching site is compiled.</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>bypass_mode</code></td>
+<td><code>bypassMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>"all_waf" (bypass the complete WAF) or "ip_lists_only".</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td><code>scope</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>"global" | "policy" | "site"; set by the server on reads.</td>
+</tr>
+<tr>
+<td><code>address_source</code></td>
+<td><code>addressSource</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>required: client_ip | peer_ip</td>
+</tr>
+<tr>
+<td><code>match_mode</code></td>
+<td><code>matchMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>required: in_list | not_in_list</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistdeployment">IpListDeployment</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>revision_id</code></td>
+<td><code>revisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>content_digest</code></td>
+<td><code>contentDigest</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_ids</code></td>
+<td><code>siteIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>targets</code></td>
+<td><code>targets</code></td>
+<td><a href="#iplistdeploymenttarget"><code>IpListDeploymentTarget</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistdeploymenttarget">IpListDeploymentTarget</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>applied_at</code></td>
+<td><code>appliedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>last_error</code></td>
+<td><code>lastError</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistentry">IpListEntry</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>value</code></td>
+<td><code>value</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>note</code></td>
+<td><code>note</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>expiresAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistheldupdate">IpListHeldUpdate</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reason</code></td>
+<td><code>reason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>entry_count</code></td>
+<td><code>entryCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ipv4_count</code></td>
+<td><code>ipv4Count</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ipv6_count</code></td>
+<td><code>ipv6Count</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>added_count</code></td>
+<td><code>addedCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>removed_count</code></td>
+<td><code>removedCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>added_samples</code></td>
+<td><code>addedSamples</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>removed_samples</code></td>
+<td><code>removedSamples</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>expiresAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistreference">IpListReference</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scope</code></td>
+<td><code>scope</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_name</code></td>
+<td><code>policyName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_name</code></td>
+<td><code>siteName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>binding_id</code></td>
+<td><code>bindingId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>bypass_mode</code></td>
+<td><code>bypassMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>role</code></td>
+<td><code>role</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>access_control | trusted_proxy_peer | rule_operand | bot_trusted_client</td>
+</tr>
+<tr>
+<td><code>address_source</code></td>
+<td><code>addressSource</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>match_mode</code></td>
+<td><code>matchMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>custom_rule_id</code></td>
+<td><code>customRuleId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>custom_rule_name</code></td>
+<td><code>customRuleName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>trust_node_id</code></td>
+<td><code>trustNodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>trust_node_name</code></td>
+<td><code>trustNodeName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistrollout">IpListRollout</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>affected_consumers</code></td>
+<td><code>affectedConsumers</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>updated_targets</code></td>
+<td><code>updatedTargets</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>failed_targets</code></td>
+<td><code>failedTargets</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistscopehit">IpListScopeHit</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scope</code></td>
+<td><code>scope</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ip_list_id</code></td>
+<td><code>ipListId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ip_list_name</code></td>
+<td><code>ipListName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_name</code></td>
+<td><code>policyName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_name</code></td>
+<td><code>siteName</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>bypass_mode</code></td>
+<td><code>bypassMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>entries</code></td>
+<td><code>entries</code></td>
+<td><a href="#iplistentry"><code>IpListEntry</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>binding_id</code></td>
+<td><code>bindingId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>address_source</code></td>
+<td><code>addressSource</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>match_mode</code></td>
+<td><code>matchMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>path_prefix</code></td>
+<td><code>pathPrefix</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistsource">IpListSource</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td><code>url</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>query values are redacted on every read</td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td><code>format</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>json_paths</code></td>
+<td><code>jsonPaths</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>RFC 9535; every expression must select strings</td>
+</tr>
+<tr>
+<td><code>interval</code></td>
+<td><code>interval</code></td>
+<td><code>google.protobuf.Duration</code></td>
+<td>singular</td>
+<td><em>seconds string, e.g. <code>30s</code>.</em></td>
+</tr>
+<tr>
+<td><code>paused</code></td>
+<td><code>paused</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>min_entries</code></td>
+<td><code>minEntries</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>max_entries</code></td>
+<td><code>maxEntries</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>max_delete_ratio</code></td>
+<td><code>maxDeleteRatio</code></td>
+<td><code>double</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>generation</code></td>
+<td><code>generation</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>internal CAS input; UI must not display it <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td><code>headers</code></td>
+<td><a href="#iplistsourceheader"><code>IpListSourceHeader</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistsourceheader">IpListSourceHeader</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>configured</code></td>
+<td><code>configured</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistsourceheadermutation">IpListSourceHeaderMutation</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>keep_existing</code></td>
+<td><code>keepExisting</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Part of oneof <code>operation</code>.</td>
+</tr>
+<tr>
+<td><code>replace_secret</code></td>
+<td><code>replaceSecret</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Part of oneof <code>operation</code>.</td>
+</tr>
+<tr>
+<td><code>delete</code></td>
+<td><code>delete</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Part of oneof <code>operation</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistsourceinput">IpListSourceInput</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>url</code></td>
+<td><code>url</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td><code>format</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>json_paths</code></td>
+<td><code>jsonPaths</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>RFC 9535; 1-8 expressions for json_v1</td>
+</tr>
+<tr>
+<td><code>interval</code></td>
+<td><code>interval</code></td>
+<td><code>google.protobuf.Duration</code></td>
+<td>singular</td>
+<td><em>seconds string, e.g. <code>30s</code>.</em></td>
+</tr>
+<tr>
+<td><code>paused</code></td>
+<td><code>paused</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>min_entries</code></td>
+<td><code>minEntries</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>max_entries</code></td>
+<td><code>maxEntries</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>max_delete_ratio</code></td>
+<td><code>maxDeleteRatio</code></td>
+<td><code>double</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td><code>headers</code></td>
+<td><a href="#iplistsourceheadermutation"><code>IpListSourceHeaderMutation</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistsyncrun">IpListSyncRun</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>trigger</code></td>
+<td><code>trigger</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>result_code</code></td>
+<td><code>resultCode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td><code>error</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>http_status</code></td>
+<td><code>httpStatus</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>entry_count</code></td>
+<td><code>entryCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ipv4_count</code></td>
+<td><code>ipv4Count</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ipv6_count</code></td>
+<td><code>ipv6Count</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>added_count</code></td>
+<td><code>addedCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>removed_count</code></td>
+<td><code>removedCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>started_at</code></td>
+<td><code>startedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>finished_at</code></td>
+<td><code>finishedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="iplistsyncstatus">IpListSyncStatus</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>never_synced | healthy | syncing | held | failed | paused</td>
+</tr>
+<tr>
+<td><code>result_code</code></td>
+<td><code>resultCode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>last_error</code></td>
+<td><code>lastError</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>last_attempt_at</code></td>
+<td><code>lastAttemptAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>last_success_at</code></td>
+<td><code>lastSuccessAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>next_sync_at</code></td>
+<td><code>nextSyncAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>consecutive_failures</code></td>
+<td><code>consecutiveFailures</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="policycrsexclusionplugin">PolicyCrsExclusionPlugin</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>plugin_id</code></td>
+<td><code>pluginId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>plugin_slug</code></td>
+<td><code>pluginSlug</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tx_variable</code></td>
+<td><code>txVariable</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td><code>enabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>path_prefix</code></td>
+<td><code>pathPrefix</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional URI prefix. Empty = applies to every request the policy sees; non-empty = emits a phase-1 @beginsWith SecRule so the CRS exclusion variable only flips on for that path.</td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td><code>sortOrder</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="ratelimitendpointrecord">RateLimitEndpointRecord</h3>
+<p>RateLimitEndpointRecord is one canonical rolling-window rule. Policy-wide rows are reusable defaults; site rows override an inherited rule with the same path + HTTP-method signature.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional site id. Empty = policy-wide rule; set = site-scoped overlay that only runs when the matching site is compiled. There is no scalar rate-limit policy layer.</td>
+</tr>
+<tr>
+<td><code>path_pattern</code></td>
+<td><code>pathPattern</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>method_mode</code></td>
+<td><code>methodMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Explicit method contract: "any" ignores methods; "include" requires at least one canonical HTTP token in methods. Empty never means ANY.</td>
+</tr>
+<tr>
+<td><code>methods</code></td>
+<td><code>methods</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td><code>action</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>"block" affects only matching requests; "ban" rejects every request from the resolved IP in ban_scope; "challenge" runs the browser-check flow.</td>
+</tr>
+<tr>
+<td><code>sort_order</code></td>
+<td><code>sortOrder</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>enforcement_mode</code></td>
+<td><code>enforcementMode</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Observation is a rule mode, never an action. "observe" records the exact would-enforce decision without interrupting traffic; "enforce" applies it.</td>
+</tr>
+<tr>
+<td><code>verified_request_count</code></td>
+<td><code>verifiedRequestCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Resolved browser-check values. For comfort/standard/strict the server derives and canonicalizes these from request_count/window_seconds. They are caller-controlled only when challenge_profile is custom.</td>
+</tr>
+<tr>
+<td><code>verified_window_seconds</code></td>
+<td><code>verifiedWindowSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>challenge_ttl_seconds</code></td>
+<td><code>challengeTtlSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>clearance_ttl_seconds</code></td>
+<td><code>clearanceTtlSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>proof_difficulty</code></td>
+<td><code>proofDifficulty</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>bind_network</code></td>
+<td><code>bindNetwork</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>counting_key</code></td>
+<td><code>countingKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Per-client identity: "ip" | "session" | "header:<name>".</name></td>
+</tr>
+<tr>
+<td><code>request_count</code></td>
+<td><code>requestCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Allow N requests in the T-second rolling window; request N+1 starts the fixed action episode.</td>
+</tr>
+<tr>
+<td><code>window_seconds</code></td>
+<td><code>windowSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>mitigation_seconds</code></td>
+<td><code>mitigationSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>How long a newly-triggered block/ban/challenge episode remains active. Blocked requests do not extend this TTL.</td>
+</tr>
+<tr>
+<td><code>ban_scope</code></td>
+<td><code>banScope</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Required only for action=ban: "site" | "global". Global means every site in this tenant, not every tenant on the node.</td>
+</tr>
+<tr>
+<td><code>challenge_profile</code></td>
+<td><code>challengeProfile</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Required only for action=challenge: "comfort" | "standard" | "strict" | "custom". A preset is the sole operator intent; conflicting raw values are ignored and re-derived.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ruleoverride">RuleOverride</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>crs_rule_id</code></td>
+<td><code>crsRuleId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>removed_targets</code></td>
+<td><code>removedTargets</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>added_targets</code></td>
+<td><code>addedTargets</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td><code>tags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rationale</code></td>
+<td><code>rationale</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional site id. When empty the override is policy-wide (applies to every site that attaches the policy); when set, it only runs when the matching site is being compiled. WAF_POLICY_DESIGN § 3.2.</td>
+</tr>
+<tr>
+<td><code>scope</code></td>
+<td><code>scope</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional path prefix (<code>@beginsWith</code>). When set the override is scoped to requests whose URI starts with this string. CRS docs § 2-3 Example 5.</td>
+</tr>
+<tr>
+<td><code>score_override</code></td>
+<td><code>scoreOverride</code></td>
+<td><code>int32</code></td>
+<td>optional (explicit)</td>
+<td>Optional explicit score override (PR 3). proto3 <code>optional</code> gives presence tracking so the operator can set 0 to suppress the rule's anomaly contribution entirely (defect C5). When unset and <code>action_enum != SCORE_OVERRIDE</code>, the rule's default contribution stays untouched.</td>
+</tr>
+<tr>
+<td><code>action_enum</code></td>
+<td><code>actionEnum</code></td>
+<td><a href="#ruleoverrideaction"><code>RuleOverrideAction</code></a></td>
+<td>singular</td>
+<td>Required canonical action verb.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="upstreamcrsexclusionpluginrelease">UpstreamCrsExclusionPluginRelease</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>slug</code></td>
+<td><code>slug</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tag</code></td>
+<td><code>tag</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>published_at</code></td>
+<td><code>publishedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>prerelease</code></td>
+<td><code>prerelease</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>draft</code></td>
+<td><code>draft</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>body</code></td>
+<td><code>body</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="enums">Enums</h2>
+<h3 id="ruleoverrideaction">RuleOverrideAction</h3>
+<p>RuleOverrideAction is the canonical operator-visible verb for a CRS override. UNSPECIFIED is invalid on writes; DEFAULT explicitly leaves the rule action unchanged for target or scope-only overrides.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RULE_OVERRIDE_ACTION_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>RULE_OVERRIDE_ACTION_DEFAULT</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>RULE_OVERRIDE_ACTION_DISABLE</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>RULE_OVERRIDE_ACTION_LOG_ONLY</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>RULE_OVERRIDE_ACTION_SCORE_OVERRIDE</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="../rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../../assets/js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,4623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>agent.proto — Agents, groups, and the agent stream — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Schema: tiyi.v1 · agent.proto · English guide · 中文指南 · Full RPC index" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../../../index.html#features">Features</a>
+      <a href="../../../index.html#tour">Product</a>
+      <a href="../../../index.html#pricing">Pricing</a>
+      <a href="../../index.html" style="color:var(--fg)">Docs</a>
+      <a href="../../../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../zh/docs/reference/services/agent.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="../../index.html">Overview</a></li>
+        <li><a href="../../quickstart.html">Quickstart</a></li>
+        <li><a href="../../installation.html">Installation</a></li>
+        <li><a href="../../configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="../../practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="../../operations.html">Operations guide</a></li>
+        <li><a href="../../troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="../../upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="../../site-import.html">Import / export sites</a></li>
+        <li><a href="../../api-protection.html">API protection</a></li>
+        <li><a href="../../responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="../../concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI reference</a></li>
+        <li><a href="../../api.html">API reference</a></li>
+        <li><a href="../index.html">Full reference</a></li>
+        <li><a href="../rpc-index.html">All RPCs</a></li>
+        <li><a href="../permissions.html">Permissions</a></li>
+        <li><a href="../cli-options.html">All CLI flags</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="../../deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="agentproto-agents-groups-and-the-agent-stream">agent.proto — Agents, groups, and the agent stream</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>agent.proto</code> · <a href="../../api.html">English guide</a> · <a href="../../../zh/docs/api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="agentservice">AgentService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#agentserviceenroll"><code>Enroll</code></a></td>
+<td>unary</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+<tr>
+<td><a href="#agentservicelistnodes"><code>ListNodes</code></a></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentservicelistagents"><code>ListAgents</code></a></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentservicegetagent"><code>GetAgent</code></a></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentservicegetnodecapabilities"><code>GetNodeCapabilities</code></a></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentservicegetnodeservingstate"><code>GetNodeServingState</code></a></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentserviceupdateagent"><code>UpdateAgent</code></a></td>
+<td>unary</td>
+<td>(<code>agent:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentservicedeleteagent"><code>DeleteAgent</code></a></td>
+<td>unary</td>
+<td>(<code>agent:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentserviceretrynodeconfig"><code>RetryNodeConfig</code></a></td>
+<td>unary</td>
+<td>(<code>agent:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentserviceissueenrollmenttoken"><code>IssueEnrollmentToken</code></a></td>
+<td>unary</td>
+<td>(<code>agent:install</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentservicecreatenodeinstallation"><code>CreateNodeInstallation</code></a></td>
+<td>unary</td>
+<td>(<code>agent:install</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentservicegetnodeinstallstatus"><code>GetNodeInstallStatus</code></a></td>
+<td>unary</td>
+<td>(<code>agent:install</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentservicestreamagentevents"><code>StreamAgentEvents</code></a></td>
+<td>server stream</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentservicelistnodemetricsamples"><code>ListNodeMetricSamples</code></a></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentservicelistconfigbundles"><code>ListConfigBundles</code></a></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentservicegetconfigbundle"><code>GetConfigBundle</code></a></td>
+<td>unary</td>
+<td>(<code>agent:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentgroupservice">AgentGroupService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#agentgroupservicelistagentgroups"><code>ListAgentGroups</code></a></td>
+<td>unary</td>
+<td>(<code>agent_group:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentgroupservicegetagentgroup"><code>GetAgentGroup</code></a></td>
+<td>unary</td>
+<td>(<code>agent_group:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentgroupservicecreateagentgroup"><code>CreateAgentGroup</code></a></td>
+<td>unary</td>
+<td>(<code>agent_group:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentgroupserviceupdateagentgroup"><code>UpdateAgentGroup</code></a></td>
+<td>unary</td>
+<td>(<code>agent_group:write</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentgroupservicedeleteagentgroup"><code>DeleteAgentGroup</code></a></td>
+<td>unary</td>
+<td>(<code>agent_group:delete</code>)</td>
+</tr>
+<tr>
+<td><a href="#agentgroupserviceresolveagentgroup"><code>ResolveAgentGroup</code></a></td>
+<td>unary</td>
+<td>(<code>agent_group:read</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentstreamservice">AgentStreamService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#agentstreamserviceconnect"><code>Connect</code></a></td>
+<td>bidi stream</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="evidenceuploadservice">EvidenceUploadService</h3>
+<p>EvidenceUploadService is deliberately separate from AgentStreamService so large request bodies cannot head-of-line block config, metrics, facts, or binary-rollout traffic.</p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#evidenceuploadserviceupload"><code>Upload</code></a></td>
+<td>bidi stream</td>
+<td><strong>public</strong> (no token)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="agentserviceenroll">AgentService.Enroll</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/Enroll</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <strong>public</strong> (no token)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.EnrollRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enrollment_token</code></td>
+<td><code>enrollmentToken</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>fingerprint</code></td>
+<td><code>fingerprint</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>hostname</code></td>
+<td><code>hostname</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>os</code></td>
+<td><code>os</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>arch</code></td>
+<td><code>arch</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.EnrollResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent</code></td>
+<td><code>agent</code></td>
+<td><a href="#agent"><code>Agent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>workload_cert_pem</code></td>
+<td><code>workloadCertPem</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>workload_key_pem</code></td>
+<td><code>workloadKeyPem</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>ca_cert_pem</code></td>
+<td><code>caCertPem</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>stream_token</code></td>
+<td><code>streamToken</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>bundle_signing_public_key</code></td>
+<td><code>bundleSigningPublicKey</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservicelistnodes">AgentService.ListNodes</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/ListNodes</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListNodesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#agentstatus"><code>AgentStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>local_only</code></td>
+<td><code>localOnly</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Return only the synthesized built-in local node. Used by the local detail poll so it never enumerates every enrolled Agent.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListNodesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#node"><code>Node</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>remote_total</code></td>
+<td><code>remoteTotal</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservicelistagents">AgentService.ListAgents</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/ListAgents</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListAgentsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#agentstatus"><code>AgentStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListAgentsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#agent"><code>Agent</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservicegetagent">AgentService.GetAgent</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/GetAgent</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetAgentRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetAgentResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent</code></td>
+<td><code>agent</code></td>
+<td><a href="#agent"><code>Agent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservicegetnodecapabilities">AgentService.GetNodeCapabilities</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/GetNodeCapabilities</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetNodeCapabilitiesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_id</code></td>
+<td><code>nodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetNodeCapabilitiesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_id</code></td>
+<td><code>nodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>known</code></td>
+<td><code>known</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Unknown is not an empty set of supported features and never qualifies a control publication. A local report describes this Controller binary.</td>
+</tr>
+<tr>
+<td><code>capabilities</code></td>
+<td><code>capabilities</code></td>
+<td><a href="#agentcapabilities"><code>AgentCapabilities</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>capability_revision</code></td>
+<td><code>capabilityRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>capabilities_sha256</code></td>
+<td><code>capabilitiesSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>foundation_supported</code></td>
+<td><code>foundationSupported</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservicegetnodeservingstate">AgentService.GetNodeServingState</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/GetNodeServingState</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetNodeServingStateRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_id</code></td>
+<td><code>nodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetNodeServingStateResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_id</code></td>
+<td><code>nodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>remote</code></td>
+<td><code>remote</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Local admission uses the built-in runtime, not remote signed grants.</td>
+</tr>
+<tr>
+<td><code>assigned</code></td>
+<td><code>assigned</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>acknowledged</code></td>
+<td><code>acknowledged</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Receipt of this exact grant, not current liveness or serving convergence.</td>
+</tr>
+<tr>
+<td><code>grant_revision</code></td>
+<td><code>grantRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>grant_sha256</code></td>
+<td><code>grantSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>config_revision_id</code></td>
+<td><code>configRevisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>generation</code></td>
+<td><code>generation</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>bundle_id</code></td>
+<td><code>bundleId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>target_revision</code></td>
+<td><code>targetRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>artifact_sha256</code></td>
+<td><code>artifactSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_ids</code></td>
+<td><code>siteIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentserviceupdateagent">AgentService.UpdateAgent</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/UpdateAgent</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdateAgentRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent</code></td>
+<td><code>agent</code></td>
+<td><a href="#agent"><code>Agent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>update_mask</code></td>
+<td><code>updateMask</code></td>
+<td><code>google.protobuf.FieldMask</code></td>
+<td>singular</td>
+<td><em>comma-joined field paths, e.g. <code>"name,status"</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdateAgentResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent</code></td>
+<td><code>agent</code></td>
+<td><a href="#agent"><code>Agent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservicedeleteagent">AgentService.DeleteAgent</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/DeleteAgent</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:delete</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteAgentRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteAgentResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentserviceretrynodeconfig">AgentService.RetryNodeConfig</h3>
+<p>RetryNodeConfig is the only operator-triggered node action. The built-in node reapplies its current desired config; a remote Agent gets the latest failed/stale-delivered signed bundle again.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/RetryNodeConfig</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.RetryNodeConfigRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_id</code></td>
+<td><code>nodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.RetryNodeConfigResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentserviceissueenrollmenttoken">AgentService.IssueEnrollmentToken</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/IssueEnrollmentToken</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:install</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.IssueEnrollmentTokenRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tags</code></td>
+<td><code>tags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ttl_seconds</code></td>
+<td><code>ttlSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>max_nodes</code></td>
+<td><code>maxNodes</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Maximum distinct nodes; zero defaults to one. Range: 1..1000.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.IssueEnrollmentTokenResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token</code></td>
+<td><code>token</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>expiresAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>token_id</code></td>
+<td><code>tokenId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>max_nodes</code></td>
+<td><code>maxNodes</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservicecreatenodeinstallation">AgentService.CreateNodeInstallation</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/CreateNodeInstallation</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:install</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CreateNodeInstallationRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>controller_url</code></td>
+<td><code>controllerUrl</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td><code>tags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ttl_seconds</code></td>
+<td><code>ttlSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>max_nodes</code></td>
+<td><code>maxNodes</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Maximum distinct nodes; zero defaults to one. Range: 1..1000.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CreateNodeInstallationResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>command</code></td>
+<td><code>command</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Copy-ready curl | sh commands; their URLs contain the enrollment secret.</td>
+</tr>
+<tr>
+<td><code>foreground_command</code></td>
+<td><code>foregroundCommand</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>script</code></td>
+<td><code>script</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Complete scripts for review, download and configuration management.</td>
+</tr>
+<tr>
+<td><code>foreground_script</code></td>
+<td><code>foregroundScript</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>token_id</code></td>
+<td><code>tokenId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>expiresAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>controller_url</code></td>
+<td><code>controllerUrl</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>platform</code></td>
+<td><code>platform</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td><code>tags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>max_nodes</code></td>
+<td><code>maxNodes</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>proxy_http_addr</code></td>
+<td><code>proxyHttpAddr</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>proxy_https_addr</code></td>
+<td><code>proxyHttpsAddr</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservicegetnodeinstallstatus">AgentService.GetNodeInstallStatus</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/GetNodeInstallStatus</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:install</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetNodeInstallStatusRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token_id</code></td>
+<td><code>tokenId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetNodeInstallStatusResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token_id</code></td>
+<td><code>tokenId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expires_at</code></td>
+<td><code>expiresAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>max_nodes</code></td>
+<td><code>maxNodes</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>registered_nodes</code></td>
+<td><code>registeredNodes</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Successful distinct registrations through this command, including nodes subsequently deleted. Re-enrollment of the same fingerprint counts once.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservicestreamagentevents">AgentService.StreamAgentEvents</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/StreamAgentEvents</code></li>
+<li><strong>Kind</strong> server stream — server-streaming; the response is a stream of messages</li>
+<li><strong>Auth</strong> (<code>agent:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StreamAgentEventsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StreamAgentEventsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event</code></td>
+<td><code>event</code></td>
+<td><a href="#agentevent"><code>AgentEvent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent</code></td>
+<td><code>agent</code></td>
+<td><a href="#agent"><code>Agent</code></a></td>
+<td>singular</td>
+<td>Full agent row, refreshed whenever this event changes its state (status/metrics/config revision/tags). Absent when the server only streams metadata events.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservicelistnodemetricsamples">AgentService.ListNodeMetricSamples</h3>
+<p>Enrolled Agents and the built-in local node share one node-scoped metric history.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/ListNodeMetricSamples</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListNodeMetricSamplesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>node_id</code></td>
+<td><code>nodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>start_time</code></td>
+<td><code>startTime</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td>Optional. Defaults to thirty days ago and is clamped to the server-retained thirty-day history window. <em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>end_time</code></td>
+<td><code>endTime</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td>Optional. Defaults to now. <em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>max_points</code></td>
+<td><code>maxPoints</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Desired response bound. Defaults to 400 and is capped at 2000.</td>
+</tr>
+<tr>
+<td><code>bucket_seconds</code></td>
+<td><code>bucketSeconds</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Optional aggregation width. The server may choose a wider bucket to keep the response within max_points. Values below one minute are rounded up.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListNodeMetricSamplesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>samples</code></td>
+<td><code>samples</code></td>
+<td><a href="#nodemetricsample"><code>NodeMetricSample</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservicelistconfigbundles">AgentService.ListConfigBundles</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/ListConfigBundles</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListConfigBundlesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>node_id</code></td>
+<td><code>nodeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Built-in local node id or enrolled remote Agent id.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListConfigBundlesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#configbundlesummary"><code>ConfigBundleSummary</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservicegetconfigbundle">AgentService.GetConfigBundle</h3>
+<p>GetConfigBundle accepts either a remote config_bundle id or a built-in local config_revision id returned by ListConfigBundles.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentService/GetConfigBundle</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetConfigBundleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetConfigBundleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bundle</code></td>
+<td><code>bundle</code></td>
+<td><a href="#configbundle"><code>ConfigBundle</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentgroupservicelistagentgroups">AgentGroupService.ListAgentGroups</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentGroupService/ListAgentGroups</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent_group:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListAgentGroupsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pagerequest"><code>PageRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListAgentGroupsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#agentgroup"><code>AgentGroup</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#pageresponse"><code>PageResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentgroupservicegetagentgroup">AgentGroupService.GetAgentGroup</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentGroupService/GetAgentGroup</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent_group:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetAgentGroupRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetAgentGroupResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>group</code></td>
+<td><code>group</code></td>
+<td><a href="#agentgroup"><code>AgentGroup</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentgroupservicecreateagentgroup">AgentGroupService.CreateAgentGroup</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentGroupService/CreateAgentGroup</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent_group:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.CreateAgentGroupRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>group</code></td>
+<td><code>group</code></td>
+<td><a href="#agentgroup"><code>AgentGroup</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.CreateAgentGroupResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>group</code></td>
+<td><code>group</code></td>
+<td><a href="#agentgroup"><code>AgentGroup</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentgroupserviceupdateagentgroup">AgentGroupService.UpdateAgentGroup</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentGroupService/UpdateAgentGroup</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent_group:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UpdateAgentGroupRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>group</code></td>
+<td><code>group</code></td>
+<td><a href="#agentgroup"><code>AgentGroup</code></a></td>
+<td>singular</td>
+<td>Complete replacement: name and selector are required.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UpdateAgentGroupResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>group</code></td>
+<td><code>group</code></td>
+<td><a href="#agentgroup"><code>AgentGroup</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentgroupservicedeleteagentgroup">AgentGroupService.DeleteAgentGroup</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentGroupService/DeleteAgentGroup</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent_group:delete</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DeleteAgentGroupRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DeleteAgentGroupResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentgroupserviceresolveagentgroup">AgentGroupService.ResolveAgentGroup</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentGroupService/ResolveAgentGroup</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>agent_group:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ResolveAgentGroupRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Resolve a saved group by id …</td>
+</tr>
+<tr>
+<td><code>group</code></td>
+<td><code>group</code></td>
+<td><a href="#agentgroup"><code>AgentGroup</code></a></td>
+<td>singular</td>
+<td>… or an ad-hoc spec when the editor is previewing unsaved edits. Exactly one of <code>id</code> or <code>group</code> must be set.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ResolveAgentGroupResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agents</code></td>
+<td><code>agents</code></td>
+<td><a href="#agent"><code>Agent</code></a></td>
+<td>repeated</td>
+<td>Full agent rows for callers that want to render a preview list.</td>
+</tr>
+<tr>
+<td><code>agent_ids</code></td>
+<td><code>agentIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>Compact id list for callers that only need the count or id set (the Vben group editor uses this for its match-count badge).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentstreamserviceconnect">AgentStreamService.Connect</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AgentStreamService/Connect</code></li>
+<li><strong>Kind</strong> bidi stream — bidirectional stream (gRPC or Connect streaming transport required)</li>
+<li><strong>Auth</strong> <strong>public</strong> (no token)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.AgentStreamServiceConnectRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hello</code></td>
+<td><code>hello</code></td>
+<td><a href="#agenthello"><code>AgentHello</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>state_report</code></td>
+<td><code>stateReport</code></td>
+<td><a href="#agentstatereport"><code>AgentStateReport</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>apply_result</code></td>
+<td><code>applyResult</code></td>
+<td><a href="#agentapplyresult"><code>AgentApplyResult</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>metrics_push</code></td>
+<td><code>metricsPush</code></td>
+<td><a href="#agentmetricspush"><code>AgentMetricsPush</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>challenge_response</code></td>
+<td><code>challengeResponse</code></td>
+<td><a href="#challengeresponse"><code>ChallengeResponse</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>ping_ack</code></td>
+<td><code>pingAck</code></td>
+<td><a href="#pingack"><code>PingAck</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>command_result</code></td>
+<td><code>commandResult</code></td>
+<td><a href="#agentcommandresult"><code>AgentCommandResult</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>observation_batch</code></td>
+<td><code>observationBatch</code></td>
+<td><a href="#observationbatch"><code>ObservationBatch</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>gap_notice</code></td>
+<td><code>gapNotice</code></td>
+<td><a href="#gapnotice"><code>GapNotice</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>serving_grant_ack</code></td>
+<td><code>servingGrantAck</code></td>
+<td><a href="#agentservinggrantack"><code>AgentServingGrantAck</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.AgentStreamServiceConnectResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>welcome</code></td>
+<td><code>welcome</code></td>
+<td><a href="#agentwelcome"><code>AgentWelcome</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>config_update</code></td>
+<td><code>configUpdate</code></td>
+<td><a href="#configupdate"><code>ConfigUpdate</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>command</code></td>
+<td><code>command</code></td>
+<td><a href="#agentcommand"><code>AgentCommand</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>challenge_dispatch</code></td>
+<td><code>challengeDispatch</code></td>
+<td><a href="#challengedispatch"><code>ChallengeDispatch</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>ping</code></td>
+<td><code>ping</code></td>
+<td><a href="#ping"><code>Ping</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>go_away</code></td>
+<td><code>goAway</code></td>
+<td><a href="#goaway"><code>GoAway</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>batch_ack</code></td>
+<td><code>batchAck</code></td>
+<td><a href="#batchack"><code>BatchAck</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>gap_notice_ack</code></td>
+<td><code>gapNoticeAck</code></td>
+<td><a href="#gapnoticeack"><code>GapNoticeAck</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>serving_grant</code></td>
+<td><code>servingGrant</code></td>
+<td><a href="#signedservinggrant"><code>SignedServingGrant</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="evidenceuploadserviceupload">EvidenceUploadService.Upload</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.EvidenceUploadService/Upload</code></li>
+<li><strong>Kind</strong> bidi stream — bidirectional stream (gRPC or Connect streaming transport required)</li>
+<li><strong>Auth</strong> <strong>public</strong> (no token)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.UploadRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hello</code></td>
+<td><code>hello</code></td>
+<td><a href="#evidenceuploadhello"><code>EvidenceUploadHello</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>manifest</code></td>
+<td><code>manifest</code></td>
+<td><a href="#evidencemanifest"><code>EvidenceManifest</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>chunk</code></td>
+<td><code>chunk</code></td>
+<td><a href="#evidencechunk"><code>EvidenceChunk</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+<tr>
+<td><code>commit</code></td>
+<td><code>commit</code></td>
+<td><a href="#evidencecommit"><code>EvidenceCommit</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>message</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.UploadResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>durable_ack</code></td>
+<td><code>durableAck</code></td>
+<td><a href="#evidencedurableack"><code>EvidenceDurableAck</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="agent">Agent</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>fingerprint</code></td>
+<td><code>fingerprint</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>hostname</code></td>
+<td><code>hostname</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ip</code></td>
+<td><code>ip</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>os</code></td>
+<td><code>os</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>arch</code></td>
+<td><code>arch</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td><code>tags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#agentstatus"><code>AgentStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>config_hash</code></td>
+<td><code>configHash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>config_revision</code></td>
+<td><code>configRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>last_heartbeat</code></td>
+<td><code>lastHeartbeat</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>registered_at</code></td>
+<td><code>registeredAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>deleted_at</code></td>
+<td><code>deletedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>metrics</code></td>
+<td><code>metrics</code></td>
+<td><a href="#agentmetrics"><code>AgentMetrics</code></a></td>
+<td>singular</td>
+<td>Latest runtime metrics snapshot reported by the agent.</td>
+</tr>
+<tr>
+<td><code>metrics_updated_at</code></td>
+<td><code>metricsUpdatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentapplyresult">AgentApplyResult</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>correlation_id</code></td>
+<td><code>correlationId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>success</code></td>
+<td><code>success</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td><code>error</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>target_revision</code></td>
+<td><code>targetRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>Exact attempted signed envelope identity, required even on failure. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>artifact_sha256</code></td>
+<td><code>artifactSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentcapabilities">AgentCapabilities</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>artifact_format</code></td>
+<td><code>artifactFormat</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>resolver_version</code></td>
+<td><code>resolverVersion</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>control_format</code></td>
+<td><code>controlFormat</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>body_modes</code></td>
+<td><code>bodyModes</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>schema_irs</code></td>
+<td><code>schemaIrs</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>metric_payload_version</code></td>
+<td><code>metricPayloadVersion</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentcommand">AgentCommand</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><a href="#agentcommandkind"><code>AgentCommandKind</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>payload</code></td>
+<td><code>payload</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#agentcommandstatus"><code>AgentCommandStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>completed_at</code></td>
+<td><code>completedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentcommandresult">AgentCommandResult</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>command_id</code></td>
+<td><code>commandId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>success</code></td>
+<td><code>success</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td><code>error</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>output</code></td>
+<td><code>output</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentevent">AgentEvent</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>payload</code></td>
+<td><code>payload</code></td>
+<td><code>google.protobuf.Struct</code></td>
+<td>singular</td>
+<td><em>free-form JSON object.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentgroup">AgentGroup</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>selector</code></td>
+<td><code>selector</code></td>
+<td><a href="#agentgroupselector"><code>AgentGroupSelector</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>member_count</code></td>
+<td><code>memberCount</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Complete current member count, never a truncated page count.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentgroupselector">AgentGroupSelector</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>match_tags</code></td>
+<td><code>matchTags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>match_agent_ids</code></td>
+<td><code>matchAgentIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agenthello">AgentHello</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>config_hash</code></td>
+<td><code>configHash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>stream_token</code></td>
+<td><code>streamToken</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>observation_protocol_version</code></td>
+<td><code>observationProtocolVersion</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>observation_protocol_version is an exact, breaking protocol version. The server does not negotiate or downgrade observation batches.</td>
+</tr>
+<tr>
+<td><code>capabilities</code></td>
+<td><code>capabilities</code></td>
+<td><a href="#agentcapabilities"><code>AgentCapabilities</code></a></td>
+<td>singular</td>
+<td>Required exact executable contracts. Missing/unknown capabilities do not inherit a previous connection's report or a product-version assumption.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentmetrics">AgentMetrics</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cpu_percent</code></td>
+<td><code>cpuPercent</code></td>
+<td><code>double</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>memory_percent</code></td>
+<td><code>memoryPercent</code></td>
+<td><code>double</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>active_connections</code></td>
+<td><code>activeConnections</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>requests_per_second</code></td>
+<td><code>requestsPerSecond</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>blocked_per_second</code></td>
+<td><code>blockedPerSecond</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>bandwidth_in_bps</code></td>
+<td><code>bandwidthInBps</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>Network bandwidth in bytes per second (sum of all interfaces). <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>bandwidth_out_bps</code></td>
+<td><code>bandwidthOutBps</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>memory_total_bytes</code></td>
+<td><code>memoryTotalBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>Total memory in bytes (for absolute display alongside percent). <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>memory_used_bytes</code></td>
+<td><code>memoryUsedBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>goroutines</code></td>
+<td><code>goroutines</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>Goroutine count (Go-specific but useful for diagnostics).</td>
+</tr>
+<tr>
+<td><code>waf_agent_cpu_percent</code></td>
+<td><code>wafAgentCpuPercent</code></td>
+<td><code>double</code></td>
+<td>singular</td>
+<td>Process CPU and Coraza phase-demand signals used by the node-local WAF overload controller. These are distinct from host-wide cpu_percent.</td>
+</tr>
+<tr>
+<td><code>waf_coraza_demand_percent</code></td>
+<td><code>wafCorazaDemandPercent</code></td>
+<td><code>double</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>waf_phase_p99_millis</code></td>
+<td><code>wafPhaseP99Millis</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>waf_overload_state</code></td>
+<td><code>wafOverloadState</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>waf_overload_action</code></td>
+<td><code>wafOverloadAction</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>waf_probe_percent</code></td>
+<td><code>wafProbePercent</code></td>
+<td><code>int32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>observation_health</code></td>
+<td><code>observationHealth</code></td>
+<td><a href="#agentobservationhealth"><code>AgentObservationHealth</code></a></td>
+<td>singular</td>
+<td>Remote observation transport health rides the existing 15-second health report. It is diagnostic state, never an overload-decision input.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentmetricspush">AgentMetricsPush</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>metrics</code></td>
+<td><code>metrics</code></td>
+<td><a href="#agentmetrics"><code>AgentMetrics</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>observed_at</code></td>
+<td><code>observedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>upstream_health</code></td>
+<td><code>upstreamHealth</code></td>
+<td><a href="upstream.html#upstreamhealthstate"><code>UpstreamHealthState</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>upstream_health_config_generation</code></td>
+<td><code>upstreamHealthConfigGeneration</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>upstream_health_artifact_sha256</code></td>
+<td><code>upstreamHealthArtifactSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentobservationhealth">AgentObservationHealth</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>state</code></td>
+<td><code>state</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>healthy | backlog | coverage_gap | quarantined</td>
+</tr>
+<tr>
+<td><code>pending_batches</code></td>
+<td><code>pendingBatches</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>pending_bytes</code></td>
+<td><code>pendingBytes</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>evicted_batches</code></td>
+<td><code>evictedBatches</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>gap_notices</code></td>
+<td><code>gapNotices</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>quarantined_streams</code></td>
+<td><code>quarantinedStreams</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>last_ack_age_millis</code></td>
+<td><code>lastAckAgeMillis</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>coverage_incomplete</code></td>
+<td><code>coverageIncomplete</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentservinggrantack">AgentServingGrantAck</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>grant_sha256</code></td>
+<td><code>grantSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentstatereport">AgentStateReport</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>config_hash</code></td>
+<td><code>configHash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#agentstatus"><code>AgentStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>metrics</code></td>
+<td><code>metrics</code></td>
+<td><a href="#agentmetrics"><code>AgentMetrics</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentwelcome">AgentWelcome</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>server_id</code></td>
+<td><code>serverId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>bundle_signing_public_key</code></td>
+<td><code>bundleSigningPublicKey</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>metric_payload_version</code></td>
+<td><code>metricPayloadVersion</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>Exact coordinated metric payload version, matching capabilities. Current identity v9 rejects older producers/spools; no downgrade exists. It does not advertise qualified body/schema evidence completeness.</td>
+</tr>
+<tr>
+<td><code>capabilities</code></td>
+<td><code>capabilities</code></td>
+<td><a href="#agentcapabilities"><code>AgentCapabilities</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="batchack">BatchAck</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boot_id</code></td>
+<td><code>bootId</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>stream_kind</code></td>
+<td><code>streamKind</code></td>
+<td><a href="#observationstreamkind"><code>ObservationStreamKind</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>batch_seq</code></td>
+<td><code>batchSeq</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>ack_through_batch_seq</code></td>
+<td><code>ackThroughBatchSeq</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#observationbatchackstatus"><code>ObservationBatchAckStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>durability</code></td>
+<td><code>durability</code></td>
+<td><a href="#observationackdurability"><code>ObservationAckDurability</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>error_code</code></td>
+<td><code>errorCode</code></td>
+<td><a href="#observationackerrorcode"><code>ObservationAckErrorCode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="challengedispatch">ChallengeDispatch</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token</code></td>
+<td><code>token</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>key_authorization</code></td>
+<td><code>keyAuthorization</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="challengeresponse">ChallengeResponse</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>token</code></td>
+<td><code>token</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>served</code></td>
+<td><code>served</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td><code>error</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configbundle">ConfigBundle</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>bundle_sha256</code></td>
+<td><code>bundleSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>bundle</code></td>
+<td><code>bundle</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>signature</code></td>
+<td><code>signature</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>emitted_at</code></td>
+<td><code>emittedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>delivered_at</code></td>
+<td><code>deliveredAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>applied_at</code></td>
+<td><code>appliedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>apply_result</code></td>
+<td><code>applyResult</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>apply_error</code></td>
+<td><code>applyError</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configbundlesummary">ConfigBundleSummary</h3>
+<p>Metadata-only list item; GetConfigBundle returns the artifact on demand.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tenant_id</code></td>
+<td><code>tenantId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>bundle_sha256</code></td>
+<td><code>bundleSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>emitted_at</code></td>
+<td><code>emittedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>delivered_at</code></td>
+<td><code>deliveredAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>applied_at</code></td>
+<td><code>appliedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>apply_result</code></td>
+<td><code>applyResult</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>apply_error</code></td>
+<td><code>applyError</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configupdate">ConfigUpdate</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>correlation_id</code></td>
+<td><code>correlationId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>bundle</code></td>
+<td><code>bundle</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>signature</code></td>
+<td><code>signature</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>bundle_sha256</code></td>
+<td><code>bundleSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>bundle_signing_public_key</code></td>
+<td><code>bundleSigningPublicKey</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="evidencechunk">EvidenceChunk</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>evidence_id</code></td>
+<td><code>evidenceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>offset</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td><code>data</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>crc32c</code></td>
+<td><code>crc32c</code></td>
+<td><code>fixed32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="evidencecommit">EvidenceCommit</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>evidence_id</code></td>
+<td><code>evidenceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>total_bytes</code></td>
+<td><code>totalBytes</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>body_crc32c</code></td>
+<td><code>bodyCrc32c</code></td>
+<td><code>fixed32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="evidencedurableack">EvidenceDurableAck</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>evidence_id</code></td>
+<td><code>evidenceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#evidenceackstatus"><code>EvidenceAckStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>durable_through_offset</code></td>
+<td><code>durableThroughOffset</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td><code>error</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="evidencemanifest">EvidenceManifest</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>metadata</code></td>
+<td><code>metadata</code></td>
+<td><a href="log.html#requestevidencemetadata"><code>RequestEvidenceMetadata</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>headers</code></td>
+<td><code>headers</code></td>
+<td><a href="log.html#requestevidenceheader"><code>RequestEvidenceHeader</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>body_size</code></td>
+<td><code>bodySize</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>body_crc32c</code></td>
+<td><code>bodyCrc32c</code></td>
+<td><code>fixed32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>retention</code></td>
+<td><code>retention</code></td>
+<td><a href="#evidenceretentioncontext"><code>EvidenceRetentionContext</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="evidencereservoirreference">EvidenceReservoirReference</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feature_key_hex</code></td>
+<td><code>featureKeyHex</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>capacity</code></td>
+<td><code>capacity</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>score</code></td>
+<td><code>score</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="evidenceretentioncontext">EvidenceRetentionContext</h3>
+<p>EvidenceRetentionContext lets the Controller merge provisional Agent exemplars with the same deterministic min-K order as retained Access detail. It is authenticated by the Agent upload channel and validated before persistence.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>security_anchor</code></td>
+<td><code>securityAnchor</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>access_full_anchor</code></td>
+<td><code>accessFullAnchor</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>access_record_id</code></td>
+<td><code>accessRecordId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>access_sample_window</code></td>
+<td><code>accessSampleWindow</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>candidate_settle_at</code></td>
+<td><code>candidateSettleAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>access_reservoir_refs</code></td>
+<td><code>accessReservoirRefs</code></td>
+<td><a href="#evidencereservoirreference"><code>EvidenceReservoirReference</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="evidenceuploadhello">EvidenceUploadHello</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>agent_id</code></td>
+<td><code>agentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>stream_token</code></td>
+<td><code>streamToken</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="gapnotice">GapNotice</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boot_id</code></td>
+<td><code>bootId</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>stream_kind</code></td>
+<td><code>streamKind</code></td>
+<td><a href="#observationstreamkind"><code>ObservationStreamKind</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>first_batch_seq</code></td>
+<td><code>firstBatchSeq</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>last_batch_seq</code></td>
+<td><code>lastBatchSeq</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>first_item_seq</code></td>
+<td><code>firstItemSeq</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>last_item_seq</code></td>
+<td><code>lastItemSeq</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code>reason</code></td>
+<td><a href="#observationgapreason"><code>ObservationGapReason</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="gapnoticeack">GapNoticeAck</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boot_id</code></td>
+<td><code>bootId</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>stream_kind</code></td>
+<td><code>streamKind</code></td>
+<td><a href="#observationstreamkind"><code>ObservationStreamKind</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>ack_through_batch_seq</code></td>
+<td><code>ackThroughBatchSeq</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>first_batch_seq</code></td>
+<td><code>firstBatchSeq</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td>first_batch_seq identifies the exact tombstone and is required. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#observationgapackstatus"><code>ObservationGapAckStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>error_code</code></td>
+<td><code>errorCode</code></td>
+<td><a href="#observationackerrorcode"><code>ObservationAckErrorCode</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="goaway">GoAway</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reason</code></td>
+<td><code>reason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code>message</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="node">Node</h3>
+<p>Node is the role-free read model used by the Nodes page. The built-in local runtime and enrolled remote Agents share one shape but remain distinct in storage and lifecycle.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>placement</code></td>
+<td><code>placement</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>LOCAL | REMOTE</td>
+</tr>
+<tr>
+<td><code>runtime</code></td>
+<td><code>runtime</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>BUILT_IN | AGENT</td>
+</tr>
+<tr>
+<td><code>connection_status</code></td>
+<td><code>connectionStatus</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>LOCAL | CONNECTED | DEGRADED | OFFLINE</td>
+</tr>
+<tr>
+<td><code>proxy_status</code></td>
+<td><code>proxyStatus</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>HEALTHY | DEGRADED | STOPPED | UNKNOWN</td>
+</tr>
+<tr>
+<td><code>config_hash</code></td>
+<td><code>configHash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>config_revision</code></td>
+<td><code>configRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>last_seen_at</code></td>
+<td><code>lastSeenAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code>version</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>addresses</code></td>
+<td><code>addresses</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td><code>tags</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>metrics</code></td>
+<td><code>metrics</code></td>
+<td><a href="#agentmetrics"><code>AgentMetrics</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>os</code></td>
+<td><code>os</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>arch</code></td>
+<td><code>arch</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>remote_agent</code></td>
+<td><code>remoteAgent</code></td>
+<td><a href="#agent"><code>Agent</code></a></td>
+<td>singular</td>
+<td>set only for REMOTE rows</td>
+</tr>
+<tr>
+<td><code>apply_result</code></td>
+<td><code>applyResult</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Latest desired configuration outcome, independent of connection status: unknown | pending | success | failure | rolled_back. Applies to both local and remote nodes. The active revision remains the last successful apply.</td>
+</tr>
+<tr>
+<td><code>apply_error</code></td>
+<td><code>applyError</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>applied_at</code></td>
+<td><code>appliedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>metrics_updated_at</code></td>
+<td><code>metricsUpdatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td>When <code>metrics</code> was last refreshed. Distinct from last_seen_at, which falls back to applied_at while no sample has been collected yet. <em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>attempt_config_revision</code></td>
+<td><code>attemptConfigRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>The most recent attempted bundle. These fields can advance while config_revision/config_hash remain on the last successfully applied bundle. <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>attempt_config_hash</code></td>
+<td><code>attemptConfigHash</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>attempted_at</code></td>
+<td><code>attemptedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="nodemetricsample">NodeMetricSample</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>observed_at</code></td>
+<td><code>observedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>metrics</code></td>
+<td><code>metrics</code></td>
+<td><a href="#agentmetrics"><code>AgentMetrics</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="observationbatch">ObservationBatch</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>header</code></td>
+<td><code>header</code></td>
+<td><a href="#observationbatchheader"><code>ObservationBatchHeader</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>payload</code></td>
+<td><code>payload</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="observationbatchheader">ObservationBatchHeader</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>boot_id</code></td>
+<td><code>bootId</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>stream_kind</code></td>
+<td><code>streamKind</code></td>
+<td><a href="#observationstreamkind"><code>ObservationStreamKind</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>batch_seq</code></td>
+<td><code>batchSeq</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>first_item_seq</code></td>
+<td><code>firstItemSeq</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>last_item_seq</code></td>
+<td><code>lastItemSeq</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>item_count</code></td>
+<td><code>itemCount</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>retention_tier</code></td>
+<td><code>retentionTier</code></td>
+<td><a href="#observationretentiontier"><code>ObservationRetentionTier</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>partition_utc_day</code></td>
+<td><code>partitionUtcDay</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>payload_schema_version</code></td>
+<td><code>payloadSchemaVersion</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>crc32c</code></td>
+<td><code>crc32c</code></td>
+<td><code>fixed32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ping">Ping</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nonce</code></td>
+<td><code>nonce</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pingack">PingAck</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nonce</code></td>
+<td><code>nonce</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>metric_boot_id</code></td>
+<td><code>metricBootId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>received_at</code></td>
+<td><code>receivedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>sent_at</code></td>
+<td><code>sentAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="signedservinggrant">SignedServingGrant</h3>
+<p>Domain-separated, canonical tiyi.serving_grant.v1 JSON. Binds an authenticated node and site set to one exact successfully applied config deployment.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grant</code></td>
+<td><code>grant</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>signature</code></td>
+<td><code>signature</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="enums">Enums</h2>
+<h3 id="agentcommandkind">AgentCommandKind</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AGENT_COMMAND_KIND_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AGENT_COMMAND_KIND_APPLY_BINARY</code></td>
+<td>4</td>
+<td>APPLY_BINARY tells the agent to download a binary release from the control-plane bootstrap endpoint, verify its SHA-256, swap it into place atomically, and exit so its supervisor (systemd, Docker, Kubernetes) restarts the process into the new binary. Payload carries <code>release_id</code>, <code>version</code>, <code>sha256</code>, and <code>download_path</code> (server-relative, e.g. "/bootstrap/binary").</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentcommandstatus">AgentCommandStatus</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AGENT_COMMAND_STATUS_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AGENT_COMMAND_STATUS_PENDING</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AGENT_COMMAND_STATUS_SENT</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AGENT_COMMAND_STATUS_SUCCEEDED</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AGENT_COMMAND_STATUS_FAILED</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agentstatus">AgentStatus</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AGENT_STATUS_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AGENT_STATUS_ONLINE</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AGENT_STATUS_OFFLINE</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AGENT_STATUS_ERROR</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="evidenceackstatus">EvidenceAckStatus</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EVIDENCE_ACK_STATUS_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>EVIDENCE_ACK_STATUS_CONTINUE</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>EVIDENCE_ACK_STATUS_DURABLE</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>EVIDENCE_ACK_STATUS_RETRYABLE</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>EVIDENCE_ACK_STATUS_FATAL</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="observationackdurability">ObservationAckDurability</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OBSERVATION_ACK_DURABILITY_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_ACK_DURABILITY_MEMORY</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_ACK_DURABILITY_FSYNC</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="observationackerrorcode">ObservationAckErrorCode</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OBSERVATION_ACK_ERROR_CODE_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_ACK_ERROR_CODE_NONE</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_ACK_ERROR_CODE_QUEUE_FULL</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_ACK_ERROR_CODE_DB_BUSY</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_ACK_ERROR_CODE_TEMPORARY_IO</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_ACK_ERROR_CODE_LATE_BEYOND_RETENTION</code></td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_ACK_ERROR_CODE_CRC</code></td>
+<td>6</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_ACK_ERROR_CODE_SCHEMA</code></td>
+<td>7</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_ACK_ERROR_CODE_IDENTITY</code></td>
+<td>8</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_ACK_ERROR_CODE_RANGE</code></td>
+<td>9</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_ACK_ERROR_CODE_PARTITION_MISMATCH</code></td>
+<td>10</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="observationbatchackstatus">ObservationBatchAckStatus</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OBSERVATION_BATCH_ACK_STATUS_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_BATCH_ACK_STATUS_ACCEPTED</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_BATCH_ACK_STATUS_ACCEPTED_MEMORY</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_BATCH_ACK_STATUS_RETRYABLE</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_BATCH_ACK_STATUS_TERMINAL_GAP</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_BATCH_ACK_STATUS_FATAL_PROTOCOL</code></td>
+<td>5</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="observationgapackstatus">ObservationGapAckStatus</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OBSERVATION_GAP_ACK_STATUS_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_GAP_ACK_STATUS_ACCEPTED</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_GAP_ACK_STATUS_FATAL_PROTOCOL</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="observationgapreason">ObservationGapReason</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OBSERVATION_GAP_REASON_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_GAP_REASON_SPOOL_EVICTED</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_GAP_REASON_SPOOL_CORRUPT</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_GAP_REASON_DISK_FULL</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_GAP_REASON_OPERATOR_DISCARD</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="observationretentiontier">ObservationRetentionTier</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OBSERVATION_RETENTION_TIER_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_RETENTION_TIER_FULL</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_RETENTION_TIER_EVIDENCE</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="observationstreamkind">ObservationStreamKind</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OBSERVATION_STREAM_KIND_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_STREAM_KIND_METRIC</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_STREAM_KIND_SECURITY_FACT</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_STREAM_KIND_ACCESS_DETAIL_FULL</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_STREAM_KIND_ACCESS_DETAIL_EVIDENCE</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_STREAM_KIND_SECURITY_DETAIL_FULL</code></td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_STREAM_KIND_SECURITY_DETAIL_EVIDENCE</code></td>
+<td>6</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_STREAM_KIND_ACCESS_SIEM</code></td>
+<td>7</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_STREAM_KIND_SECURITY_SIEM</code></td>
+<td>8</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_STREAM_KIND_ERROR_DETAIL</code></td>
+<td>9</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>OBSERVATION_STREAM_KIND_ERROR_SIEM</code></td>
+<td>10</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← Previous</span><span class="title">API integration</span></a><a class="next" href="../rpc-index.html"><span class="label">Next →</span><span class="title">All RPCs</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../assets/js/main.js" defer></script>
+</body>
+</html>

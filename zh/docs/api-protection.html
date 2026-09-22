@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>发现接口、导入规范与保护 API — 太一文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="发现接口、导入规范与保护 API 适用版本： v3.8.0 。在 应用交付 → API 资产 选择站点，可以查看实际流量中的接口， 导入 OpenAPI/Swagger 文档，检查请求规范，并逐接口选择“不校验 / 仅观察 / 强制校验”。 你手上的材料 推荐入口 做完后得到什么 已有 OpenAPI/Swa" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/api-protection.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html" aria-current="page">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="发现接口导入规范与保护-api">发现接口、导入规范与保护 API</h1>
+<p class="lede">适用版本：<strong>v3.8.0</strong>。在 <strong>应用交付 → API 资产</strong> 选择站点，可以查看实际流量中的接口，
+导入 OpenAPI/Swagger 文档，检查请求规范，并逐接口选择“不校验 / 仅观察 / 强制校验”。</p>
+<table>
+<thead>
+<tr>
+<th>你手上的材料</th>
+<th>推荐入口</th>
+<th>做完后得到什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>已有 OpenAPI/Swagger 文件</td>
+<td>导入 API 文档</td>
+<td>可审核的接口清单、请求规范和校验能力报告</td>
+</tr>
+<tr>
+<td>有 JSON 流量，没有文档</td>
+<td>流量学习</td>
+<td>不含字段值的结构版本，可下载 OpenAPI 草稿后审核</td>
+</tr>
+<tr>
+<td>想控制文件上传</td>
+<td>站点策略的请求检查 + 接口请求规范</td>
+<td>全站容量上限和接口文件字段要求</td>
+</tr>
+<tr>
+<td>想知道是否已阻断</td>
+<td>接口校验状态、服务节点结果、检测统计</td>
+<td>已发布配置的节点结果和真实请求检测结果</td>
+</tr>
+</tbody>
+</table>
+<p>API 清单纳入、行隐藏、流量学习、校验开关是独立设置。把接口放入清单或导入文档不会自动启用拦截。</p>
+<h2 id="1-准备一个可重复验证的-api">1. 准备一个可重复验证的 API</h2>
+<p>先完成<a href="quickstart.html">快速开始</a>中的 <code>quickstart.test</code> 站点。停止那里的 Python 静态源站，在同一主机运行以下测试 API。
+它会接受任意小请求体，便于确认是太一完成了校验。仅用于本机演示，不作为生产服务。</p>
+<pre><code class="language-sh">cat &gt; demo-origin.py <span class="s">&lt;&lt;'PY'
+#!/usr/bin/env python3
+"""Local documentation origin. Bind to loopback; do not expose as an app."""
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import json
+
+class Demo(BaseHTTPRequestHandler):
+    def reply(self, status, data):
+        body = json.dumps(data).encode()
+        self.send_response(status)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        self.reply(200, {'message': 'Hello from the origin'})
+
+    def do_POST(self):
+        size = int(self.headers.get('Content-Length', '0'))
+        if size &gt; 65536:
+            self.reply(413, {'error': 'demo limit is 64 KiB'})
+            return
+        self.rfile.read(size)
+        # Deliberately accepts any small body: Tiyi performs validation.
+        self.reply(200, {'message': 'Order received'})
+
+ThreadingHTTPServer(('127.0.0.1', 9000), Demo).serve_forever()
+PY</span>
+python3 demo-origin.py
+</code></pre>
+<p>保持该终端运行，在另一个终端执行正常请求：</p>
+<pre><code class="language-sh">curl -i -H <span class="s">'Host: quickstart.test'</span> -H <span class="s">'Content-Type: application/json'</span> <span class="o">\
+</span>  --data <span class="s">'{"sku":"BOOK-1","quantity":2}'</span> http://127.0.0.1/api/orders
+</code></pre>
+<p>应得到 <strong>200</strong> 和 <code>Order received</code>。这一条真实请求也让 API 资产页开始发现 <code>POST /api/orders</code>。
+下载版：<a href="templates/demo-origin.py">demo-origin.py</a>。</p>
+<h2 id="2-复制-openapi-文档">2. 复制 OpenAPI 文档</h2>
+<p>将以下整个命令粘贴到太一主机，得到可上传的 <code>orders-openapi.yaml</code>：</p>
+<pre><code class="language-sh">cat &gt; orders-openapi.yaml <span class="s">&lt;&lt;'YAML'
+openapi: 3.0.3
+info:
+  title: Orders API
+  version: 1.0.0
+servers:
+  - url: http://quickstart.test
+paths:
+  /api/orders:
+    post:
+      operationId: createOrder
+      summary: Create an order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [sku, quantity]
+              properties:
+                sku:
+                  type: string
+                quantity:
+                  type: integer
+            example:
+              sku: BOOK-1
+              quantity: 2
+      responses:
+        '200':
+          description: Order received
+YAML</span>
+</code></pre>
+<p>下载版：<a href="templates/orders-openapi.yaml">orders-openapi.yaml</a>。用于自己的 API 时，改 <code>servers</code>、路径、方法、字段和必填列表。
+本例的 <code>servers</code> 没有 <code>/api</code> 前缀，因为路径已经含 <code>/api/orders</code>；不要重复添加前缀。</p>
+<p>支持导入 OpenAPI <strong>3.0 / 3.1 / 3.2</strong> 和 Swagger <strong>2.0</strong> 的 JSON/YAML，源文件上限 <strong>8 MiB</strong>。
+上传文件，不是在线 URL；不会自动抓取远程引用。API 映射的根路径必须写 <code>basePath: ""</code>，不能写 <code>/</code>。导入版本支持不等于每个约束都能执行，能力报告会列出不能校验的部分。
+响应定义用于文档；不要把它当成已启用的响应体校验或业务鉴权。</p>
+<h2 id="3-在控制台审核并发布">3. 在控制台审核并发布</h2>
+<p><strong>通配站点：</strong><code>*.example.com</code> 可以接收匹配的请求，但不能直接作为具体 API 映射。请先把 <code>api.example.com</code> 等实际 API 域名加入站点主机名或别名，再映射该具体域名。通配路由和通配符证书都不会自动让 Schema 校验覆盖所有子域名，详见<a href="operations.html#wildcard-hosts">通配域名建站</a>。</p>
+<ol>
+<li>进入 <strong>应用交付 → API 资产</strong>，选择 <code>quickstart</code>，导入上一步文件。</li>
+<li>确认目标主机 <code>quickstart.test</code>、基础路径留空（根路径），预览应显示 <code>POST /api/orders</code>。出现重复 <code>/api</code> 或错误域名时先修正映射。</li>
+<li>核对已有接口的匹配、新增接口与覆盖范围；这里只声明一个演示接口，不把未知业务路径视为完整清单。</li>
+<li>应用审核后的文档。打开该接口的 <strong>请求规范</strong>，应能看到 <code>sku</code> 字符串和 <code>quantity</code> 整数，且两者必填。</li>
+<li>先选 <strong>仅观察</strong>，预览并应用变更。检查服务节点结果；保存成功、排队中、应用失败和已生效不可混为一谈。</li>
+</ol>
+<p>上传、保存草稿、预览都不等于发布。遇到不支持的约束，先缩小为可支持的规范并重新预览；不能跳过能力检查宣称强制校验已开启。</p>
+<h2 id="4-先观察再验证阻断">4. 先观察，再验证阻断</h2>
+<p>在仅观察模式发送类型错误：</p>
+<pre><code class="language-sh">curl -i -H <span class="s">'Host: quickstart.test'</span> -H <span class="s">'Content-Type: application/json'</span> <span class="o">\
+</span>  --data <span class="s">'{"sku":"BOOK-1","quantity":"two"}'</span> http://127.0.0.1/api/orders
+</code></pre>
+<p>在本例的 Light 策略与无额外规则条件下应仍返回 <strong>200</strong>，检测统计出现违规；其他 WAF 规则仍可独立拦截。
+同时发送正常示例，核对两者被识别为同一接口。统计按已完成时间桶汇总，等待刷新后查看；保留相同站点、接口与时间范围。</p>
+<p>确认能力报告支持目标检查后，将此接口切换为 <strong>强制校验</strong>，预览、应用并等待服务节点结果。
+再次发错误示例，应返回 <strong>403</strong> 且不进入测试源站；正常示例仍应为 200。具体拒绝原因以响应与该请求的检测/执行结果为准。
+若业务受影响，将该接口恢复为仅观察并重新发布，或从发布历史恢复审核过的版本，再验证两类请求。</p>
+<p>“未纳入接口”的放行/观察/拦截单独控制，并受已发布文档覆盖范围约束。首次导入局部文档时保持放行，
+核对健康检查、回调、静态路径和合法旧客户端后再收紧。</p>
+<h2 id="5-没有文档从-json-流量学习">5. 没有文档：从 JSON 流量学习</h2>
+<p>为符合条件的 POST/PUT/PATCH 接口查看 <strong>流量学习</strong>，让合法成功 JSON 请求通过太一。
+学习收集有界的字段结构、类型和计数，不保留字段值；可审核已保存版本、手动保存当前版本、
+下载 OpenAPI 草稿或建立可编辑请求规范。保存后走同样的审核、预览和发布步骤。
+学习不会自动修改人工规范，也不会自动启用强制校验。低样本、错误响应、未匹配流量和学习暂停都应先在状态说明中确认。
+字段名称本身可能敏感；可按需暂停或清除学习记录。</p>
+<h2 id="6-上传与请求大小">6. 上传与请求大小</h2>
+<p>在站点所用策略的 <strong>请求检查</strong> 中配置普通请求体、单文件、文件合计、参数数量与结构容量。
+在接口 <strong>请求规范</strong> 配置允许的文件字段及受支持的类型/数量等要求。
+上传验证应覆盖合法文件、超限文件、错误字段与请求取消，观察真实响应和源站是否收到内容。
+文件结构检查不是杀毒、恶意软件检测或内容安全审核；这类业务能力仍需专门的源站服务。</p>
+<h2 id="7-cli-与-api-自动化">7. CLI 与 API 自动化</h2>
+<p>以下需要 <code>jq</code>。上传只创建草稿，预览不改变在线请求处理：</p>
+<pre><code class="language-sh">sudo tiyi site list
+<span class="v">SITE_ID</span><span class="o">=</span><span class="s">'replace-with-quickstart-site-id'</span>
+sudo tiyi api-document upload --site <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span> --file orders-openapi.yaml <span class="o">\
+</span>  --idempotency-key orders-v1 &gt; source-result.json
+jq <span class="s">'{siteId: .source.siteId, sourceId: .source.id,
+     mappings: [{host:"quickstart.test",basePath:"",
+                 serverUrl:"http://quickstart.test",approved:true}]}'</span> <span class="o">\
+</span>  source-result.json &gt; declaration-preview.json
+sudo tiyi api-document declaration-preview -f declaration-preview.json &gt; preview-result.json
+jq -r <span class="s">'.reportJson'</span> preview-result.json | base64 -d
+</code></pre>
+<p><code>api-document</code> 的其他命令用 <code>--request-file FILE</code>（<code>-f -</code> 可从 stdin 读取严格 protobuf JSON）。
+二进制字段如 <code>reportJson</code> 在 JSON 中是 base64，需要解码；不要把它当普通 JSON 字符串再次解析。
+要完成发布，依次审核声明、生成校验 profile/binding、预览 control，再提交服务端返回的 approval。
+所需字段、操作顺序和权限见<a href="api.html#api-documents">API 参考</a>及<a href="reference/services/api_schema.html">ApiSchemaService 完整定义</a>。
+不要伪造哈希、revision 或复用已过期预览。返回成功后还要检查服务节点状态和真实请求。</p>
+<div class="docs-pager"><a href="site-import.html"><span class="label">← 上一页</span><span class="title">站点导入与导出</span></a><a class="next" href="responses.html"><span class="label">下一页 →</span><span class="title">拦截响应</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

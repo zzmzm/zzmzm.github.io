@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Installation — Tiyi docs</title>
+<title>Installation and service management — Tiyi Docs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Install the signed Tiyi binary, configure the YAML config, and pick the right operational mode." />
+<meta name="description" content="Choose how to install, verify downloads, deploy offline, and manage the service. New users can continue through the quickstart for login, site creation, and request checks.
+Supported platforms are Linux amd64/arm64. The installer is for a fresh host; existing installations should use upgrade and migration ." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -48,7 +49,9 @@
       <ul>
         <li><a href="index.html">Overview</a></li>
         <li><a href="quickstart.html">Quickstart</a></li>
-        <li><a href="installation.html">Installation</a></li>
+        <li><a href="installation.html" aria-current="page">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -57,12 +60,15 @@
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
         <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
       <h4>Concepts</h4>
       <ul>
-        <li><a href="concepts.html">Domain model</a></li>
+        <li><a href="concepts.html">How it works</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -70,6 +76,11 @@
       <ul>
         <li><a href="cli.html">CLI reference</a></li>
         <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -81,161 +92,359 @@
   </aside>
 
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">Get started</span>
-    <h1>Installation</h1>
-    <p class="lede">Tiyi is distributed as a signed Linux binary. Install it from the public release channel, write a small YAML config, and start the complete Controller runtime or enroll a remote Agent.</p>
-
-    <div class="callout callout-info"><div class="callout-body"><p><strong>This installer is for a clean host.</strong> For an existing binary, state, configuration, or unit, use <a href="upgrade-migration.html">upgrade and migration</a>. v3.7.0 cannot open state created by v3.6.0 or earlier releases and requires the documented purge and Agent re-enrollment flow.</p></div></div>
-
-    <h2 id="prebuilt">Install the signed binary</h2>
-    <p>Tiyi is one signed binary — free and full-featured on a single node. The canonical install script is published at <code>https://www.tiyisec.com/install.sh</code>:</p>
-<pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
-<span class="p">$</span> tiyi --version
-<span class="c">tiyi v3.7.2 linux/amd64</span></code></pre>
-    <p>The script downloads the platform-matched binary, verifies its SHA-256 against the manifest, and drops it into <code>/usr/local/bin/tiyi</code>. It tries GitHub first and falls back to the Gitee release mirror; force Gitee with <code>TIYI_MIRROR=gitee</code> when needed:</p>
-<pre><code><span class="p">$</span> curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh | TIYI_MIRROR=gitee bash</code></pre>
-    <p>Installer environment overrides: <code>TIYI_MIRROR=auto|github|gitee</code>, <code>TIYI_REPO=zzmzm/tiyi</code>, <code>TIYI_GITEE_REPO=tiyisec/tiyi</code>, <code>TIYI_VERSION=v3.7.2</code>, and <code>TIYI_PREFIX=/usr/local/bin</code>.</p>
-    <p>Public distribution repos: <a href="https://github.com/zzmzm/tiyi" rel="noopener" target="_blank">GitHub zzmzm/tiyi</a> and <a href="https://gitee.com/tiyisec/tiyi" rel="noopener" target="_blank">Gitee tiyisec/tiyi</a>.</p>
-    <p><code>linux/amd64</code> and <code>linux/arm64</code> are first-class targets. Install the signed release from the public channel independently on every Controller, Agent, and dashboard host before configuring its role.</p>
-
-    <h2 id="config-file">Config file</h2>
-    <p><code>tiyi.yaml</code> controls process startup: listeners, state path, authentication, update, and Geo settings. It does not create sites or policies. Start from this minimal config and let the defaults handle the rest, or <a href="templates/tiyi.yaml" download>download the complete annotated template</a> containing every supported process key.</p>
-<pre><code><span class="c"># /etc/tiyi/tiyi.yaml</span>
-<span class="k">server</span>:
-  <span class="k">addr</span>: <span class="s">"0.0.0.0:8080"</span>
-
-<span class="k">store</span>:
-  <span class="k">state_db</span>: <span class="s">"/var/lib/tiyi/state.db"</span>
-
-<span class="k">crypto</span>:
-  <span class="k">kek_file</span>: <span class="s">""</span>                       <span class="c"># uses persistent /var/lib/tiyi/kek.bin</span>
-
-<span class="k">auth</span>:
-  <span class="k">jwt_secret</span>: <span class="s">""</span>                       <span class="c"># set a private 32+ byte value for production</span>
-
-<span class="k">proxy</span>:
-  <span class="k">http_addr</span>:  <span class="s">":80"</span>
-  <span class="k">https_addr</span>: <span class="s">":443"</span>
-  <span class="k">caddy_admin_socket</span>: <span class="s">"/var/lib/tiyi/caddy-admin.sock"</span></code></pre>
-    <p>Pass it with <code>--config</code>. This config uses <code>/var/lib/tiyi</code> and ports 80/443, so run it as root (or under the systemd unit below):</p>
-<pre><code><span class="p">$</span> sudo tiyi run --config /etc/tiyi/tiyi.yaml || sudo /usr/local/bin/tiyi run --config /etc/tiyi/tiyi.yaml</code></pre>
-    <p>Before starting, run the read-only config/startup check: <code>sudo tiyi --config /etc/tiyi/tiyi.yaml doctor --mode run</code>. For a version-controlled site rollout, use the separate <a href="templates/apply.yaml" download>four-kind declarative manifest template</a>, preview it with <code>tiyi diff -f</code>, then apply it with <code>tiyi apply -f</code>.</p>
-    <p>To try Tiyi as a normal user without <code>sudo</code>, skip the config file and pass writable paths and high ports on the command line instead — see the <a href="quickstart.html#run">Quickstart</a>.</p>
-
-    <div class="callout callout-warn">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
-      <div class="callout-body">
-        <p><strong>Set a stable JWT secret and protect the KEK before going live.</strong> An empty <code>auth.jwt_secret</code> is ephemeral and invalidates sessions at restart. An empty <code>crypto.kek_file</code> is different: Tiyi creates and reuses <code>&lt;state-db-dir&gt;/kek.bin</code>, which must be backed up with <code>state.db</code>; an external KEK path is optional. See <a href="deployment.html#hardening">Deployment → Production hardening</a>.</p>
-      </div>
-    </div>
-
-    <h2 id="environment">Config environment variables</h2>
-    <p>Prefer <code>/etc/tiyi/tiyi.yaml</code> for persistent service configuration. Use environment variables only when your service manager, container runtime, or secret manager injects config at runtime. Precedence is built-in defaults, then <code>tiyi.yaml</code>, then config environment variables, then explicit CLI flags.</p>
-    <p>Environment names mirror config keys: prefix <code>TIYI_</code>, uppercase the key, and replace dots with underscores. For example, <code>auth.jwt_secret</code> becomes <code>TIYI_AUTH_JWT_SECRET</code>.</p>
-
-    <h3>Common config overrides</h3>
-    <table>
-      <thead><tr><th>Variable</th><th>Config key</th><th>When to use</th></tr></thead>
-      <tbody>
-        <tr><td><code>TIYI_SERVER_ADDR</code></td><td><code>server.addr</code></td><td>Bind the API/dashboard to a different address.</td></tr>
-        <tr><td><code>TIYI_STORE_STATE_DB</code></td><td><code>store.state_db</code></td><td>Move the SQLite state database.</td></tr>
-        <tr><td><code>TIYI_LOG_LEVEL</code></td><td><code>log.level</code></td><td>Temporarily raise or lower process logging.</td></tr>
-        <tr><td><code>TIYI_PROXY_HTTP_ADDR</code></td><td><code>proxy.http_addr</code></td><td>Change the HTTP data-plane listen address.</td></tr>
-        <tr><td><code>TIYI_PROXY_HTTPS_ADDR</code></td><td><code>proxy.https_addr</code></td><td>Change the HTTPS data-plane listen address.</td></tr>
-        <tr><td><code>TIYI_PROXY_CADDY_ADMIN_SOCKET</code></td><td><code>proxy.caddy_admin_socket</code></td><td>Move the embedded Caddy admin socket.</td></tr>
-        <tr><td><code>TIYI_CRYPTO_KEK_FILE</code></td><td><code>crypto.kek_file</code></td><td>Pin the at-rest encryption KEK path for production.</td></tr>
-        <tr><td><code>TIYI_AUTH_JWT_SECRET</code></td><td><code>auth.jwt_secret</code></td><td>Set a stable JWT signing secret for production.</td></tr>
-        <tr><td><code>TIYI_AUTH_BOOTSTRAP_ADMIN_USERNAME</code></td><td><code>auth.bootstrap_admin_username</code></td><td>Choose the first admin username.</td></tr>
-        <tr><td><code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code></td><td><code>auth.bootstrap_admin_password</code></td><td>Choose the first admin password for automation (minimum 8 Unicode characters).</td></tr>
-        <tr><td><code>TIYI_LICENSE_KEY_PATH</code></td><td><code>license.key_path</code></td><td>Load a signed license file on boot.</td></tr>
-        <tr><td><code>TIYI_UPDATE_REPO</code></td><td><code>update.repo</code></td><td>Override the GitHub release repo used by update checks.</td></tr>
-        <tr><td><code>TIYI_UPDATE_CHANNEL</code></td><td><code>update.channel</code></td><td>Use <code>stable</code> or <code>prerelease</code> for <code>tiyi update</code>.</td></tr>
-        <tr><td><code>TIYI_UPDATE_MIRROR</code></td><td><code>update.mirror</code></td><td>Use <code>auto</code>, <code>github</code>, or <code>gitee</code> for update checks/downloads.</td></tr>
-      </tbody>
-    </table>
-    <p>Less common config keys follow the same rule, including <code>auth.access_token_ttl</code>, <code>auth.refresh_token_ttl</code>, <code>auth.refresh_cookie_secure</code>, <code>auth.bootstrap_admin_email</code>, <code>auth.bootstrap_admin_name</code>, <code>auth.provider</code>, <code>auth.ldap.*</code>, <code>auth.radius.*</code>, and <code>update.api_base_url</code>. Prefer YAML for these unless your deployment platform requires env injection.</p>
-
-    <h2 id="modes">Runtime commands</h2>
-    <p>The same binary has one complete runtime and two focused processes:</p>
-
-    <dl class="dl-grid">
-      <dt><code>run</code></dt>
-      <dd>The Controller, built-in local data plane, API, and admin UI in one writable process. This is the normal install and five-minute path.</dd>
-
-      <dt><code>agent</code></dt>
-      <dd>A remote data plane: Caddy + Coraza receiving signed config bundles from one Controller URL over a long-lived ConnectRPC stream.</dd>
-
-      <dt><code>dashboard</code></dt>
-      <dd>A UI-only process for a host that does not own state or proxy traffic.</dd>
-    </dl>
-
-    <h2 id="enrollment">Enrolling an agent</h2>
-    <p>Open <strong>Nodes → Install</strong>, issue a token, then follow the separate binary-download and systemd instructions. The same page also shows the raw token, a foreground command, and a complete download-and-start script:</p>
-<pre><code><span class="p">$</span> sudo curl -fsSL -o /usr/local/bin/tiyi <span class="s">'https://tiyi.example.com/download/tiyi'</span>
-<span class="p">$</span> sudo chmod 0755 /usr/local/bin/tiyi
-<span class="p">$</span> sudo mkdir -p /etc/tiyi
-<span class="p">$</span> printf <span class="s">'TIYI_CONTROLLER_URL=https://tiyi.example.com\nTIYI_AGENT_ENROLLMENT_TOKEN=&lt;one-use-token&gt;\n'</span> <span class="o">|</span> sudo tee /etc/tiyi/tiyi-agent.env &gt;/dev/null
-<span class="p">$</span> sudo chmod 0600 /etc/tiyi/tiyi-agent.env
-<span class="p">$</span> sudo tiyi install --mode agent --unit-name tiyi-agent --now</code></pre>
-    <p>Lose the state directory and you'll need a fresh token to re-enroll.</p>
-
-    <h2 id="systemd">Run as a systemd service</h2>
-    <p>For a long-lived deployment, let Tiyi install itself as a hardened systemd service. <code>tiyi install</code> creates the <code>tiyi</code> service user and the <code>tiyi-admin</code> socket group, writes the unit, and with <code>--now</code> enables and starts it on boot:</p>
-<pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
-    <div class="callout callout-tip"><div class="callout-body"><p>Running <code>sudo tiyi install</code> without <code>--now</code> intentionally leaves the unit disabled and stopped so you can finish mode-specific configuration. For the first <strong>Controller</strong> start, re-run the same install command with <code>--now</code> added; do not start the unit directly with <code>systemctl</code>. The installer can then create the administrator first and print the one-time login here instead of sending the password to the system journal.</p></div></div>
-    <p>The service runs unprivileged and binds ports 80/443 via <code>CAP_NET_BIND_SERVICE</code>. Before each start, a root-only pre-start hook re-owns the configured state directory and KEK file for the service user, so CRS caches, uploads, exclusion packages, release staging, logs, trust snapshots, and embedded-agent state left by a prior sudo foreground run cannot block runtime writes. On a first install, <code>--now</code> pre-creates the administrator and prints the one-time login itself — no journal scraping:</p>
-<pre><code><span class="c">tiyi is enabled and running as tiyi.service.</span>
-
-<span class="c">  Tiyi administrator created</span>
-<span class="c">    URL:       http://127.0.0.1:8080</span>
-<span class="c">    username:  admin</span>
-<span class="c">    password:  &lt;generated-password&gt;</span>
-
-<span class="c">  This password is shown once; change it after signing in.</span></code></pre>
-    <p>Preview the generated unit without touching the system using <code>tiyi install --print</code>. Its key directives:</p>
-<pre><code><span class="c"># /etc/systemd/system/tiyi.service</span>
-<span class="k">[Service]</span>
-<span class="k">Type</span>=simple
-<span class="k">User</span>=tiyi
-<span class="k">Group</span>=tiyi
-<span class="k">PermissionsStartOnly</span>=true
-<span class="k">ExecStartPre</span>=/usr/local/bin/tiyi systemd-prestart --config /etc/tiyi/tiyi.yaml --user tiyi --group tiyi
-<span class="k">ExecStart</span>=/usr/local/bin/tiyi run --config /etc/tiyi/tiyi.yaml --admin-socket /run/tiyi/admin.sock --admin-socket-group tiyi-admin --admin-socket-mode 0660 --caddy-admin-socket /run/tiyi/caddy.sock
-<span class="k">Restart</span>=on-failure
-<span class="k">AmbientCapabilities</span>=CAP_NET_BIND_SERVICE
-<span class="k">CapabilityBoundingSet</span>=CAP_NET_BIND_SERVICE
-<span class="k">StateDirectory</span>=tiyi
-<span class="k">RuntimeDirectory</span>=tiyi
-<span class="k">ConfigurationDirectory</span>=tiyi
-<span class="k">NoNewPrivileges</span>=yes
-<span class="k">ProtectSystem</span>=strict
-<span class="k">ProtectHome</span>=yes
-<span class="k">PrivateTmp</span>=yes
-
-<span class="k">[Install]</span>
-<span class="k">WantedBy</span>=multi-user.target</code></pre>
-    <p>Run <code>tiyi doctor</code> to check sudo PATH, systemd, config loading, installed-service state ownership, and listeners on ports 80/443/8080. If no systemd unit is installed, state ownership is skipped unless you pass <code>--service-user</code>/<code>--service-group</code> or request repair. If it warns that sudo cannot find <code>tiyi</code>, use the printed full-path command or add <code>/usr/local/bin</code> to sudo <code>secure_path</code>. If it reports root-owned state, repair it explicitly with <code>sudo tiyi doctor --fix-state-ownership</code>. If it reports a port conflict, either stop the owning service or move Tiyi with <code>proxy.http_addr</code>, <code>proxy.https_addr</code>, or <code>server.addr</code>. Select <code>--mode run</code> for the Controller or <code>--mode agent</code> for a remote data plane. Remove the service with <code>sudo tiyi uninstall</code>: state under <code>/var/lib/tiyi</code>, config under <code>/etc/tiyi</code>, and the service user are preserved unless you add <code>--purge</code>.</p>
-
-    <h2 id="next">What to read next</h2>
-    <ul>
-      <li><a href="concepts.html">Domain model</a> — what sites, upstreams, certs, policies, and agents are.</li>
-      <li><a href="cli.html">CLI reference</a> — current operator commands grouped by resource.</li>
-      <li><a href="deployment.html">Deployment</a> — production hardening, remote Agents, outage boundaries, and SIEM egress.</li>
-    </ul>
-
-    <div class="docs-pager">
-      <a href="quickstart.html">
-        <span class="label">← Previous</span>
-        <span class="title">Quickstart</span>
-      </a>
-      <a class="next" href="upgrade-migration.html">
-        <span class="label">Next →</span>
-        <span class="title">Upgrade and migration</span>
-      </a>
-    </div>
-  </main>
+<span class="docs-eyebrow">Get started</span>
+<h1 id="installation-and-service-management">Installation and service management</h1>
+<p class="lede">Choose how to install, verify downloads, deploy offline, and manage the service. New users can continue through the <a href="quickstart.html">quickstart</a> for login, site creation, and request checks.
+Supported platforms are Linux amd64/arm64. The installer is for a fresh host; existing installations should use <a href="upgrade-migration.html">upgrade and migration</a>.</p>
+<a id="1-default-installation-system-service-and-ports-804438080"></a>
+<h2 id="prebuilt">1. Default installation: system service and ports 80/443/8080</h2>
+<pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh | bash <span class="o">&amp;&amp;</span> sudo tiyi install --now
+</code></pre>
+<p>Have curl, tar, and sha256sum available. Installing to <code>/usr/local/bin</code> needs root or sudo; the service method needs systemd.
+The script downloads the binary and checks the environment. <code>tiyi install --now</code> creates an unprivileged service account, starts the service, and enables it at boot.
+The first administrator password appears in your installation terminal. Use the full executable path if sudo's PATH lacks <code>/usr/local/bin</code>.
+Omit sudo when already root without sudo installed. See <a href="#foreground">foreground mode</a> for hosts without systemd or root access.</p>
+<table>
+<thead>
+<tr>
+<th>Default listener</th>
+<th>Purpose</th>
+<th>What to do next</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0.0.0.0:8080</code></td>
+<td>Console and management API</td>
+<td>Open <code>http://SERVER_IP:8080</code>; allow port 8080 from your management network</td>
+</tr>
+<tr>
+<td><code>:80</code></td>
+<td>Website HTTP / ACME HTTP-01</td>
+<td>Add a site and origin; access it by hostname</td>
+</tr>
+<tr>
+<td><code>:443</code></td>
+<td>Website HTTPS</td>
+<td>Configure a TLS site and a certificate covering its domains</td>
+</tr>
+</tbody>
+</table>
+<p>Installation does not change firewall rules, cloud security groups, or DNS, or take ports from an existing web server.
+Port 443 need not listen before a TLS site exists. A working console does not yet mean your application is protected.</p>
+<h2 id="2-manual-steps-and-custom-installation">2. Manual steps and custom installation</h2>
+<pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh -o /tmp/tiyi-install.sh
+less /tmp/tiyi-install.sh
+bash /tmp/tiyi-install.sh
+/usr/local/bin/tiyi --version
+sudo /usr/local/bin/tiyi doctor
+sudo /usr/local/bin/tiyi install --now
+</code></pre>
+<p>Press <code>q</code> to leave less, or read with <code>cat</code>. To change ports, stop before the final command and write the <a href="quickstart.html#custom-ports">custom-port configuration</a> first.
+<code>sudo tiyi install</code> without <code>--now</code> only creates the unit: it does not start or enable it. Use <code>install --now</code> for its first start so credentials appear in your terminal.</p>
+<a id="mirrors-pinned-versions-and-installation-directory"></a>
+<h3 id="mirrors">Mirrors, pinned versions, and installation directory</h3>
+<p>For the Gitee mirror:</p>
+<pre><code class="language-sh">curl -fsSL https://gitee.com/tiyisec/tiyi/raw/main/install.sh -o /tmp/tiyi-install.sh
+<span class="v">TIYI_MIRROR</span><span class="o">=</span>gitee bash /tmp/tiyi-install.sh
+sudo /usr/local/bin/tiyi install --now
+</code></pre>
+<p>The default tries GitHub first and falls back to Gitee if downloads fail or are too slow. The script is also in the GitHub distribution repository as <code>install.sh</code>.
+To pin a release or install to your own directory, download the script first and use this alternative command, replacing the tag with a published release:</p>
+<pre><code class="language-sh">mkdir -p <span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/bin</span><span class="s">"</span>
+<span class="v">TIYI_VERSION</span><span class="o">=</span>vX.Y.Z <span class="v">TIYI_PREFIX</span><span class="o">=</span><span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/bin</span><span class="s">"</span> bash /tmp/tiyi-install.sh
+export <span class="v">PATH</span><span class="o">=</span><span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/bin:</span><span class="v">$PATH</span><span class="s">"</span>
+</code></pre>
+<p>A home-directory binary suits a foreground trial. The systemd service enables <code>ProtectHome</code>; use <code>/usr/local/bin/tiyi</code> for that service.</p>
+<table>
+<thead>
+<tr>
+<th>Installer variable</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TIYI_MIRROR</code></td>
+<td><code>auto</code></td>
+<td><code>auto</code>, <code>github</code>, or <code>gitee</code></td>
+</tr>
+<tr>
+<td><code>TIYI_VERSION</code></td>
+<td>Latest stable</td>
+<td>Select a published release tag</td>
+</tr>
+<tr>
+<td><code>TIYI_PREFIX</code></td>
+<td><code>/usr/local/bin</code></td>
+<td>Binary directory; create it first</td>
+</tr>
+<tr>
+<td><code>TIYI_REPO</code></td>
+<td><code>zzmzm/tiyi</code></td>
+<td>GitHub distribution repository</td>
+</tr>
+<tr>
+<td><code>TIYI_GITEE_REPO</code></td>
+<td><code>tiyisec/tiyi</code></td>
+<td>Gitee distribution repository</td>
+</tr>
+</tbody>
+</table>
+<p>The installer <strong>requires SHA-256 verification</strong>. It also verifies Ed25519 when OpenSSL supports <code>pkeyutl -rawin</code>, xxd is available, and the signature file was downloaded.
+It prints a skip message if signature verification is unavailable; checksum success alone is not signature verification. Use the procedure below when full verification is required.</p>
+<a id="3-offline-installation-download-verify-install-start"></a>
+<h2 id="offline">3. Offline installation: download, verify, install, start</h2>
+<h3 id="prepare-files-on-a-connected-computer">Prepare files on a connected computer</h3>
+<p>Choose a published version from <a href="https://github.com/zzmzm/tiyi/releases">GitHub Releases</a> or <a href="https://gitee.com/tiyisec/tiyi/releases">Gitee Releases</a>.
+Run <code>uname -m</code> on the <strong>offline target</strong>: use amd64 for <code>x86_64</code> and arm64 for <code>aarch64</code>.
+On the connected computer, replace <code>vX.Y.Z</code> and select the target architecture before downloading:</p>
+<pre><code class="language-sh"><span class="c"># Replace the version with a published tag; select the OFFLINE host's architecture
+</span><span class="v">TIYI_RELEASE</span><span class="o">=</span><span class="s">'vX.Y.Z'</span>
+<span class="v">TIYI_ARCH</span><span class="o">=</span><span class="s">'amd64'</span>  <span class="c"># x86_64: amd64; aarch64: arm64
+</span><span class="v">TIYI_ARCHIVE</span><span class="o">=</span><span class="s">"</span><span class="s">tiyi_</span><span class="s">${</span><span class="v">TIYI_RELEASE</span>#v<span class="s">}</span><span class="s">_linux_</span><span class="s">${</span><span class="v">TIYI_ARCH</span><span class="s">}</span><span class="s">.tar.gz</span><span class="s">"</span>
+mkdir -p tiyi-offline
+cd tiyi-offline
+<span class="v">TIYI_RELEASE_URL</span><span class="o">=</span><span class="s">"</span><span class="s">https://github.com/zzmzm/tiyi/releases/download/</span><span class="s">${</span><span class="v">TIYI_RELEASE</span><span class="s">}</span><span class="s">"</span>
+curl -fL <span class="s">"</span><span class="v">$TIYI_RELEASE_URL</span><span class="s">/</span><span class="v">$TIYI_ARCHIVE</span><span class="s">"</span> -o <span class="s">"</span><span class="v">$TIYI_ARCHIVE</span><span class="s">"</span>
+curl -fL <span class="s">"</span><span class="v">$TIYI_RELEASE_URL</span><span class="s">/SHA256SUMS</span><span class="s">"</span> -o SHA256SUMS
+curl -fL <span class="s">"</span><span class="v">$TIYI_RELEASE_URL</span><span class="s">/SHA256SUMS.sig</span><span class="s">"</span> -o SHA256SUMS.sig
+curl -fsSL https://raw.githubusercontent.com/zzmzm/tiyi/main/release-key.pub -o release-key.pub
+</code></pre>
+<p>Alternatively, download these four files from the release and repository pages. The Gitee release prefix is
+<code>https://gitee.com/tiyisec/tiyi/releases/download/SELECTED_TAG</code>; its repository root contains the public key.
+Transfer the directory through trusted media. The archive, checksum manifest, and signature must belong to the same version.
+Prepare tar, sha256sum, base64, xxd, and an OpenSSL build supporting Ed25519 / <code>pkeyutl -rawin</code> on the target, using your distribution's offline packages if necessary.</p>
+<a id="verify-and-install-on-the-offline-host"></a>
+<h3 id="verify-download">Verify and install on the offline host</h3>
+<p>Enter the copied directory. Replace the archive filename and run this entire block. It checks the official public key and manifest signature before the selected archive's SHA-256; any failure stops installation.
+Use the same steps for manually downloaded files on a connected host.</p>
+<pre><code class="language-sh"><span class="c"># Set the exact archive name copied to this host
+</span><span class="v">TIYI_ARCHIVE</span><span class="o">=</span><span class="s">'tiyi_X.Y.Z_linux_amd64.tar.gz'</span>
+<span class="o">(</span>
+  set -eu
+  <span class="c"># Expected official Ed25519 public key; do not trust a replacement key in a bundle
+</span>  test <span class="s">"</span><span class="k">$(</span>tr -d <span class="s">'\r\n'</span> &lt; release-key.pub<span class="k">)</span><span class="s">"</span> <span class="o">=</span> <span class="s">'RIH4Xm2V8NjU4byn/xq+36xQG38dWQ9eQB39Bk+Aze4='</span>
+  <span class="o">{</span> printf <span class="s">'302a300506032b6570032100'</span>; base64 -d release-key.pub | xxd -p -c 256; <span class="o">}</span> <span class="o">\
+</span>    | xxd -r -p | base64 &gt; release-key.der.b64
+  <span class="o">{</span> echo <span class="s">'-----BEGIN PUBLIC KEY-----'</span>; cat release-key.der.b64; echo <span class="s">'-----END PUBLIC KEY-----'</span>; <span class="o">}</span> <span class="o">\
+</span>    &gt; release-key.pem
+  base64 -d SHA256SUMS.sig &gt; SHA256SUMS.sig.bin
+  openssl pkeyutl -verify -pubin -inkey release-key.pem -rawin <span class="o">\
+</span>    -in SHA256SUMS -sigfile SHA256SUMS.sig.bin
+  <span class="c"># Require exactly one checksum entry for the archive being installed
+</span>  awk -v <span class="v">file</span><span class="o">=</span><span class="s">"</span><span class="v">$TIYI_ARCHIVE</span><span class="s">"</span> <span class="s">'$2 == file || $2 == "*" file'</span> SHA256SUMS &gt; selected.sha256
+  test <span class="s">"</span><span class="k">$(</span>wc -l &lt; selected.sha256<span class="k">)</span><span class="s">"</span> -eq 1
+  sha256sum --check selected.sha256
+  mkdir -p tiyi-release
+  tar -xzf <span class="s">"</span><span class="v">$TIYI_ARCHIVE</span><span class="s">"</span> -C tiyi-release tiyi
+  sudo install -m 0755 tiyi-release/tiyi /usr/local/bin/tiyi
+<span class="o">)</span>
+</code></pre>
+<p>Expect <code>Signature Verified Successfully</code>, the selected archive's <code>OK</code>, and a successful exit from the entire block.
+If the key, signature, checksum, or files do not match, check the official files and release selection before continuing.</p>
+<h3 id="configure-offline-operation-and-start">Configure offline operation and start</h3>
+<p>After successful verification and binary installation, create the service on the fresh host without starting it:</p>
+<pre><code class="language-sh">sudo tiyi install
+sudo install -d -m 0750 -o root -g tiyi /etc/tiyi
+sudo tee /etc/tiyi/tiyi.yaml &gt;/dev/null <span class="s">&lt;&lt;'YAML'
+server:
+  addr: "0.0.0.0:8080"
+geo:
+  auto_update: false
+YAML</span>
+sudo chown root:tiyi /etc/tiyi/tiyi.yaml
+sudo chmod 0640 /etc/tiyi/tiyi.yaml
+sudo tiyi install --now
+sudo tiyi system health
+</code></pre>
+<p>Add <a href="configuration.html#ports">custom proxy ports</a> before startup if required. Open <code>http://SERVER_IP:8080</code> in your browser to sign in, using the offline host's reachable IP address.
+Embedded CRS and reachable local origins work without Internet access. Upload certificates for HTTPS and MMDB files in system settings if country/ASN data is needed.
+ACME, external IP subscriptions, notifications, and AI still require their respective connections; configure them for the network you have.
+Continue with the <a href="quickstart.html">quickstart origin and site steps</a>, including normal and blocked request checks.</p>
+<a id="4-foreground-or-non-root-trial"></a>
+<h2 id="foreground">4. Foreground or non-root trial</h2>
+<p>Install the binary to your own writable directory first. Keep state on persistent disk; the console uses 8080 and local website tests use high ports:</p>
+<pre><code class="language-sh">mkdir -p <span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/share/tiyi-demo</span><span class="s">"</span>
+<span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/bin/tiyi</span><span class="s">"</span> run --addr 0.0.0.0:8080 <span class="o">\
+</span>  --state-db <span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/share/tiyi-demo/state.db</span><span class="s">"</span> <span class="o">\
+</span>  --admin-socket <span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/share/tiyi-demo/admin.sock</span><span class="s">"</span> <span class="o">\
+</span>  --caddy-admin-socket <span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/share/tiyi-demo/caddy.sock</span><span class="s">"</span> <span class="o">\
+</span>  --proxy-http-addr 127.0.0.1:8180 <span class="o">\
+</span>  --proxy-https-addr 127.0.0.1:18443
+</code></pre>
+<p>Leave the terminal running; first-run credentials appear there. Ctrl+C stops the process and preserves state; run the same command to resume.
+In another terminal, pass the actual socket to CLI calls:</p>
+<pre><code class="language-sh"><span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/bin/tiyi</span><span class="s">"</span> --admin-socket <span class="s">"</span><span class="v">$HOME</span><span class="s">/.local/share/tiyi-demo/admin.sock</span><span class="s">"</span> system health
+</code></pre>
+<p>Open <code>http://SERVER_IP:8080</code> in your browser, using the Tiyi host's IP address. Run website probes on the Tiyi host against <code>http://127.0.0.1:8180/</code>.
+For production without systemd, supervise <code>tiyi run</code> with your existing process manager and configure its user, boot startup, and restart policy.</p>
+<a id="5-service-lifecycle-and-files"></a>
+<h2 id="service">5. Service lifecycle and files</h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Check boot startup and process</td>
+<td><code>sudo systemctl is-enabled tiyi</code> · <code>sudo systemctl status tiyi --no-pager</code></td>
+</tr>
+<tr>
+<td>Read recent startup errors</td>
+<td><code>sudo journalctl -u tiyi -n 100 --no-pager</code></td>
+</tr>
+<tr>
+<td>Pause / resume an existing service</td>
+<td><code>sudo systemctl stop tiyi</code> · <code>sudo systemctl start tiyi</code></td>
+</tr>
+<tr>
+<td>Restart after changing startup configuration</td>
+<td><code>sudo systemctl restart tiyi</code></td>
+</tr>
+<tr>
+<td>Check application health</td>
+<td><code>sudo tiyi system health</code></td>
+</tr>
+<tr>
+<td>Remove the service, retain data</td>
+<td><code>sudo tiyi uninstall</code></td>
+</tr>
+</tbody>
+</table>
+<p>Stopping a single-node service interrupts the websites it serves; plan traffic movement or a maintenance window. Site and policy changes through UI/CLI/API normally publish without a process restart.</p>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Contents / backup requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/usr/local/bin/tiyi</code></td>
+<td>Binary; record its version and retain a matching old binary with backups</td>
+</tr>
+<tr>
+<td><code>/etc/tiyi/tiyi.yaml</code></td>
+<td>Optional startup configuration; built-in defaults apply if absent</td>
+</tr>
+<tr>
+<td><code>/etc/tiyi/tiyi.env</code></td>
+<td>Optional systemd environment and secrets; restrict access and back it up</td>
+</tr>
+<tr>
+<td><code>/var/lib/tiyi/</code></td>
+<td>Complete persistent state, certificates, default KEK, and data; back up consistently</td>
+</tr>
+<tr>
+<td><code>/run/tiyi/</code></td>
+<td>Runtime sockets recreated at startup; not recovery data</td>
+</tr>
+</tbody>
+</table>
+<p><code>tiyi update</code> only replaces the binary; it does not restart services or convert incompatible state. Follow <a href="upgrade-migration.html">upgrade and migration</a> for backups and recovery.
+<code>uninstall --purge</code> deletes state and configuration; use ordinary lifecycle commands for restart and the local reset command for lost credentials.</p>
+<h2 id="6-runtime-environment-variables">6. Runtime environment variables</h2>
+<p>Prefer <code>tiyi.yaml</code> for persistent service configuration. Use environment
+variables only when your service manager, container runtime, or secret manager
+injects config at runtime. Env names mirror config keys: prefix <code>TIYI_</code>,
+uppercase the key, and replace dots with underscores. For example,
+<code>auth.jwt_secret</code> becomes <code>TIYI_AUTH_JWT_SECRET</code>.</p>
+<p>Use the <a href="templates/tiyi.yaml">complete annotated <code>tiyi.yaml</code> template</a> for
+file-based configuration. It includes every supported process key, secure-file
+notes, and a matching <a href="configuration.html">install/validate procedure</a>.</p>
+<p>Common config env overrides:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Config key</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TIYI_SERVER_ADDR</code></td>
+<td><code>server.addr</code></td>
+<td>Bind the API/dashboard to a different address.</td>
+</tr>
+<tr>
+<td><code>TIYI_STORE_STATE_DB</code></td>
+<td><code>store.state_db</code></td>
+<td>Move the SQLite state database.</td>
+</tr>
+<tr>
+<td><code>TIYI_LOG_LEVEL</code></td>
+<td><code>log.level</code></td>
+<td>Temporarily raise or lower process logging.</td>
+</tr>
+<tr>
+<td><code>TIYI_PROXY_HTTP_ADDR</code></td>
+<td><code>proxy.http_addr</code></td>
+<td>Change the HTTP data-plane listen address.</td>
+</tr>
+<tr>
+<td><code>TIYI_PROXY_HTTPS_ADDR</code></td>
+<td><code>proxy.https_addr</code></td>
+<td>Change the HTTPS data-plane listen address.</td>
+</tr>
+<tr>
+<td><code>TIYI_PROXY_CADDY_ADMIN_SOCKET</code></td>
+<td><code>proxy.caddy_admin_socket</code></td>
+<td>Move the embedded Caddy admin socket.</td>
+</tr>
+<tr>
+<td><code>TIYI_CRYPTO_KEK_FILE</code></td>
+<td><code>crypto.kek_file</code></td>
+<td>Pin the at-rest encryption KEK path for production.</td>
+</tr>
+<tr>
+<td><code>TIYI_AUTH_JWT_SECRET</code></td>
+<td><code>auth.jwt_secret</code></td>
+<td>Set a stable JWT signing secret for production.</td>
+</tr>
+<tr>
+<td><code>TIYI_AUTH_BOOTSTRAP_ADMIN_USERNAME</code></td>
+<td><code>auth.bootstrap_admin_username</code></td>
+<td>Choose the first admin username.</td>
+</tr>
+<tr>
+<td><code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code></td>
+<td><code>auth.bootstrap_admin_password</code></td>
+<td>Choose the first admin password for automation.</td>
+</tr>
+<tr>
+<td><code>TIYI_LICENSE_KEY_PATH</code></td>
+<td><code>license.key_path</code></td>
+<td>Load a signed license file on boot.</td>
+</tr>
+<tr>
+<td><code>TIYI_UPDATE_REPO</code></td>
+<td><code>update.repo</code></td>
+<td>Override the GitHub release repo used by update checks.</td>
+</tr>
+<tr>
+<td><code>TIYI_UPDATE_CHANNEL</code></td>
+<td><code>update.channel</code></td>
+<td>Use <code>stable</code> or <code>prerelease</code> for <code>tiyi update</code>.</td>
+</tr>
+<tr>
+<td><code>TIYI_UPDATE_MIRROR</code></td>
+<td><code>update.mirror</code></td>
+<td>Use <code>auto</code>, <code>github</code>, or <code>gitee</code> for update checks/downloads.</td>
+</tr>
+</tbody>
+</table>
+<p>Less common config keys follow the same rule. Prefer YAML for LDAP/RADIUS,
+token TTLs, cookie settings, and provider-specific auth settings unless your
+deployment platform requires env injection.</p>
+<div class="docs-pager"><a href="quickstart.html"><span class="label">← Previous</span><span class="title">First protected site</span></a><a class="next" href="configuration.html"><span class="label">Next →</span><span class="title">Configuration &amp; templates</span></a></div>
+</main>
 
   <aside class="docs-toc" id="docs-toc" aria-label="On this page">
     <h4>On this page</h4>
@@ -247,7 +456,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.7.2 · 2026-09-03</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
     </div>
   </div>
 </footer>

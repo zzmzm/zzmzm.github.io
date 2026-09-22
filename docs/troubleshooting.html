@@ -2,64 +2,313 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Troubleshooting — Tiyi docs</title>
+<title>Troubleshooting — Tiyi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Diagnose Tiyi startup, login, routing, WAF, TLS, agent, and observation pipeline problems." />
+<meta name="description" content="Diagnose from the outside in: process, listener, site match, route, WAF, then
+upstream. Change one layer at a time and keep the failing request ID." />
 <meta name="theme-color" content="#0A0E1A" />
-<link rel="icon" href="../favicon.ico" /><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" /><link rel="stylesheet" href="../assets/css/main.css" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
 <script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
 </head>
-<body class="docs" data-assets-base="../assets/img/"><div class="bg-field" aria-hidden="true"></div>
-<header class="nav"><div class="container nav-inner"><a class="brand" href="../index.html"><img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" /><span>Tiyi</span></a><nav class="nav-links" aria-label="Main navigation"><a href="../index.html#features">Features</a><a href="../index.html#tour">Product</a><a href="../index.html#pricing">Pricing</a><a href="index.html" style="color:var(--fg)">Docs</a><a href="../changelog.html">Changelog</a><button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></button><a class="nav-toggle nav-lang" href="../zh/docs/troubleshooting.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a><a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a></nav></div></header>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/troubleshooting.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
 <div class="docs-layout">
-  <aside class="docs-sidebar" aria-label="Docs navigation"><div class="docs-nav-group"><h4>Get started</h4><ul><li><a href="index.html">Overview</a></li><li><a href="quickstart.html">Quickstart</a></li><li><a href="installation.html">Installation</a></li></ul></div><div class="docs-nav-group"><h4>Operate</h4><ul><li><a href="operations.html">Operations guide</a></li><li><a href="troubleshooting.html">Troubleshooting</a></li><li><a href="upgrade-migration.html">Upgrade and migration</a></li></ul></div><div class="docs-nav-group"><h4>Concepts</h4><ul><li><a href="concepts.html">Domain model</a></li></ul></div><div class="docs-nav-group"><h4>Reference</h4><ul><li><a href="cli.html">CLI reference</a></li><li><a href="api.html">API reference</a></li></ul></div><div class="docs-nav-group"><h4>Run in production</h4><ul><li><a href="deployment.html">Deployment</a></li></ul></div></aside>
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html" aria-current="page">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">Operate</span><h1>Troubleshooting</h1>
-    <p class="lede">Diagnose from the outside in: process, listener, site match, route, WAF, then upstream. Change one layer at a time and retain the failing request ID.</p>
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="troubleshooting">Troubleshooting</h1>
+<p class="lede">Diagnose from the outside in: process, listener, site match, route, WAF, then
+upstream. Change one layer at a time and keep the failing request ID.</p>
+<h2 id="start-with-the-symptom">Start with the symptom</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>First check</th>
+<th>Next action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sudo: tiyi: command not found</code></td>
+<td><code>/usr/local/bin/tiyi --version</code></td>
+<td>Use <code>sudo /usr/local/bin/tiyi …</code> and check sudo PATH</td>
+</tr>
+<tr>
+<td><code>address already in use</code></td>
+<td><code>sudo ss -ltnp</code> and <code>sudo tiyi doctor</code></td>
+<td>Identify the owner and follow <a href="configuration.html#ports">port configuration</a>; do not stop an unknown application</td>
+</tr>
+<tr>
+<td>No 443 listener after installation</td>
+<td>Enabled TLS site and certificate</td>
+<td>Complete <a href="operations.html#https">HTTPS setup</a>; the console alone does not create an HTTPS website</td>
+</tr>
+<tr>
+<td>The console does not open</td>
+<td>Server IP, management listener, firewall/security group</td>
+<td>Open <code>http://SERVER_IP:8080</code>; use <code>sudo ss -ltnp</code> to check the default <code>0.0.0.0:8080</code> listener and verify port 8080 is reachable</td>
+</tr>
+<tr>
+<td>Local CLI says <code>permission denied</code></td>
+<td>Admin socket permissions</td>
+<td>Use sudo for the system service or the actual socket path for a foreground instance</td>
+</tr>
+<tr>
+<td>Website returns 421</td>
+<td>Host matching an active site</td>
+<td>Use the real domain or <code>curl -H 'Host: …'</code>; a bare-IP request is different</td>
+</tr>
+<tr>
+<td>Website returns 502</td>
+<td>Origin reachability from the serving node</td>
+<td>Check the origin process, address, port, protocol, and probes</td>
+</tr>
+<tr>
+<td>Website returns 403 / 413 / 503</td>
+<td>Request ID, enforcement reason, and origin response</td>
+<td>Identify the actual rule, limit, overload, or application response; status alone does not identify the source</td>
+</tr>
+<tr>
+<td>Saved configuration has no effect</td>
+<td>Node application results and actual request path</td>
+<td>Check site, policy, node, and publication failures, then retry</td>
+</tr>
+</tbody>
+</table>
+<h2 id="first-five-minutes">First five minutes</h2>
+<pre><code class="language-sh">sudo tiyi doctor
+sudo systemctl status tiyi --no-pager
+sudo journalctl -u tiyi -n 200 --no-pager
+sudo ss -ltnp
+sudo tiyi system health
+</code></pre>
+<p>For an agent, use <code>tiyi-agent</code> as the unit name. For a manual foreground run,
+inspect the terminal and the paths supplied on the command line.</p>
+<h2 id="the-dashboard-does-not-open">The dashboard does not open</h2>
+<ul>
+<li>Confirm the configured <code>server.addr</code> listener and host firewall.</li>
+<li>A proxy listener on 80/443 is not the dashboard listener (default 8080).</li>
+<li>Run <code>tiyi doctor</code> for port conflicts and config errors.</li>
+<li>If a systemd service cannot write its state tree, use
+  <code>sudo tiyi doctor --fix-state-ownership</code> after reviewing the reported path.</li>
+</ul>
+<a id="the-bootstrap-password-was-lost"></a>
+<h2 id="reset-password">The bootstrap password was lost</h2>
+<p>Do <strong>not</strong> delete <code>state.db</code>. The first password is printed once by design. Use
+the local admin socket on the Tiyi host to reset the existing account:</p>
+<pre><code class="language-sh">sudo tiyi user list
+sudo tiyi user reset-password &lt;user-id&gt; --password <span class="s">'&lt;new-strong-password&gt;'</span>
+</code></pre>
+<p>If a custom admin socket is configured, pass its path. Socket filesystem
+permissions are the local authentication boundary.</p>
+<h2 id="requests-miss-the-site-or-return-the-wrong-upstream">Requests miss the site or return the wrong upstream</h2>
+<pre><code class="language-sh">curl -v -H <span class="s">'Host: app.example.com'</span> http://127.0.0.1/
+sudo tiyi site list
+sudo tiyi upstream list
+</code></pre>
+<p>Check the Host header (including port normalization), listener, site enabled
+state, longest-prefix path route, upstream scheme/port, and health probe. A
+browser request to an IP without the configured Host is not a valid site test.</p>
+<h2 id="expected-attacks-are-not-blocked">Expected attacks are not blocked</h2>
+<ul>
+<li>Confirm the request reached the intended site and WAF is enabled.</li>
+<li>Check effective policy, engine state, paranoia level, thresholds, bypasses,
+  IP-list precedence, and path-scoped overrides.</li>
+<li>Search <strong>Security Events</strong> and <strong>Attack Logs</strong> by request ID and rule ID.</li>
+<li>Test with an untrusted source; a global/site allow or bypass can be decisive.</li>
+<li>Preview compiled policy before changing it.</li>
+</ul>
+<h2 id="tls-or-acme-fails">TLS or ACME fails</h2>
+<p>Check DNS, public reachability, port 80 for HTTP-01, certificate binding, clock,
+and ACME order details. DNS-01 requires a supported provider and correctly
+scoped credentials. Never paste provider secrets into an issue or support
+bundle.</p>
+<h2 id="agent-is-offline-or-will-not-apply">Agent is offline or will not apply</h2>
+<ul>
+<li>Compare the server URL, enrollment expiry, clock, DNS, and network path.</li>
+<li>Read both server and agent journals around the same timestamp.</li>
+<li>Distinguish offline, rejected identity/protocol, signature failure, and apply
+  failure.</li>
+<li>When the target release changes identity or protocol contracts, re-enroll the
+  Agent; never force an incompatible identity, spool, or bundle cache.</li>
+<li>Confirm the applied revision/hash after reconnect, not only online state.</li>
+</ul>
+<h2 id="a-request-gets-a-tiyi-503-or-bypasses-crs">A request gets a Tiyi 503 or bypasses CRS</h2>
+<p>Check <code>X-Tiyi-Enforcement-Reason</code> and <strong>Logs → Enforcement</strong>. A causal WAF CPU
+reject is <code>cpu_overload_reject</code>; a CRS-only degradation is
+<code>cpu_overload_bypass</code>. An origin 503 has neither decision. Review the affected
+node's WAF pressure trend and <code>/debug/wafoverload/stats</code> on the protected local
+admin socket before changing thresholds. Observation backlog or telemetry gaps
+do not trigger WAF overload.</p>
+<h2 id="bot-challenge-or-ip-subscription-fails">Bot challenge or IP subscription fails</h2>
+<ul>
+<li>Bot protection requires an HTTPS-only site. Check certificate binding,
+  browser cookie/storage policy, system time, exempt paths, and trusted-list
+  references. Human verification additionally requires WebAuthn support and a
+  user gesture.</li>
+<li>For an IP subscription, inspect sync history, HTTP status, response limits,
+  parser/JSONPath output, deletion-ratio hold, and consumer compile result. The
+  prior accepted snapshot stays active when an update is protected.</li>
+</ul>
+<h2 id="installer-refuses-the-host-or-startup-rejects-state">Installer refuses the host or startup rejects state</h2>
+<p>The public installer is for a clean host and refuses an existing binary, state
+database, configuration, or systemd unit. Runtime rejects state whose schema or
+migration ledger is incompatible with the running binary.</p>
+<p>Do not edit migration metadata. Follow the
+<a href="upgrade-migration.html">upgrade and migration guide</a> to select a compatible
+binary/state pair, move a complete installation, or use the documented purge
+flow. v3.8.0 cannot open state created by v3.7.2 or earlier releases and
+requires the documented purge and remote-Agent re-enrollment flow.</p>
+<h2 id="counters-exist-but-evidence-or-siem-is-late">Counters exist but evidence or SIEM is late</h2>
+<p>Open <strong>System Monitoring → Log Pipeline</strong> and inspect queue depth, drops,
+retries, and panic counters. Request Evidence adds local/store/upload lanes;
+direct SIEM adds raw-source and per-destination lanes. Exact traffic counters,
+bounded SecurityFact samples, retained evidence, and SIEM delivery are independent.
+Test the destination from the producing node and fix the consumer without
+restarting a healthy data plane unless diagnostics require it.</p>
+<h2 id="console-recovery-and-slow-diagnostic-output">Console recovery and slow diagnostic output</h2>
+<p>If session recovery is temporarily unavailable, use the retry page after checking connectivity and component health. A temporary read failure does not prove the session has expired. Preserve settings drafts until the save/application result is known.</p>
+<p>On the Controller host, inspect bounded diagnostic output and management latency through the protected local socket:</p>
+<pre><code class="language-sh">sudo curl -fsS --unix-socket /run/tiyi/admin.sock http://tiyi.local/debug/runtime/stats
+sudo tiyi system health
+</code></pre>
+<p>Use the actual socket path for a custom instance. Check the journal/output consumer and storage pressure; diagnostics can drop whole records when full, with counters, while durable audit and security records use separate paths. Do not expose the admin socket over the network to collect diagnostics.</p>
+<h2 id="collect-a-safe-support-bundle">Collect a safe support bundle</h2>
+<p>Include version, mode, sanitized config, unit definition, health output,
+<code>tiyi doctor</code>, recent relevant journals, site/upstream IDs, timestamp/timezone,
+and request ID. Remove JWTs, passwords, enrollment tokens, private keys, DNS
+credentials, cookies, and sensitive request bodies.</p>
+<h2 id="api-configuration-file-problems">API / configuration file problems</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Site import says invalid JSON</td>
+<td>Use <a href="templates/site-import.json">site-import.json</a>, not apply YAML or OpenAPI.</td>
+</tr>
+<tr>
+<td>Apply says unknown field or unsupported reference</td>
+<td>Use <a href="configuration.html">apply templates</a>; Bot trusted IP-list name references are not currently resolved by apply. Bind the list in the site UI after creation.</td>
+</tr>
+<tr>
+<td>API document reports <code>invalid_oas</code></td>
+<td>Use the <a href="api-protection.html">OpenAPI starter</a>. Root mapping is <code>basePath: ""</code>, not <code>/</code>; avoid duplicate base-path prefixes.</td>
+</tr>
+<tr>
+<td>Document saved but traffic unchanged</td>
+<td>Check publication and serving-node results; uploading or saving a draft does not apply it.</td>
+</tr>
+<tr>
+<td>No violation samples</td>
+<td>Counters and retained samples are separate. Enable Schema violation sampling deliberately in log policy when needed; it is off by default.</td>
+</tr>
+<tr>
+<td>CLI cannot reach a custom instance</td>
+<td>Supply the actual <code>--admin-socket</code> path, or <code>TIYI_API</code> and <code>TIYI_TOKEN</code>. <code>auth login</code> does not save a CLI session.</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="operations.html"><span class="label">← Previous</span><span class="title">Daily operations</span></a><a class="next" href="upgrade-migration.html"><span class="label">Next →</span><span class="title">Upgrade &amp; migration</span></a></div>
+</main>
 
-    <h2 id="first-five">First five minutes</h2>
-<pre><code>tiyi doctor
-systemctl status tiyi --no-pager
-journalctl -u tiyi -n 200 --no-pager
-ss -ltnp
-tiyi system health</code></pre>
-    <p>For an Agent, inspect the <code>tiyi-agent</code> unit. For a manual foreground run, inspect its terminal and command-line paths.</p>
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
 
-    <h2 id="dashboard">Dashboard does not open</h2>
-    <ul><li>Confirm the configured <code>server.addr</code> and host firewall.</li><li>Ports 80/443 serve proxy traffic; the dashboard listener defaults to 8080.</li><li>Run <code>tiyi doctor</code> for conflicts and config errors.</li><li>For reported service state ownership, review the path then run <code>sudo tiyi doctor --fix-state-ownership</code>.</li></ul>
-
-    <h2 id="password">Bootstrap password was lost</h2>
-    <div class="callout callout-warn"><div class="callout-body"><p><strong>Do not delete <code>state.db</code>.</strong> If a first Controller unit was started directly with <code>systemctl</code>, its generated password went to the journal. Treat it as exposed and reset the existing account through the local admin socket; its filesystem permissions are the authentication boundary.</p></div></div>
-<pre><code>sudo tiyi user list
-sudo tiyi user reset-password <span class="v">&lt;user-id&gt;</span> --password <span class="s">'&lt;new-strong-password&gt;'</span></code></pre>
-
-    <h2 id="routing">Request misses the site or wrong upstream answers</h2>
-<pre><code>curl -v -H <span class="s">'Host: app.example.com'</span> http://127.0.0.1/
-tiyi site list
-tiyi upstream list</code></pre>
-    <p>Check Host normalization, listener, site enabled state, longest-prefix route, upstream scheme/port, and health probe. A browser request to an IP without the configured Host is not a valid site test.</p>
-
-    <h2 id="waf">Expected attack is not blocked</h2>
-    <ul><li>Confirm the request reached the intended site and WAF is enabled.</li><li>Inspect effective policy, engine state, paranoia level, thresholds, bypasses, IP-list precedence, and path overrides.</li><li>Search <strong>Security Events</strong> and <strong>Attack Logs</strong> by request ID and rule ID.</li><li>Test from an untrusted source; a global/site allow or bypass may be decisive.</li><li>Preview compiled policy before changing it.</li></ul>
-
-    <h2 id="tls">TLS or ACME fails</h2>
-    <p>Check DNS, public reachability, port 80 for HTTP-01, certificate binding, clock, and ACME order details. DNS-01 needs a supported provider and correctly scoped credentials. Never include provider secrets in an issue or support bundle.</p>
-
-    <h2 id="agent">Agent is offline or will not apply</h2>
-    <ul><li>Compare server URL, enrollment expiry, clock, DNS, and network path.</li><li>Read server and agent journals around the same timestamp.</li><li>Distinguish offline, identity/protocol rejection, signature failure, and apply failure.</li><li>After reconnect, confirm applied revision/hash, not only online state.</li></ul>
-
-    <h2 id="incompatible-state">Installer refuses the host or startup rejects state</h2>
-    <p>The public installer is for a clean host and refuses an existing binary, state database, configuration, or systemd unit. Runtime rejects a schema or migration ledger that is incompatible with the running binary.</p>
-    <p>Do not bypass the guard or edit migration metadata. Use <a href="upgrade-migration.html">upgrade and migration</a> to pair a compatible binary and state, move a complete installation, or run the documented purge flow. v3.7.0 cannot open state created by v3.6.0 or earlier releases; purge and re-enroll every remote Agent.</p>
-
-    <h2 id="pipeline">Counters exist but evidence or SIEM is late</h2>
-    <p>Open <strong>Monitoring → Log Pipeline</strong> and inspect queue depth, drops, retries, and panic counters. Exact counters, retained evidence, and detail/SIEM delivery are independent. Test the destination from the Tiyi host and fix the consumer without restarting a healthy data plane unless diagnostics require it.</p>
-
-    <h2 id="support">Collect a safe support bundle</h2>
-    <p>Include version, mode, sanitized config, unit definition, health and doctor output, relevant journals, site/upstream IDs, timestamp/timezone, and request ID. Remove JWTs, passwords, enrollment tokens, private keys, DNS credentials, cookies, and sensitive bodies.</p>
-
-    <div class="docs-pager"><a href="operations.html"><span class="label">← Previous</span><span class="title">Operations guide</span></a><a class="next" href="concepts.html"><span class="label">Next →</span><span class="title">Domain model</span></a></div>
-  </main><aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4></aside>
 </div>
-<footer class="footer docs-release-footer"><div class="container"><div class="footer-bottom"><span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span><span class="build">build v3.7.2 · 2026-09-03</span></div></div></footer><script src="../assets/js/main.js" defer></script>
-</body></html>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

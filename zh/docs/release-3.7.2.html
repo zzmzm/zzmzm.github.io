@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>太一 v3.7.2 发行说明 — 太一文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="太一 v3.7.2 发行说明 发布日期：2026-09-03。v3.7.2 是沿用 v3.7 状态契约的兼容运维补丁。 主要变化 总览防护链路： 一次未过滤的执行摘要把八个来源折叠成请求真实经过的五个 阶段——Bot 准入 → 限速/挑战 → IP/国家 → 资源护栏 → WAF/CRS → 源站。每个阶段 " />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/release-3.7.2.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="太一-v372-发行说明">太一 v3.7.2 发行说明</h1>
+<p class="lede">发布日期：2026-09-03。v3.7.2 是沿用 v3.7 状态契约的兼容运维补丁。</p>
+<h2 id="主要变化">主要变化</h2>
+<ul>
+<li><strong>总览防护链路：</strong>一次未过滤的执行摘要把八个来源折叠成请求真实经过的五个
+  阶段——Bot 准入 → 限速/挑战 → IP/国家 → 资源护栏 → WAF/CRS → 源站。每个阶段
+  给出配置姿态、决策、故障优先原因与动作拆分。Bot 阶段打开<strong>日志 → Bot 分析</strong>；
+  其他阶段打开已过滤的<strong>日志 → 执行分析</strong>。KPI 使用可验证契约
+  <code>terminated = blocked/rejected/banned + challenged</code>。</li>
+<li><strong>Bot 分析：</strong> <strong>日志 → Bot 分析</strong>从 Observation V2 计数平面记录固定基数的
+  准入结果：路径/可信 IP 豁免、Clearance 命中、挑战签发/通过/失败、不支持的
+  客户端与内部失败。成功准入不是执行决策。页面不声称识别了 Bot，也不计算访客
+  通过率。</li>
+<li><strong>可读的请求证据：</strong>控制台预览先显示方法、精确请求目标和客户端 HTTP 版本，
+  再显示 Host 与捕获的请求头。安装 GeoIP 数据后，客户端 IP 可显示参考性网络
+  区域标签。</li>
+<li><strong>SecLang 引号：</strong>路径范围的 CRS 排除、规则目标更新和可视化规则正则现在原样
+  到达 Coraza，作者写的 <code>\.</code> / <code>\d</code> 不再被二次转义。</li>
+</ul>
+<h2 id="升级">升级</h2>
+<p>v3.7.1 与 v3.7.0 安装可使用常规签名更新流程：</p>
+<pre><code class="language-sh">sudo tiyi update --check
+sudo tiyi update --yes                 # GitHub，失败自动回退 Gitee
+sudo tiyi update --yes --mirror gitee # 或强制 Gitee
+sudo systemctl restart tiyi
+tiyi --version
+sudo tiyi system health
+</code></pre>
+<p>若从 v3.6.0 或更早状态进入 v3.7 系列，先前的干净状态边界仍然适用；过渡前请阅读
+<a href="upgrade-migration.html">升级与迁移</a>。</p>
+<p>二进制、<code>SHA256SUMS</code>、Ed25519 签名与发行清单见
+<a href="https://github.com/zzmzm/tiyi/releases/tag/v3.7.2">GitHub Release</a> 与
+<a href="https://gitee.com/tiyisec/tiyi/releases/tag/v3.7.2">Gitee 镜像</a>。</p>
+<div class="docs-pager"><a href="api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="reference/rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Quickstart — Tiyi docs</title>
+<title>Quickstart — Tiyi Docs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Install, run, and verify Tiyi blocking real attacks in five minutes." />
+<meta name="description" content="Go from a clean Linux host to Tiyi blocking real attacks in a few minutes. We&#x27;ll install Tiyi, open the console, create one site, and send a few requests to see the WAF at work." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -47,8 +47,10 @@
       <h4>Get started</h4>
       <ul>
         <li><a href="index.html">Overview</a></li>
-        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="quickstart.html" aria-current="page">Quickstart</a></li>
         <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -57,12 +59,15 @@
         <li><a href="operations.html">Operations guide</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
         <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
       <h4>Concepts</h4>
       <ul>
-        <li><a href="concepts.html">Domain model</a></li>
+        <li><a href="concepts.html">How it works</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -70,6 +75,11 @@
       <ul>
         <li><a href="cli.html">CLI reference</a></li>
         <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -81,125 +91,146 @@
   </aside>
 
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">Get started</span>
-    <h1>Quickstart</h1>
-    <p class="lede">Five minutes from a clean Linux host to a Tiyi instance blocking real OWASP CRS attacks against a real upstream. We'll install the signed binary, start <code>tiyi run</code>, create one site, and watch the WAF do its job.</p>
+<span class="docs-eyebrow">Get started</span>
+<h1 id="quickstart">Quickstart</h1>
+<p class="lede">Go from a clean Linux host to Tiyi blocking real attacks in a few minutes. We'll install Tiyi, open the console, create one site, and send a few requests to see the WAF at work.</p>
+<a id="before-you-start"></a>
+<h2 id="prerequisites">Before you start</h2>
+<ul>
+<li>A <strong>Linux amd64 or arm64</strong> host. The default installation uses sudo and systemd.</li>
+<li><strong>curl, tar, sha256sum</strong>, and access to the release downloads for online installation.</li>
+<li>An HTTP application Tiyi can reach. If you don't have one ready, the example below starts a demo origin with Python 3.</li>
+</ul>
+<p>This guide uses <strong>80 / 443</strong> for websites and <strong>8080</strong> for management. For <a href="#manual">manual steps</a>, <a href="#custom-ports">custom ports</a>, or <a href="#offline">offline installation</a>, jump to the relevant section.</p>
+<div class="callout callout-info"><div class="callout-body">
+<p><strong>Already running Tiyi?</strong> Read <a href="upgrade-migration.html">upgrade and migration</a> first. The installation commands below are for a fresh host.</p>
+</div></div>
+<a id="1-install-and-start-tiyi"></a>
+<a id="one-line"></a>
+<h2 id="install">1. Install and start Tiyi</h2>
+<p>Run on the Tiyi host:</p>
+<pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh | bash <span class="o">&amp;&amp;</span> sudo tiyi install --now
+</code></pre>
+<p>The first part downloads and verifies the latest stable binary and installs it in <code>/usr/local/bin</code>. The second installs the systemd service, starts it, and enables it at boot.
+Websites use <strong>80 / 443</strong> and the console uses <strong>8080</strong> by default. HTTPS becomes available after you configure a TLS site and certificate; no listener on 443 yet is normal.</p>
+<p>On first installation, this terminal shows the login details. Use the password from your actual output:</p>
+<pre><code class="language-text"><span class="c">Tiyi administrator created
+  username:  admin
+  password:  &lt;your-generated-one-time-password&gt;
+</span></code></pre>
+<p>Check the installed version and running instance:</p>
+<pre><code class="language-sh">tiyi --version
+sudo tiyi system health
+</code></pre>
+<p>If startup fails, run <code>sudo journalctl -u tiyi -n 100 --no-pager</code> and follow <a href="troubleshooting.html">troubleshooting</a>. For hosts without systemd, see <a href="installation.html#foreground">foreground mode</a>.</p>
+<a id="2-open-the-console"></a>
+<a id="login"></a>
+<h2 id="run">2. Open the console</h2>
+<p>Open <code>http://SERVER_IP:8080</code> in your browser, replacing <code>SERVER_IP</code> with the IP address of the host running Tiyi.
+Tiyi listens on <code>0.0.0.0:8080</code> by default. Sign in with <strong>admin</strong> and the password printed during installation; you'll reach Overview, where you can watch traffic and protection results.</p>
+<p>If the page does not open, check that the service is running and that port 8080 is reachable through the server firewall or cloud security group.</p>
+<div class="callout callout-warn"><div class="callout-icon">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="18"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" x2="12" y1="9" y2="13"></line><line x1="12" x2="12.01" y1="17" y2="17"></line></svg>
+</div><div class="callout-body">
+<p><strong>The first password is shown once.</strong> Change it after signing in. If you lose it, <a href="troubleshooting.html#reset-password">reset it through the local CLI</a> on the Tiyi host; you don't need to delete the database.</p>
+</div></div>
+<a id="3-start-an-origin"></a>
+<h2 id="upstream">3. Start an origin</h2>
+<p>Open another terminal on the Tiyi host and start a small HTTP server:</p>
+<pre><code class="language-sh">mkdir -p <span class="s">"</span><span class="v">$HOME</span><span class="s">/tiyi-demo</span><span class="s">"</span>
+printf <span class="s">'Hello from the origin\n'</span> &gt; <span class="s">"</span><span class="v">$HOME</span><span class="s">/tiyi-demo/index.html</span><span class="s">"</span>
+python3 -m http.server 9000 --bind 127.0.0.1 --directory <span class="s">"</span><span class="v">$HOME</span><span class="s">/tiyi-demo</span><span class="s">"</span>
+</code></pre>
+<p>Leave it running. If you already have an application, use its origin address instead: replace <code>http://127.0.0.1:9000</code> in the next step with a URL the Tiyi host can reach.
+The demo origin listens only on loopback, so you don't need to open port 9000 to visitors.</p>
+<a id="4-create-your-first-site"></a>
+<h2 id="site">4. Create your first site</h2>
+<p>Return to another terminal on the Tiyi host. The CLI connects to the system service through the local admin channel, without a separate login or token:</p>
+<pre><code class="language-sh">sudo tiyi site create --name quickstart --host quickstart.test <span class="o">\
+</span>  --upstream-url http://127.0.0.1:9000 --tls none
+</code></pre>
+<p>The site becomes active immediately and uses the built-in <strong>Light</strong> WAF policy by default. You can also use <strong>Application Delivery → Sites → Create</strong> in the console: enter the same name, domain, and origin, disable TLS, keep WAF and the Light policy enabled, then save. Choose either the CLI or the UI to create the site.</p>
+<p><code>quickstart.test</code> is just the demo domain. The requests below supply it directly, so no DNS change is needed. Configure a certificate and HTTPS when you move to a real domain.</p>
+<p>Both the primary host and aliases accept <code>*.example.com</code> for one subdomain level, such as <code>api.example.com</code>. It does not match <code>example.com</code> or <code>a.b.example.com</code>; add the root domain separately if needed. See <a href="operations.html#wildcard-hosts">wildcard setup, certificates, and API bindings</a>.</p>
+<a id="5-watch-the-waf-block-attacks"></a>
+<h2 id="verify">5. Watch the WAF block attacks</h2>
+<p>On the Tiyi host, send a normal request followed by three common attacks against your new demo site. Each command prints only the HTTP status code; comments show the expected result:</p>
+<pre><code class="language-sh"><span class="c"># Normal request → 200
+</span>curl -sS -o /dev/null -w <span class="s">'%{http_code}\n'</span> <span class="o">\
+</span>  -H <span class="s">'Host: quickstart.test'</span> http://127.0.0.1/
 
-    <h2 id="prerequisites">Prerequisites</h2>
-    <ul>
-      <li><strong>Linux</strong> on amd64 or arm64. Windows and macOS are not target hosts.</li>
-      <li><strong>curl</strong> to run the public binary installer.</li>
-      <li>A spare backend you can put behind Tiyi — anything that speaks HTTP. The examples below use a Python <code>http.server</code>.</li>
-    </ul>
+<span class="c"># SQL injection → 403
+</span>curl -sS -o /dev/null -w <span class="s">'%{http_code}\n'</span> --get <span class="o">\
+</span>  -H <span class="s">'Host: quickstart.test'</span> <span class="o">\
+</span>  --data-urlencode <span class="s">'q=1 UNION SELECT password FROM users'</span> http://127.0.0.1/
 
-    <h2 id="install">1. Install the signed binary</h2>
-    <p>Use the canonical public installer. It selects the matching Linux release, verifies its SHA-256 manifest, and installs <code>tiyi</code> into <code>/usr/local/bin</code>:</p>
-<pre><code><span class="p">$</span> curl -fsSL https://www.tiyisec.com/install.sh | bash
-<span class="p">$</span> tiyi --version</code></pre>
-    <p>See <a href="installation.html#prebuilt">Installation</a> for version pinning, install-prefix overrides, and the Gitee mirror.</p>
-    <div class="callout callout-info"><div class="callout-body"><p><strong>Existing installation?</strong> The public installer is for a clean host. Use <a href="upgrade-migration.html">upgrade and migration</a>; v3.7.0 cannot open v3.6.0 or earlier state and requires purge plus remote-Agent re-enrollment.</p></div></div>
+<span class="c"># XSS → 403
+</span>curl -sS -o /dev/null -w <span class="s">'%{http_code}\n'</span> --get <span class="o">\
+</span>  -H <span class="s">'Host: quickstart.test'</span> <span class="o">\
+</span>  --data-urlencode <span class="s">'q=&lt;script&gt;alert(1)&lt;/script&gt;'</span> http://127.0.0.1/
 
-    <h2 id="run">2. Run in complete runtime</h2>
-    <p>The recommended path is one command: <code>tiyi install --now</code> installs Tiyi as a hardened systemd service, enables it for boot, and starts it now. The unit runs unprivileged (ports 80/443 via <code>CAP_NET_BIND_SERVICE</code>), and on a first install the installer pre-creates the administrator and prints the one-time login - URL, username, password - right in your terminal:</p>
-<pre><code><span class="p">$</span> sudo tiyi install --now</code></pre>
-    <p>Prefer to evaluate in the foreground first? <strong>As root</strong> the defaults work - state lands in <code>/var/lib/tiyi</code> and the proxy binds ports 80/443:</p>
-<pre><code><span class="p">$</span> sudo tiyi run</code></pre>
-    <p><strong>As a normal user</strong> (no sudo), point Tiyi at writable paths and high ports:</p>
-<pre><code><span class="p">$</span> tiyi run <span class="o">\</span>
-    --state-db /tmp/tiyi.db <span class="o">\</span>
-    --caddy-admin-socket /tmp/tiyi-caddy.sock <span class="o">\</span>
-    --admin-socket /tmp/tiyi-admin.sock <span class="o">\</span>
-    --proxy-http-addr 127.0.0.1:18080 <span class="o">\</span>
-    --proxy-https-addr 127.0.0.1:18443</code></pre>
-
-    <p>On a first run with no users and no supplied bootstrap credentials, Tiyi prints the generated administrator password once:</p>
-<pre><code><span class="c">============================================================</span>
-<span class="c">  Tiyi — first-run administrator created</span>
-<span class="c">============================================================</span>
-<span class="c">    username:  admin</span>
-<span class="c">    password:  <span class="v">&lt;43-random-characters-shown-once&gt;</span></span></code></pre>
-
-    <p>Open <code>http://127.0.0.1:8080/</code> in a browser. Log in as <code>admin</code> with the password above. The console opens at <strong>Overview</strong>. Its stable task areas are Overview, Application Delivery, Protection, Fleet, Events &amp; Logs, Detection &amp; Response, Monitoring, and Administration; permission filtering hides empty groups without changing deep links.</p>
-
-    <div class="callout callout-warn">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
-      <div class="callout-body">
-        <p><strong>The bootstrap password is shown exactly once.</strong> Copy it from the terminal. If it is lost, do not delete <code>state.db</code>: on the Tiyi host run <code>tiyi user list</code>, then <code>tiyi user reset-password &lt;user-id&gt; --password &lt;new&gt;</code> over the local admin socket.</p>
-      </div>
-    </div>
-
-    <h3 id="own-admin-password">Choose your own admin password (optional)</h3>
-    <p>For automation, container images, or CI, skip the generated password: set <code>TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD</code> before the first boot. It must contain at least 8 Unicode characters; after validation no generated-password banner is printed. The username defaults to <code>admin</code>, and auto-generation only fires when no users exist yet, so restarts are no-ops.</p>
-<pre><code><span class="p">$</span> mkdir -p /tmp/waf
-<span class="p">$</span> TIYI_AUTH_BOOTSTRAP_ADMIN_PASSWORD=<span class="s">'admin123@xxxxxxm'</span> <span class="o">\</span>
-    tiyi run <span class="o">\</span>
-    --addr 0.0.0.0:8080 <span class="o">\</span>
-    --state-db /tmp/waf/state.db <span class="o">\</span>
-    --caddy-admin-socket /tmp/waf/caddy.sock <span class="o">\</span>
-    --proxy-http-addr 0.0.0.0:8180 <span class="o">\</span>
-    --proxy-https-addr 0.0.0.0:18443 <span class="o">\</span>
-    --admin-socket /tmp/waf/admin.sock</code></pre>
-
-    <h2 id="upstream">3. Stand up a backend</h2>
-    <p>In a second terminal, start something Tiyi can proxy to. Anything HTTP works — for the demo we'll use Python:</p>
-<pre><code><span class="p">$</span> python3 -m http.server 9000</code></pre>
-
-    <h2 id="site">4. Create your first site</h2>
-    <p>You can do this in the UI or via the CLI. The CLI uses the local admin socket and needs no token:</p>
-<pre><code><span class="c"># 1. Create the site pointing at the demo server</span>
-<span class="p">$</span> tiyi site create <span class="o">\</span>
-    --name demo <span class="o">\</span>
-    --host demo.local <span class="o">\</span>
-    --upstream-url http://127.0.0.1:9000 <span class="o">\</span>
-    --tls none
-
-<span class="c"># The site is active immediately after create.</span></code></pre>
-
-    <p>The one-step path creates an upstream pool, uses the built-in Light policy, translates the site into Caddy JSON, and hot-reloads Caddy through its admin socket. Light keeps attack and resource-limit blocking enabled while treating common MIME/parser mismatches as compatibility observations. If anything fails, the previous config stays active and the site row is restored.</p>
-
-    <h2 id="verify">5. Verify the WAF blocks attacks</h2>
-    <p>From a third terminal, send a baseline request and three classic attacks against the proxy port:</p>
-<pre><code><span class="c"># Baseline — should pass</span>
-<span class="p">$</span> curl -sS -o /dev/null -w <span class="s">"%{http_code}\n"</span> -H <span class="s">"Host: demo.local"</span> http://127.0.0.1:18080/
-<span class="c">200</span>
-
-<span class="c"># SQL injection</span>
-<span class="p">$</span> curl -sS -o /dev/null -w <span class="s">"%{http_code}\n"</span> -H <span class="s">"Host: demo.local"</span> <span class="o">\</span>
-    <span class="s">"http://127.0.0.1:18080/?id=1'%20OR%20'1'='1"</span>
-<span class="c">403</span>
-
-<span class="c"># XSS</span>
-<span class="p">$</span> curl -sS -o /dev/null -w <span class="s">"%{http_code}\n"</span> -H <span class="s">"Host: demo.local"</span> <span class="o">\</span>
-    <span class="s">"http://127.0.0.1:18080/?q=&lt;script&gt;alert(1)&lt;/script&gt;"</span>
-<span class="c">403</span>
-
-<span class="c"># Path traversal</span>
-<span class="p">$</span> curl -sS -o /dev/null -w <span class="s">"%{http_code}\n"</span> -H <span class="s">"Host: demo.local"</span> <span class="o">\</span>
-    <span class="s">"http://127.0.0.1:18080/../../../../etc/passwd"</span>
-<span class="c">403</span></code></pre>
-
-    <p>In the dashboard at <code>http://127.0.0.1:8080/#/logs/security</code>, the three blocked requests appear immediately with the Coraza rule id, severity, attack tag, and the matching CRS message. The dashboard's traffic chart shows the 1:3 baseline-to-block ratio in real time.</p>
-
-    <h2 id="next">What to read next</h2>
-    <ul>
-      <li><a href="installation.html">Installation</a> — signed binary installation, config files, Controller and Agent operation, and production-hardening fields you should set before going live.</li>
-      <li><a href="concepts.html">Domain model</a> — what sites, upstreams, certificates, policies, agents, telemetry, and the audit chain actually are.</li>
-      <li><a href="cli.html">CLI reference</a> — current operator commands grouped by resource; use built-in help for the complete flag surface.</li>
-    </ul>
-
-    <div class="docs-pager">
-      <a href="index.html">
-        <span class="label">← Previous</span>
-        <span class="title">Overview</span>
-      </a>
-      <a class="next" href="installation.html">
-        <span class="label">Next →</span>
-        <span class="title">Installation</span>
-      </a>
-    </div>
-  </main>
+<span class="c"># Path traversal → 403; --path-as-is stops curl normalizing the path first
+</span>curl -sS -o /dev/null -w <span class="s">'%{http_code}\n'</span> --path-as-is <span class="o">\
+</span>  -H <span class="s">'Host: quickstart.test'</span> http://127.0.0.1/../../../../etc/passwd
+</code></pre>
+<p>Send the normal request once more; it should still return <strong>200</strong>. To see the body and headers, replace <code>-sS -o /dev/null -w '%{http_code}\n'</code> with <code>-i</code>. A normal response shows <code>Hello from the origin</code>; an attack response includes an <code>X-Request-Id</code> you can use to find the matching log.</p>
+<p>Back in the console, check traffic and outcomes in Overview and matched rules in <strong>Logs → Attack Logs</strong>. Detail retention and visibility depend on your logging and sampling settings; confirm blocking from the actual HTTP response first.
+If you get 502, check that the origin is still running. If an attack passes, check the site's WAF switch, policy mode, and exceptions; see <a href="troubleshooting.html">troubleshooting</a>.</p>
+<a id="other-installation-methods"></a>
+<h2 id="alternatives">Other installation methods</h2>
+<p>Choose one of these instead of the one-line installation in step 1. Once the service is running, continue with <a href="#login">Open the console</a>.</p>
+<a id="install-in-separate-steps"></a>
+<h3 id="manual">Install in separate steps</h3>
+<p>To inspect the script, install the binary, and start the service separately:</p>
+<pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh -o /tmp/tiyi-install.sh
+less /tmp/tiyi-install.sh
+bash /tmp/tiyi-install.sh
+tiyi --version
+sudo tiyi doctor
+sudo tiyi install --now
+</code></pre>
+<p>Press <code>q</code> to leave less, or use <code>cat</code> if less is unavailable. Running the script only installs the binary; the final line starts the service and prints the first password.
+To pin a version, replace the script execution with <code>TIYI_VERSION=vX.Y.Z bash /tmp/tiyi-install.sh</code>, using a published release tag.
+See <a href="installation.html#prebuilt">installation</a> for install directories, the Gitee mirror, and verification details.</p>
+<a id="choose-your-own-ports"></a>
+<h3 id="custom-ports">Choose your own ports</h3>
+<p>If another service already uses 80, 443, or 8080, write the configuration before starting Tiyi. For a fresh installation, this example selects <strong>8081</strong> for management and <strong>8180 / 18443</strong> for websites:</p>
+<pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh | bash
+sudo tiyi install
+sudo install -d -m 0750 -o root -g tiyi /etc/tiyi
+sudo tee /etc/tiyi/tiyi.yaml &gt;/dev/null <span class="s">&lt;&lt;'YAML'
+server:
+  addr: "0.0.0.0:8081"
+proxy:
+  http_addr: ":8180"
+  https_addr: ":18443"
+YAML</span>
+sudo chown root:tiyi /etc/tiyi/tiyi.yaml
+sudo chmod 0640 /etc/tiyi/tiyi.yaml
+sudo tiyi install --now
+</code></pre>
+<p>Without <code>--now</code>, <code>install</code> prepares the system service without starting it. Once started, open <code>http://SERVER_IP:8081</code> in your browser, using the Tiyi host's IP address.
+Change the later test URLs to <code>http://127.0.0.1:8180/</code>; the demo origin stays on 9000.
+If you already have a configuration, preserve its other fields and edit only the listeners you need; see <a href="configuration.html#ports">ports and configuration</a>.</p>
+<a id="install-offline"></a>
+<h3 id="offline">Install offline</h3>
+<p>On a connected computer, download the release archive matching the target host's architecture, its <code>SHA256SUMS</code> and <code>SHA256SUMS.sig</code>, and the official <code>release-key.pub</code>. Transfer all four files to the offline host.
+Follow the <a href="installation.html#offline">complete offline procedure</a> to verify the signature and checksum before extraction and installation. The offline host doesn't need to run the online <code>install.sh</code>.</p>
+<p>After installing the binary and offline configuration, start the system service with the same command:</p>
+<pre><code class="language-sh">sudo tiyi install --now
+</code></pre>
+<p>For custom ports, write the YAML above before starting. The embedded WAF rules work offline. Use uploaded certificates for HTTPS; public certificate issuance and external subscriptions need their own network access.</p>
+<a id="what-to-read-next"></a>
+<h2 id="next">What to read next</h2>
+<ul>
+<li><a href="practice.html">Practice and advanced use</a>: keep using this demo site to explore observe/block modes, rule tuning, API validation, and automation.</li>
+<li><a href="operations.html">Operations</a>: connect a real domain and HTTPS, then configure origins, routes, and alerts.</li>
+<li><a href="configuration.html">Configuration and templates</a>: copy startup and site YAML; you can also <a href="site-import.html">import and export existing sites</a>.</li>
+<li><a href="concepts.html">How it works</a> and the <a href="cli.html">CLI reference</a>: understand sites and policies, then find more commands.</li>
+</ul>
+<p>When you're done, delete <code>quickstart</code> from the Sites page and press Ctrl+C in the demo origin terminal. Keep Tiyi running to connect your own application next.</p>
+<div class="docs-pager"><a href="index.html"><span class="label">← Previous</span><span class="title">Overview</span></a><a class="next" href="installation.html"><span class="label">Next →</span><span class="title">Installation</span></a></div>
+</main>
 
   <aside class="docs-toc" id="docs-toc" aria-label="On this page">
     <h4>On this page</h4>
@@ -211,7 +242,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
-      <span class="build">build v3.7.2 · 2026-09-03</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
     </div>
   </div>
 </footer>

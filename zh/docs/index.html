@@ -47,9 +47,11 @@
     <div class="docs-nav-group">
       <h4>开始使用</h4>
       <ul>
-        <li><a href="index.html">概览</a></li>
+        <li><a href="index.html" aria-current="page">概览</a></li>
         <li><a href="quickstart.html">快速开始</a></li>
         <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -58,12 +60,15 @@
         <li><a href="operations.html">日常运维</a></li>
         <li><a href="troubleshooting.html">排障</a></li>
         <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
       <h4>核心概念</h4>
       <ul>
-        <li><a href="concepts.html">领域模型</a></li>
+        <li><a href="concepts.html">工作方式</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -71,6 +76,11 @@
       <ul>
         <li><a href="cli.html">CLI 参考</a></li>
         <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
       </ul>
     </div>
     <div class="docs-nav-group">
@@ -82,85 +92,93 @@
   </aside>
 
   <main class="docs-content" role="main">
-    <span class="docs-eyebrow">文档</span>
-    <h1>太一文档</h1>
-    <p class="lede">
-      太一是一个 Go 二进制，运行 Caddy 反向代理、带 OWASP 核心规则集的 Coraza WAF、嵌入式 SQLite 控制平面与 Vben Admin UI。这些文档涵盖从五分钟首次启动到带可选远程数据平面的生产部署。
-    </p>
 
-    <h2 id="start-here">从这里开始</h2>
-    <p>首次运行请依次阅读快速开始、安装与日常运维。完成后不仅有真实 WAF 挡在真实上游前面，还有一套可重复的调查流程。</p>
+<span class="docs-eyebrow">文档</span>
+<h1>太一文档</h1>
+<p class="lede">把太一部署在访客与源站之间，保护网站和 API。本指南从安装、登录和第一个站点开始，再带你完成业务上线、防护调优、自动化与日常运维。</p>
+<h2 id="start-here">从这里开始</h2><p>第一次使用，从<a href="quickstart.html">快速开始</a>开始就好。安装、登录、创建第一个站点，再看 WAF 拦截真实攻击。完成后，可以继续<a href="practice.html">实战与进阶</a>中的练习，或在<a href="operations.html">日常运维</a>中接入自己的应用。</p>
+<div class="docs-cards">
+<a class="docs-card" href="quickstart.html">
+<div class="docs-card-title"><span class="docs-card-num">1</span>快速开始</div>
+<p>安装签名二进制，启动 systemd 服务，创建第一个站点，看 WAF 拦截真实攻击。五分钟。</p>
+</a>
+<a class="docs-card" href="installation.html">
+<div class="docs-card-title"><span class="docs-card-num">2</span>安装</div>
+<p>一行安装、手动分步、自定义端口与离线安装，以及配置文件和服务管理。</p>
+</a>
+<a class="docs-card" href="upgrade-migration.html">
+<div class="docs-card-title">升级与迁移</div>
+<p>升级前确认备份、全新状态与远程 Agent 重新入网要求。</p>
+</a>
+<a class="docs-card" href="concepts.html">
+<div class="docs-card-title">工作方式</div>
+<p>站点、上游池、证书、WAF 策略、节点、遥测、审计链 —— 它们各是什么，又是如何配合的。</p>
+</a>
+<a class="docs-card" href="operations.html">
+<div class="docs-card-title"><span class="docs-card-num">3</span>日常运维</div>
+<p>接入真实应用，查看流量与日志、调查拦截、调整策略，配置告警并管理节点。</p>
+</a><a class="docs-card" href="practice.html"><div class="docs-card-title">实战与进阶</div><p>继续使用演示站点，练习观察与阻断、规则调优、API 防护、自动化和恢复。</p></a>
+<a class="docs-card" href="troubleshooting.html">
+<div class="docs-card-title">排障</div>
+<p>从外到内诊断启动、登录、路由、TLS、WAF、Agent 与观测管道问题。</p>
+</a>
+<a class="docs-card" href="cli.html">
+<div class="docs-card-title">CLI 参考</div>
+<p>按资源整理当前命令与安全示例，并提醒使用每条命令的内置 help。</p>
+</a>
+<a class="docs-card" href="api.html">
+<div class="docs-card-title">API 参考</div>
+<p>驱动 UI、CLI、节点流的 ConnectRPC 契约：鉴权、错误码与当前服务目录。</p>
+</a>
+<a class="docs-card" href="deployment.html">
+<div class="docs-card-title">部署</div>
+<p>生产加固、远程 Agent 连续运行与 Controller 中断边界、SIEM 转发、可观测性与升级路径。</p>
+</a>
+<a class="docs-card" href="configuration.html"><div class="docs-card-title">配置与模板</div><p>完整的启动配置和资源 YAML，附下载、应用与验证步骤。</p></a>
+<a class="docs-card" href="site-import.html"><div class="docs-card-title">站点导入与导出</div><p>可迁移站点包、冲突处理、证书选择与回滚。</p></a>
+<a class="docs-card" href="api-protection.html"><div class="docs-card-title">API 与上传防护</div><p>API 发现、文档导入、JSON 学习、请求校验与文件要求。</p></a>
+<a class="docs-card" href="responses.html"><div class="docs-card-title">防护响应</div><p>配置拦截页面、响应状态与 API 错误格式。</p></a>
+<a class="docs-card" href="reference/index.html"><div class="docs-card-title">完整协议与命令参考</div><p>查阅 RPC、字段、权限与 CLI 参数。</p></a>
+<a class="docs-card" href="release-3.8.0.html"><div class="docs-card-title">v3.8.0 版本说明</div><p>新增能力、使用边界与升级前的备份和迁移要求。</p></a>
+<a class="docs-card" href="https://github.com/zzmzm/tiyi/blob/main/README.md#ai-agent-skill"><div class="docs-card-title">AI 运维技能</div><p>安装运维技能，通过太一支持的接口完成已授权任务。</p></a>
+</div>
+<h2 id="design-philosophy">设计哲学</h2>
+<p>三个架构决策塑造了后续所有页面：</p>
+<ul>
+<li><strong>一个二进制，零运行时依赖。</strong>无 Docker daemon、无 Nginx、无 Postgres、无 Redis。二进制内置 Caddy、Coraza、SQLite 与 Vben Admin UI。一个合格的运维应该能在五分钟内拉起一个可用实例。</li>
+<li><strong>API 优先 + 声明式 YAML。</strong>ConnectRPC 负责经过认证的变更，UI 与 CLI 都是客户端。<code>tiyi apply -f site.yaml</code> 为受支持的资源字段提供严格、事务化的期望状态入口，并写入同一持久存储与审计链。</li>
+<li><strong>本地优先，按需远程。</strong>内置本地数据平面在进程内应用配置。远程 Agent 与 Controller 保持 ConnectRPC 长连接、校验签名 bundle、断线重连后继续协调，并在 Controller 中断时继续使用最后接受的 bundle 提供服务。</li>
+</ul>
+<div class="callout callout-info">
+<div class="callout-icon">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="18"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="16" y2="12"></line><line x1="12" x2="12.01" y1="8" y2="8"></line></svg>
+</div>
+<div class="callout-body">
+<p><strong>这些文档不是什么。</strong>它们覆盖运维表面 —— 安装、运行、加固。API 契约由已安装二进制对外提供；与日常运维无关的实现细节不会放进公开文档。</p>
+</div>
+</div>
+<h2 id="versions">覆盖的版本</h2>
+<p>这些文档跟随当前发行版。替换二进制或移动状态前，请阅读<a href="upgrade-migration.html">升级与迁移</a>。面向用户的行为变化记录在<a href="../changelog.html">更新日志</a>中。若示例与已安装二进制不一致，以 <code>tiyi &lt;command&gt; --help</code> 为准。</p>
+<h2 id="模板与完整参考">模板与完整参考</h2>
+<p><a href="templates/tiyi.yaml">启动 tiyi.yaml</a> · <a href="templates/first-site.yaml">最小建站 YAML</a> · <a href="templates/apply.yaml">四类资源 YAML</a> ·
+<a href="templates/site-import.json">站点导入 JSON</a> · <a href="templates/orders-openapi.yaml">OpenAPI YAML</a> · <a href="templates/demo-origin.py">本机测试 API</a> ·
+<a href="templates/security-responses.json">拦截响应 JSON</a>。</p>
+<p><a href="reference/rpc-index.html">全部 RPC</a> · <a href="reference/permissions.html">权限</a> · <a href="reference/cli-options.html">全部 CLI 参数</a>。</p>
+<p><strong>已有安装升级到 v3.8.0 必须先备份并重建状态，重新注册所有远端 Agent。</strong>
+请先阅读<a href="release-3.8.0.html">v3.8.0 版本说明</a>与<a href="upgrade-migration.html">迁移步骤</a>，不要直接替换二进制后重启。
+历史说明：<a href="release-3.7.2.html">v3.7.2</a> · <a href="release-3.7.1.html">v3.7.1</a> · <a href="release-3.7.0.html">v3.7.0</a>。</p>
+<div class="docs-pager">
+<a href="../index.html">
+<span class="label">← 返回</span>
+<span class="title">太一首页</span>
+</a>
+<a class="next" href="quickstart.html">
+<span class="label">下一页 →</span>
+<span class="title">快速开始</span>
+</a>
+</div>
 
-    <div class="docs-cards">
-      <a class="docs-card" href="quickstart.html">
-        <div class="docs-card-title"><span class="docs-card-num">1</span>快速开始</div>
-        <p>安装签名二进制，启动 <code>tiyi run</code>，创建第一个站点，看 WAF 拦截真实攻击。五分钟。</p>
-      </a>
-      <a class="docs-card" href="installation.html">
-        <div class="docs-card-title"><span class="docs-card-num">2</span>安装</div>
-        <p>安装签名版本，写 YAML 配置，运行 Controller 或入网远程 Agent。</p>
-      </a>
-      <a class="docs-card" href="upgrade-migration.html">
-        <div class="docs-card-title">升级与迁移</div>
-        <p>安装前了解空主机、schema 100 与仅接受当前契约的边界。</p>
-      </a>
-      <a class="docs-card" href="concepts.html">
-        <div class="docs-card-title">领域模型</div>
-        <p>站点、上游池、证书、WAF 策略、节点、遥测、审计链 —— 它们各是什么，又是如何配合的。</p>
-      </a>
-      <a class="docs-card" href="operations.html">
-        <div class="docs-card-title"><span class="docs-card-num">3</span>日常运维</div>
-        <p>发布应用，理解精确计数与证据，调查 SecurityFact 与攻击日志，安全调优并运维 Agent。</p>
-      </a>
-      <a class="docs-card" href="troubleshooting.html">
-        <div class="docs-card-title">排障</div>
-        <p>从外到内诊断启动、登录、路由、TLS、WAF、Agent 与观测管道问题。</p>
-      </a>
-      <a class="docs-card" href="cli.html">
-        <div class="docs-card-title">CLI 参考</div>
-        <p>按资源整理当前命令与安全示例，并提醒使用每条命令的内置 help。</p>
-      </a>
-      <a class="docs-card" href="api.html">
-        <div class="docs-card-title">API 参考</div>
-        <p>驱动 UI、CLI、节点流的 ConnectRPC 契约：鉴权、错误码与当前服务目录。</p>
-      </a>
-      <a class="docs-card" href="deployment.html">
-        <div class="docs-card-title">部署</div>
-        <p>生产加固、远程 Agent 连续运行与 Controller 中断边界、SIEM 转发、可观测性与升级路径。</p>
-      </a>
-    </div>
-
-    <h2 id="design-philosophy">设计哲学</h2>
-    <p>三个架构决策塑造了后续所有页面：</p>
-    <ul>
-      <li><strong>一个二进制，零运行时依赖。</strong>无 Docker daemon、无 Nginx、无 Postgres、无 Redis。二进制内置 Caddy、Coraza、SQLite 与 Vben Admin UI。一个合格的运维应该能在五分钟内拉起一个可用实例。</li>
-      <li><strong>API 优先 + 声明式 YAML。</strong>ConnectRPC 负责经过认证的变更，UI 与 CLI 都是客户端。<code>tiyi apply -f site.yaml</code> 为受支持的资源字段提供严格、事务化的期望状态入口，并写入同一持久存储与审计链。</li>
-      <li><strong>本地优先，按需远程。</strong>内置本地数据平面在进程内应用配置。远程 Agent 与 Controller 保持 ConnectRPC 长连接、校验签名 bundle、断线重连后继续协调，并在 Controller 中断时继续使用最后接受的 bundle 提供服务。</li>
-    </ul>
-
-    <div class="callout callout-info">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-      </div>
-      <div class="callout-body">
-        <p><strong>这些文档不是什么。</strong>它们覆盖运维表面 —— 安装、运行、加固。API 契约由已安装二进制对外提供；与日常运维无关的实现细节不会放进公开文档。</p>
-      </div>
-    </div>
-
-    <h2 id="versions">覆盖的版本</h2>
-    <p>这些文档跟随当前发行版。替换二进制或移动状态前，请阅读<a href="upgrade-migration.html">升级与迁移</a>。面向用户的行为变化记录在<a href="../changelog.html">更新日志</a>中。若示例与已安装二进制不一致，以 <code>tiyi &lt;command&gt; --help</code> 为准。</p>
-
-    <div class="docs-pager">
-      <a href="../index.html">
-        <span class="label">← 返回</span>
-        <span class="title">太一首页</span>
-      </a>
-      <a class="next" href="quickstart.html">
-        <span class="label">下一页 →</span>
-        <span class="title">快速开始</span>
-      </a>
-    </div>
-  </main>
+</main>
 
   <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
     <h4>本页大纲</h4>
@@ -172,7 +190,7 @@
   <div class="container">
     <div class="footer-bottom">
       <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
-      <span class="build">build v3.7.2 · 2026-09-03</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
     </div>
   </div>
 </footer>

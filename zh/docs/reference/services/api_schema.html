@@ -1,0 +1,3154 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>api_schema.proto — api_schema — Tiyi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Schema: tiyi.v1 · api_schema.proto · English guide · 中文指南 · Full RPC index" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../../../index.html#features">特性</a>
+      <a href="../../../index.html#tour">产品</a>
+      <a href="../../../index.html#pricing">价格</a>
+      <a href="../../index.html" style="color:var(--fg)">文档</a>
+      <a href="../../../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../../docs/reference/services/api_schema.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="../../index.html">概览</a></li>
+        <li><a href="../../quickstart.html">快速开始</a></li>
+        <li><a href="../../installation.html">安装</a></li>
+        <li><a href="../../configuration.html">配置与模板</a></li>
+        <li><a href="../../practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="../../operations.html">日常运维</a></li>
+        <li><a href="../../troubleshooting.html">排障</a></li>
+        <li><a href="../../upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="../../site-import.html">站点导入与导出</a></li>
+        <li><a href="../../api-protection.html">API 防护</a></li>
+        <li><a href="../../responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="../../concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI 参考</a></li>
+        <li><a href="../../api.html">API 参考</a></li>
+        <li><a href="../index.html">完整参考</a></li>
+        <li><a href="../rpc-index.html">全部 RPC</a></li>
+        <li><a href="../permissions.html">权限</a></li>
+        <li><a href="../cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="../../deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="api_schemaproto-api_schema">api_schema.proto — api_schema</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>api_schema.proto</code> · <a href="../../../../docs/api.html">English guide</a> · <a href="../../api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="apischemaservice">ApiSchemaService</h3>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#apischemaservicegetschemavalidation"><code>GetSchemaValidation</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicestageapicatalogchange"><code>StageApiCatalogChange</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicegetschemalearning"><code>GetSchemaLearning</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicechangeschemalearning"><code>ChangeSchemaLearning</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicesnapshotschemalearning"><code>SnapshotSchemaLearning</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicestagelearneddocument"><code>StageLearnedDocument</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaserviceexportlearneddocument"><code>ExportLearnedDocument</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicegetapirequestdocument"><code>GetApiRequestDocument</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicestageapirequestdocument"><code>StageApiRequestDocument</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicestageschemasource"><code>StageSchemaSource</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicelistschemasources"><code>ListSchemaSources</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicegetschemasource"><code>GetSchemaSource</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicelistapidocumentreports"><code>ListApiDocumentReports</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicegetapidocumentreport"><code>GetApiDocumentReport</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicestageschemaprofile"><code>StageSchemaProfile</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicelistschemaprofiles"><code>ListSchemaProfiles</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicegetschemaprofile"><code>GetSchemaProfile</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicepreviewapideclaration"><code>PreviewApiDeclaration</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicestageapideclaration"><code>StageApiDeclaration</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicelistschemacontracts"><code>ListSchemaContracts</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicegetschemacontract"><code>GetSchemaContract</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicepreviewschemacontrol"><code>PreviewSchemaControl</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicechangeschemacontrol"><code>ChangeSchemaControl</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code> and <code>policy:write</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicestageschemabindings"><code>StageSchemaBindings</code></a></td>
+<td>unary</td>
+<td><code>api_inventory:write</code> and <code>site:write</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicegetschemabindings"><code>GetSchemaBindings</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicelistschemabindings"><code>ListSchemaBindings</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+<tr>
+<td><a href="#apischemaservicegetschemadetection"><code>GetSchemaDetection</code></a></td>
+<td>unary</td>
+<td><code>telemetry:read</code> and <code>site:read</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="apischemaservicegetschemavalidation">ApiSchemaService.GetSchemaValidation</h3>
+<p>Saved request-validation modes and compiler capabilities for the current catalog.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/GetSchemaValidation</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSchemaValidationRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSchemaValidationResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>validation_json</code></td>
+<td><code>validationJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>tiyi.api_validation.v1; tied to one immutable desired control snapshot. <em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicestageapicatalogchange">ApiSchemaService.StageApiCatalogChange</h3>
+<p>Prepares adding/removing an observed endpoint in the current API catalog. No confirmation step or traffic learning is required. Publication uses the existing reviewed declaration/control lifecycle.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/StageApiCatalogChange</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StageApiCatalogChangeRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>asset_id</code></td>
+<td><code>assetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expected_asset_revision</code></td>
+<td><code>expectedAssetRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>expected_contract_id</code></td>
+<td><code>expectedContractId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td><code>action</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>add or remove; endpoint identity is derived from the retained asset.</td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StageApiCatalogChangeResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><a href="#schemasource"><code>SchemaSource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>mappings_json</code></td>
+<td><code>mappingsJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>affected_operation_keys</code></td>
+<td><code>affectedOperationKeys</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>selected_operation_key</code></td>
+<td><code>selectedOperationKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicegetschemalearning">ApiSchemaService.GetSchemaLearning</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/GetSchemaLearning</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSchemaLearningRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>asset_id</code></td>
+<td><code>assetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSchemaLearningResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>state_json</code></td>
+<td><code>stateJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>Versioned bounded field/type/presence evidence and seven immutable drafts. <em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicechangeschemalearning">ApiSchemaService.ChangeSchemaLearning</h3>
+<p>Enabling authorizes bounded field-name collection. Purge also stops it.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/ChangeSchemaLearning</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ChangeSchemaLearningRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>asset_id</code></td>
+<td><code>assetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td><code>enabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>purge</code></td>
+<td><code>purge</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expected_revision</code></td>
+<td><code>expectedRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ChangeSchemaLearningResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>state_json</code></td>
+<td><code>stateJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicesnapshotschemalearning">ApiSchemaService.SnapshotSchemaLearning</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/SnapshotSchemaLearning</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.SnapshotSchemaLearningRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>asset_id</code></td>
+<td><code>assetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.SnapshotSchemaLearningResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>revision_json</code></td>
+<td><code>revisionJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicestagelearneddocument">ApiSchemaService.StageLearnedDocument</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/StageLearnedDocument</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StageLearnedDocumentRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>asset_id</code></td>
+<td><code>assetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision_id</code></td>
+<td><code>revisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>expected_contract_id</code></td>
+<td><code>expectedContractId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StageLearnedDocumentResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><a href="#schemasource"><code>SchemaSource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaserviceexportlearneddocument">ApiSchemaService.ExportLearnedDocument</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/ExportLearnedDocument</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ExportLearnedDocumentRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>asset_id</code></td>
+<td><code>assetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision_id</code></td>
+<td><code>revisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ExportLearnedDocumentResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>document_json</code></td>
+<td><code>documentJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicegetapirequestdocument">ApiSchemaService.GetApiRequestDocument</h3>
+<p>Request previews remain available when detection is disabled.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/GetApiRequestDocument</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetApiRequestDocumentRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>contract_id</code></td>
+<td><code>contractId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>operation_key</code></td>
+<td><code>operationKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetApiRequestDocumentResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><a href="#schemasource"><code>SchemaSource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_json</code></td>
+<td><code>requestJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>Request-only JSON: summary, description, effective parameters, requestBody, or Swagger consumes/body/formData. Local schemas may be expanded. <em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>draft</code></td>
+<td><code>draft</code></td>
+<td><a href="#schemasource"><code>SchemaSource</code></a></td>
+<td>singular</td>
+<td>Saved drafts are returned only to document writers.</td>
+</tr>
+<tr>
+<td><code>draft_request_json</code></td>
+<td><code>draftRequestJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>affected_operation_keys</code></td>
+<td><code>affectedOperationKeys</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>The same source operation can be mapped to multiple endpoints.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicestageapirequestdocument">ApiSchemaService.StageApiRequestDocument</h3>
+<p>Saves an immutable document draft; never activates detection or routing.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/StageApiRequestDocument</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StageApiRequestDocumentRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>contract_id</code></td>
+<td><code>contractId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>operation_key</code></td>
+<td><code>operationKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>request_json</code></td>
+<td><code>requestJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>expected_draft_source_id</code></td>
+<td><code>expectedDraftSourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StageApiRequestDocumentResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><a href="#schemasource"><code>SchemaSource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicestageschemasource">ApiSchemaService.StageSchemaSource</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/StageSchemaSource</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StageSchemaSourceRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td><code>format</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>json or yaml. Source is strict, bounded UTF-8; URLs are never fetched.</td>
+</tr>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StageSchemaSourceResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><a href="#schemasource"><code>SchemaSource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicelistschemasources">ApiSchemaService.ListSchemaSources</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/ListSchemaSources</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListSchemaSourcesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListSchemaSourcesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sources</code></td>
+<td><code>sources</code></td>
+<td><a href="#schemasource"><code>SchemaSource</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>max_revisions</code></td>
+<td><code>maxRevisions</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>retention_limit_bytes</code></td>
+<td><code>retentionLimitBytes</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicegetschemasource">ApiSchemaService.GetSchemaSource</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/GetSchemaSource</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSchemaSourceRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_id</code></td>
+<td><code>sourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSchemaSourceResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><a href="#schemasource"><code>SchemaSource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_bytes</code></td>
+<td><code>sourceBytes</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicelistapidocumentreports">ApiSchemaService.ListApiDocumentReports</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/ListApiDocumentReports</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListApiDocumentReportsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_id</code></td>
+<td><code>sourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>before_id</code></td>
+<td><code>beforeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListApiDocumentReportsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reports</code></td>
+<td><code>reports</code></td>
+<td><a href="#apidocumentreportmetadata"><code>ApiDocumentReportMetadata</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>next_before_id</code></td>
+<td><code>nextBeforeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicegetapidocumentreport">ApiSchemaService.GetApiDocumentReport</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/GetApiDocumentReport</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetApiDocumentReportRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>report_id</code></td>
+<td><code>reportId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>operations or diagnostics. The immutable report ID fixes paging order.</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>offset</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page_size</code></td>
+<td><code>pageSize</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>1..100; zero uses 100.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetApiDocumentReportResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>report_id</code></td>
+<td><code>reportId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_id</code></td>
+<td><code>sourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>report_sha256</code></td>
+<td><code>reportSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>report_format</code></td>
+<td><code>reportFormat</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>stage</code></td>
+<td><code>stage</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>input_sha256</code></td>
+<td><code>inputSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>producer_version</code></td>
+<td><code>producerVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>size_bytes</code></td>
+<td><code>sizeBytes</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page_json</code></td>
+<td><code>pageJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>Compact operation/unit states or detailed diagnostics, referenced pointers, total/omitted counts and next offset. Never contains the uploaded source. <em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicestageschemaprofile">ApiSchemaService.StageSchemaProfile</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/StageSchemaProfile</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StageSchemaProfileRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_id</code></td>
+<td><code>sourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>mappings</code></td>
+<td><code>mappings</code></td>
+<td><a href="#schemamapping"><code>SchemaMapping</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StageSchemaProfileResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>profile</code></td>
+<td><code>profile</code></td>
+<td><a href="#schemaprofile"><code>SchemaProfile</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>report_id</code></td>
+<td><code>reportId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>report_sha256</code></td>
+<td><code>reportSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>has_checks</code></td>
+<td><code>hasChecks</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicelistschemaprofiles">ApiSchemaService.ListSchemaProfiles</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/ListSchemaProfiles</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListSchemaProfilesRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_id</code></td>
+<td><code>sourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional source filter; zero before_revision starts at the newest row.</td>
+</tr>
+<tr>
+<td><code>before_revision</code></td>
+<td><code>beforeRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListSchemaProfilesResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>profiles</code></td>
+<td><code>profiles</code></td>
+<td><a href="#schemaprofile"><code>SchemaProfile</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>next_before_revision</code></td>
+<td><code>nextBeforeRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicegetschemaprofile">ApiSchemaService.GetSchemaProfile</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/GetSchemaProfile</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSchemaProfileRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>profile_id</code></td>
+<td><code>profileId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSchemaProfileResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>profile</code></td>
+<td><code>profile</code></td>
+<td><a href="#schemaprofile"><code>SchemaProfile</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>profile_json</code></td>
+<td><code>profileJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>tiyi.schema_profile.v2 metadata. This does not contain the Agent program. <em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicepreviewapideclaration">ApiSchemaService.PreviewApiDeclaration</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/PreviewApiDeclaration</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.PreviewApiDeclarationRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_id</code></td>
+<td><code>sourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>mappings</code></td>
+<td><code>mappings</code></td>
+<td><a href="#schemamapping"><code>SchemaMapping</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.PreviewApiDeclarationResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>source</code></td>
+<td><code>source</code></td>
+<td><a href="#schemasource"><code>SchemaSource</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>declaration_json</code></td>
+<td><code>declarationJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>report_sha256</code></td>
+<td><code>reportSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>report_json</code></td>
+<td><code>reportJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>reconciliation_json</code></td>
+<td><code>reconciliationJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>Value-free current asset identities/revisions and declaration matches. <em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>catalog_sha256</code></td>
+<td><code>catalogSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicestageapideclaration">ApiSchemaService.StageApiDeclaration</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/StageApiDeclaration</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StageApiDeclarationRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_id</code></td>
+<td><code>sourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>mappings</code></td>
+<td><code>mappings</code></td>
+<td><a href="#schemamapping"><code>SchemaMapping</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>report_sha256</code></td>
+<td><code>reportSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>catalog_sha256</code></td>
+<td><code>catalogSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>decisions</code></td>
+<td><code>decisions</code></td>
+<td><a href="#schemareconciliationdecision"><code>SchemaReconciliationDecision</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>coverage</code></td>
+<td><code>coverage</code></td>
+<td><a href="#schemacoveragedecision"><code>SchemaCoverageDecision</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StageApiDeclarationResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>contract</code></td>
+<td><code>contract</code></td>
+<td><a href="#schemacontract"><code>SchemaContract</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicelistschemacontracts">ApiSchemaService.ListSchemaContracts</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/ListSchemaContracts</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListSchemaContractsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>before_revision</code></td>
+<td><code>beforeRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListSchemaContractsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>contracts</code></td>
+<td><code>contracts</code></td>
+<td><a href="#schemacontract"><code>SchemaContract</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>next_before_revision</code></td>
+<td><code>nextBeforeRevision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicegetschemacontract">ApiSchemaService.GetSchemaContract</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/GetSchemaContract</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSchemaContractRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>contract_id</code></td>
+<td><code>contractId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSchemaContractResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>contract</code></td>
+<td><code>contract</code></td>
+<td><a href="#schemacontract"><code>SchemaContract</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>contract_json</code></td>
+<td><code>contractJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>changes_json</code></td>
+<td><code>changesJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>Deterministic difference from the immutable previous contract, if any. <em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicepreviewschemacontrol">ApiSchemaService.PreviewSchemaControl</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/PreviewSchemaControl</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><a id="previewschemacontrolrequest"></a>
+<strong>Request</strong> — <code>tiyi.v1.PreviewSchemaControlRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>undeclared_action</code></td>
+<td><code>undeclaredAction</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Empty preserves the current policy; allow, observe or block changes it.</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td><code>action</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>activate selects a retained draft; deactivate removes the current contract; rollback restores only Schema from an earlier approved, applied intent.</td>
+</tr>
+<tr>
+<td><code>contract_id</code></td>
+<td><code>contractId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_intent_id</code></td>
+<td><code>sourceIntentId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_config_revision_id</code></td>
+<td><code>sourceConfigRevisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>binding_id</code></td>
+<td><code>bindingId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Empty explicitly selects declaration-only publication.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.PreviewSchemaControlResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>approval</code></td>
+<td><code>approval</code></td>
+<td><a href="#schemacontrolapproval"><code>SchemaControlApproval</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>snapshot_json</code></td>
+<td><code>snapshotJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>changes_json</code></td>
+<td><code>changesJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>resources_json</code></td>
+<td><code>resourcesJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+<tr>
+<td><code>execution_supported</code></td>
+<td><code>executionSupported</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicechangeschemacontrol">ApiSchemaService.ChangeSchemaControl</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/ChangeSchemaControl</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code> and <code>policy:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ChangeSchemaControlRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>approval</code></td>
+<td><code>approval</code></td>
+<td><a href="#schemacontrolapproval"><code>SchemaControlApproval</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code>reason</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>impact_acknowledged</code></td>
+<td><code>impactAcknowledged</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>resource_acknowledged</code></td>
+<td><code>resourceAcknowledged</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>type_only_acknowledged</code></td>
+<td><code>typeOnlyAcknowledged</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Phase 2 is type-only detection and cannot approve enforcement.</td>
+</tr>
+<tr>
+<td><code>accept_partial</code></td>
+<td><code>acceptPartial</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ChangeSchemaControlResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>intent</code></td>
+<td><code>intent</code></td>
+<td><a href="operation_control.html#operationcontrolintent"><code>OperationControlIntent</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code>state</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicestageschemabindings">ApiSchemaService.StageSchemaBindings</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/StageSchemaBindings</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>api_inventory:write</code> and <code>site:write</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StageSchemaBindingsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enforce_operation_keys</code></td>
+<td><code>enforceOperationKeys</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>Subset of operation_keys requiring complete fail-closed validation.</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>declaration_id</code></td>
+<td><code>declarationId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>profile_id</code></td>
+<td><code>profileId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>operation_keys</code></td>
+<td><code>operationKeys</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>accept_partial</code></td>
+<td><code>acceptPartial</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>idempotency_key</code></td>
+<td><code>idempotencyKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StageSchemaBindingsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bindings</code></td>
+<td><code>bindings</code></td>
+<td><a href="#schemabindings"><code>SchemaBindings</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicegetschemabindings">ApiSchemaService.GetSchemaBindings</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/GetSchemaBindings</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSchemaBindingsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>binding_id</code></td>
+<td><code>bindingId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSchemaBindingsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bindings</code></td>
+<td><code>bindings</code></td>
+<td><a href="#schemabindings"><code>SchemaBindings</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>bindings_json</code></td>
+<td><code>bindingsJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicelistschemabindings">ApiSchemaService.ListSchemaBindings</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/ListSchemaBindings</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListSchemaBindingsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>declaration_id</code></td>
+<td><code>declarationId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>before_id</code></td>
+<td><code>beforeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListSchemaBindingsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bindings</code></td>
+<td><code>bindings</code></td>
+<td><a href="#schemabindings"><code>SchemaBindings</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>next_before_id</code></td>
+<td><code>nextBeforeId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="apischemaservicegetschemadetection">ApiSchemaService.GetSchemaDetection</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.ApiSchemaService/GetSchemaDetection</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> <code>telemetry:read</code> and <code>site:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetSchemaDetectionRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>contract_id</code></td>
+<td><code>contractId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>fingerprint</code></td>
+<td><code>fingerprint</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional selection from this contract's authenticated historical sources.</td>
+</tr>
+<tr>
+<td><code>window_start</code></td>
+<td><code>windowStart</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>window_end</code></td>
+<td><code>windowEnd</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td><code>offset</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>Immutable contract order; at most 100 operations plus fixed fallback rows.</td>
+</tr>
+<tr>
+<td><code>page_size</code></td>
+<td><code>pageSize</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>inventory_summary</code></td>
+<td><code>inventorySummary</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Whole-contract compact counters for inventory filters. Offset/page_size must be zero. Component/client details remain in the paged report.</td>
+</tr>
+<tr>
+<td><code>include_violation_details</code></td>
+<td><code>includeViolationDetails</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>Bounded, source-verified samples for exactly one ordinary operation. Requires explicit fingerprint, page_size=1 and inventory_summary=false.</td>
+</tr>
+<tr>
+<td><code>detail_cursor</code></td>
+<td><code>detailCursor</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>binding_id</code></td>
+<td><code>bindingId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Optional immutable binding selection; empty uses the current binding.</td>
+</tr>
+<tr>
+<td><code>lookback_seconds</code></td>
+<td><code>lookbackSeconds</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>Initial automatic query: 3600 (1h), 86400 (24h), or 604800 (7d). Mutually exclusive with window_start/window_end. The server aligns the end to the latest completed 10-second interval and clips the start to its retained UTC days. Offset must be zero and details are not allowed. Pagination and details use the returned query_start/query_end instead.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetSchemaDetectionResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>detection_json</code></td>
+<td><code>detectionJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td>tiyi.schema_detection.v3. Every successful response includes the resolved query_start/query_end, including disabled and no-evidence responses. Counters are lossless decimal strings. Missing evidence is explicit; reports alone never authorize request enforcement. <em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="apidocumentreportmetadata">ApiDocumentReportMetadata</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_id</code></td>
+<td><code>sourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>stage</code></td>
+<td><code>stage</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>report_sha256</code></td>
+<td><code>reportSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>producer_version</code></td>
+<td><code>producerVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>size_bytes</code></td>
+<td><code>sizeBytes</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="schemabindings">SchemaBindings</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>declaration_id</code></td>
+<td><code>declarationId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>profile_id</code></td>
+<td><code>profileId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>sha256</code></td>
+<td><code>sha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="schemacontract">SchemaContract</h3>
+<p>A reviewed immutable draft. Only an approved deployment changes inventory and request evaluation; staging does not claim activation or observations.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_id</code></td>
+<td><code>sourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>report_id</code></td>
+<td><code>reportId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>report_sha256</code></td>
+<td><code>reportSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>sha256</code></td>
+<td><code>sha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>catalog_sha256</code></td>
+<td><code>catalogSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>previous_contract_sha256</code></td>
+<td><code>previousContractSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>size_bytes</code></td>
+<td><code>sizeBytes</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="schemacontrolapproval">SchemaControlApproval</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>selection</code></td>
+<td><code>selection</code></td>
+<td><a href="#previewschemacontrolrequest"><code>PreviewSchemaControlRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>review</code></td>
+<td><code>review</code></td>
+<td><a href="operation_control.html#operationcontrolreview"><code>OperationControlReview</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>contract_sha256</code></td>
+<td><code>contractSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>catalog_sha256</code></td>
+<td><code>catalogSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>previous_contract_sha256</code></td>
+<td><code>previousContractSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>policy_files_sha256</code></td>
+<td><code>policyFilesSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>preview_runtime_sha256</code></td>
+<td><code>previewRuntimeSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Private validation projection, never an applied artifact identity.</td>
+</tr>
+<tr>
+<td><code>snapshot_sha256</code></td>
+<td><code>snapshotSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>before_snapshot_sha256</code></td>
+<td><code>beforeSnapshotSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>requires_partial_acceptance</code></td>
+<td><code>requiresPartialAcceptance</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>recovery_artifact_sha256</code></td>
+<td><code>recoveryArtifactSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>recovery_artifact_generation</code></td>
+<td><code>recoveryArtifactGeneration</code></td>
+<td><code>uint64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>recovery_applied_targets_sha256</code></td>
+<td><code>recoveryAppliedTargetsSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>recovery_applied_targets</code></td>
+<td><code>recoveryAppliedTargets</code></td>
+<td><a href="operation_control.html#operationcontroltarget"><code>OperationControlTarget</code></a></td>
+<td>repeated</td>
+<td>Historical application, never the new rollback's convergence.</td>
+</tr>
+<tr>
+<td><code>binding_sha256</code></td>
+<td><code>bindingSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>previous_binding_sha256</code></td>
+<td><code>previousBindingSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="schemacoveragedecision">SchemaCoverageDecision</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scope_sha256</code></td>
+<td><code>scopeSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code>state</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>partial or authoritative_complete, independently reviewed per scope.</td>
+</tr>
+<tr>
+<td><code>acknowledged</code></td>
+<td><code>acknowledged</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="schemamapping">SchemaMapping</h3>
+<p>Explicit source-to-site mapping. Variables never come from request input.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>host</code></td>
+<td><code>host</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>base_path</code></td>
+<td><code>basePath</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>methods</code></td>
+<td><code>methods</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>variables</code></td>
+<td><code>variables</code></td>
+<td>map&lt;<code>string</code>, <code>string</code>&gt;</td>
+<td>map</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>server_url</code></td>
+<td><code>serverUrl</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>approved</code></td>
+<td><code>approved</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="schemaprofile">SchemaProfile</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_id</code></td>
+<td><code>sourceId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>profile_sha256</code></td>
+<td><code>profileSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>artifact_sha256</code></td>
+<td><code>artifactSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>operation_count</code></td>
+<td><code>operationCount</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>size_bytes</code></td>
+<td><code>sizeBytes</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>report_id</code></td>
+<td><code>reportId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>report_sha256</code></td>
+<td><code>reportSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="schemareconciliationdecision">SchemaReconciliationDecision</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key</code></td>
+<td><code>key</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>asset_id</code></td>
+<td><code>assetId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>Existing eligible preview candidate. New UUIDs are minted by the server.</td>
+</tr>
+<tr>
+<td><code>create_new</code></td>
+<td><code>createNew</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>attach_aliases</code></td>
+<td><code>attachAliases</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>acknowledged</code></td>
+<td><code>acknowledged</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="schemasource">SchemaSource</h3>
+<p>Immutable upload provenance. This resource is staged, never evidence that a profile, declaration, control or runtime artifact has been activated.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>revision</code></td>
+<td><code>revision</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code>name</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td><code>format</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>source_sha256</code></td>
+<td><code>sourceSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>size_bytes</code></td>
+<td><code>sizeBytes</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td><code>warnings</code></td>
+<td><code>uint32</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>document_family</code></td>
+<td><code>documentFamily</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>document_version</code></td>
+<td><code>documentVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>parser_version</code></td>
+<td><code>parserVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>parse_report_id</code></td>
+<td><code>parseReportId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>parse_report_sha256</code></td>
+<td><code>parseReportSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>manually_edited</code></td>
+<td><code>manuallyEdited</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>learned_revision_id</code></td>
+<td><code>learnedRevisionId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>learned_sha256</code></td>
+<td><code>learnedSha256</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>learned_mappings_json</code></td>
+<td><code>learnedMappingsJson</code></td>
+<td><code>bytes</code></td>
+<td>singular</td>
+<td><em>base64-encoded JSON string.</em></td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="../rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../../assets/js/main.js" defer></script>
+</body>
+</html>

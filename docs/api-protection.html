@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Discover, document, and protect APIs — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Discover, document, and protect APIs For v3.8.0 . In Application Delivery → API Assets , select a site to inspect observed endpoints, import OpenAPI/Swagge" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/api-protection.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html" aria-current="page">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="discover-document-and-protect-apis">Discover, document, and protect APIs</h1>
+<p class="lede">For <strong>v3.8.0</strong>. In <strong>Application Delivery → API Assets</strong>, select a site to inspect observed endpoints,
+import OpenAPI/Swagger, review request definitions, and choose off, observe, or enforce per endpoint.</p>
+<table>
+<thead>
+<tr>
+<th>What you have</th>
+<th>Start here</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>An OpenAPI/Swagger file</td>
+<td>Import an API document</td>
+<td>Reviewable catalog, request definitions, and capability report</td>
+</tr>
+<tr>
+<td>JSON traffic without a specification</td>
+<td>Traffic learning</td>
+<td>Saved structural versions and an OpenAPI draft to review</td>
+</tr>
+<tr>
+<td>File-upload requirements</td>
+<td>Site policy request inspection + endpoint request definition</td>
+<td>Site capacity limits and endpoint file-field requirements</td>
+</tr>
+<tr>
+<td>A question about actual enforcement</td>
+<td>Endpoint validation, serving-node results, detection statistics</td>
+<td>Deployment results and observed request outcomes</td>
+</tr>
+</tbody>
+</table>
+<p>Catalog membership, hiding a row, traffic learning, and validation mode are independent. Importing a document or adding an endpoint to the catalog does not automatically enable blocking.</p>
+<h2 id="1-prepare-a-reproducible-api">1. Prepare a reproducible API</h2>
+<p>First create <code>quickstart.test</code> using the <a href="quickstart.html">quickstart</a>. Stop its static Python origin and run this API on the same host.
+It accepts arbitrary small bodies, so you can verify that Tiyi performs validation. It is a local demo, not a production application.</p>
+<pre><code class="language-sh">cat &gt; demo-origin.py <span class="s">&lt;&lt;'PY'
+#!/usr/bin/env python3
+"""Local documentation origin. Bind to loopback; do not expose as an app."""
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import json
+
+class Demo(BaseHTTPRequestHandler):
+    def reply(self, status, data):
+        body = json.dumps(data).encode()
+        self.send_response(status)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        self.reply(200, {'message': 'Hello from the origin'})
+
+    def do_POST(self):
+        size = int(self.headers.get('Content-Length', '0'))
+        if size &gt; 65536:
+            self.reply(413, {'error': 'demo limit is 64 KiB'})
+            return
+        self.rfile.read(size)
+        # Deliberately accepts any small body: Tiyi performs validation.
+        self.reply(200, {'message': 'Order received'})
+
+ThreadingHTTPServer(('127.0.0.1', 9000), Demo).serve_forever()
+PY</span>
+python3 demo-origin.py
+</code></pre>
+<p>Leave it running, then send a valid request from another terminal:</p>
+<pre><code class="language-sh">curl -i -H <span class="s">'Host: quickstart.test'</span> -H <span class="s">'Content-Type: application/json'</span> <span class="o">\
+</span>  --data <span class="s">'{"sku":"BOOK-1","quantity":2}'</span> http://127.0.0.1/api/orders
+</code></pre>
+<p>Expect <strong>200</strong> and <code>Order received</code>. This real request also starts discovery of <code>POST /api/orders</code> in API Assets.
+Download: <a href="templates/demo-origin.py">demo-origin.py</a>.</p>
+<h2 id="2-copy-an-openapi-document">2. Copy an OpenAPI document</h2>
+<p>Paste the whole block to create the uploadable <code>orders-openapi.yaml</code>:</p>
+<pre><code class="language-sh">cat &gt; orders-openapi.yaml <span class="s">&lt;&lt;'YAML'
+openapi: 3.0.3
+info:
+  title: Orders API
+  version: 1.0.0
+servers:
+  - url: http://quickstart.test
+paths:
+  /api/orders:
+    post:
+      operationId: createOrder
+      summary: Create an order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [sku, quantity]
+              properties:
+                sku:
+                  type: string
+                quantity:
+                  type: integer
+            example:
+              sku: BOOK-1
+              quantity: 2
+      responses:
+        '200':
+          description: Order received
+YAML</span>
+</code></pre>
+<p>Download: <a href="templates/orders-openapi.yaml">orders-openapi.yaml</a>. For your app, edit the server URL, path, method, fields, and required list.
+The server URL has no <code>/api</code> prefix because the operation path already contains <code>/api/orders</code>; avoid doubling the prefix.</p>
+<p>Import accepts OpenAPI <strong>3.0 / 3.1 / 3.2</strong> and Swagger <strong>2.0</strong> as JSON or YAML, up to <strong>8 MiB</strong>.
+Upload a file rather than a URL; remote references are not fetched automatically. For a root mapping, send <code>basePath: ""</code>, not <code>/</code>.
+Recognizing a document version does not mean every constraint is executable: read the capability report for unsupported checks.
+Response definitions are documentation; do not treat them as enabled response-body validation or application authorization.</p>
+<h2 id="3-review-and-publish-in-the-console">3. Review and publish in the console</h2>
+<p><strong>Wildcard sites:</strong> <code>*.example.com</code> routes matching requests but is not a concrete API mapping. First add each actual API hostname, such as <code>api.example.com</code>, to the site as its primary host or an alias, then map that exact name. Neither wildcard routing nor a wildcard certificate enables Schema validation across all subdomains. See <a href="operations.html#wildcard-hosts">wildcard hostname setup</a>.</p>
+<ol>
+<li>Open <strong>Application Delivery → API Assets</strong>, select <code>quickstart</code>, and import the file.</li>
+<li>Confirm host <code>quickstart.test</code> with an empty base path (root). The preview should show <code>POST /api/orders</code>; fix duplicate <code>/api</code> prefixes or incorrect hosts before proceeding.</li>
+<li>Review matches to existing endpoints, additions, and coverage. This document describes one demo endpoint; it is not a complete inventory of an unrelated application.</li>
+<li>Apply the reviewed document. Open the endpoint's <strong>Request definition</strong>: <code>sku</code> should be a required string and <code>quantity</code> a required integer.</li>
+<li>Choose <strong>Observe</strong> first, preview and apply. Check serving-node results; saved, queued, failed, and applied are different states.</li>
+</ol>
+<p>Uploading, saving a draft, and previewing do not publish. If a constraint is unsupported, reduce the specification to supported checks and preview again; do not bypass capability checks and claim enforcement is active.</p>
+<h2 id="4-observe-then-verify-blocking">4. Observe, then verify blocking</h2>
+<p>Send an invalid type while observation is enabled:</p>
+<pre><code class="language-sh">curl -i -H <span class="s">'Host: quickstart.test'</span> -H <span class="s">'Content-Type: application/json'</span> <span class="o">\
+</span>  --data <span class="s">'{"sku":"BOOK-1","quantity":"two"}'</span> http://127.0.0.1/api/orders
+</code></pre>
+<p>With this demo's Light policy and no extra rules, expect <strong>200</strong> with a recorded validation violation. Other WAF rules can still block independently.
+Send the valid example too and confirm both map to the same endpoint. Statistics aggregate completed time buckets; allow refresh and keep the same site, endpoint, and time window.</p>
+<p>After the capability report confirms support, switch this endpoint to <strong>Enforce</strong>, preview, apply, and wait for serving-node results.
+The invalid request should now return <strong>403</strong> before reaching the demo origin, while the valid request stays 200.
+Use the response and request detection/enforcement detail for the exact rejection reason.
+If legitimate traffic is affected, restore Observe and republish, or restore a reviewed version from publication history, then repeat both probes.</p>
+<p>The undeclared-endpoint allow/observe/block policy is separate and limited to published document coverage.
+Keep it at allow when first importing a partial specification; review health checks, callbacks, static paths, and older legitimate clients before restricting it.</p>
+<h2 id="5-learn-from-json-when-no-document-exists">5. Learn from JSON when no document exists</h2>
+<p>Open <strong>Traffic learning</strong> for eligible POST/PUT/PATCH endpoints and send successful legitimate JSON requests through Tiyi.
+Learning retains bounded field structures, types, and counts without field values. Review saved versions, save the current version for review,
+download an OpenAPI draft, or create an editable request definition. Continue through the same review, preview, and publication steps.
+Learning does not overwrite manual definitions or turn on enforcement. Check the displayed state for insufficient samples, error responses, unmatched traffic, or paused learning.
+Field names can themselves be sensitive; pause collection or clear learning records when needed.</p>
+<h2 id="6-uploads-and-request-size">6. Uploads and request size</h2>
+<p>Use the site's policy <strong>Request inspection</strong> settings for ordinary body size, per-file size, total uploads, parameter counts, and structural limits.
+Use the endpoint <strong>Request definition</strong> for allowed file fields and supported type/count requirements.
+Test valid files, oversized files, wrong fields, and cancellation; inspect both the actual response and whether the origin received the request.
+Structural upload checks do not scan for malware or moderate content. Use a dedicated application service for those needs.</p>
+<h2 id="7-cli-and-api-automation">7. CLI and API automation</h2>
+<p>These commands require <code>jq</code>. Upload creates a draft and preview leaves live request handling unchanged:</p>
+<pre><code class="language-sh">sudo tiyi site list
+<span class="v">SITE_ID</span><span class="o">=</span><span class="s">'replace-with-quickstart-site-id'</span>
+sudo tiyi api-document upload --site <span class="s">"</span><span class="v">$SITE_ID</span><span class="s">"</span> --file orders-openapi.yaml <span class="o">\
+</span>  --idempotency-key orders-v1 &gt; source-result.json
+jq <span class="s">'{siteId: .source.siteId, sourceId: .source.id,
+     mappings: [{host:"quickstart.test",basePath:"",
+                 serverUrl:"http://quickstart.test",approved:true}]}'</span> <span class="o">\
+</span>  source-result.json &gt; declaration-preview.json
+sudo tiyi api-document declaration-preview -f declaration-preview.json &gt; preview-result.json
+jq -r <span class="s">'.reportJson'</span> preview-result.json | base64 -d
+</code></pre>
+<p>Other <code>api-document</code> commands accept <code>--request-file FILE</code> (<code>-f -</code> for strict protobuf JSON on stdin).
+Bytes fields such as <code>reportJson</code> are base64 in JSON; decode them before parsing the enclosed report.
+For publication, review and stage the declaration, prepare validation profiles/bindings, preview control, and submit the returned approval.
+See the <a href="api.html#api-documents">API workflow</a> and <a href="reference/services/api_schema.html">full ApiSchemaService definition</a> for order, fields, and permissions.
+Never invent hashes or revisions or reuse an outdated preview. A successful call still needs serving-node and real-request verification.</p>
+<div class="docs-pager"><a href="site-import.html"><span class="label">← Previous</span><span class="title">Import / export sites</span></a><a class="next" href="responses.html"><span class="label">Next →</span><span class="title">Protection responses</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

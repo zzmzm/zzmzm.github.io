@@ -197,6 +197,47 @@
     // Auto-build TOC from h2[id]/h3[id] inside .docs-content
     var tocRoot = document.getElementById('docs-toc');
     var content = document.querySelector('.docs-content');
+    // Keep native tables inside the content column when their columns cannot fit.
+    if (content) {
+      var tableScrollers = [];
+      content.querySelectorAll('table').forEach(function (table) {
+        var wrapper = table.parentElement;
+        if (!wrapper.classList.contains('docs-table-scroll')) {
+          wrapper = document.createElement('div');
+          wrapper.className = 'docs-table-scroll';
+          table.parentNode.insertBefore(wrapper, table);
+          wrapper.appendChild(table);
+        }
+        var heading = wrapper.previousElementSibling;
+        while (heading && !/^H[1-6]$/.test(heading.tagName)) heading = heading.previousElementSibling;
+        tableScrollers.push({ element: wrapper, headingId: heading && heading.id });
+      });
+      var updateTableScrolling = function () {
+        tableScrollers.forEach(function (item) {
+          var wrapper = item.element;
+          if (wrapper.scrollWidth > wrapper.clientWidth + 1) {
+            wrapper.setAttribute('tabindex', '0');
+            wrapper.setAttribute('role', 'region');
+            if (item.headingId) {
+              wrapper.setAttribute('aria-labelledby', item.headingId);
+            } else {
+              wrapper.setAttribute('aria-label', document.documentElement.lang.indexOf('zh') === 0 ? '可横向滚动的表格' : 'Scrollable table');
+            }
+          } else {
+            ['tabindex', 'role', 'aria-labelledby', 'aria-label'].forEach(function (attr) {
+              wrapper.removeAttribute(attr);
+            });
+          }
+        });
+      };
+      updateTableScrolling();
+      if ('ResizeObserver' in window) {
+        new ResizeObserver(updateTableScrolling).observe(content);
+      } else {
+        window.addEventListener('resize', updateTableScrolling, { passive: true });
+      }
+      if (document.fonts) document.fonts.ready.then(updateTableScrolling);
+    }
     if (tocRoot && content) {
       var ul = document.createElement('ul');
       var headings = content.querySelectorAll('h2[id], h3[id]');

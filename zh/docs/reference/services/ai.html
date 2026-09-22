@@ -1,0 +1,1135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>ai.proto — AI copilot and advisory proposals — 太一文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="ai.proto — AI copilot and advisory proposals v3.8.0 完整协议参考；字段名与协议注释保留英文。可从侧栏返回中文任务指南。 Schema: tiyi.v1 · ai.proto · English guide · 中文指南 · Full RPC index Se" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../../../index.html">
+      <img src="../../../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../../../index.html#features">特性</a>
+      <a href="../../../index.html#tour">产品</a>
+      <a href="../../../index.html#pricing">价格</a>
+      <a href="../../index.html" style="color:var(--fg)">文档</a>
+      <a href="../../../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../../../docs/reference/services/ai.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../../../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="../../index.html">概览</a></li>
+        <li><a href="../../quickstart.html">快速开始</a></li>
+        <li><a href="../../installation.html">安装</a></li>
+        <li><a href="../../configuration.html">配置与模板</a></li>
+        <li><a href="../../practice.html">实战与进阶</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="../../operations.html">日常运维</a></li>
+        <li><a href="../../troubleshooting.html">排障</a></li>
+        <li><a href="../../upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="../../site-import.html">站点导入与导出</a></li>
+        <li><a href="../../api-protection.html">API 防护</a></li>
+        <li><a href="../../responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="../../concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="../../cli.html">CLI 参考</a></li>
+        <li><a href="../../api.html">API 参考</a></li>
+        <li><a href="../index.html">完整参考</a></li>
+        <li><a href="../rpc-index.html">全部 RPC</a></li>
+        <li><a href="../permissions.html">权限</a></li>
+        <li><a href="../cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="../../release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="../../deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<!-- v3.8.0 public API reference, derived from the verified protobuf contract. -->
+<h1 id="aiproto-ai-copilot-and-advisory-proposals">ai.proto — AI copilot and advisory proposals</h1>
+<p class="lede">Schema: <code>tiyi.v1</code> · <code>ai.proto</code> · <a href="../../../../docs/api.html">English guide</a> · <a href="../../api.html">中文指南</a> · <a href="../rpc-index.html">Full RPC index</a></p>
+<h2 id="services">Services</h2>
+<h3 id="aiservice">AIService</h3>
+<p>Read/advisory (require ai:read).</p>
+<table>
+<thead>
+<tr>
+<th>RPC</th>
+<th>Kind</th>
+<th>Required permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#aiservicelistaiproposals"><code>ListAIProposals</code></a></td>
+<td>unary</td>
+<td>(<code>ai:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#aiservicegetaiproposal"><code>GetAIProposal</code></a></td>
+<td>unary</td>
+<td>(<code>ai:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#aiservicegetaistatus"><code>GetAIStatus</code></a></td>
+<td>unary</td>
+<td>(<code>ai:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#aiservicedraftcustomrule"><code>DraftCustomRule</code></a></td>
+<td>unary</td>
+<td>(<code>ai:propose</code>)</td>
+</tr>
+<tr>
+<td><a href="#aiservicetranslatelogquery"><code>TranslateLogQuery</code></a></td>
+<td>unary</td>
+<td>(<code>ai:read</code>)</td>
+</tr>
+<tr>
+<td><a href="#aiservicestreamanalysis"><code>StreamAnalysis</code></a></td>
+<td>server stream</td>
+<td><code>ai:read</code> and <code>log:read</code></td>
+</tr>
+<tr>
+<td><a href="#aiservicestreamchat"><code>StreamChat</code></a></td>
+<td>server stream</td>
+<td><code>ai:read</code> and <code>log:read</code></td>
+</tr>
+<tr>
+<td><a href="#aiserviceapplyaiproposal"><code>ApplyAIProposal</code></a></td>
+<td>unary</td>
+<td>(<code>ai:apply</code>)</td>
+</tr>
+<tr>
+<td><a href="#aiservicerejectaiproposal"><code>RejectAIProposal</code></a></td>
+<td>unary</td>
+<td>(<code>ai:propose</code>)</td>
+</tr>
+<tr>
+<td><a href="#aiservicesetaiprovidersecret"><code>SetAIProviderSecret</code></a></td>
+<td>unary</td>
+<td>(<code>system:write</code>)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rpcs">RPCs</h2>
+<h3 id="aiservicelistaiproposals">AIService.ListAIProposals</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AIService/ListAIProposals</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>ai:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ListAIProposalsRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#cursorrequest"><code>CursorRequest</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#aiproposalstatus"><code>AIProposalStatus</code></a></td>
+<td>singular</td>
+<td>optional filter; UNSPECIFIED = any</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ListAIProposalsResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>items</code></td>
+<td><code>items</code></td>
+<td><a href="#aiproposal"><code>AIProposal</code></a></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td><a href="common.html#cursorresponse"><code>CursorResponse</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="aiservicegetaiproposal">AIService.GetAIProposal</h3>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AIService/GetAIProposal</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>ai:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetAIProposalRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.GetAIProposalResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>proposal</code></td>
+<td><code>proposal</code></td>
+<td><a href="#aiproposal"><code>AIProposal</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="aiservicegetaistatus">AIService.GetAIStatus</h3>
+<p>GetAIStatus reports whether the layer is enabled/configured and the worker counters — drives the UI "AI Advisor" availability banner.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AIService/GetAIStatus</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>ai:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.GetAIStatusRequest</code></p>
+<p><em>No fields — send <code>{}</code>.</em></p>
+<p><strong>Response</strong> — <code>tiyi.v1.GetAIStatusResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>enabled</code></td>
+<td><code>enabled</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>ai.enabled</td>
+</tr>
+<tr>
+<td><code>configured</code></td>
+<td><code>configured</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>provider + model + key all set</td>
+</tr>
+<tr>
+<td><code>provider</code></td>
+<td><code>provider</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>openai_compatible | azure_openai | disabled</td>
+</tr>
+<tr>
+<td><code>model_summary</code></td>
+<td><code>modelSummary</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="aiservicedraftcustomrule">AIService.DraftCustomRule</h3>
+<p>Proposal generation (require ai:propose). Returns drafts; mutates nothing. The generated proposal is stored as a draft ai_proposal the operator later applies through ApplyAIProposal.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AIService/DraftCustomRule</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>ai:propose</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.DraftCustomRuleRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>intent</code></td>
+<td><code>intent</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>intent is the operator's natural-language description / CVE / threat intel ("block requests with X-Debug header to /admin").</td>
+</tr>
+<tr>
+<td><code>policy_id</code></td>
+<td><code>policyId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.DraftCustomRuleResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>proposal</code></td>
+<td><code>proposal</code></td>
+<td><a href="#aiproposal"><code>AIProposal</code></a></td>
+<td>singular</td>
+<td>proposal is a stored draft of kind CUSTOM_RULE (patch carries the visualrule.Spec JSON). Apply it via ApplyAIProposal.</td>
+</tr>
+<tr>
+<td><code>seclang_preview</code></td>
+<td><code>seclangPreview</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>seclang_preview is the compiled SecLang for the drafted rule. Every generated rule starts LOG-ONLY / canary (action=log), so the preview never blocks until the operator promotes it.</td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td><code>warnings</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="aiservicetranslatelogquery">AIService.TranslateLogQuery</h3>
+<p>Read/advisory (require ai:read). NL-&gt;typed query never emits raw SQL.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AIService/TranslateLogQuery</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>ai:read</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.TranslateLogQueryRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>e.g. "SQLi from CN in the last 6h that weren't blocked"</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.TranslateLogQueryResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>query</code></td>
+<td><code>query</code></td>
+<td><a href="#securityeventquery"><code>SecurityEventQuery</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>notes</code></td>
+<td><code>notes</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>notes carries any caveat the translator wants surfaced (e.g. a term it could not map to a typed field).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="aiservicestreamanalysis">AIService.StreamAnalysis</h3>
+<p>StreamAnalysis streams a plain-text (markdown) explanation for one subject: a single retained log event or the current log table. Advisory only; it never mutates state. Requires ai:read (middleware) AND the subject's log:read permission, enforced in the handler so it can never be a side channel to logs. Provider deltas are forwarded as chunks; the final chunk sets done=true + token_cost. The call is bound by the shared rate limit, an input cap, and ai.timeout; a client disconnect cancels the provider call (docs/design/ai-copilot-analysis.md).</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AIService/StreamAnalysis</code></li>
+<li><strong>Kind</strong> server stream — server-streaming; the response is a stream of messages</li>
+<li><strong>Auth</strong> <code>ai:read</code> and <code>log:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StreamAnalysisRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>log_event</code></td>
+<td><code>logEvent</code></td>
+<td><a href="#logeventref"><code>LogEventRef</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>subject</code>.</td>
+</tr>
+<tr>
+<td><code>log_table</code></td>
+<td><code>logTable</code></td>
+<td><a href="#logtable"><code>LogTable</code></a></td>
+<td>singular</td>
+<td>Part of oneof <code>subject</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StreamAnalysisResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>delta</code></td>
+<td><code>delta</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>done</code></td>
+<td><code>done</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>token_cost</code></td>
+<td><code>tokenCost</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="aiservicestreamchat">AIService.StreamChat</h3>
+<p>StreamChat is the conversational Copilot ability: a free-talk, multi-turn assistant that answers open-ended operator questions by driving the EXISTING log query/filter/summary capabilities itself (docs/design/ai-copilot-analysis.md § Chat agent). It adds NO new log query surface — the model calls read-only tools that are thin in-process wrappers over the same tenant-scoped queries the Log pages already use (security/access summaries + filtered event lookups + site resolution), then summarizes the results to answer questions like "top 10 attackers in the last hour", "is 1.1.1.5 evil?", or "was www.test.com attacked today, from which IP and what attack type?". The server is stateless: the client replays prior turns in <code>history</code> and appends the new <code>message</code>. Advisory only — every tool is read-only and tenant-scoped; the model never mutates state and never blocks traffic. Requires ai:read (middleware) AND log:read (enforced in the handler, since every tool reads logs — same dual-RBAC backstop as StreamAnalysis). The call is bound by the shared rate limit, a per-turn tool-step cap, and ai.timeout; a client disconnect cancels the in-flight provider call.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AIService/StreamChat</code></li>
+<li><strong>Kind</strong> server stream — server-streaming; the response is a stream of messages</li>
+<li><strong>Auth</strong> <code>ai:read</code> and <code>log:read</code></li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.StreamChatRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>history</code></td>
+<td><code>history</code></td>
+<td><a href="#chatturn"><code>ChatTurn</code></a></td>
+<td>repeated</td>
+<td>history is the prior conversation (oldest first), capped server-side.</td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code>message</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>message is the new operator question (free text).</td>
+</tr>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>site_id is an optional UI scope hint (the site the operator is currently viewing); the model may use it to bias tool calls but can still ask about any tenant-visible site.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.StreamChatResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>delta</code></td>
+<td><code>delta</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>done</code></td>
+<td><code>done</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>token_cost</code></td>
+<td><code>tokenCost</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td><em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>tool_activity</code></td>
+<td><code>toolActivity</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="aiserviceapplyaiproposal">AIService.ApplyAIProposal</h3>
+<p>Apply (require ai:apply). Validates the typed patch, then calls an AUDITED mutation service (UpsertRuleOverride today) and writes a normal audit_event. Rejects any free-form patch and any unsupported proposal kind.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AIService/ApplyAIProposal</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>ai:apply</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.ApplyAIProposalRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.ApplyAIProposalResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>proposal</code></td>
+<td><code>proposal</code></td>
+<td><a href="#aiproposal"><code>AIProposal</code></a></td>
+<td>singular</td>
+<td>updated to ACCEPTED with applied_audit_id</td>
+</tr>
+<tr>
+<td><code>result</code></td>
+<td><code>result</code></td>
+<td><a href="common.html#mutationresult"><code>MutationResult</code></a></td>
+<td>singular</td>
+<td>the underlying audited mutation result</td>
+</tr>
+</tbody>
+</table>
+<h3 id="aiservicerejectaiproposal">AIService.RejectAIProposal</h3>
+<p>RejectAIProposal marks a draft proposal rejected (operator dismissal).</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AIService/RejectAIProposal</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>ai:propose</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.RejectAIProposalRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.RejectAIProposalResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>proposal</code></td>
+<td><code>proposal</code></td>
+<td><a href="#aiproposal"><code>AIProposal</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="aiservicesetaiprovidersecret">AIService.SetAIProviderSecret</h3>
+<p>SetAIProviderSecret stores the provider API key under the shared KEK/DEK envelope (requires system:write — the key is the secret half of the ai.* provider config set via SystemService.UpdateSystemSettings). The key is write-only: it is never returned by any RPC. An empty value is a no-op that preserves the stored key.</p>
+<ul>
+<li><strong>Procedure</strong> <code>POST /tiyi.v1.AIService/SetAIProviderSecret</code></li>
+<li><strong>Kind</strong> unary</li>
+<li><strong>Auth</strong> (<code>system:write</code>)</li>
+</ul>
+<p><strong>Request</strong> — <code>tiyi.v1.SetAIProviderSecretRequest</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>api_key</code></td>
+<td><code>apiKey</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>write-only; empty = no-op (preserve stored key)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response</strong> — <code>tiyi.v1.SetAIProviderSecretResponse</code></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key_set</code></td>
+<td><code>keySet</code></td>
+<td><code>bool</code></td>
+<td>singular</td>
+<td>true when a non-empty key is now stored</td>
+</tr>
+</tbody>
+</table>
+<h2 id="messages">Messages</h2>
+<h3 id="aiproposal">AIProposal</h3>
+<p>AIProposal is a typed, schema-validated change proposal. Applying one calls an existing audited mutation RPC; this record never mutates live config itself.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><a href="#aiproposalkind"><code>AIProposalKind</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>patch_json</code></td>
+<td><code>patchJson</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>typed payload for the target mutation RPC</td>
+</tr>
+<tr>
+<td><code>evidence_ids</code></td>
+<td><code>evidenceIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>confidence</code></td>
+<td><code>confidence</code></td>
+<td><code>double</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>model_id</code></td>
+<td><code>modelId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>prompt_version</code></td>
+<td><code>promptVersion</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>status</code></td>
+<td><a href="#aiproposalstatus"><code>AIProposalStatus</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>applied_audit_id</code></td>
+<td><code>appliedAuditId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>audit_event id once applied</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td><code>createdAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+<tr>
+<td><code>updated_at</code></td>
+<td><code>updatedAt</code></td>
+<td><code>google.protobuf.Timestamp</code></td>
+<td>singular</td>
+<td><em>RFC 3339 string, e.g. <code>2026-07-26T09:00:00Z</code>.</em></td>
+</tr>
+</tbody>
+</table>
+<h3 id="chatturn">ChatTurn</h3>
+<p>ChatTurn is one prior message in the conversation the client replays so the server stays stateless. Only operator (user) and assistant turns are sent; the system prompt and any tool/tool-result turns are reconstructed server-side and never accepted from the client (prompt-injection backstop).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>role</code></td>
+<td><code>role</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>"user" | "assistant"</td>
+</tr>
+<tr>
+<td><code>content</code></td>
+<td><code>content</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logeventref">LogEventRef</h3>
+<p>LogEventRef identifies one persisted log event to explain.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><a href="#logkind"><code>LogKind</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td><code>id</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logtable">LogTable</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kind</code></td>
+<td><code>kind</code></td>
+<td><a href="#logkind"><code>LogKind</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>view</code></td>
+<td><code>view</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>operator's view, e.g. "simple" | "detail"</td>
+</tr>
+<tr>
+<td><code>columns</code></td>
+<td><code>columns</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>visible column headers, in display order</td>
+</tr>
+<tr>
+<td><code>rows</code></td>
+<td><code>rows</code></td>
+<td><a href="#logtablerow"><code>LogTableRow</code></a></td>
+<td>repeated</td>
+<td>current page rows, as displayed</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logtablerow">LogTableRow</h3>
+<p>LogTable is the operator's CURRENT table view, sent verbatim: only the columns visible in the UI (simple vs detail), the rows on the current page, exactly as displayed. "What you see is what is analyzed" — no server-side sampling or aggregation. The handler caps row/cell counts and redacts secret substrings before the model sees it, but otherwise passes the cells through.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cells</code></td>
+<td><code>cells</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>aligned 1:1 with LogTable.columns</td>
+</tr>
+</tbody>
+</table>
+<h3 id="securityeventquery">SecurityEventQuery</h3>
+<p>SecurityEventQuery mirrors the typed, closed filter set of QuerySecurityEventsRequest (no free-form predicate, no SQL).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>JSON key</th>
+<th>Type</th>
+<th>Cardinality</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>site_id</code></td>
+<td><code>siteId</code></td>
+<td><code>string</code></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>client_ip_cidrs</code></td>
+<td><code>clientIpCidrs</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>rule_ids</code></td>
+<td><code>ruleIds</code></td>
+<td><code>string</code></td>
+<td>repeated</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>lookback_seconds</code></td>
+<td><code>lookbackSeconds</code></td>
+<td><code>int64</code></td>
+<td>singular</td>
+<td>relative time window the NL implied <em>JSON string (64-bit ints are quoted).</em></td>
+</tr>
+<tr>
+<td><code>outcome</code></td>
+<td><code>outcome</code></td>
+<td><a href="common.html#securityeventoutcome"><code>SecurityEventOutcome</code></a></td>
+<td>singular</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h2 id="enums">Enums</h2>
+<h3 id="aiproposalkind">AIProposalKind</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AI_PROPOSAL_KIND_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AI_PROPOSAL_KIND_CUSTOM_RULE</code></td>
+<td>3</td>
+<td>-&gt; CustomRuleService (Phase 3)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="aiproposalstatus">AIProposalStatus</h3>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AI_PROPOSAL_STATUS_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AI_PROPOSAL_STATUS_DRAFT</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AI_PROPOSAL_STATUS_ACCEPTED</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AI_PROPOSAL_STATUS_REJECTED</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>AI_PROPOSAL_STATUS_SUPERSEDED</code></td>
+<td>4</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logkind">LogKind</h3>
+<p>LogKind selects which detail-log stream a log subject refers to.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LOG_KIND_UNSPECIFIED</code></td>
+<td>0</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_KIND_SECURITY</code></td>
+<td>1</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_KIND_ACCESS</code></td>
+<td>2</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>LOG_KIND_ERROR</code></td>
+<td>3</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="docs-pager"><a href="../../api.html"><span class="label">← 上一页</span><span class="title">API 接入</span></a><a class="next" href="../rpc-index.html"><span class="label">下一页 →</span><span class="title">全部接口</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../../../assets/js/main.js" defer></script>
+</body>
+</html>
