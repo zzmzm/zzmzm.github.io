@@ -63,6 +63,74 @@
     });
   }
 
+  // ---------- Dismissible screenshot preview ----------
+  function bindScreenshotPreview() {
+    var links = document.querySelectorAll('a[data-shot-link]');
+    if (!links.length || !window.HTMLDialogElement ||
+        !HTMLDialogElement.prototype.showModal) return;
+
+    var zh = getLocale() === 'zh';
+    var dialog = document.createElement('dialog');
+    dialog.className = 'screenshot-preview';
+    dialog.setAttribute('aria-labelledby', 'screenshot-preview-title');
+    var header = document.createElement('div');
+    header.className = 'screenshot-preview-header';
+    var title = document.createElement('h2');
+    title.id = 'screenshot-preview-title';
+    title.textContent = zh ? '图片预览' : 'Image preview';
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'btn btn-secondary btn-sm';
+    close.textContent = zh ? '关闭 ×' : 'Close ×';
+    close.autofocus = true;
+    header.appendChild(title);
+    header.appendChild(close);
+    var img = document.createElement('img');
+    var caption = document.createElement('p');
+    caption.className = 'screenshot-preview-caption';
+    dialog.appendChild(header);
+    dialog.appendChild(img);
+    dialog.appendChild(caption);
+    document.body.appendChild(dialog);
+
+    var trigger;
+    close.addEventListener('click', function () { dialog.close(); });
+    var startedOutside = false;
+    function outside(event) {
+      var rect = dialog.getBoundingClientRect();
+      return event.target === dialog &&
+        (event.clientX < rect.left || event.clientX > rect.right ||
+         event.clientY < rect.top || event.clientY > rect.bottom);
+    }
+    dialog.addEventListener('pointerdown', function (event) {
+      startedOutside = outside(event);
+    });
+    dialog.addEventListener('click', function (event) {
+      if (startedOutside && outside(event)) dialog.close();
+      startedOutside = false;
+    });
+    dialog.addEventListener('close', function () {
+      document.documentElement.classList.remove('screenshot-preview-open');
+      if (trigger) trigger.focus({ preventScroll: true });
+    });
+    links.forEach(function (link) {
+      link.setAttribute('aria-haspopup', 'dialog');
+      link.addEventListener('click', function (event) {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey ||
+            event.shiftKey || event.altKey) return;
+        var source = link.querySelector('img');
+        if (!source) return;
+        event.preventDefault();
+        trigger = link;
+        img.src = link.href;
+        img.alt = source.alt;
+        caption.textContent = source.alt;
+        dialog.showModal();
+        document.documentElement.classList.add('screenshot-preview-open');
+      });
+    });
+  }
+
   // ---------- Theme toggle button ----------
   function bindThemeToggle() {
     document.querySelectorAll('[data-action="toggle-theme"]').forEach(function (btn) {
@@ -291,4 +359,5 @@
   bindThemeToggle();
   bindProductDemo();
   swapScreenshots();
+  bindScreenshotPreview();
 })();

@@ -366,6 +366,15 @@
         <p>站点策略统一管理正文和上传容量，接口按文件字段定义允许的格式。检查受支持的文件及容器结构，查看违规结果，并确认各服务节点的应用状态。文件检查不包含杀毒扫描。</p>
       </div>
 
+      <div class="feature reveal" id="feature-automatic-remediation">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m13 7-4 6h4l-2 4 5-6h-4z"/></svg>
+        </div>
+        <h3>告警自动处置</h3>
+        <p>开启安全阈值规则后，把符合条件的来源 IP 自动加入全局封禁列表。有效期由你设置，处置回执和节点应用结果可核对，需要时可移除条目。</p>
+        <p><a href="docs/auto-remediation.html">查看配置手册</a></p>
+      </div>
+
 </div>
   </div>
 </section>
@@ -503,16 +512,17 @@
     </div>
 
     <!-- Tour 6: Alert response -->
-    <div class="tour-row reveal">
+    <div class="tour-row reveal" id="automatic-remediation">
       <div class="tour-text">
         <span class="tour-eyebrow">告警响应</span>
-        <h3>让一次检测完整走过审核与解除。</h3>
-        <p>持久化证据快照解释规则为何触发，告警则继续经历 pending、firing、已确认与已解除的完整状态。</p>
+        <h3>告警触发后，自动封禁符合条件的来源。</h3>
+        <p>在安全阈值规则中开启自动处置，太一把符合条件的来源 IP 加入全局封禁列表。有效期由你设置，处置回执与节点应用结果可核对，需要时可移除条目。</p>
         <ul>
           <li>Top 来源、攻击类型、目标与规则可回到限定范围的原始证据</li>
           <li>确认、解除、静默、分组、抑制，并保留完整处理时间线</li>
-          <li>处置始终是需要人工审核的 IP 列表或自定义规则草案</li>
+          <li>每轮最多新增 5 个 IP，每次告警最多 50 个；固定有效期不会因重复请求而续期</li>
         </ul>
+        <p><a href="docs/auto-remediation.html">查看自动处置配置手册</a></p>
       </div>
       <div class="frame">
         <div class="frame-tabs">

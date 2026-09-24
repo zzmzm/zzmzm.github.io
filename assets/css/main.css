@@ -1680,3 +1680,47 @@ body.docs { background: var(--bg-2); }
   font-size: .875rem;
   line-height: 1.6;
 }
+
+/* Screenshot previews use the native modal's focus handling and Escape key. */
+html.screenshot-preview-open { overflow: hidden; }
+.screenshot-preview {
+  width: min(96vw, 1600px);
+  max-width: 96vw;
+  max-height: 96vh;
+  max-height: 96dvh;
+  margin: auto;
+  padding: 16px;
+  color: var(--fg);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  overflow: auto;
+}
+.screenshot-preview::backdrop { background: rgba(0, 0, 0, .8); }
+.screenshot-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.screenshot-preview-header h2 { margin: 0; font-size: 1rem; }
+.screenshot-preview-header button { flex-shrink: 0; }
+.screenshot-preview-header button:focus-visible {
+  outline: 2px solid var(--brand-cyan);
+  outline-offset: 3px;
+}
+.screenshot-preview > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(96vh - 150px);
+  max-height: calc(96dvh - 150px);
+  object-fit: contain;
+}
+.screenshot-preview-caption {
+  margin: 12px 0 0;
+  color: var(--fg-2);
+  font-size: .875rem;
+  overflow-wrap: anywhere;
+}

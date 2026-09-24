@@ -58,6 +58,7 @@
       <h4>Operate</h4>
       <ul>
         <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="auto-remediation.html">Configure automatic remediation</a></li>
         <li><a href="troubleshooting.html">Troubleshooting</a></li>
         <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
         <li><a href="site-import.html">Import / export sites</a></li>
@@ -155,7 +156,7 @@ t system health
 <p><strong>The upstream is application port 29900, not Nginx ingress port 29180.</strong> Pointing it back to the ingress creates a proxy loop after cutover.</p>
 <figure>
 <a href="../assets/img/screenshots/en-dark/existing-site-config.png" data-shot-link="existing-site-config"><img src="../assets/img/screenshots/en-dark/existing-site-config.png" data-shot="existing-site-config" width="1440" height="1000" loading="lazy" alt="Actual rehearsal site configuration: existing.test, application port 29900 and Light blocking" /></a>
-<figcaption>Actual admin view: Tiyi still sends allowed requests to the original application. Click to enlarge.</figcaption>
+<figcaption>Actual admin view: Tiyi still sends allowed requests to the original application. Click to enlarge; use Close, Escape or the backdrop to return.</figcaption>
 </figure>
 
 <p>First check the candidate Tiyi ingress directly, bypassing Nginx:</p>
@@ -332,6 +333,7 @@ kill &quot;$ORIGIN_PID&quot;
 <li><strong>Recovery:</strong> preserve the original upstream and restorable Nginx configuration. To withdraw, restore that configuration, check it, reload and verify the application. This removes Tiyi's protection layer; record why and plan the next action.</li>
 </ul>
 <p>For the shortest installation path, return to <a href="quickstart.html">Quickstart</a>. Use <a href="troubleshooting.html">Troubleshooting</a> when needed; share the version, topology, expected and actual status codes, and sanitized logs with support.</p>
+<p>Next: read <a href="auto-remediation.html">Configure automatic remediation</a> for threshold-triggered global IP blocking. Verify production client-IP trust first; do not enable it directly on this loopback rehearsal.</p>
 <div class="docs-pager"><a href="practice.html"><span class="label">← Previous</span><span class="title">Practice and advanced use</span></a><a class="next" href="deployment.html"><span class="label">Next →</span><span class="title">Deployment</span></a></div>
 </main>
 

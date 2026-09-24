@@ -378,6 +378,15 @@
         <p>Keep body and upload capacities in the site policy, and define allowed file formats per endpoint and file field. Inspect supported file and container structures, review violations, and confirm application on each serving node. File checks do not perform antivirus scanning.</p>
       </div>
 
+      <div class="feature reveal" id="feature-automatic-remediation">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m13 7-4 6h4l-2 4 5-6h-4z"/></svg>
+        </div>
+        <h3>Automatic alert remediation</h3>
+        <p>Enable a security-threshold rule to add eligible source IPs to a global deny list. Set a fixed expiry, inspect action receipts and serving-node results, and remove entries when needed.</p>
+        <p><a href="docs/auto-remediation.html">Configuration guide</a></p>
+      </div>
+
 </div>
   </div>
 </section>
@@ -525,16 +534,17 @@
     </div>
 
     <!-- Tour 6: Alert response -->
-    <div class="tour-row reveal">
+    <div class="tour-row reveal" id="automatic-remediation">
       <div class="tour-text">
         <span class="tour-eyebrow">Alert response</span>
-        <h3>Carry a detection through review and resolution.</h3>
-        <p>A durable evidence snapshot explains why the rule fired while the alert continues through pending, firing, acknowledged, and resolved states.</p>
+        <h3>Automatically block eligible sources when an alert fires.</h3>
+        <p>Enable automatic remediation on a security-threshold rule to add eligible source IPs to a global deny list. Choose a fixed expiry, review the action receipt and verify serving-node results; remove entries when needed.</p>
         <ul>
           <li>Top sources, attack classes, targets, and rules link back to scoped evidence</li>
           <li>Acknowledge, resolve, silence, group, inhibit, and retain the handling timeline</li>
-          <li>Remediation stays a human-reviewed IP-list or custom-rule draft</li>
+          <li>Up to 5 new IPs per evaluation and 50 per alert occurrence; fixed expiry is not renewed by repeated traffic</li>
         </ul>
+        <p><a href="docs/auto-remediation.html">Read the automatic remediation configuration guide</a></p>
       </div>
       <div class="frame">
         <div class="frame-tabs">

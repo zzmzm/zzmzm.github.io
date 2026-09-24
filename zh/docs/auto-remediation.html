@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>自动处置配置手册 — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="配置安全阈值告警、全局 IP 自动封禁和固定有效期，核对实际处置，并掌握停止追加与解除封禁的方法。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/auto-remediation.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+        <li><a href="existing-site.html">已有 Nginx 网站接入太一</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="auto-remediation.html" aria-current="page">自动处置配置手册</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">运维</span>
+<h1>自动处置配置手册</h1>
+<p class="lede">让安全阈值告警在触发后，把符合条件的来源 IP 自动加入封禁列表。先配置规则和有效期，太一再按告警状态分批执行；在告警详情、IP 列表和节点应用结果中核对处置，必要时停止追加并解除封禁。</p>
+<pre><code class="language-text">安全计数 → 阈值与持续时间成立 → 告警触发
+        → 选取符合条件的来源 IP → 全局封禁列表 → 核对节点应用
+        → 按固定有效期到期清理，或人工移除条目
+</code></pre>
+<p><strong>当前自动动作是全局 IP 封禁。</strong> 规则中的站点条件限制“从哪里统计、选择哪些来源”，封禁列表则作用于全部站点。它不是当前站点专属封禁，也不是自动生成任意自定义规则。只有“安全阈值”告警支持自动处置，其他类型仍按各自规则告警。</p>
+<h2 id="prepare">1. 先确认真实来源 IP 和影响范围</h2>
+<p>在“日志 → 安全日志”检查客户端 IP。经过 CDN、负载均衡或 Nginx 时，先按<a href="deployment.html#client-ip">部署指南</a>设置可信代理并用真实请求确认。不要把代理地址或所有访客共用的出口误当成单个攻击来源。</p>
+<p><a href="existing-site.html">已有 Nginx 接入教程</a>使用回环地址演练转发，没有验证生产真实 IP。不要直接在那个演练实例启用自动封禁。自动处置试验应使用隔离环境、可控测试来源和独立管理入口，不能用唯一的管理出口制造封禁测试。</p>
+<p>准备可编辑告警规则和 IP 列表的账号，确认当前所有站点都能接受此全局动作。需要仅对一个站点处置时，使用经过审核的站点级防护配置，不要用本功能替代。</p>
+<h2 id="condition">2. 新建安全阈值告警，先检查条件</h2>
+<p>打开“告警 → 告警规则”，新建规则，类型选择“安全阈值”。以下是一组便于理解的示例，数值需按自己的流量调整：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>示例填写</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>名称</td>
+<td>网站 SQL 注入告警</td>
+<td>使用能辨认业务范围的名字</td>
+</tr>
+<tr>
+<td>站点</td>
+<td>选择需要监控的站点</td>
+<td>只限定统计范围，不缩小后续全局封禁范围</td>
+</tr>
+<tr>
+<td>时间窗口（秒）</td>
+<td>300</td>
+<td>统计滚动 5 分钟内的匹配事件</td>
+</tr>
+<tr>
+<td>最小数量</td>
+<td>100</td>
+<td>上述整个范围的匹配事件数达到 100</td>
+</tr>
+<tr>
+<td>处置结果</td>
+<td>仅已拦截</td>
+<td>只统计已被 WAF 中断的安全事件</td>
+</tr>
+<tr>
+<td>攻击类型</td>
+<td>SQL 注入（SQLI）</td>
+<td>来源候选也必须符合这个过滤条件</td>
+</tr>
+<tr>
+<td>触发前持续时间（秒）</td>
+<td>60</td>
+<td>条件持续成立后才进入触发状态</td>
+</tr>
+<tr>
+<td>自动处置</td>
+<td>暂时关闭</td>
+<td>先检查条件和历史回放</td>
+</tr>
+</tbody>
+</table>
+<p>阈值按所选范围聚合，<strong>不是每个 IP 都必须达到 100 次</strong>。达到告警条件后，太一从相同范围选取符合条件的来源。“来源 IP 范围”“攻击类型”“最低事件严重程度”是互斥的阈值过滤维度，不能同时叠加；站点、处置结果、窗口仍共同约束条件。告警自身的严重级别用于通知和分类，不等于安全事件的最低严重程度。</p>
+<p>“仅未拦截”仍指命中了安全规则、但没有被 WAF 中断的事件，不是全部正常访问。IP 列表执行的拦截不作为新的 CRS 安全事件反复计入此阈值，避免“封禁 → 再告警 → 再封禁”的循环。</p>
+<p>查看编辑器中的“最近 24 小时回放预估”，了解该条件可能触发多少次。回放不会保存规则、发送通知或执行封禁；这是历史估算，不保证将来的触发量和投递量。数据不足或查询失败时，先排查统计覆盖，不把空结果解释成业务安全。</p>
+<h2 id="enable">3. 开启自动处置并设置有效期</h2>
+<p>确认条件后，打开“自动处置”，配置“封禁 IP 列表”：</p>
+<ul>
+<li><strong>自动创建：</strong> 保存时创建或复用当前规则专用的列表，默认名为 <code>[自动封禁] 规则名</code>，以封禁动作应用于所有站点。重新启用、切换后再回到自动创建会复用同一规则的列表；同名的其他列表不会被擅自接管。</li>
+<li><strong>选择已有列表：</strong> 只能选择已通过封禁动作应用于全部站点、且可供选择的 IP 列表。先检查其条目和其他用途；新增自动条目会进入该共享列表。</li>
+</ul>
+<p>有效期可选 <strong>1 小时、24 小时、7 天或永久</strong>。初次评估时可以选择短有效期，避免把试验性的判断变为永久封禁；这不是对所有业务都适用的默认策略。</p>
+<p>每个新来源首次进入处置批次时确定到期时间；重试、重复请求和持续触发不会给已生效条目续期。到期清理由周期任务完成，并需重新应用配置，不能理解为所有节点在到期那一秒同时解除。永久条目需要人工移除。</p>
+<p>按需要绑定通知渠道，核对接收对象，然后保存并启用规则。渠道负责通知；通知静默或通知投递失败不等于停止自动处置。手动点击渠道“测试”会发送真实消息。</p>
+<h2 id="execution">4. 理解触发与分批执行</h2>
+<p>当条件持续满足并进入 <code>firing</code>，系统开始选择来源；同一告警持续触发时，每轮最多追加 <strong>5 个新的 IP</strong>，一次告警发生过程最多处理 <strong>50 个不同 IP</strong>。这不是 IP 列表的总容量上限，也不是“每次看到攻击就立即封禁”。</p>
+<p>选择来源时沿用告警的站点、时间窗口、处置结果及所选过滤维度。缺少完整来源统计时，告警仍可触发，但自动处置显示“等待完整的来源统计”，不会用采样日志猜测来源，也不会提前开始该批次的有效期。</p>
+<p>已预留的 IP 不会在同一次告警中重复排队。后续告警发生过程可再次选择相同 IP：旧封禁仍有效时保持原到期时间，旧条目已过期时才建立新的固定有效期。</p>
+<h2 id="verify">5. 核对保存、执行与实际封禁</h2>
+<p>保存规则后按以下顺序检查：</p>
+<ol>
+<li><strong>告警 → 活跃告警：</strong> 找到该规则的告警，确认是否已触发、命中的条件和来源证据。在自动处置明细查看目标列表、批次 IP、有效期、等待／处理中／成功／失败等结果及失败原因。</li>
+<li><strong>防护 → IP 列表：</strong> 打开同一个列表，核对实际新增的 IP、到期时间及全局封禁应用关系。不要只凭规则已保存就判断封禁已生效。</li>
+<li><strong>节点：</strong> 核对处理这些站点流量的本机与远程节点应用结果。列表更新或控制端成功不保证每个离线节点已经更新。</li>
+<li><strong>日志 → 防护处置：</strong> 查看 IP 列表层的拦截结果；常规 IP 封禁不会伪造成另一条 CRS 安全日志。需要对执行压力告警时，单独使用“处置阈值”规则，它不提供此自动处置开关。</li>
+<li><strong>真实请求：</strong> 在有授权的测试环境，从被选中的来源发正常请求，确认被 IP 层阻断；从另一未封禁来源确认业务仍可用。使用自定义响应时不要只依赖固定状态码，应结合处置层、动作和节点结果判断。</li>
+</ol>
+<p>如果要通过 CLI 查询，在太一主机上使用自己的 ID；以下命令只读取状态：</p>
+<pre><code class="language-sh">sudo tiyi alert rule list
+sudo tiyi alert rule get YOUR_RULE_ID
+sudo tiyi alert list --status active --rule-id YOUR_RULE_ID
+sudo tiyi alert get YOUR_ALERT_ID
+</code></pre>
+<p>自定义实例需要加上对应的 <code>--admin-socket</code>，避免查到默认实例。CLI 返回的列表可能分页；完整字段与接口见 <a href="cli.html">CLI</a> 和 <a href="reference/services/alert.html">API 参考</a>。</p>
+<h2 id="stop">6. 停止追加与解除已有封禁</h2>
+<p>这两件事要分别操作：</p>
+<ol>
+<li>编辑规则，关闭自动处置并保存；或者停用整条规则，停止后续规则求值及新的自动处置选取。<strong>已入队批次可能继续执行</strong>，先核对告警处置明细和列表变化。</li>
+<li>需要立即恢复某个来源时，在“防护 → IP 列表”中移除对应条目，保留其他仍需生效的条目及绑定。确认没有在途批次重新写入该来源；存在重试时持续核对结果，不能只删除一次就认定撤销完成。</li>
+<li>核对节点应用结果，并从原来源重新请求，确认此 IP 封禁已解除。其他 WAF、Bot 或限速规则仍可能拦截，要按实际处置原因定位。</li>
+</ol>
+<p><strong>静默只影响通知；确认或解除告警不是解封操作。</strong> 停用规则不会自动清空列表，删除规则也会保留列表和条目，只是转为普通运维管理。不要用删除规则代替解封。无需立即解封时，可等待非永久条目到期清理，再验证实际结果。</p>
+<h2 id="troubleshooting">7. 常见现象</h2>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>先检查</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>找不到自动处置开关</td>
+<td>规则是否为“安全阈值”，账号是否有编辑权限</td>
+</tr>
+<tr>
+<td>有告警但没有新增 IP</td>
+<td>是否进入触发状态、来源统计是否完整、是否已达到本次 50 个来源上限、来源是否已处置</td>
+</tr>
+<tr>
+<td>已有列表下拉为空</td>
+<td>列表是否已以封禁动作应用到全部站点，是否属于可选目标</td>
+</tr>
+<tr>
+<td>IP 已在列表但请求仍正常</td>
+<td>真实来源 IP、条目是否过期、全局绑定、节点应用结果及其他放行配置</td>
+</tr>
+<tr>
+<td>静默后仍然新增封禁</td>
+<td>静默不会停止检测和自动处置，需修改规则</td>
+</tr>
+<tr>
+<td>告警解除后仍然被封禁</td>
+<td>条目的固定有效期独立于告警状态，检查是否需要人工移除</td>
+</tr>
+</tbody>
+</table>
+<p>示例阈值用于解释配置，需按实际业务调整。首次启用时，在自己的受控环境中按上述步骤确认处置与解除封禁的结果。</p>
+<div class="docs-pager"><a href="operations.html"><span class="label">← 上一页</span><span class="title">日常运维</span></a><a class="next" href="troubleshooting.html"><span class="label">下一页 →</span><span class="title">排障</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

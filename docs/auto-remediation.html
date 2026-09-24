@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Configure automatic remediation — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Configure security-threshold alerts, global IP blocking and fixed expiry, then verify results and remove blocks." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/auto-remediation.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+        <li><a href="existing-site.html">Add Tiyi to an existing Nginx site</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="auto-remediation.html" aria-current="page">Configure automatic remediation</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Operate</span>
+<h1>Configure automatic remediation</h1>
+<p class="lede">Turn a firing security-threshold alert into an automatic IP-list block. Configure the condition and expiry, let Tiyi process eligible sources in batches, then verify the alert receipt, list entries and serving-node results. Stop new selections and remove existing blocks separately when recovery is needed.</p>
+<pre><code class="language-text">Security counters → threshold and hold satisfied → alert fires
+                  → eligible source IPs → global deny list → verify node application
+                  → fixed-expiry cleanup, or manual entry removal
+</code></pre>
+<p><strong>The current automatic action is global IP blocking.</strong> A site filter limits the observations and candidate sources; the resulting list applies to all sites. It is not a site-only block or arbitrary custom-rule generation. Only security-threshold alerts support automatic remediation.</p>
+<h2 id="prepare">1. Verify client IPs and the affected sites</h2>
+<p>Check client IPs in <strong>Logs → Security Logs</strong>. Behind a CDN, load balancer or Nginx, configure <a href="deployment.html#client-ip">trusted proxies</a> and verify the resulting IP with actual requests. A proxy address or shared network exit is not necessarily an individual attacker.</p>
+<p>The <a href="existing-site.html">existing Nginx guide</a> uses loopback addresses to rehearse forwarding; it does not validate production client-IP trust. Do not enable automatic blocking directly on that rehearsal. Use an isolated environment, controlled test sources and an independent management path; do not generate block tests from your only management exit.</p>
+<p>Use an account allowed to edit alert rules and IP lists. Confirm that all sites can accept this global action. For site-only remediation, use reviewed site-scoped protection configuration instead.</p>
+<h2 id="condition">2. Create a security-threshold rule and review its condition</h2>
+<p>Open <strong>Alerts → Rules</strong>, create a rule and choose <strong>Security threshold</strong>. The following values illustrate the configuration; adjust them to your own traffic:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>Website SQL injection alert</td>
+<td>Identify the business scope</td>
+</tr>
+<tr>
+<td>Site</td>
+<td>Select the monitored site</td>
+<td>Limits observations, not the subsequent global block</td>
+</tr>
+<tr>
+<td>Window, seconds</td>
+<td>300</td>
+<td>Count matching events in a rolling five-minute window</td>
+</tr>
+<tr>
+<td>Minimum count</td>
+<td>100</td>
+<td>Trigger at 100 matching events across that population</td>
+</tr>
+<tr>
+<td>Outcome</td>
+<td>Blocked only</td>
+<td>Count security events interrupted by the WAF</td>
+</tr>
+<tr>
+<td>Attack type</td>
+<td>SQL injection (SQLI)</td>
+<td>Candidate sources must match this filter too</td>
+</tr>
+<tr>
+<td>Hold, seconds</td>
+<td>60</td>
+<td>Require a sustained match before firing</td>
+</tr>
+<tr>
+<td>Automatic remediation</td>
+<td>Off initially</td>
+<td>Review the condition and historical replay first</td>
+</tr>
+</tbody>
+</table>
+<p>The threshold aggregates the selected population: <strong>each IP does not need to reach 100 events</strong>. After the alert qualifies, Tiyi selects eligible sources from that same population. Source-IP range, attack type and minimum event severity are mutually exclusive threshold filters. Site, outcome and window still constrain the condition together. The alert's own severity classifies the alert and notifications; it is separate from minimum security-event severity.</p>
+<p>Passed-only outcomes still represent security-rule matches that were not interrupted by the WAF, not all ordinary traffic. Routine IP-list denials do not become new CRS events feeding this security threshold, avoiding a block → alert → block feedback loop.</p>
+<p>Review the editor's <strong>last 24 hours replay estimate</strong> to understand possible trigger volume. Replay does not save the rule, notify anyone or execute blocks. It is a historical estimate, not a guarantee of future alerts or deliveries. Investigate missing coverage or query errors rather than treating an empty result as proof of safety.</p>
+<h2 id="enable">3. Enable remediation and choose an expiry</h2>
+<p>After reviewing the condition, enable <strong>Automatic remediation</strong> and select its target:</p>
+<ul>
+<li><strong>Auto-create:</strong> saving creates or reuses this rule's dedicated list, named <code>[Auto-ban] Rule name</code> by default, and applies it globally with Block. Re-enabling or switching back to auto-create reuses the same rule-owned list. An unrelated list with the same display name is not adopted.</li>
+<li><strong>Existing list:</strong> choose an eligible list already applied globally with Block. Review its entries and other uses first; automatic entries join that shared list.</li>
+</ul>
+<p>Expiry options are <strong>one hour, 24 hours, seven days or permanent</strong>. A short expiry can help during an initial evaluation; it is not a universal production policy.</p>
+<p>Each new source gets a fixed expiry when first reserved for a remediation batch. Retries, repeated requests and continued firing do not renew an effective entry. Periodic cleanup removes expired entries and reapplies configuration; do not assume every node unblocks at the exact expiry second. Permanent entries require manual removal.</p>
+<p>Bind notification channels as needed, review recipients, then save and enable the rule. Channels control notification delivery. A silence or failed delivery does not stop remediation. A channel's <strong>Test</strong> button sends a real message.</p>
+<h2 id="execution">4. Understand firing and batch limits</h2>
+<p>When the condition stays true for the configured hold and enters <code>firing</code>, selection starts. While that occurrence remains firing, each evaluation can append at most <strong>five new IPs</strong>, with at most <strong>50 distinct IPs per occurrence</strong>. This is not the list's total capacity or an immediate block for every observed attack.</p>
+<p>Selection retains the same site, time window, outcome and chosen filter. If complete source statistics are unavailable, the alert can still fire while remediation shows <strong>Waiting for complete source statistics</strong>. Tiyi does not guess candidates from sampled logs or start that batch's expiry early.</p>
+<p>An already-reserved IP is not queued again within that occurrence. A later occurrence can select it again: an effective entry retains its original expiry; an expired entry can receive a new fixed expiry.</p>
+<h2 id="verify">5. Verify storage, execution and real requests</h2>
+<p>After saving, check in this order:</p>
+<ol>
+<li><strong>Alerts → Active alerts:</strong> find the rule's occurrence and verify its firing state, condition and source evidence. Inspect remediation details for the target list, batch IPs, expiry, waiting/processing/success/failure results and any failure reason.</li>
+<li><strong>Protection → IP Lists:</strong> open that exact list and check the added IPs, expiry and global Block binding. Saving a rule alone does not prove enforcement.</li>
+<li><strong>Nodes:</strong> verify application results on the built-in runtime and remote nodes serving those sites. A saved list or successful controller result does not prove an offline node has updated.</li>
+<li><strong>Logs → Enforcement:</strong> inspect IP-list denials. Routine list enforcement is not fabricated as another CRS Security Log entry. Use a separate enforcement-threshold alert to monitor enforcement pressure; it has no automatic-remediation switch.</li>
+<li><strong>Actual requests:</strong> in an authorized test environment, send an ordinary request from a selected source and confirm IP-layer blocking, then confirm service from an unblocked source. With custom responses, inspect the enforcement layer, action and node results rather than assuming a fixed status code.</li>
+</ol>
+<p>For CLI inspection, run these read-only commands on the Tiyi host using your actual IDs:</p>
+<pre><code class="language-sh">sudo tiyi alert rule list
+sudo tiyi alert rule get YOUR_RULE_ID
+sudo tiyi alert list --status active --rule-id YOUR_RULE_ID
+sudo tiyi alert get YOUR_ALERT_ID
+</code></pre>
+<p>A custom instance needs its corresponding <code>--admin-socket</code> to avoid querying the default instance. Lists may be paginated. See the <a href="cli.html">CLI</a> and <a href="reference/services/alert.html">API reference</a> for full fields and interfaces.</p>
+<h2 id="stop">6. Stop new selections and remove existing blocks</h2>
+<p>Handle these separately:</p>
+<ol>
+<li>Edit the rule, turn automatic remediation off and save; or disable the entire rule to stop subsequent evaluation and new candidate selection. <strong>Already queued batches may still execute.</strong> Review remediation details and list changes first.</li>
+<li>To restore a source promptly, remove its entry in <strong>Protection → IP Lists</strong>, preserving other required entries and bindings. Confirm no in-flight batch adds it again. When retries remain, follow the results; one deletion alone does not prove recovery is complete.</li>
+<li>Check serving-node application, then request again from that source to verify the IP block is gone. Other WAF, Bot or rate-limit controls can still reject requests; inspect the actual enforcement reason.</li>
+</ol>
+<p><strong>Silence controls notifications; acknowledging or resolving an alert is not an unblock operation.</strong> Disabling a rule does not empty its list. Deleting a rule retains the list and entries as ordinary operator-managed resources, so deletion is not an unblock shortcut. If immediate restoration is unnecessary, wait for non-permanent entries to expire and verify cleanup.</p>
+<h2 id="troubleshooting">7. Common symptoms</h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check first</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No automatic-remediation switch</td>
+<td>Rule kind is Security threshold; the account has edit permission</td>
+</tr>
+<tr>
+<td>Alert exists but no IP was added</td>
+<td>Firing state, complete source coverage, the 50-source occurrence limit, already-processed sources</td>
+</tr>
+<tr>
+<td>Existing-list selector is empty</td>
+<td>Eligible list has a global Block binding</td>
+</tr>
+<tr>
+<td>IP is listed but requests still pass</td>
+<td>Actual client IP, expiry, global binding, node application and other allow configuration</td>
+</tr>
+<tr>
+<td>New blocks continue during silence</td>
+<td>Silence does not stop detection or remediation; change the rule</td>
+</tr>
+<tr>
+<td>Source remains blocked after resolution</td>
+<td>Entry expiry is independent of alert state; review manual removal</td>
+</tr>
+</tbody>
+</table>
+<p>The example thresholds explain configuration and need adjustment for your traffic. Before production use, verify remediation and unblocking in your own controlled environment using the steps above.</p>
+<div class="docs-pager"><a href="operations.html"><span class="label">← Previous</span><span class="title">Operations</span></a><a class="next" href="troubleshooting.html"><span class="label">Next →</span><span class="title">Troubleshooting</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>
