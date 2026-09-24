@@ -1012,6 +1012,40 @@ section + section { padding-top: 0; }
 }
 .tl-body li { margin-bottom: 4px; }
 
+/* ---------- FAQ ---------- */
+#faq .faq-list {
+  max-width: 760px;
+  margin: 0 auto;
+  border-top: 1px solid var(--border-strong);
+}
+#faq details {
+  border-bottom: 1px solid var(--border-strong);
+}
+#faq summary {
+  padding: 22px 4px;
+  color: var(--fg);
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+#faq summary:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+#faq details p {
+  padding: 0 4px 22px;
+  color: var(--fg-2);
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+#faq a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ---------- CTA banner ---------- */
 .cta {
   position: relative;

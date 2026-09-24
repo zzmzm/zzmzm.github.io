@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>太一 —— 单一二进制的自托管 WAF</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="太一是一款单一二进制、可自托管的带 WAF 反向代理。Caddy + Coraza + SQLite + Vben Admin 集成在一个 Go 可执行文件中。五分钟即可让生产级 Web 应用防火墙投入运行。" />
+<meta name="description" content="用太一保护你的网站和 API。WAF、反向代理与可视化管理后台集成在一个可执行文件中，自主部署。单节点免费，包含完整功能，不限站点。" />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="../favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,7 +16,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.tiyisec.com/zh/" />
 <meta property="og:title" content="太一 —— 单一二进制的自托管 WAF" />
-<meta property="og:description" content="Caddy + Coraza + SQLite + Vben Admin 集成在一个 Go 可执行文件中。WAF、反向代理与管理平面 —— 五分钟即可安装。" />
+<meta property="og:description" content="接入网站和 API、查看拦截原因、调整防护策略，一个管理后台即可完成。单文件部署，单节点免费，包含完整功能，不限站点。" />
 <meta property="og:image" content="https://www.tiyisec.com/assets/img/screenshots/zh-dark/dashboard.png" />
 <meta name="twitter:card" content="summary_large_image" />
 
@@ -46,7 +46,7 @@
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
       </button>
       <a class="nav-toggle nav-lang" href="../index.html" hreflang="en" aria-label="Switch to English">EN</a>
-      <a class="btn btn-primary btn-sm nav-cta" href="#pricing">开始使用</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="docs/quickstart.html">免费开始使用</a>
     </nav>
   </div>
 </header>
@@ -64,14 +64,14 @@
   </h1>
 
   <p class="lead">
-    太一是生产级的 WAF、反向代理与管理平面 —— 集成于一个 Go 可执行文件中。
-    Caddy + Coraza + OWASP CRS&nbsp;4 + SQLite，连同管理后台一起内置。
-    无需 Docker、无需外部数据库、无需 Redis。从下载到拦截真实攻击只需五分钟。
+    为你的网站和 API 部署防护。太一将 WAF、反向代理和可视化管理后台
+    集成在一个可执行文件中，帮助你接入网站、查看拦截原因并调整防护策略。
+    无需 Docker 或额外部署数据库。
   </p>
 
   <div class="hero-actions">
-    <a class="btn btn-primary btn-lg" href="#pricing">开始使用</a>
-    <a class="btn btn-ghost btn-lg" href="#tour">查看产品演示 →</a>
+    <a class="btn btn-primary btn-lg" href="docs/quickstart.html">免费开始使用</a>
+    <a class="btn btn-ghost btn-lg" href="#demo-title">观看操作演示 →</a>
   </div>
 
   <div class="hero-cmd">
@@ -80,7 +80,7 @@
     <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && sudo tiyi install --now" data-copied="已复制" aria-label="复制命令">复制</button>
   </div>
 
-  <div class="hero-repos" aria-label="安装方式"><a href="docs/quickstart.html#manual">分步骤</a> · <a href="docs/quickstart.html#custom-ports">DIY 端口</a> · <a href="docs/quickstart.html#offline">离线安装</a></div>
+  <div class="hero-repos" aria-label="安装方式">新主机安装：<a href="docs/quickstart.html#manual">分步骤操作</a> · <a href="docs/quickstart.html#custom-ports">已有网站？先看端口设置</a> · <a href="docs/quickstart.html#offline">离线安装</a></div>
 
   <div class="hero-repos" aria-label="公开分发仓库">
     <span>公开分发仓库：</span>
@@ -90,7 +90,7 @@
   </div>
 
   <div class="hero-meta" style="margin-top: 28px;">
-    <span><strong>单一二进制</strong> · 零运行时依赖</span>
+    <span><strong>单节点免费</strong> · 完整功能 · 不限站点</span>
     <span class="dot"></span>
     <span><strong>Apache-2.0</strong> 上游 · 商业分发</span>
     <span class="dot"></span>
@@ -733,12 +733,12 @@
             无需授权文件；以后可直接导入授权增加远程节点
           </li>
         </ul>
-        <a class="btn btn-ghost" href="#changelog">使用社区版</a>
+        <a class="btn btn-ghost" href="docs/quickstart.html">免费开始使用</a>
       </div>
 
       <!-- Pro -->
       <div class="plan featured reveal">
-        <span class="plan-badge">最受欢迎</span>
+        <span class="plan-badge">多节点管理</span>
         <h3>Pro 专业版</h3>
         <p class="who">适合在少量节点上跑生产的团队。</p>
         <div class="price">
@@ -768,7 +768,7 @@
             邮件支持 · 工作日 1 个工作日响应
           </li>
         </ul>
-        <a class="btn btn-primary" href="mailto:support@tiyisec.com?subject=太一%20Pro%20授权">开始 Pro 试用</a>
+        <a class="btn btn-primary" href="mailto:support@tiyisec.com?subject=太一%20Pro%20试用申请">申请 Pro 试用</a>
       </div>
 
       <!-- Enterprise -->
@@ -813,6 +813,42 @@
       有特定需求？<a href="mailto:support@tiyisec.com">support@tiyisec.com</a>
       &nbsp;·&nbsp; 三个版本使用同一个二进制并包含完整 WAF 能力；区别在于授权规模、支持与供应链服务。
     </p>
+  </div>
+</section>
+
+<!-- ============= FAQ ============= -->
+<section id="faq" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="faq-title">开始使用前，你可能想了解。</h2>
+      <p>关于免费范围、已有网站接入和日常运维的常见问题。</p>
+    </div>
+    <div class="faq-list">
+      <details>
+        <summary>免费版包含哪些功能？</summary>
+        <p>社区版包含一个本机内置节点、完整产品功能，站点和策略数量不限，无需授权文件。增加远程节点需要签名授权。你可以<a href="#pricing">比较各版本</a>，或直接<a href="docs/quickstart.html">开始使用社区版</a>。</p>
+      </details>
+      <details>
+        <summary>太一是开源软件吗？</summary>
+        <p>太一是提供免费社区版的闭源软件，基于 Caddy、Coraza、OWASP CRS 等开源组件构建。公开仓库提供签名发行包、安装工具和文档，不包含太一应用源码。使用条款见<a href="terms.html">服务条款</a>及分发包中的 EULA。</p>
+      </details>
+      <details>
+        <summary>已经在运行的网站可以接入吗？</summary>
+        <p>可以。太一作为反向代理部署在 HTTP 源站前面，先用测试流量验证到现有应用的链路。如果 80、443 或 8080 端口已被占用，可先使用<a href="docs/quickstart.html#custom-ports">自定义端口</a>。切换真实流量前，按<a href="docs/deployment.html">部署指南</a>核对域名路由、证书，并准备恢复原有访问路径的方法。</p>
+      </details>
+      <details>
+        <summary>试用需要准备什么？</summary>
+        <p>一台 Linux amd64 或 arm64 主机；默认服务安装使用 sudo 和 systemd。按照<a href="docs/quickstart.html">快速开始</a>可以用本机演示后端验证，无需修改 DNS。CPU、内存和磁盘需求取决于流量、规则及日志保留量，上线前应使用自己的业务请求测试。也支持<a href="docs/quickstart.html#offline">离线安装</a>。</p>
+      </details>
+      <details>
+        <summary>正常请求被误拦截了怎么办？</summary>
+        <p>用请求 ID 查找对应攻击日志，在已保留明细时查看命中规则和请求证据。优先针对受影响的站点、路径和规则设置小范围例外，再验证正常访问与攻击拦截。具体步骤见<a href="docs/operations.html#tuning">WAF 调优指南</a>。</p>
+      </details>
+      <details>
+        <summary>如何升级或迁移到另一台服务器？</summary>
+        <p>先准备完整备份并核对目标版本的兼容性说明。兼容版本可以进行签名更新；状态不兼容时可能需要重建配置。迁移主机还需要匹配的版本以及完整状态和配置。更改已有安装前，请按<a href="docs/upgrade-migration.html">升级与迁移指南</a>操作。</p>
+      </details>
+    </div>
   </div>
 </section>
 
@@ -1546,10 +1582,10 @@
 <section>
   <div class="container">
     <div class="cta reveal">
-      <h2>不必再拼凑 Nginx + ModSec + Postgres + Redis。</h2>
-      <p>太一是一个二进制、一份配置、一个心智模型。在你已经拥有的服务器上，五分钟就能装好。</p>
+      <h2>从保护你的第一个站点开始。</h2>
+      <p>在 Linux 上安装太一，接入测试站点，验证正常访问与攻击拦截。单节点免费开始使用。</p>
       <div class="cta-actions">
-        <a class="btn btn-primary btn-lg" href="#pricing">开始使用</a>
+        <a class="btn btn-primary btn-lg" href="docs/quickstart.html">免费开始使用</a>
         <a class="btn btn-ghost btn-lg" href="mailto:support@tiyisec.com?subject=太一%20演示">预约 30 分钟演示</a>
       </div>
     </div>

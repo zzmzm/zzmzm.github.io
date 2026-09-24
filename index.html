@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Tiyi — Self-hostable WAF, in one binary.</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Tiyi is a single-binary, self-hostable WAF-enabled reverse proxy. Caddy + Coraza + SQLite + Vben Admin in one Go executable. Bring up production-grade web application firewall in five minutes." />
+<meta name="description" content="Protect your websites and APIs with Tiyi, a self-hosted WAF, reverse proxy and web UI in one binary. Free on one local node, with full features and unlimited sites." />
 <meta name="theme-color" content="#0A0E1A" />
 <link rel="icon" href="favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,7 +16,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.tiyisec.com/" />
 <meta property="og:title" content="Tiyi — Self-hostable WAF, in one binary." />
-<meta property="og:description" content="Caddy + Coraza + SQLite + Vben Admin in one Go executable. WAF, reverse proxy, and management plane — five-minute install." />
+<meta property="og:description" content="Protect websites and APIs, investigate blocked requests and tune protection in one web UI. One binary. Free on one local node, with full features and unlimited sites." />
 <meta property="og:image" content="https://www.tiyisec.com/assets/img/screenshots/en-dark/dashboard.png" />
 <meta name="twitter:card" content="summary_large_image" />
 
@@ -46,7 +46,7 @@
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
       </button>
       <a class="nav-toggle nav-lang" href="zh/index.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
-      <a class="btn btn-primary btn-sm nav-cta" href="#pricing">Get Tiyi</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="docs/quickstart.html">Start free</a>
     </nav>
   </div>
 </header>
@@ -64,15 +64,14 @@
   </h1>
 
   <p class="lead">
-    Tiyi is a production-grade WAF, reverse proxy, and management plane in a single
-    Go executable. Caddy + Coraza + OWASP CRS&nbsp;4 + SQLite, with the admin UI
-    embedded. No Docker. No external database. No Redis. Five minutes from
-    download to blocking real attacks.
+    Protect your websites and APIs with a WAF, reverse proxy and web UI in one
+    executable. Connect a site, see why requests were blocked and tune protection
+    from the dashboard. No Docker or external database required.
   </p>
 
   <div class="hero-actions">
-    <a class="btn btn-primary btn-lg" href="#pricing">Get Tiyi</a>
-    <a class="btn btn-ghost btn-lg" href="#tour">See it in action →</a>
+    <a class="btn btn-primary btn-lg" href="docs/quickstart.html">Start free</a>
+    <a class="btn btn-ghost btn-lg" href="#demo-title">Watch the walkthrough →</a>
   </div>
 
   <div class="hero-cmd">
@@ -81,7 +80,7 @@
     <button class="copy" data-copy="curl -fsSL https://www.tiyisec.com/install.sh | bash && sudo tiyi install --now" aria-label="Copy command">copy</button>
   </div>
 
-  <div class="hero-repos" aria-label="Installation methods"><a href="docs/quickstart.html#manual">Manual steps</a> · <a href="docs/quickstart.html#custom-ports">Custom ports</a> · <a href="docs/quickstart.html#offline">Offline installation</a></div>
+  <div class="hero-repos" aria-label="Installation methods">New host: <a href="docs/quickstart.html#manual">step by step</a> · <a href="docs/quickstart.html#custom-ports">Already hosting a site? Check ports</a> · <a href="docs/quickstart.html#offline">Offline installation</a></div>
 
   <div class="hero-repos" aria-label="Public distribution repositories">
     <span>Public repos:</span>
@@ -91,7 +90,7 @@
   </div>
 
   <div class="hero-meta" style="margin-top: 28px;">
-    <span><strong>One binary</strong> · zero runtime deps</span>
+    <span><strong>Free on one local node</strong> · full features · unlimited sites</span>
     <span class="dot"></span>
     <span><strong>Apache-2.0</strong> upstreams · proprietary distribution</span>
     <span class="dot"></span>
@@ -763,12 +762,12 @@
             No license file required; import one later to add remote nodes
           </li>
         </ul>
-        <a class="btn btn-ghost" href="#changelog">Use Community</a>
+        <a class="btn btn-ghost" href="docs/quickstart.html">Start free</a>
       </div>
 
       <!-- Pro (featured) -->
       <div class="plan featured reveal">
-        <span class="plan-badge">Most popular</span>
+        <span class="plan-badge">Multi-node management</span>
         <h3>Pro</h3>
         <p class="who">For teams running production on a handful of nodes.</p>
         <div class="price">
@@ -798,7 +797,7 @@
             Email support · 1-business-day response
           </li>
         </ul>
-        <a class="btn btn-primary" href="mailto:support@tiyisec.com?subject=Tiyi%20Pro%20license">Start a Pro trial</a>
+        <a class="btn btn-primary" href="mailto:support@tiyisec.com?subject=Tiyi%20Pro%20trial%20request">Request a Pro trial</a>
       </div>
 
       <!-- Enterprise -->
@@ -843,6 +842,42 @@
       Need something specific? <a href="mailto:support@tiyisec.com">support@tiyisec.com</a>
       &nbsp;·&nbsp; All plans use the same binary and include the full WAF feature set; the differences are licensed scale, support, and supply-chain services.
     </p>
+  </div>
+</section>
+
+<!-- ============= FAQ ============= -->
+<section id="faq" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="faq-title">Before you get started.</h2>
+      <p>Answers about free use, connecting an existing site and everyday operations.</p>
+    </div>
+    <div class="faq-list">
+      <details>
+        <summary>What is included for free?</summary>
+        <p>Community includes one built-in local node, the full product feature set, and unlimited sites and policies. No license file is required. Adding remote nodes requires a signed license. <a href="#pricing">Compare editions</a> or <a href="docs/quickstart.html">start with Community</a>.</p>
+      </details>
+      <details>
+        <summary>Is Tiyi open source?</summary>
+        <p>Tiyi is proprietary software with a free Community edition. It builds on open-source components including Caddy, Coraza and OWASP CRS. The public repositories provide signed releases, installation tools and documentation, not the Tiyi application source. See the <a href="terms.html">terms of service</a> and the EULA included in the distribution.</p>
+      </details>
+      <details>
+        <summary>Can I connect a website that is already running?</summary>
+        <p>Yes. Tiyi acts as a reverse proxy in front of an HTTP backend. First test the route to your existing application. If ports 80, 443 or 8080 are occupied, use <a href="docs/quickstart.html#custom-ports">custom ports</a>. Before switching real traffic, check domain routing, certificates and how to restore the previous route in the <a href="docs/deployment.html">deployment guide</a>.</p>
+      </details>
+      <details>
+        <summary>What do I need to try Tiyi?</summary>
+        <p>A Linux amd64 or arm64 host; the default service installation uses sudo and systemd. You can follow the <a href="docs/quickstart.html">Quickstart</a> with a local demo backend and no DNS changes. CPU, memory and disk needs depend on traffic, rules and retained logs, so test your own workload before production use. <a href="docs/quickstart.html#offline">Offline installation</a> is also available.</p>
+      </details>
+      <details>
+        <summary>What if a legitimate request is blocked?</summary>
+        <p>Use the request ID to find its attack log and inspect the matched rule and request evidence, when retained. Prefer a narrow exception for the affected site, path and rule, then verify both normal traffic and attack blocking. See <a href="docs/operations.html#tuning">WAF tuning</a> for the workflow.</p>
+      </details>
+      <details>
+        <summary>How do I upgrade or move an installation?</summary>
+        <p>Start with a complete backup and check the target release's compatibility notes. Compatible releases support signed updates; incompatible state may require rebuilding configuration. Moving to another host also requires the matching version and complete state and configuration. Follow <a href="docs/upgrade-migration.html">upgrade and migration</a> before changing an existing installation.</p>
+      </details>
+    </div>
   </div>
 </section>
 
@@ -1576,10 +1611,10 @@
 <section>
   <div class="container">
     <div class="cta reveal">
-      <h2>Stop assembling Nginx, ModSec, Postgres, and Redis.</h2>
-      <p>Tiyi is one binary. One config. One mental model. Five-minute install on the box you already have.</p>
+      <h2>Protect your first site with Tiyi.</h2>
+      <p>Install on Linux, connect a test site and verify normal traffic and attack blocking. Start free on one local node.</p>
       <div class="cta-actions">
-        <a class="btn btn-primary btn-lg" href="#pricing">Get Tiyi</a>
+        <a class="btn btn-primary btn-lg" href="docs/quickstart.html">Start free</a>
         <a class="btn btn-ghost btn-lg" href="mailto:support@tiyisec.com?subject=Tiyi%20demo">Book a 30-min walkthrough</a>
       </div>
     </div>
