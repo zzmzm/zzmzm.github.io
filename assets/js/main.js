@@ -58,6 +58,8 @@
       if (img.getAttribute('src') !== src) {
         img.setAttribute('src', src);
       }
+      var link = img.closest('a[data-shot-link]');
+      if (link) link.setAttribute('href', src);
     });
   }
 

@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>已有 Nginx 网站接入太一 — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="保留 Nginx 入口，在独立端口演练太一接入、查看真实拦截、调整误报并恢复原链路，附实测命令与后台截图。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/existing-site.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+        <li><a href="existing-site.html" aria-current="page">已有 Nginx 网站接入太一</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">开始使用</span>
+<h1>已有 Nginx 网站接入太一：验证、误报调整与恢复</h1>
+<p class="lede">保留 Nginx 作为入口，把太一放到它与原应用之间。先在独立端口演练，再决定如何接入自己的业务。这篇教程包含完整示例、真实后台截图，以及恢复原访问路径的操作。</p>
+<pre><code class="language-text">接入前：请求 → Nginx :29180 → 示例应用 :29900
+接入后：请求 → Nginx :29180 → 太一 :29181 → 示例应用 :29900
+</code></pre>
+<p>这里的 Nginx 和应用都是独立演练进程，不修改现有 Nginx 服务、80/443 端口或 DNS。应用只返回 JSON，不执行 SQL，也不实现真实登录；表单和文件请求用于检查代理与 WAF 链路。</p>
+<h2 id="prepare">1. 准备一个独立演练目录</h2>
+<p>在同一台 Linux 主机上准备 <code>tiyi</code>、<code>nginx</code>、<code>python3</code> 和 <code>curl</code>。未安装太一时，先按<a href="quickstart.html#manual">手动安装</a>安装签名二进制，暂不执行 <code>sudo tiyi install --now</code>。已有太一时使用现有二进制，下面另建临时状态，不替换已有安装。</p>
+<p>所有命令在该主机的同一个 Bash 终端执行。29180、29181、29188、29443 和 29900 需要空闲；若更换端口，配置与请求命令也要一起修改。</p>
+<pre><code class="language-sh">umask 077
+LAB_DIR=$(mktemp -d /tmp/tiyi-existing-site.XXXXXX)
+mkdir -p &quot;$LAB_DIR/nginx&quot;
+printf '演练目录：%s\n' &quot;$LAB_DIR&quot;
+
+curl -fsSL https://www.tiyisec.com/docs/templates/existing-site-origin.py \
+  -o &quot;$LAB_DIR/origin.py&quot;
+curl -fsSL https://www.tiyisec.com/docs/templates/existing-site-nginx.conf \
+  -o &quot;$LAB_DIR/nginx/nginx.conf&quot;
+printf 'proxy_pass http://127.0.0.1:29900;\n' &gt; &quot;$LAB_DIR/nginx/route.conf&quot;
+cp &quot;$LAB_DIR/nginx/route.conf&quot; &quot;$LAB_DIR/nginx/route.before.conf&quot;
+</code></pre>
+<p>下载内容：<a href="templates/existing-site-origin.py">示例应用</a>、<a href="templates/existing-site-nginx.conf">完整 Nginx 演练配置</a>。配置中的 <code>route.conf</code> 只包含上游地址，是本次切换与恢复的唯一入口文件。</p>
+<h2 id="baseline">2. 先确认原访问路径</h2>
+<pre><code class="language-sh">python3 &quot;$LAB_DIR/origin.py&quot; &gt; &quot;$LAB_DIR/origin.log&quot; 2&gt;&amp;1 &amp;
+ORIGIN_PID=$!
+nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf -t
+nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf
+
+curl -i -H 'Host: existing.test' http://127.0.0.1:29180/
+</code></pre>
+<p>预期返回 <code>200</code>，正文含有 <code>"origin": "existing-app"</code>。若未成功，先查看演练目录中的 <code>origin.log</code> 和 <code>nginx/error.log</code>，不要继续切换。<code>existing.test</code> 由请求头直接指定，无需修改 DNS。</p>
+<h2 id="start">3. 在另一个端口启动太一</h2>
+<pre><code class="language-sh">printf '{}\n' &gt; &quot;$LAB_DIR/tiyi.yaml&quot;
+tiyi --config &quot;$LAB_DIR/tiyi.yaml&quot; run \
+  --addr 0.0.0.0:29188 \
+  --state-db &quot;$LAB_DIR/state.db&quot; \
+  --admin-socket &quot;$LAB_DIR/admin.sock&quot; \
+  --caddy-admin-socket &quot;$LAB_DIR/caddy.sock&quot; \
+  --proxy-http-addr 127.0.0.1:29181 \
+  --proxy-https-addr 127.0.0.1:29443 \
+  &gt; &quot;$LAB_DIR/tiyi.log&quot; 2&gt;&amp;1 &amp;
+TIYI_PID=$!
+
+for attempt in {1..30}; do
+  [ -S &quot;$LAB_DIR/admin.sock&quot; ] &amp;&amp; break
+  sleep 1
+done
+t() { tiyi --admin-socket &quot;$LAB_DIR/admin.sock&quot; &quot;$@&quot;; }
+t system health
+</code></pre>
+<p>健康检查成功后再继续。失败时查看 <code>tiyi.log</code>。这里显式指定临时配置和独立管理 socket，避免 CLI 操作已有实例。<code>t</code> 是本终端的简写，后面的命令都使用它。</p>
+<p>管理后台为 <code>http://服务器IP:29188</code>，将服务器 IP 换成实际地址，只向自己的管理网络开放此端口。首次用户名和密码在 <code>tiyi.log</code> 中；这个目录及日志应保持私有。代理端口只监听本机，当前演练使用 HTTP，不需要证书。</p>
+<h2 id="site">4. 让太一指向原应用</h2>
+<pre><code class="language-sh">t site create --name existing-site-rehearsal \
+  --host existing.test \
+  --upstream-url http://127.0.0.1:29900 \
+  --tls none
+</code></pre>
+<p>返回的 <code>site.id</code> 留作后续查询。未指定策略时，新站点使用内置 Light 并开启阻断。也可以在后台“站点 → 全部站点 → 新建”填写相同内容，两种方式选一种。</p>
+<p><strong>上游填写应用的 29900 端口，不要填 Nginx 入口的 29180 端口。</strong> 否则 Nginx 切到太一后会形成代理循环。</p>
+<figure>
+<a href="../../assets/img/screenshots/zh-dark/existing-site-config.png" data-shot-link="existing-site-config"><img src="../../assets/img/screenshots/zh-dark/existing-site-config.png" data-shot="existing-site-config" width="1440" height="1000" loading="lazy" alt="演练站点真实配置：existing.test、原应用 29900 端口、Light 阻断策略" /></a>
+<figcaption>实际后台：太一站点的上游仍然是原应用。点击图片可放大。</figcaption>
+</figure>
+
+<p>先绕过 Nginx，直接检查太一候选入口：</p>
+<pre><code class="language-sh"># 正常访问：预期 200
+curl -i -H 'Host: existing.test' http://127.0.0.1:29181/
+
+# 只对自己的演练站点发送此探测：预期 403
+curl -i --get -H 'Host: existing.test' \
+  --data-urlencode 'q=1 UNION SELECT password FROM users' \
+  http://127.0.0.1:29181/
+</code></pre>
+<p>原入口 <code>29180</code> 此时仍直达应用。若太一入口返回 <code>421</code>，检查 Host 是否匹配站点；<code>502</code> 通常需要检查应用进程、上游地址和健康状态。</p>
+<h2 id="switch">5. 切换 Nginx 上游，再检查业务请求</h2>
+<pre><code class="language-sh">printf 'proxy_pass http://127.0.0.1:29181;\n' &gt; &quot;$LAB_DIR/nginx/route.conf&quot;
+nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf -t &amp;&amp; \
+  nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf -s reload
+</code></pre>
+<p>等待 reload 完成后，以下请求都经过 Nginx。每条命令打印 HTTP 状态码：</p>
+<pre><code class="language-sh"># 普通请求 → 200
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  -H 'Host: existing.test' http://127.0.0.1:29180/
+
+# 普通表单 → 200；示例应用不会执行真实登录
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  -H 'Host: existing.test' --data 'username=demo&amp;password=demo-only' \
+  http://127.0.0.1:29180/login
+
+# 小文件上传 → 200；示例应用不保存文件
+printf 'Tiyi upload rehearsal\n' &gt; &quot;$LAB_DIR/upload.txt&quot;
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  -H 'Host: existing.test' -F &quot;file=@$LAB_DIR/upload.txt&quot; \
+  http://127.0.0.1:29180/upload
+
+# SQL 注入特征 → 403
+curl -sS -o /dev/null -w '%{http_code}\n' --get \
+  -H 'Host: existing.test' \
+  --data-urlencode 'q=1 UNION SELECT password FROM users' \
+  http://127.0.0.1:29180/
+
+# XSS 特征 → 403
+curl -sS -o /dev/null -w '%{http_code}\n' --get \
+  -H 'Host: existing.test' \
+  --data-urlencode 'q=&lt;script&gt;alert(1)&lt;/script&gt;' \
+  http://127.0.0.1:29180/
+</code></pre>
+<p>这些 <code>200</code> 证明演练请求穿过了代理链路，不代表你的真实登录、支付回调或上传业务已经兼容。真实应用的成功状态也可能是 <code>201</code>、<code>204</code> 或重定向，应与接入前的业务结果对照。</p>
+<h2 id="tune">6. 用一条教学笔记演练误报调整</h2>
+<p>假设 <code>/notes/</code> 的 <code>content</code> 字段用于保存 SQL 教学文本，应用会按文本安全处理它。这个业务前提需要由应用负责人确认，不能仅凭“请求被拦截”判断是误报。</p>
+<pre><code class="language-sh">payload=&quot;1' OR '1'='1&quot;
+curl -i -H 'Host: existing.test' \
+  --data-urlencode &quot;content=$payload&quot; \
+  http://127.0.0.1:29180/notes/
+</code></pre>
+<p>本次演练返回 <code>403</code>，命中检测规则 <code>942100</code> 和总分判定规则 <code>949110</code>。在“日志 → 安全日志”按响应中的 <code>X-Request-Id</code> 搜索，并把时间范围调整到请求发生时。先看 HTTP 响应，再看日志；明细可见性受保留和采样配置影响。</p>
+<pre><code class="language-sh"># 使用你自己创建站点时返回的 ID，以及刚才响应中的请求 ID
+SITE_ID='replace-with-your-site-id'
+REQUEST_ID='replace-with-your-request-id'
+t log security list --site-id &quot;$SITE_ID&quot; --unique-id &quot;$REQUEST_ID&quot;
+t site get &quot;$SITE_ID&quot;
+</code></pre>
+<figure>
+<a href="../../assets/img/screenshots/zh-dark/existing-site-blocked.png" data-shot-link="existing-site-blocked"><img src="../../assets/img/screenshots/zh-dark/existing-site-blocked.png" data-shot="existing-site-blocked" width="1440" height="1000" loading="lazy" alt="真实 POST /notes/ 拦截日志，显示规则 942100 与 949110" /></a>
+<figcaption>本次请求的实际日志。127.0.0.1 是演练中的代理连接来源；生产环境需单独配置可信代理和真实 IP。</figcaption>
+</figure>
+
+<p>从 <code>site get</code> 返回的 <code>waf.policyId</code> 取策略 ID。只对本次演练站点、<code>/notes</code> 路径树和 <code>content</code> 字段移除 <code>942100</code> 检测目标，保留其他检查：</p>
+<pre><code class="language-sh">POLICY_ID='replace-with-this-sites-policy-id'
+t rule override upsert &quot;$POLICY_ID&quot; \
+  --site-id &quot;$SITE_ID&quot; \
+  --crs-rule-id 942100 \
+  --scope /notes \
+  --remove-target ARGS:content \
+  --rationale 'Rehearsal: SQL teaching notes are safely handled as text'
+</code></pre>
+<p>保存返回的 <code>override.id</code>，后面用它撤销。后台同一位置是“防护 → 策略 → 调优 → 规则例外”；核对规则、站点、URI 作用域与移除目标。</p>
+<figure>
+<a href="../../assets/img/screenshots/zh-dark/existing-site-exception.png" data-shot-link="existing-site-exception"><img src="../../assets/img/screenshots/zh-dark/existing-site-exception.png" data-shot="existing-site-exception" width="1440" height="1000" loading="lazy" alt="真实规则例外：942100、演练站点、/notes 路径和 ARGS:content 字段" /></a>
+<figcaption>实际保存的例外，作用域限定到本站的 /notes 路径树。其他业务不能直接照搬此例外。</figcaption>
+</figure>
+
+<pre><code class="language-sh"># 本次演练的合法教学文本 → 200
+curl -sS -o /dev/null -w '%{http_code}\n' -H 'Host: existing.test' \
+  --data-urlencode &quot;content=$payload&quot; http://127.0.0.1:29180/notes/
+
+# 相同字段换到其他路径 → 403
+curl -sS -o /dev/null -w '%{http_code}\n' -H 'Host: existing.test' \
+  --data-urlencode &quot;content=$payload&quot; http://127.0.0.1:29180/search
+
+# 相同路径换成其他字段 → 403
+curl -sS -o /dev/null -w '%{http_code}\n' -H 'Host: existing.test' \
+  --data-urlencode &quot;q=$payload&quot; http://127.0.0.1:29180/notes/
+</code></pre>
+<p>当前作用域覆盖 <code>/notes</code> 及其子路径，不包含 <code>/notes-extra</code>；本次也检查了这几个边界。它不限制 HTTP 方法。真实请求可能命中不同或多个规则，需要逐条审查，不要禁用 <code>949110</code> 总分判定来掩盖问题，也不要用全局 IP 放行代替业务例外。</p>
+<h2 id="restore">7. 撤销例外，恢复原来的访问路径</h2>
+<p>先撤销本次新建的例外，重复教学文本请求应恢复 <code>403</code>：</p>
+<pre><code class="language-sh">OVERRIDE_ID='replace-with-the-created-override-id'
+t rule override delete &quot;$OVERRIDE_ID&quot;
+curl -sS -o /dev/null -w '%{http_code}\n' -H 'Host: existing.test' \
+  --data-urlencode &quot;content=$payload&quot; http://127.0.0.1:29180/notes/
+</code></pre>
+<p>再恢复 Nginx 原上游。这与修改 WAF 为检测模式不同：请求会完全绕过这台太一。</p>
+<pre><code class="language-sh">cp &quot;$LAB_DIR/nginx/route.before.conf&quot; &quot;$LAB_DIR/nginx/route.conf&quot;
+nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf -t &amp;&amp; \
+  nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf -s reload
+
+# 等待 reload 完成，再确认正常响应 → 200
+curl -i -H 'Host: existing.test' http://127.0.0.1:29180/
+
+# 只停止本终端启动的演练太一，原 Nginx 路径仍应返回 200
+kill &quot;$TIYI_PID&quot;
+curl -i -H 'Host: existing.test' http://127.0.0.1:29180/
+</code></pre>
+<p>演练结束后停止另外两个进程：</p>
+<pre><code class="language-sh">nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf -s quit
+kill &quot;$ORIGIN_PID&quot;
+</code></pre>
+<p>保留 <code>LAB_DIR</code> 中的配置、日志和状态用于复查。这里只使用本次终端中的 PID；不要用过期 PID 或 <code>killall nginx</code> 停止服务。</p>
+<h2 id="results">8. 本次演练实际结果</h2>
+<p>2026-09-24，在 Linux amd64 上使用报告为 <code>v3.8.0</code> 的太一二进制、内置 Light / CRS 4.25.1、Nginx 1.24.0 和上述 Python 示例应用完成以下检查。截图来自同一个隔离实例。</p>
+<table>
+<thead>
+<tr>
+<th>检查</th>
+<th>实际 HTTP 状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>接入前经 Nginx 正常访问</td>
+<td>200</td>
+</tr>
+<tr>
+<td>太一候选入口：正常请求 / SQL 注入特征</td>
+<td>200 / 403</td>
+</tr>
+<tr>
+<td>Nginx 切换后：普通请求 / 表单 / 小文件上传</td>
+<td>200 / 200 / 200</td>
+</tr>
+<tr>
+<td>Nginx 切换后：SQL 注入 / XSS 特征</td>
+<td>403 / 403</td>
+</tr>
+<tr>
+<td>教学文本增加例外前 / 后</td>
+<td>403 / 200</td>
+</tr>
+<tr>
+<td>同字段其他路径 / 同路径其他字段</td>
+<td>403 / 403</td>
+</tr>
+<tr>
+<td><code>/notes</code>、<code>/notes/chapter</code>、<code>/notes-extra</code> 的 content</td>
+<td>200 / 200 / 403</td>
+</tr>
+<tr>
+<td>删除例外后的教学文本</td>
+<td>403</td>
+</tr>
+<tr>
+<td>恢复原上游 / 停止太一后正常访问</td>
+<td>200 / 200</td>
+</tr>
+</tbody>
+</table>
+<p>这是指定环境下的功能演练，不是性能或完整安全评估。未验证真实登录、支付、WebSocket、HTTPS 证书切换及生产环境真实 IP 链路。</p>
+<h2 id="production">9. 接入自己的已有网站</h2>
+<p>把演练结果用于生产前，按<a href="deployment.html">部署指南</a>准备持久状态与 systemd 服务。不要把真实流量长期指向这篇教程的临时实例。</p>
+<ul>
+<li><strong>流量位置：</strong> 原来是“Nginx → HTTP 应用”的站点，可以评估改成“Nginx → 太一 → 同一应用”。只改已确认的应用转发位置，保留原 Nginx 配置备份。静态文件、PHP-FPM、多个 location 或路径重写需要单独设计，不能整段替换为此演练配置。</li>
+<li><strong>域名与 TLS：</strong> Nginx 仍负责原有外部证书，太一内部站点可用 HTTP。检查 Host、转发协议、重定向与 Secure Cookie；不要照搬演练里的 <code>.test</code> 域名、回环地址和高端口。</li>
+<li><strong>来源 IP：</strong> 只信任实际 Nginx/CDN 的地址和转发链，按<a href="deployment.html#client-ip">真实 IP 指南</a>配置并验证。未配置时，太一可能看到的是 Nginx 的 IP；不要据此做面向访客的封禁或限速。</li>
+<li><strong>业务验收：</strong> 对照接入前结果，检查登录、搜索、回调、上传及长连接。确认源站不能被外部直接绕过，检查所有需要防护的路径确实经过太一。</li>
+<li><strong>恢复入口：</strong> 保留旧上游和可恢复的 Nginx 配置。需要撤回时恢复原配置、执行配置检查及 reload，再验证业务；这会移除太一这一层防护，应记录原因并安排后续处理。</li>
+</ul>
+<p>如果只想先看最短安装流程，返回<a href="quickstart.html">快速开始</a>。遇到问题可按<a href="troubleshooting.html">排障指南</a>定位，向支持提供版本、拓扑、预期与实际状态码以及脱敏日志。</p>
+<div class="docs-pager"><a href="practice.html"><span class="label">← 上一页</span><span class="title">实战与进阶</span></a><a class="next" href="deployment.html"><span class="label">下一页 →</span><span class="title">部署指南</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

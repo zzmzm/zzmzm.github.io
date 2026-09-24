@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Add Tiyi to an existing Nginx site — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Rehearse Nginx integration, inspect real WAF blocks, tune a scoped exception and restore the original route, with tested commands and screenshots." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/existing-site.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+        <li><a href="existing-site.html" aria-current="page">Add Tiyi to an existing Nginx site</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Get started</span>
+<h1>Add Tiyi to an existing Nginx site</h1>
+<p class="lede">Keep Nginx at the edge and place Tiyi between it and the original application. Rehearse on separate ports before deciding how to connect your own service. This guide includes complete examples, actual admin screenshots and a way to restore the original request path.</p>
+<pre><code class="language-text">Before: request → Nginx :29180 → example app :29900
+After:  request → Nginx :29180 → Tiyi :29181 → example app :29900
+</code></pre>
+<p>The Nginx and application processes here are isolated examples. They do not change an existing Nginx service, ports 80/443 or DNS. The app returns JSON; it neither executes SQL nor implements authentication. Form and file requests exercise the proxy and WAF path.</p>
+<h2 id="prepare">1. Prepare a separate rehearsal directory</h2>
+<p>Use one Linux host with <code>tiyi</code>, <code>nginx</code>, <code>python3</code> and <code>curl</code> installed. If needed, follow <a href="quickstart.html#manual">manual installation</a> to install the signed Tiyi binary, stopping before <code>sudo tiyi install --now</code>. If Tiyi is already installed, use its binary with the separate temporary state below; do not replace the installation.</p>
+<p>Run all commands in the same Bash terminal on that host. Ports 29180, 29181, 29188, 29443 and 29900 must be available. If you change a port, update its configuration and requests together.</p>
+<pre><code class="language-sh">umask 077
+LAB_DIR=$(mktemp -d /tmp/tiyi-existing-site.XXXXXX)
+mkdir -p &quot;$LAB_DIR/nginx&quot;
+printf 'Rehearsal directory: %s\n' &quot;$LAB_DIR&quot;
+
+curl -fsSL https://www.tiyisec.com/docs/templates/existing-site-origin.py \
+  -o &quot;$LAB_DIR/origin.py&quot;
+curl -fsSL https://www.tiyisec.com/docs/templates/existing-site-nginx.conf \
+  -o &quot;$LAB_DIR/nginx/nginx.conf&quot;
+printf 'proxy_pass http://127.0.0.1:29900;\n' &gt; &quot;$LAB_DIR/nginx/route.conf&quot;
+cp &quot;$LAB_DIR/nginx/route.conf&quot; &quot;$LAB_DIR/nginx/route.before.conf&quot;
+</code></pre>
+<p>Downloads: <a href="templates/existing-site-origin.py">example application</a> and <a href="templates/existing-site-nginx.conf">complete Nginx rehearsal configuration</a>. Its <code>route.conf</code> contains only the upstream address and is the only ingress file changed during cutover and restoration.</p>
+<h2 id="baseline">2. Confirm the original request path</h2>
+<pre><code class="language-sh">python3 &quot;$LAB_DIR/origin.py&quot; &gt; &quot;$LAB_DIR/origin.log&quot; 2&gt;&amp;1 &amp;
+ORIGIN_PID=$!
+nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf -t
+nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf
+
+curl -i -H 'Host: existing.test' http://127.0.0.1:29180/
+</code></pre>
+<p>Expect <code>200</code> and <code>"origin": "existing-app"</code> in the body. If this fails, inspect <code>origin.log</code> and <code>nginx/error.log</code> in the rehearsal directory before continuing. The Host header supplies <code>existing.test</code> directly; no DNS change is needed.</p>
+<h2 id="start">3. Start Tiyi on a separate port</h2>
+<pre><code class="language-sh">printf '{}\n' &gt; &quot;$LAB_DIR/tiyi.yaml&quot;
+tiyi --config &quot;$LAB_DIR/tiyi.yaml&quot; run \
+  --addr 0.0.0.0:29188 \
+  --state-db &quot;$LAB_DIR/state.db&quot; \
+  --admin-socket &quot;$LAB_DIR/admin.sock&quot; \
+  --caddy-admin-socket &quot;$LAB_DIR/caddy.sock&quot; \
+  --proxy-http-addr 127.0.0.1:29181 \
+  --proxy-https-addr 127.0.0.1:29443 \
+  &gt; &quot;$LAB_DIR/tiyi.log&quot; 2&gt;&amp;1 &amp;
+TIYI_PID=$!
+
+for attempt in {1..30}; do
+  [ -S &quot;$LAB_DIR/admin.sock&quot; ] &amp;&amp; break
+  sleep 1
+done
+t() { tiyi --admin-socket &quot;$LAB_DIR/admin.sock&quot; &quot;$@&quot;; }
+t system health
+</code></pre>
+<p>Continue only after the health check succeeds. Otherwise read <code>tiyi.log</code>. The explicit temporary configuration and separate admin socket keep these CLI commands directed at the rehearsal instance. <code>t</code> is a shortcut in this terminal, used throughout the remaining steps.</p>
+<p>Open <code>http://SERVER_IP:29188</code>, using the actual host IP and allowing this port only from your management network. The first username and password appear in <code>tiyi.log</code>; keep that directory and log private. Proxy ports bind only to loopback. This HTTP rehearsal does not need a certificate.</p>
+<h2 id="site">4. Point Tiyi at the original application</h2>
+<pre><code class="language-sh">t site create --name existing-site-rehearsal \
+  --host existing.test \
+  --upstream-url http://127.0.0.1:29900 \
+  --tls none
+</code></pre>
+<p>Keep the returned <code>site.id</code> for later queries. With no policy specified, the new site uses built-in Light with blocking enabled. You can instead enter the same values in <strong>Sites → All Sites → Create</strong>; choose one method.</p>
+<p><strong>The upstream is application port 29900, not Nginx ingress port 29180.</strong> Pointing it back to the ingress creates a proxy loop after cutover.</p>
+<figure>
+<a href="../assets/img/screenshots/en-dark/existing-site-config.png" data-shot-link="existing-site-config"><img src="../assets/img/screenshots/en-dark/existing-site-config.png" data-shot="existing-site-config" width="1440" height="1000" loading="lazy" alt="Actual rehearsal site configuration: existing.test, application port 29900 and Light blocking" /></a>
+<figcaption>Actual admin view: Tiyi still sends allowed requests to the original application. Click to enlarge.</figcaption>
+</figure>
+
+<p>First check the candidate Tiyi ingress directly, bypassing Nginx:</p>
+<pre><code class="language-sh"># Normal request: expect 200
+curl -i -H 'Host: existing.test' http://127.0.0.1:29181/
+
+# Send this probe only to your own rehearsal site: expect 403
+curl -i --get -H 'Host: existing.test' \
+  --data-urlencode 'q=1 UNION SELECT password FROM users' \
+  http://127.0.0.1:29181/
+</code></pre>
+<p>The original ingress on <code>29180</code> still reaches the application directly. A <code>421</code> from Tiyi calls for checking Host/site matching; a <code>502</code> calls for checking the application process, upstream address and health.</p>
+<h2 id="switch">5. Switch Nginx's upstream and check ordinary requests</h2>
+<pre><code class="language-sh">printf 'proxy_pass http://127.0.0.1:29181;\n' &gt; &quot;$LAB_DIR/nginx/route.conf&quot;
+nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf -t &amp;&amp; \
+  nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf -s reload
+</code></pre>
+<p>Once reload completes, send these through Nginx. Each command prints the HTTP status:</p>
+<pre><code class="language-sh"># Normal request → 200
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  -H 'Host: existing.test' http://127.0.0.1:29180/
+
+# Ordinary form → 200; this app does not perform real authentication
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  -H 'Host: existing.test' --data 'username=demo&amp;password=demo-only' \
+  http://127.0.0.1:29180/login
+
+# Small upload → 200; the app does not save the file
+printf 'Tiyi upload rehearsal\n' &gt; &quot;$LAB_DIR/upload.txt&quot;
+curl -sS -o /dev/null -w '%{http_code}\n' \
+  -H 'Host: existing.test' -F &quot;file=@$LAB_DIR/upload.txt&quot; \
+  http://127.0.0.1:29180/upload
+
+# SQL injection pattern → 403
+curl -sS -o /dev/null -w '%{http_code}\n' --get \
+  -H 'Host: existing.test' \
+  --data-urlencode 'q=1 UNION SELECT password FROM users' \
+  http://127.0.0.1:29180/
+
+# XSS pattern → 403
+curl -sS -o /dev/null -w '%{http_code}\n' --get \
+  -H 'Host: existing.test' \
+  --data-urlencode 'q=&lt;script&gt;alert(1)&lt;/script&gt;' \
+  http://127.0.0.1:29180/
+</code></pre>
+<p>These <code>200</code> responses show that the rehearsal requests traversed the proxy chain. They do not establish compatibility for your actual authentication, payment callbacks or upload workflow. A real application's successful response may be <code>201</code>, <code>204</code> or a redirect; compare it with the original business outcome.</p>
+<h2 id="tune">6. Rehearse a narrow exception for a teaching note</h2>
+<p>Suppose <code>/notes/</code> accepts SQL teaching text in a <code>content</code> field and the application handles it safely as text. The application owner must confirm that requirement; a blocked request alone is not evidence of a false positive.</p>
+<pre><code class="language-sh">payload=&quot;1' OR '1'='1&quot;
+curl -i -H 'Host: existing.test' \
+  --data-urlencode &quot;content=$payload&quot; \
+  http://127.0.0.1:29180/notes/
+</code></pre>
+<p>Our rehearsal returned <code>403</code>, matching detection rule <code>942100</code> and aggregate score rule <code>949110</code>. In <strong>Logs → Security Logs</strong>, search for the response's <code>X-Request-Id</code> and set the time range to include the request. Confirm the HTTP response first; retained detail availability depends on retention and sampling settings.</p>
+<pre><code class="language-sh"># Use your returned site ID and the request ID from that response
+SITE_ID='replace-with-your-site-id'
+REQUEST_ID='replace-with-your-request-id'
+t log security list --site-id &quot;$SITE_ID&quot; --unique-id &quot;$REQUEST_ID&quot;
+t site get &quot;$SITE_ID&quot;
+</code></pre>
+<figure>
+<a href="../assets/img/screenshots/en-dark/existing-site-blocked.png" data-shot-link="existing-site-blocked"><img src="../assets/img/screenshots/en-dark/existing-site-blocked.png" data-shot="existing-site-blocked" width="1440" height="1000" loading="lazy" alt="Actual blocked POST /notes/ event showing rules 942100 and 949110" /></a>
+<figcaption>The actual event. The loopback client address belongs to this proxy rehearsal; production needs its own trusted-proxy and real-IP configuration.</figcaption>
+</figure>
+
+<p>Take <code>waf.policyId</code> from <code>site get</code>. Remove only the <code>content</code> target from rule <code>942100</code>, scoped to this rehearsal site and the <code>/notes</code> path tree. Keep other checks in place:</p>
+<pre><code class="language-sh">POLICY_ID='replace-with-this-sites-policy-id'
+t rule override upsert &quot;$POLICY_ID&quot; \
+  --site-id &quot;$SITE_ID&quot; \
+  --crs-rule-id 942100 \
+  --scope /notes \
+  --remove-target ARGS:content \
+  --rationale 'Rehearsal: SQL teaching notes are safely handled as text'
+</code></pre>
+<p>Keep the returned <code>override.id</code> for removal. The corresponding UI is <strong>Protection → Policies → Tune → Rule exceptions</strong>. Review the rule, site, URI scope and removed target.</p>
+<figure>
+<a href="../assets/img/screenshots/en-dark/existing-site-exception.png" data-shot-link="existing-site-exception"><img src="../assets/img/screenshots/en-dark/existing-site-exception.png" data-shot="existing-site-exception" width="1440" height="1000" loading="lazy" alt="Saved exception scoped to rule 942100, the rehearsal site, /notes and ARGS:content" /></a>
+<figcaption>The saved exception applies to this site's /notes path tree. Do not copy it into another application without reviewing that application's requirements.</figcaption>
+</figure>
+
+<pre><code class="language-sh"># The rehearsal's legitimate teaching text → 200
+curl -sS -o /dev/null -w '%{http_code}\n' -H 'Host: existing.test' \
+  --data-urlencode &quot;content=$payload&quot; http://127.0.0.1:29180/notes/
+
+# Same field, another path → 403
+curl -sS -o /dev/null -w '%{http_code}\n' -H 'Host: existing.test' \
+  --data-urlencode &quot;content=$payload&quot; http://127.0.0.1:29180/search
+
+# Same path, another field → 403
+curl -sS -o /dev/null -w '%{http_code}\n' -H 'Host: existing.test' \
+  --data-urlencode &quot;q=$payload&quot; http://127.0.0.1:29180/notes/
+</code></pre>
+<p>The current scope includes <code>/notes</code> and its child paths, excluding <code>/notes-extra</code>; those boundaries were also checked. It does not restrict the HTTP method. Real requests may match different or multiple rules. Review them individually; disabling aggregate score rule <code>949110</code> or globally allowing a client IP is not a substitute for an application-specific exception.</p>
+<h2 id="restore">7. Remove the exception and restore the original path</h2>
+<p>First remove the newly created exception. Repeating the teaching-text request should return <code>403</code> again:</p>
+<pre><code class="language-sh">OVERRIDE_ID='replace-with-the-created-override-id'
+t rule override delete &quot;$OVERRIDE_ID&quot;
+curl -sS -o /dev/null -w '%{http_code}\n' -H 'Host: existing.test' \
+  --data-urlencode &quot;content=$payload&quot; http://127.0.0.1:29180/notes/
+</code></pre>
+<p>Then restore Nginx's original upstream. This differs from detection mode: requests now bypass this Tiyi instance entirely.</p>
+<pre><code class="language-sh">cp &quot;$LAB_DIR/nginx/route.before.conf&quot; &quot;$LAB_DIR/nginx/route.conf&quot;
+nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf -t &amp;&amp; \
+  nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf -s reload
+
+# Wait for reload, then confirm the ordinary response → 200
+curl -i -H 'Host: existing.test' http://127.0.0.1:29180/
+
+# Stop only the Tiyi process started in this terminal; Nginx should still return 200
+kill &quot;$TIYI_PID&quot;
+curl -i -H 'Host: existing.test' http://127.0.0.1:29180/
+</code></pre>
+<p>Stop the remaining rehearsal processes when finished:</p>
+<pre><code class="language-sh">nginx -p &quot;$LAB_DIR/nginx/&quot; -c nginx.conf -s quit
+kill &quot;$ORIGIN_PID&quot;
+</code></pre>
+<p>Keep <code>LAB_DIR</code>'s configuration, logs and state for review. Use only the PIDs from this terminal session; do not use stale PIDs or <code>killall nginx</code>.</p>
+<h2 id="results">8. What the rehearsal actually returned</h2>
+<p>On 2026-09-24, the following checks ran on Linux amd64 with a Tiyi binary reporting <code>v3.8.0</code>, built-in Light / CRS 4.25.1, Nginx 1.24.0 and the Python app above. Screenshots come from that same isolated instance.</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Actual HTTP status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Normal request through Nginx before cutover</td>
+<td>200</td>
+</tr>
+<tr>
+<td>Candidate Tiyi ingress: normal / SQL injection pattern</td>
+<td>200 / 403</td>
+</tr>
+<tr>
+<td>After Nginx cutover: normal / form / small upload</td>
+<td>200 / 200 / 200</td>
+</tr>
+<tr>
+<td>After cutover: SQL injection / XSS patterns</td>
+<td>403 / 403</td>
+</tr>
+<tr>
+<td>Teaching text before / after the exception</td>
+<td>403 / 200</td>
+</tr>
+<tr>
+<td>Same field at another path / same path with another field</td>
+<td>403 / 403</td>
+</tr>
+<tr>
+<td>content at <code>/notes</code>, <code>/notes/chapter</code>, <code>/notes-extra</code></td>
+<td>200 / 200 / 403</td>
+</tr>
+<tr>
+<td>Teaching text after removing the exception</td>
+<td>403</td>
+</tr>
+<tr>
+<td>Normal traffic after restoring the upstream / stopping Tiyi</td>
+<td>200 / 200</td>
+</tr>
+</tbody>
+</table>
+<p>This is a functional rehearsal in a specified environment, not a performance or comprehensive security assessment. Real authentication, payment workflows, WebSockets, HTTPS certificate cutover and production real-IP chains were not tested.</p>
+<h2 id="production">9. Apply the approach to your own site</h2>
+<p>Before using it in production, prepare persistent state and a systemd service using the <a href="deployment.html">deployment guide</a>. Do not leave real traffic pointing at this temporary instance.</p>
+<ul>
+<li><strong>Request path:</strong> a site currently using Nginx → HTTP application can evaluate Nginx → Tiyi → the same application. Change only the reviewed application forwarding location and keep the previous Nginx configuration. Static files, PHP-FPM, multiple locations and path rewriting need separate planning; do not replace their configuration with this example.</li>
+<li><strong>Domain and TLS:</strong> Nginx retains the external certificate; the internal Tiyi site can use HTTP. Verify Host, forwarded scheme, redirects and Secure cookies. Replace the rehearsal's <code>.test</code> domain, loopback addresses and high ports with the intended deployment values.</li>
+<li><strong>Client IP:</strong> trust only the real Nginx/CDN addresses and forwarding chain, following the <a href="deployment.html#client-ip">real-IP guide</a>. Without that configuration, Tiyi may see Nginx's address; do not use it for visitor-specific blocking or rate limiting.</li>
+<li><strong>Business acceptance:</strong> compare login, search, callbacks, uploads and long-lived connections with their pre-cutover outcomes. Prevent direct external access that bypasses protection, and confirm all intended paths actually traverse Tiyi.</li>
+<li><strong>Recovery:</strong> preserve the original upstream and restorable Nginx configuration. To withdraw, restore that configuration, check it, reload and verify the application. This removes Tiyi's protection layer; record why and plan the next action.</li>
+</ul>
+<p>For the shortest installation path, return to <a href="quickstart.html">Quickstart</a>. Use <a href="troubleshooting.html">Troubleshooting</a> when needed; share the version, topology, expected and actual status codes, and sanitized logs with support.</p>
+<div class="docs-pager"><a href="practice.html"><span class="label">← Previous</span><span class="title">Practice and advanced use</span></a><a class="next" href="deployment.html"><span class="label">Next →</span><span class="title">Deployment</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>
