@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8" />
-<title>自动处置配置手册 — Tiyi Docs</title>
+<title>自动处置 — Tiyi Docs</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="description" content="配置安全阈值告警、全局 IP 自动封禁和固定有效期，核对实际处置，并掌握停止追加与解除封禁的方法。" />
 <meta name="theme-color" content="#0A0E1A" />
@@ -57,7 +57,7 @@
       <h4>运维</h4>
       <ul>
         <li><a href="operations.html">日常运维</a></li>
-        <li><a href="auto-remediation.html" aria-current="page">自动处置配置手册</a></li>
+        <li><a href="auto-remediation.html" aria-current="page">自动处置</a></li>
         <li><a href="troubleshooting.html">排障</a></li>
         <li><a href="upgrade-migration.html">升级与迁移</a></li>
         <li><a href="site-import.html">站点导入与导出</a></li>
@@ -93,7 +93,7 @@
 
   <main class="docs-content" role="main">
 <span class="docs-eyebrow">运维</span>
-<h1>自动处置配置手册</h1>
+<h1>自动处置</h1>
 <p class="lede">让安全阈值告警在触发后，把符合条件的来源 IP 自动加入封禁列表。先配置规则和有效期，太一再按告警状态分批执行；在告警详情、IP 列表和节点应用结果中核对处置，必要时停止追加并解除封禁。</p>
 <pre><code class="language-text">安全计数 → 阈值与持续时间成立 → 告警触发
         → 选取符合条件的来源 IP → 全局封禁列表 → 核对节点应用
