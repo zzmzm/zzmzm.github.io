@@ -89,6 +89,8 @@ Tiyi sits between clients and origins: point the domain at Tiyi, which proxies a
       <h4>Run in production</h4>
       <ul>
         <li><a href="deployment.html" aria-current="page">Deployment</a></li>
+        <li><a href="single-deployment.html">Single-server deployment</a></li>
+        <li><a href="cluster-deployment.html">Cluster deployment</a></li>
       </ul>
     </div>
   </aside>
@@ -98,6 +100,7 @@ Tiyi sits between clients and origins: point the domain at Tiyi, which proxies a
 <h1 id="production-deployment-and-administration">Production deployment and administration</h1>
 <p class="lede">For <strong>v3.8.0</strong>. Before replacing a demo with a real application, decide how traffic and administrators reach Tiyi, how much data to retain, and how to recover.
 Tiyi sits between clients and origins: point the domain at Tiyi, which proxies accepted requests to your application.</p>
+<p><strong>Choose your deployment:</strong> <a href="single-deployment.html">Single server</a> is the default quickstart: one Controller with its built-in Agent. <a href="cluster-deployment.html">Cluster</a> adds remote Agents and an external HA load balancer for traffic-node redundancy and capacity.</p>
 <h2 id="1-choose-topology-and-access-boundaries">1. Choose topology and access boundaries</h2>
 <table>
 <thead>
@@ -133,6 +136,7 @@ Tiyi sits between clients and origins: point the domain at Tiyi, which proxies a
 <p>There is one writable Controller, with no built-in leader election or automatic control-plane failover.
 Remote Agents continue using their last accepted configuration while the Controller is unavailable, but receive no new configuration; administration, enrollment, and central views are unavailable.
 Account for this in recovery planning. CPU, memory, and disk needs depend on traffic, rules, body/upload limits, and retained evidence; measure your workload instead of treating a demo as a capacity claim.</p>
+<a id="management"></a>
 <h2 id="2-protect-management-access-and-state">2. Protect management access and state</h2>
 <p>Start from the <a href="configuration.html#startup">copyable configuration</a>: management listens on <code>0.0.0.0:8080</code>, and websites use 80/443.
 For initial access, open <code>http://SERVER_IP:8080</code> in your browser. For team HTTPS access, proxy the management listener through your existing HTTPS gateway,

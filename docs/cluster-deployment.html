@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Cluster deployment — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="One Controller, multiple Agents and an HA load balancer: TLS, verified client IP, health checks, scaling and recovery." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/cluster-deployment.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+        <li><a href="existing-site.html">Add Tiyi to an existing Nginx site</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="auto-remediation.html">Automatic remediation</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+        <li><a href="single-deployment.html">Single-server deployment</a></li>
+        <li><a href="cluster-deployment.html" aria-current="page">Cluster deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="cluster-deployment-one-controller-multiple-agents-and-a-load-balancer">Cluster deployment: one Controller, multiple Agents, and a load balancer</h1>
+<p class="lede">For <strong>v3.8.0</strong>, reviewed <strong>2026-09-30</strong>. <strong>One Controller + two or more remote Agents behind an external HA load balancer is the recommended topology when you need traffic-node redundancy or horizontal capacity.</strong> For a first installation or a small workload with maintenance windows, <a href="single-deployment.html">one Controller with its built-in Agent</a> is simpler.</p>
+<pre><code class="language-text">Business traffic
+Visitors ──&gt; HA load balancer / VIP ──┬─&gt; Agent A ──┬─&gt; Application origins
+                                     └─&gt; Agent B ──┘
+
+Management and configuration
+Administrators ──&gt; HTTPS management gateway ──&gt; One Controller
+Agent A / Agent B ── outbound HTTPS stream ───&gt; One Controller
+</code></pre>
+<p>The LB business pool contains <strong>Agent traffic listeners</strong>, usually 80/443. Use a separate stable management URL for the Controller. For this topology, leave the Controller's built-in data plane out of the business pool so its host maintenance and resource use do not consume a traffic node. It still exists and receives configuration; no Controller-only runtime switch is required.</p>
+<p>This is a centrally managed WAF fleet. Tiyi has one writable Controller and no built-in election, state replication, or automatic Controller failover. An external LB distributes traffic; Tiyi's upstream pools separately distribute accepted traffic to application origins.</p>
+<h2 id="prepare">1. Prepare the hosts and network</h2>
+<p>Start with one Controller, two Agents on different hosts/failure domains, and a managed HA LB or two LB instances with a tested VIP/failover arrangement. A single LB host remains a single point of failure. Use private networking between tiers and preserve enough capacity to serve peak load after one Agent is removed.</p>
+<table>
+<thead>
+<tr>
+<th>Connection</th>
+<th>Allow</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Visitors → LB</td>
+<td>Business 80/443</td>
+<td>Public site entry; point business DNS here</td>
+</tr>
+<tr>
+<td>LB → Agents</td>
+<td>Configured HTTP/HTTPS listeners</td>
+<td>Business forwarding and health probes</td>
+</tr>
+<tr>
+<td>Administrators → management gateway</td>
+<td>HTTPS 443, restricted management sources</td>
+<td>Console and API</td>
+</tr>
+<tr>
+<td>Agents → management gateway → Controller</td>
+<td>Outbound HTTPS 443 → management 8080</td>
+<td>Enrollment, long-lived stream, configuration and observation</td>
+</tr>
+<tr>
+<td>Controller and all receiving nodes → origins</td>
+<td>Actual application ports</td>
+<td>Save-time validation and runtime proxying</td>
+</tr>
+<tr>
+<td>Nodes → DNS, time service, configured SIEM; Controller → CA/DNS provider</td>
+<td>Required destinations only</td>
+<td>Name resolution, clock synchronization, external delivery and certificate renewal</td>
+</tr>
+</tbody>
+</table>
+<p>Restrict Agent traffic ingress to the LB and authorized probe/administration sources; restrict origin ingress to Tiyi. Preserve required application dependencies. Do not expose privileged admin sockets or Caddy administration over the network.</p>
+<p>Use persistent local disk on each node and independent Agent identity/state. Do not share one Agent state directory or SQLite database across hosts. Synchronize clocks. Keep one reviewed Tiyi build across the fleet; Community allows the built-in node but <strong>zero remote Agents</strong>, so import a signed license with enough remote-node capacity before enrollment.</p>
+<h2 id="controller">2. Install the Controller and enroll Agents</h2>
+<p>Install the Controller using <a href="single-deployment.html#install">single-server steps</a>. Put its management listener behind a trusted HTTPS gateway at, for example, <code>https://control.example.com</code>. Configure the gateway to reach the Controller's management port, support the Agent's long-lived bidirectional stream, and avoid short idle timeouts or buffering that breaks streaming. Verify enrollment and continued connection through that gateway.</p>
+<p>Keep this management gateway separate from the Agent business pool. A Tiyi site pointing at <code>127.0.0.1:8080</code> is distributed to every node and refers to each node's own loopback; it cannot route the entire fleet's management traffic to the Controller. If a gateway shares the Controller host, assign distinct IPs/ports so it does not conflict with Tiyi listeners. Use a covering certificate and <code>auth.refresh_cookie_secure: true</code> for browser access.</p>
+<p>Import the license under <strong>System Administration → About</strong>. In <strong>Nodes → Install</strong>, select the stable HTTPS URL, expiry and maximum nodes, then generate the systemd installation command. The equivalent command, run on the Controller host, is:</p>
+<pre><code class="language-sh">sudo tiyi agents install-command --controller-url https://control.example.com \
+  --tag edge --ttl-seconds 3600 --max-nodes 2
+</code></pre>
+<p>Run the generated command on each of the two intended Agent hosts before expiry. It contains enrollment credentials; keep it private and omit installer query strings from gateway access logs. The generated script installs <code>tiyi-agent</code>; do not install another Controller service on those hosts. The download uses the Controller's own platform binary, so the generated workflow requires matching OS/architecture. For heterogeneous hosts, use the same version's correctly signed platform binary and the documented advanced installation path.</p>
+<p>On the Controller, inspect <code>sudo tiyi agents list</code> and the Nodes page. Confirm each Agent's configuration was applied; online status alone is insufficient. Agents inherit the Controller's effective data-plane listener addresses, so reserve the same listener ports on every Agent.</p>
+<h2 id="site">3. Publish the application and choose TLS</h2>
+<p>Create an upstream pool and a site on the Controller, using an origin address reachable from <strong>the Controller, its built-in node, and every remote Agent</strong>. <code>127.0.0.1</code> means each individual host; use real private application addresses for shared origins. Save the site, enable the intended WAF policy, configure certificates, and verify each serving node's result before adding it to the LB.</p>
+<p>Site saves distribute to the built-in node and all enrolled Agents. Groups/tags organize nodes; they do not restrict site deployment. A multi-region design must account for this origin reachability and shared site configuration.</p>
+<table>
+<thead>
+<tr>
+<th>TLS topology</th>
+<th>Use when</th>
+<th>Requirements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Client HTTPS → L7 LB → verified HTTPS Agent</td>
+<td>General-purpose starting point when the LB can terminate TLS</td>
+<td>LB and Agent certificates, backend CA/name verification, preserved Host/SNI, verified forwarding headers</td>
+</tr>
+<tr>
+<td>Client HTTPS → source-preserving L4 LB → Agent TLS</td>
+<td>TLS termination must stay at Tiyi</td>
+<td>Agent certificates, proven client source preservation, site-aware TLS/HTTP health checks</td>
+</tr>
+<tr>
+<td>Client HTTPS → L7 LB → HTTP Agent</td>
+<td>An explicitly accepted private-network boundary</td>
+<td>Protect the unencrypted backend link and maintain client-IP/scheme forwarding</td>
+</tr>
+</tbody>
+</table>
+<p>An L4 LB that replaces client source addresses cannot inject <code>X-Forwarded-For</code> into encrypted requests. The v3.8.0 Tiyi configuration surface does not expose a PROXY-protocol listener; do not enable <code>send-proxy</code>/<code>send-proxy-v2</code> and assume it works. Prefer verified L7 forwarding or an actually source-preserving L4 service.</p>
+<p>For Agent TLS, Tiyi's Controller issues/renews managed certificates and distributes them; Agents do not issue independently. DNS-01 avoids LB routing of HTTP challenges and supports wildcard issuance; v3.8.0 supports Cloudflare DNS-01, while Route53/Aliyun drivers are unavailable. Uploaded certificates are another option. With HTTP-01, keep public port 80 and <code>/.well-known/acme-challenge/</code> reaching the active Agent challenge handlers; remove disconnected nodes before issuance/renewal. Verify renewal through the actual LB. Certificate installation/renewal on an external TLS-terminating LB is a separate operator responsibility. See <a href="operations.html#https">TLS operations</a> and <a href="https://letsencrypt.org/docs/challenge-types/">Let's Encrypt challenge types</a>.</p>
+<h2 id="load-balancer">4. Configure forwarding, client IP, and health checks</h2>
+<p>Preserve the business Host and backend SNI, request method/body, and required protocol features. Start with round-robin for similar short HTTP workloads; consider least-connections for long-lived workloads after measurement. Avoid broad retries of POST/payments/uploads that might already have reached an origin.</p>
+<p>At the first trusted L7 edge, overwrite client-supplied forwarding headers with verified values. In <strong>Protection → Client IP</strong>, describe the actual proxy path and trust only the LB's real egress IPs using permanent IP-list entries. For CDN → LB → Tiyi, validate the CDN-to-LB hop too; replacing the header with the CDN peer address loses the visitor IP. Verify resolution on each Agent and test a forged header. See <a href="deployment.html#client-ip">client-IP setup</a>.</p>
+<p>Use an application-owned, cheap <code>GET /_edge/ready</code> endpoint that returns 200 only when that application's required dependencies are ready. This is an example endpoint you must implement at the origin, <strong>not a built-in Tiyi route</strong>. Probe it through each Agent with the business Host and HTTPS SNI so TLS, routing, WAF admission, and origin connectivity participate. A successful probe does not establish every site's health or WAF blocking; separately test important sites and controlled attacks. Scope any Bot/auth exception to the probe endpoint and actual probe sources, without bypassing all WAF checks.</p>
+<p>Do not use Controller <code>/healthz</code> as Agent readiness: it is management-process liveness. <code>/readyz</code> is on the local privileged admin socket, not a public Agent LB target. LB membership must not depend solely on Controller connectivity; an already configured Agent can keep serving during its outage.</p>
+<h3 id="haproxy-starter-for-one-business-hostname">HAProxy starter for one business hostname</h3>
+<p>This example uses an L7 TLS-terminating LB with verified TLS to two Agents. Review it against your installed <a href="https://docs.haproxy.org/2.8/configuration.html">HAProxy configuration manual</a>. Install HAProxy through your OS's supported package/service procedure. Download the <a href="templates/haproxy-cluster.cfg">complete starter</a> on the LB host:</p>
+<pre><code class="language-sh">curl -fsS https://www.tiyisec.com/docs/templates/haproxy-cluster.cfg \
+  -o haproxy-cluster.cfg
+</code></pre>
+<p>Edit the hostname, Agent IPs/ports, CA file and frontend PEM path. Prepare <code>/etc/haproxy/certs/app.example.com.pem</code> with the LB certificate chain and private key, install a covering Agent certificate through Tiyi, and implement the probe endpoint first. The LB certificate file contains a private key; restrict its permissions. The download does not install certificates or create HA.</p>
+<pre><code class="language-text">global
+    log /dev/log local0
+
+defaults
+    log global
+    mode http
+    option httplog
+    timeout connect 5s
+    timeout client 60s
+    timeout server 60s
+    timeout tunnel 1h
+
+frontend public_http
+    bind :80
+    http-request redirect scheme https code 301
+
+frontend public_https
+    bind :443 ssl crt /etc/haproxy/certs/app.example.com.pem
+    acl app_host hdr(host) -i app.example.com app.example.com:443
+    http-request deny deny_status 421 unless app_host
+    http-request del-header Forwarded
+    http-request del-header X-Real-IP
+    http-request set-header X-Forwarded-For %[src]
+    http-request set-header X-Forwarded-Proto https
+    http-request set-header X-Forwarded-Host %[req.hdr(Host)]
+    default_backend tiyi_agents
+
+backend tiyi_agents
+    balance roundrobin
+    option httpchk
+    http-check connect ssl sni app.example.com
+    http-check send meth GET uri /_edge/ready ver HTTP/1.1 hdr Host app.example.com
+    http-check expect status 200
+    default-server inter 3s fall 3 rise 2
+    server agent_a 10.20.0.21:443 ssl verify required ca-file /etc/ssl/certs/ca-certificates.crt verifyhost app.example.com sni str(app.example.com) check
+    server agent_b 10.20.0.22:443 ssl verify required ca-file /etc/ssl/certs/ca-certificates.crt verifyhost app.example.com sni str(app.example.com) check
+</code></pre>
+<p>This starter assumes visitors connect directly to the LB, one business hostname, and DNS-01 or uploaded certificates. Its port-80 redirect does <strong>not</strong> explicitly forward Tiyi HTTP-01 challenges; design that route before choosing HTTP-01. Expand per-host routing/probes for more sites and tune timeouts for actual uploads/streams. The failure/rise settings are starting values, not a detection-time guarantee. Tiyi's health checks for application upstreams are separate from these LB checks for Agents.</p>
+<p>On the LB host, validate before installing. Preserve the current configuration if one exists, then install and reload during a reviewed traffic window:</p>
+<pre><code class="language-sh">sudo haproxy -c -f ./haproxy-cluster.cfg
+sudo install -m 0644 haproxy-cluster.cfg /etc/haproxy/haproxy.cfg
+sudo systemctl reload haproxy
+</code></pre>
+<p>Syntax validation must succeed. Check service status, both backends' probe results, and public requests. If activation fails, restore the saved configuration, validate and reload it. A new HAProxy service may need its initial start rather than reload. Apply equivalent configuration and test failover on both LB instances, or use a managed HA service.</p>
+<h2 id="acceptance">5. Verify every Agent, then switch business DNS</h2>
+<p>From an authorized probe host, replace the example address/domain and use valid certificates:</p>
+<pre><code class="language-sh"># Agent A directly, preserving both Host and TLS SNI: expected 200
+curl --fail --resolve app.example.com:443:10.20.0.21 \
+  https://app.example.com/_edge/ready
+
+# Agent B directly: expected 200
+curl --fail --resolve app.example.com:443:10.20.0.22 \
+  https://app.example.com/_edge/ready
+
+# Controlled WAF probe on Agent A: default blocking policy should return 403
+curl -i --resolve app.example.com:443:10.20.0.21 --get \
+  --data-urlencode 'q=1 UNION SELECT password FROM users' https://app.example.com/
+</code></pre>
+<p>Repeat the WAF probe on Agent B and the LB VIP before changing DNS; use a test site/path you own. Match expected responses to your actual policy and configured response status. Do not disable certificate verification with <code>-k</code> as acceptance. Verify real client IP and spoof protection through the LB, then move business DNS to its VIP and repeat the checks publicly. Confirm requests reach both Agents through node-tagged observations or LB backend counters; browser refreshes alone do not prove distribution.</p>
+<p>Rehearse failure and recovery before calling the topology highly available:</p>
+<table>
+<thead>
+<tr>
+<th>Rehearsal</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Drain one Agent, then stop its service</td>
+<td>New requests use remaining healthy Agents; already broken connections may need client reconnect; remaining capacity meets the target</td>
+</tr>
+<tr>
+<td>Restore that Agent</td>
+<td>Correct version/configuration, real requests and probes pass before rejoining</td>
+</tr>
+<tr>
+<td>Interrupt Controller connectivity in a controlled window</td>
+<td>Already admitted Agents serve their last accepted configuration; management, new publication/enrollment and central freshness are unavailable</td>
+</tr>
+<tr>
+<td>Fail the active LB</td>
+<td>Managed-service/VIP failover restores new connections within the measured target; existing connections can break</td>
+</tr>
+<tr>
+<td>Make an application origin fail</td>
+<td>Origin-pool behavior and Agent probes reflect the intended application policy; no route bypasses WAF</td>
+</tr>
+</tbody>
+</table>
+<p>If all Agents are unhealthy, fail closed with an error; do not silently send traffic straight to unprotected origins.</p>
+<h2 id="operate">6. Maintain capacity, state, and recovery</h2>
+<ul>
+<li><strong>Scale and upgrade:</strong> enroll a node outside the LB pool, verify applied configuration and traffic, then admit it. To remove or update a node, drain it and wait for connections before stopping. Use rolling updates only for explicitly compatible state/protocol versions; the older-release → v3.8.0 transition requires <a href="upgrade-migration.html">fresh state and re-enrollment</a>, not an ordinary rolling update.</li>
+<li><strong>Stateful behavior:</strong> rate windows and runtime temporary mitigation are node-local. A per-node limit is not one exact fleet-wide budget. Sticky routing may help application sessions or identity locality but does not create shared state. Test Bot clearance, reconnects, and application sessions across nodes; use an appropriate shared admission layer if the business requires an exact global limit.</li>
+<li><strong>Observation:</strong> monitor every node's CPU/memory/disk, WAF outcomes, upstream health, bounded spool/backlog and coverage gaps, plus LB backend failures. A prolonged Controller outage can exhaust observation retention even while traffic continues. Configure SIEM connectivity from every producing node and monitor expiry/renewal before certificates run out.</li>
+<li><strong>Controller recovery:</strong> define acceptable management RTO/RPO, take a consistent backup of complete state/config/KEK/license/certificates and matching binary, and rehearse <a href="upgrade-migration.html#restore">restore</a>. Retain the stable management URL. Fence/stop the old Controller before starting a restored copy; never run two writable copies of cloned state. Restoring an old backup can lag node identities or accepted configuration—check reconnect/reconciliation and recover deliberately.</li>
+</ul>
+<p>The topology provides traffic-node redundancy only when the LB, origins, network and remaining capacity also meet the availability target. Controller recovery remains an operator procedure; Agents cannot perform certificate renewal or obtain new policy changes from an unavailable Controller.</p>
+<div class="docs-pager"><a href="deployment.html"><span class="label">← Previous</span><span class="title">Deployment overview</span></a><a class="next" href="upgrade-migration.html"><span class="label">Next →</span><span class="title">Backup and recovery</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

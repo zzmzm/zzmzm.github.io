@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Single-server deployment — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="One Controller with its built-in Agent: install, connect a site, verify protection, and prepare a small deployment for production." />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../assets/css/main.css" />
+<!-- Apply theme before paint to avoid FOUC -->
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../assets/img/tiyi-logo.png" alt="Tiyi logo" />
+      <span>Tiyi</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#tour">Product</a>
+      <a href="../index.html#pricing">Pricing</a>
+      <a href="index.html" style="color:var(--fg)">Docs</a>
+      <a href="../changelog.html">Changelog</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="Toggle theme">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../zh/docs/single-deployment.html" hreflang="zh-CN" aria-label="Switch to Chinese">中文</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">Get Tiyi</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="Docs navigation">
+    <div class="docs-nav-group">
+      <h4>Get started</h4>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="quickstart.html">Quickstart</a></li>
+        <li><a href="installation.html">Installation</a></li>
+        <li><a href="configuration.html">Configuration &amp; templates</a></li>
+        <li><a href="practice.html">Practice and advanced use</a></li>
+        <li><a href="existing-site.html">Add Tiyi to an existing Nginx site</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Operate</h4>
+      <ul>
+        <li><a href="operations.html">Operations guide</a></li>
+        <li><a href="auto-remediation.html">Automatic remediation</a></li>
+        <li><a href="troubleshooting.html">Troubleshooting</a></li>
+        <li><a href="upgrade-migration.html">Upgrade and migration</a></li>
+        <li><a href="site-import.html">Import / export sites</a></li>
+        <li><a href="api-protection.html">API protection</a></li>
+        <li><a href="responses.html">Protection responses</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Concepts</h4>
+      <ul>
+        <li><a href="concepts.html">How it works</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Reference</h4>
+      <ul>
+        <li><a href="cli.html">CLI reference</a></li>
+        <li><a href="api.html">API reference</a></li>
+        <li><a href="reference/index.html">Full reference</a></li>
+        <li><a href="reference/rpc-index.html">All RPCs</a></li>
+        <li><a href="reference/permissions.html">Permissions</a></li>
+        <li><a href="reference/cli-options.html">All CLI flags</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 notes</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>Run in production</h4>
+      <ul>
+        <li><a href="deployment.html">Deployment</a></li>
+        <li><a href="single-deployment.html" aria-current="page">Single-server deployment</a></li>
+        <li><a href="cluster-deployment.html">Cluster deployment</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="single-server-deployment-the-simplest-way-to-use-tiyi">Single-server deployment: the simplest way to use Tiyi</h1>
+<p class="lede">For <strong>v3.8.0</strong>, reviewed <strong>2026-09-30</strong>. Start with one Tiyi server unless you already need multiple traffic nodes or host-failure tolerance. One <code>tiyi run</code> process contains the Controller, console, and built-in Agent/data plane. Installation starts them together; no separate Agent enrollment or remote-node license is needed.</p>
+<pre><code class="language-text">Visitors ── HTTP/HTTPS ──&gt; Tiyi server ──&gt; Application origins
+                          ├─ Controller + console
+                          └─ Built-in Agent: TLS, proxy, WAF
+Administrators ─────────&gt; Management console / local CLI
+</code></pre>
+<p>This is the recommended quickstart and a practical deployment for small workloads that can accept a maintenance window. The server is a single failure domain: a host or process outage interrupts both traffic and management. When that becomes unacceptable, follow <a href="cluster-deployment.html">cluster deployment</a>.</p>
+<h2 id="install">1. Install on a fresh Linux host</h2>
+<p>Use Linux amd64/arm64, persistent disk, sudo, systemd, and an application reachable from this host. Reserve website ports <strong>80/443</strong> and management port <strong>8080</strong>. If these ports are already occupied, use <a href="quickstart.html#custom-ports">custom ports</a> or the <a href="https://www.tiyisec.com/docs/existing-site.html">existing Nginx integration guide</a>.</p>
+<p>Run on the Tiyi host. Pin the version used by this guide:</p>
+<pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh | TIYI_VERSION=v3.8.0 bash
+sudo tiyi install --now
+tiyi --version
+sudo tiyi system health
+</code></pre>
+<p>The installer verifies the signed binary; <code>install --now</code> creates, enables, and starts the systemd service. Save the one-time administrator password shown in the terminal. The version should be v3.8.0 and health should report a working instance. HTTPS starts after a TLS site and certificate are configured.</p>
+<p>For an existing installation, use <a href="upgrade-migration.html">upgrade and migration</a>. Offline and foreground alternatives are in <a href="installation.html">Installation</a>.</p>
+<h2 id="first-site">2. Sign in and connect your first site</h2>
+<p>From your browser, open <code>http://SERVER_IP:8080</code>, replacing <code>SERVER_IP</code> with this host's actual address. Sign in as <strong>admin</strong>, then change the initial password. Restrict initial management access to your administration network.</p>
+<p>For a short local rehearsal, run this in a second terminal on the Tiyi host:</p>
+<pre><code class="language-sh">mkdir -p &quot;$HOME/tiyi-demo&quot;
+printf 'Hello from the origin\n' &gt; &quot;$HOME/tiyi-demo/index.html&quot;
+python3 -m http.server 9000 --bind 127.0.0.1 --directory &quot;$HOME/tiyi-demo&quot;
+</code></pre>
+<p>Leave that terminal open. In another terminal on the same host:</p>
+<pre><code class="language-sh">sudo tiyi site create --name quickstart --host quickstart.test \
+  --upstream-url http://127.0.0.1:9000 --tls none
+</code></pre>
+<p>The site uses the built-in Light WAF policy. <code>quickstart.test</code> needs no DNS change for the following checks. For a real application, use <strong>Application Delivery → Sites → Create</strong>, enter its domain and a reachable origin, and configure HTTPS using <a href="operations.html#https">certificate operations</a>. An origin URL must point to the application, not back to the site's public Tiyi address.</p>
+<h2 id="verify">3. Verify traffic and protection</h2>
+<p>Run on the Tiyi host against the rehearsal site:</p>
+<pre><code class="language-sh"># Normal request: 200 and Hello from the origin
+curl -i -H 'Host: quickstart.test' http://127.0.0.1/
+
+# Controlled SQL injection probe: 403 with the default blocking policy
+curl -i --get -H 'Host: quickstart.test' \
+  --data-urlencode 'q=1 UNION SELECT password FROM users' http://127.0.0.1/
+
+# Normal traffic must still work
+curl -i -H 'Host: quickstart.test' http://127.0.0.1/
+</code></pre>
+<p>Inspect Overview and <strong>Logs → Attack Logs</strong>, using the response's <code>X-Request-Id</code> when available. A saved site or healthy process alone does not prove requests reach the origin or that the WAF blocks. If results differ, use <a href="troubleshooting.html">Troubleshooting</a>.</p>
+<p>Delete the <code>quickstart</code> site and stop the Python terminal when finished. Keep Tiyi running to connect your own application.</p>
+<h2 id="production">4. Prepare the single server for production</h2>
+<ul>
+<li>Configure the business domain, certificate, and HTTPS before moving public DNS. Keep the origin private and allow application ingress from Tiyi. Test login, callbacks, WebSockets, uploads, and ordinary requests with your actual application.</li>
+<li>Give the console a dedicated HTTPS management URL, set <code>auth.refresh_cookie_secure: true</code>, and restrict management ingress to administrators. Preserve SSH/local CLI recovery. A separate HTTPS gateway avoids depending on a business site's health for console access; see <a href="deployment.html#management">management access</a>.</li>
+<li>Use persistent disk for <code>/var/lib/tiyi</code>, retain the KEK and configuration, and set realistic log/evidence quotas. Monitor disk, CPU, memory, origin failures, certificate expiry, and observation delivery. Use the <a href="operations.html#prometheus">metrics-only setup</a>.</li>
+<li>If a CDN or proxy precedes Tiyi, configure <a href="deployment.html#client-ip">verified client-IP extraction</a>, restrict direct ingress, and verify spoofed forwarding headers cannot replace the real client address.</li>
+<li>Start with the default policy and review false positives against real traffic. Detailed evidence may be sampled or expire; HTTP outcomes and exact counters serve different purposes.</li>
+<li>Take a consistent <a href="upgrade-migration.html#backup">backup</a> and rehearse same-version restoration. Schedule a traffic interruption for cold backup, restart, or incompatible upgrade. A site export alone does not preserve the installation.</li>
+</ul>
+<p>Measure capacity with your rules, TLS, payloads, and retained evidence. This guide sets no universal CPU/RAM or QPS promise.</p>
+<h2 id="grow">5. Grow when the workload requires it</h2>
+<p>An existing CDN/LB can front a single Tiyi node, but one node still has one host failure domain. For node redundancy or more capacity, enroll remote Agents and put their traffic listeners behind an external HA load balancer. Keep a single writable Controller and plan its recovery separately.</p>
+<p>Follow <a href="cluster-deployment.html">Cluster deployment: one Controller, multiple Agents, and a load balancer</a> for enrollment, TLS, health checks, client-IP trust, rolling maintenance, and failover acceptance.</p>
+<div class="docs-pager"><a href="deployment.html"><span class="label">← Previous</span><span class="title">Deployment overview</span></a><a class="next" href="cluster-deployment.html"><span class="label">Next →</span><span class="title">Cluster deployment</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> Tiyi &middot; proprietary distribution &middot; Apache-2.0 upstreams retained</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+</body>
+</html>

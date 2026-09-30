@@ -89,6 +89,8 @@ Supported platforms are Linux amd64/arm64. The installer is for a fresh host; ex
       <h4>Run in production</h4>
       <ul>
         <li><a href="deployment.html">Deployment</a></li>
+        <li><a href="single-deployment.html">Single-server deployment</a></li>
+        <li><a href="cluster-deployment.html">Cluster deployment</a></li>
       </ul>
     </div>
   </aside>
@@ -98,6 +100,7 @@ Supported platforms are Linux amd64/arm64. The installer is for a fresh host; ex
 <h1 id="installation-and-service-management">Installation and service management</h1>
 <p class="lede">Choose how to install, verify downloads, deploy offline, and manage the service. New users can continue through the <a href="quickstart.html">quickstart</a> for login, site creation, and request checks.
 Supported platforms are Linux amd64/arm64. The installer is for a fresh host; existing installations should use <a href="upgrade-migration.html">upgrade and migration</a>.</p>
+<p>This default installation runs the Controller and built-in Agent together in one process. Use <a href="single-deployment.html">single-server deployment</a> for the shortest path to production, or <a href="cluster-deployment.html">cluster deployment</a> when you need redundant traffic nodes behind a load balancer.</p>
 <a id="1-default-installation-system-service-and-ports-804438080"></a>
 <h2 id="prebuilt">1. Default installation: system service and ports 80/443/8080</h2>
 <pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh | bash <span class="o">&amp;&amp;</span> sudo tiyi install --now

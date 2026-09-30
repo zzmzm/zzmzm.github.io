@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>单机部署 — Tiyi Docs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="一台 Controller 与内置 Agent：安装、接入站点、验证防护，并完成小规模上线准备。" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="../../favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="../../assets/css/main.css" />
+<script>(function () { try { var t = localStorage.getItem('tiyi:theme') || 'dark'; if (t !== 'dark' && t !== 'light') t = 'dark'; document.documentElement.dataset.theme = t; } catch (e) { document.documentElement.dataset.theme = 'dark'; } })();</script>
+</head>
+
+<body class="docs" data-assets-base="../../assets/img/">
+<div class="bg-field" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="../index.html">
+      <img src="../../assets/img/tiyi-logo.png" alt="太一 logo" />
+      <span>太一</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a href="../index.html#features">特性</a>
+      <a href="../index.html#tour">产品</a>
+      <a href="../index.html#pricing">价格</a>
+      <a href="index.html" style="color:var(--fg)">文档</a>
+      <a href="../changelog.html">更新日志</a>
+      <button class="nav-toggle" type="button" data-action="toggle-theme" aria-label="切换主题">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="nav-toggle nav-lang" href="../../docs/single-deployment.html" hreflang="en" aria-label="Switch to English">EN</a>
+      <a class="btn btn-primary btn-sm nav-cta" href="../index.html#pricing">开始使用</a>
+    </nav>
+  </div>
+</header>
+
+<div class="docs-layout">
+
+  <aside class="docs-sidebar" aria-label="文档导航">
+    <div class="docs-nav-group">
+      <h4>开始使用</h4>
+      <ul>
+        <li><a href="index.html">概览</a></li>
+        <li><a href="quickstart.html">快速开始</a></li>
+        <li><a href="installation.html">安装</a></li>
+        <li><a href="configuration.html">配置与模板</a></li>
+        <li><a href="practice.html">实战与进阶</a></li>
+        <li><a href="existing-site.html">已有 Nginx 网站接入太一</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>运维</h4>
+      <ul>
+        <li><a href="operations.html">日常运维</a></li>
+        <li><a href="auto-remediation.html">自动处置</a></li>
+        <li><a href="troubleshooting.html">排障</a></li>
+        <li><a href="upgrade-migration.html">升级与迁移</a></li>
+        <li><a href="site-import.html">站点导入与导出</a></li>
+        <li><a href="api-protection.html">API 防护</a></li>
+        <li><a href="responses.html">防护响应</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>核心概念</h4>
+      <ul>
+        <li><a href="concepts.html">工作方式</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>参考</h4>
+      <ul>
+        <li><a href="cli.html">CLI 参考</a></li>
+        <li><a href="api.html">API 参考</a></li>
+        <li><a href="reference/index.html">完整参考</a></li>
+        <li><a href="reference/rpc-index.html">全部 RPC</a></li>
+        <li><a href="reference/permissions.html">权限</a></li>
+        <li><a href="reference/cli-options.html">全部 CLI 参数</a></li>
+        <li><a href="release-3.8.0.html">v3.8.0 版本说明</a></li>
+      </ul>
+    </div>
+    <div class="docs-nav-group">
+      <h4>生产环境</h4>
+      <ul>
+        <li><a href="deployment.html">部署</a></li>
+        <li><a href="single-deployment.html" aria-current="page">单机部署</a></li>
+        <li><a href="cluster-deployment.html">集群部署</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="docs-content" role="main">
+<span class="docs-eyebrow">Tiyi v3.8.0</span>
+<h1 id="_1">单机部署：最简单的太一使用方式</h1>
+<p class="lede">适用版本：<strong>v3.8.0</strong>，复核日期：<strong>2026-09-30</strong>。如果尚未需要多台流量节点或主机故障容错，建议从一台太一开始。一个 <code>tiyi run</code> 进程包含 Controller、管理控制台和内置 Agent/数据面；安装后一起启动，无须单独注册 Agent，也不需要远端节点许可。</p>
+<pre><code class="language-text">访客 ── HTTP/HTTPS ──&gt; 太一服务器 ──&gt; 应用源站
+                       ├─ Controller + 管理控制台
+                       └─ 内置 Agent：TLS、代理、WAF
+管理员 ──────────────&gt; 管理控制台 / 本机 CLI
+</code></pre>
+<p>这是推荐的快速入门方式，也适合能接受维护窗口的小规模业务。整台服务器属于同一个故障域：主机或进程中断会同时影响业务流量和管理。业务不能接受这一点时，转向<a href="cluster-deployment.html">集群部署</a>。</p>
+<h2 id="install">1. 在新的 Linux 主机安装</h2>
+<p>准备 Linux amd64/arm64、持久磁盘、sudo、systemd，以及本机可达的应用源站。预留网站端口 <strong>80/443</strong>、管理端口 <strong>8080</strong>。已有服务占用端口时，使用<a href="quickstart.html#custom-ports">自定义端口</a>或<a href="https://www.tiyisec.com/zh/docs/existing-site.html">已有 Nginx 网站接入教程</a>。</p>
+<p>在太一主机执行，固定到本指南对应版本：</p>
+<pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh | TIYI_VERSION=v3.8.0 bash
+sudo tiyi install --now
+tiyi --version
+sudo tiyi system health
+</code></pre>
+<p>安装器校验签名二进制；<code>install --now</code> 创建 systemd 服务、设置开机自启并启动。保存终端显示的一次性管理员密码。版本应为 v3.8.0，健康检查应显示实例正常；配置 TLS 站点和证书后才会启动 HTTPS。</p>
+<p>已有安装请使用<a href="upgrade-migration.html">升级与迁移</a>。离线和前台方式见<a href="installation.html">安装指南</a>。</p>
+<h2 id="first-site">2. 登录并接入第一个站点</h2>
+<p>浏览器打开 <code>http://服务器IP:8080</code>，将“服务器IP”换成太一主机的实际地址。用 <strong>admin</strong> 登录，然后修改初始密码。首次管理入口只允许管理网络访问。</p>
+<p>需要快速演练时，在太一主机的第二个终端执行：</p>
+<pre><code class="language-sh">mkdir -p &quot;$HOME/tiyi-demo&quot;
+printf 'Hello from the origin\n' &gt; &quot;$HOME/tiyi-demo/index.html&quot;
+python3 -m http.server 9000 --bind 127.0.0.1 --directory &quot;$HOME/tiyi-demo&quot;
+</code></pre>
+<p>保持该终端运行，再在同一主机的另一个终端执行：</p>
+<pre><code class="language-sh">sudo tiyi site create --name quickstart --host quickstart.test \
+  --upstream-url http://127.0.0.1:9000 --tls none
+</code></pre>
+<p>站点默认使用内置 Light WAF 策略，下面的检查不需要为 <code>quickstart.test</code> 修改 DNS。接入真实应用时，在 <strong>应用交付 → 站点 → 创建</strong> 填写实际域名和可达源站，按<a href="operations.html#https">证书操作</a>配置 HTTPS。源站 URL 应指向应用本身，不能指回站点对外的太一地址。</p>
+<h2 id="verify">3. 验证访问与防护</h2>
+<p>在太一主机向演练站点发送请求：</p>
+<pre><code class="language-sh"># 正常请求：200，正文为 Hello from the origin
+curl -i -H 'Host: quickstart.test' http://127.0.0.1/
+
+# 受控 SQL 注入探针：默认阻断策略应返回 403
+curl -i --get -H 'Host: quickstart.test' \
+  --data-urlencode 'q=1 UNION SELECT password FROM users' http://127.0.0.1/
+
+# 正常访问仍应成功
+curl -i -H 'Host: quickstart.test' http://127.0.0.1/
+</code></pre>
+<p>在总览与 <strong>日志 → 攻击日志</strong> 查看结果，响应包含 <code>X-Request-Id</code> 时用它定位请求。站点保存成功或进程健康，不能单独证明源站可达或 WAF 已阻断；结果不符时参见<a href="troubleshooting.html">排障</a>。</p>
+<p>演练结束后删除 <code>quickstart</code> 站点，停止 Python 终端。太一可以继续运行，接入自己的应用。</p>
+<h2 id="production">4. 单机上线前的准备</h2>
+<ul>
+<li>切换公网 DNS 前配置业务域名、证书与 HTTPS。源站保持私有，只允许太一访问应用入口；用真实应用验证登录、回调、WebSocket、上传和普通请求。</li>
+<li>给控制台配置独立 HTTPS 管理地址，启用 <code>auth.refresh_cookie_secure: true</code>，限制为管理员访问，并保留 SSH/本地 CLI 恢复入口。独立 HTTPS 网关可以避免管理入口依赖业务站点健康；参见<a href="deployment.html#management">管理入口</a>。</li>
+<li><code>/var/lib/tiyi</code> 使用持久磁盘，保留 KEK 和配置，设置可承担的日志/证据配额。监控磁盘、CPU、内存、源站故障、证书到期和观测投递；采用<a href="operations.html#prometheus">仅导出指标的方式</a>。</li>
+<li>前面已有 CDN/代理时，配置<a href="deployment.html#client-ip">经过验证的客户端 IP 提取</a>，限制绕过入口的直连，并验证伪造转发头不能替换真实客户端地址。</li>
+<li>从默认策略开始，以真实流量检查误报。详细证据可能被采样或过期；HTTP 结果与完整计数各有用途。</li>
+<li>做一致<a href="upgrade-migration.html#backup">备份</a>，演练同版本恢复。冷备、重启和不兼容升级应安排流量中断窗口；站点导出不能代替整套安装备份。</li>
+</ul>
+<p>用实际规则、TLS、请求大小和证据保留测量容量。本指南不承诺通用 CPU/内存配置或 QPS。</p>
+<h2 id="grow">5. 按业务需求扩展</h2>
+<p>已有 CDN/LB 可以放在单台太一前面，但一个节点仍只有一个主机故障域。需要节点冗余或更高容量时，注册远端 Agents，把它们的业务监听放到外部高可用 LB 后面。Controller 仍只有一个可写实例，单独规划恢复。</p>
+<p>继续阅读<a href="cluster-deployment.html">集群部署：一个 Controller、多台 Agents 与负载均衡</a>，完成注册、TLS、健康检查、真实客户端 IP、滚动维护与故障验收。</p>
+<div class="docs-pager"><a href="deployment.html"><span class="label">← 上一页</span><span class="title">部署总览</span></a><a class="next" href="cluster-deployment.html"><span class="label">下一页 →</span><span class="title">集群部署</span></a></div>
+</main>
+
+  <aside class="docs-toc" id="docs-toc" aria-label="本页大纲">
+    <h4>本页大纲</h4>
+  </aside>
+
+</div>
+
+<footer class="footer docs-release-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>&copy; <span data-year>2026</span> 太一 &middot; 商业分发 &middot; 上游保留 Apache-2.0</span>
+      <span class="build">build v3.8.0 · 2026-09-22</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

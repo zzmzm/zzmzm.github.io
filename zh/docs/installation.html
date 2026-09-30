@@ -88,6 +88,8 @@
       <h4>生产环境</h4>
       <ul>
         <li><a href="deployment.html">部署</a></li>
+        <li><a href="single-deployment.html">单机部署</a></li>
+        <li><a href="cluster-deployment.html">集群部署</a></li>
       </ul>
     </div>
   </aside>
@@ -97,6 +99,7 @@
 <h1 id="安装与服务管理">安装与服务管理</h1>
 <p class="lede">本页解决如何安装、校验下载、离线部署和管理服务。第一次使用可跟随<a href="quickstart.html">快速开始</a>继续登录、建站与验证。
 适用 Linux amd64/arm64。安装脚本用于新主机；已有安装请走<a href="upgrade-migration.html">升级与迁移</a>。</p>
+<p>默认安装让 Controller 与内置 Agent 在同一进程运行。需要最短上线步骤时阅读<a href="single-deployment.html">单机部署</a>；需要在负载均衡后运行冗余流量节点时阅读<a href="cluster-deployment.html">集群部署</a>。</p>
 <a id="1-默认安装系统服务与-804438080"></a>
 <h2 id="prebuilt">1. 默认安装：系统服务与 80/443/8080</h2>
 <pre><code class="language-sh">curl -fsSL https://www.tiyisec.com/install.sh | bash <span class="o">&amp;&amp;</span> sudo tiyi install --now
